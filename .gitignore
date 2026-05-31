@@ -1,0 +1,25 @@
+# Local proxy logs and debug artifacts
+debug_log/
+
+# Node.js
+node_modules/
+*.log
+npm-debug.log*
+
+# Environment and secrets
+.env
+.env.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.temp
