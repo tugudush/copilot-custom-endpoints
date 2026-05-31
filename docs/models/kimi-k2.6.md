@@ -32,11 +32,13 @@ That made VS Code Custom Endpoint `chat-completions` mode the lowest-risk starti
 
 ### VS Code user config
 
-User config file:
+User config file (path is OS-specific):
 
-```text
-C:\Users\jerom\AppData\Roaming\Code\User\chatLanguageModels.json
-```
+| OS      | Path                                                              |
+| ------- | ----------------------------------------------------------------- |
+| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
+| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
+| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
 Applied model entry shape:
 
