@@ -236,16 +236,19 @@ For the full research notes, tested values, and known limitations, see:
 
 ## Pricing comparison
 
-All prices are in USD per 1M tokens. Prices reflect the **International** deployment scope for DashScope and direct Moonshot API pricing for Kimi.
+All prices are in USD per 1M tokens. Prices reflect the **International** deployment scope for DashScope, direct Moonshot API pricing for Kimi, and direct DeepSeek API pricing.
 
-| Model             | Provider  | Input (per 1M)                | Output (per 1M)                         | Context window |
-| ----------------- | --------- | ----------------------------- | --------------------------------------- | -------------- |
-| **Kimi K2.6**     | Moonshot  | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
-| **Qwen 3.6 Plus** | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
-| **Qwen 3.7 Max**  | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
+| Model                 | Provider  | Input (per 1M)                | Output (per 1M)                         | Context window |
+| --------------------- | --------- | ----------------------------- | --------------------------------------- | -------------- |
+| **Kimi K2.6**         | Moonshot  | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
+| **Qwen 3.6 Plus**     | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
+| **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
+| **DeepSeek V4 Flash** | DeepSeek  | $0.14                         | $0.28                                   | 1M             |
+| **DeepSeek V4 Pro**   | DeepSeek  | $1.74                         | $3.48                                   | 1M             |
 
 > **Notes:**
 >
+> - DeepSeek V4 input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.0145/M for Pro).
 > - Qwen models use **tiered pricing** — the tier is determined by the total input tokens in a single request. The prices above are for non-thinking mode; thinking mode (chain-of-thought + response) is priced the same for Qwen 3.6 Plus and Qwen 3.7 Max.
 > - Kimi K2.6 pricing shown is from the **Moonshot platform** (direct). If you access Kimi K2.6 through DashScope as a third-party model, pricing differs ($0.89 input / $3.71 output per 1M tokens).
 > - DashScope offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
@@ -255,7 +258,9 @@ All prices are in USD per 1M tokens. Prices reflect the **International** deploy
 
 | Model                    | Estimated session cost |
 | ------------------------ | ---------------------- |
+| DeepSeek V4 Flash        | ~$0.10                 |
 | Kimi K2.6 (non-thinking) | ~$0.18                 |
+| DeepSeek V4 Pro          | ~$1.22                 |
 | Kimi K2.6 (thinking)     | ~$0.48                 |
 | Qwen 3.6 Plus            | ~$0.55                 |
 | Qwen 3.7 Max             | ~$1.33                 |
@@ -264,6 +269,7 @@ All prices are in USD per 1M tokens. Prices reflect the **International** deploy
 >
 > - [Moonshot (Kimi) pricing](https://platform.kimi.ai/docs/pricing/chat-k26)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
+> - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
 
 ## Repo layout
 
