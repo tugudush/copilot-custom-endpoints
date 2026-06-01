@@ -46,7 +46,7 @@ Applied model entry shape:
 {
   "name": "Kimi",
   "vendor": "customendpoint",
-  "apiKey": "<redacted>",
+  "apiKey": "<your-moonshot-key>",
   "apiType": "chat-completions",
   "models": [
     {
