@@ -1,13 +1,6 @@
-import { createServer } from 'node:http'
-import { Readable } from 'node:stream'
+#!/usr/bin/env node
 import { fileURLToPath } from 'node:url'
-import {
-  appendLog,
-  buildForwardHeaders,
-  buildResponseHeaders,
-  readRequestBody,
-  redactHeaders
-} from '../lib/shared.mjs'
+import { createProxy } from '../lib/create-proxy.mjs'
 
 /**
  * Supported model scope for this proxy:
@@ -51,23 +44,19 @@ Suggested VS Code model URL:
   process.exit(0)
 }
 
-if (!Number.isInteger(port) || port <= 0) {
-  throw new Error(`Invalid PORT: ${process.env.PORT ?? ''}`)
-}
+// ---- Provider-specific rewrite logic ----
 
-function summarizePayload(payload, preRewriteEnableThinking) {
+function summarizePayload(payload, hasTools, rewriteInfo) {
   const messages = Array.isArray(payload.messages) ? payload.messages : []
   const tools = Array.isArray(payload.tools) ? payload.tools : []
 
   return {
     model: payload.model,
     stream: payload.stream,
-    hasTools: tools.length > 0,
+    hasTools,
     toolCount: tools.length,
     toolChoice: payload.tool_choice,
-    incomingEnableThinking: preRewriteEnableThinking,
-    rewrittenEnableThinking:
-      disableThinkingWithTools && tools.length > 0 ? false : undefined, // deleted
+    ...rewriteInfo,
     maxTokens:
       payload.max_tokens ??
       payload.max_completion_tokens ??
@@ -78,68 +67,7 @@ function summarizePayload(payload, preRewriteEnableThinking) {
   }
 }
 
-const server = createServer(async (request, response) => {
-  if (request.method === 'GET' && request.url === '/healthz') {
-    response.writeHead(200, { 'content-type': 'application/json' })
-    response.end(
-      JSON.stringify({
-        ok: true,
-        upstreamUrl,
-        port,
-        disableThinkingWithTools
-      })
-    )
-    return
-  }
-
-  if (request.method !== 'POST') {
-    response.writeHead(404, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Not found' }))
-    return
-  }
-
-  const startedAt = new Date().toISOString()
-  let requestBody
-
-  try {
-    requestBody = await readRequestBody(request)
-  } catch (error) {
-    response.writeHead(400, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Unable to read request body' }))
-
-    await appendLog(
-      {
-        timestamp: startedAt,
-        type: 'read-error',
-        path: request.url,
-        error: error instanceof Error ? error.message : String(error)
-      },
-      logPath
-    )
-    return
-  }
-
-  let payload
-
-  try {
-    payload = JSON.parse(requestBody)
-  } catch {
-    response.writeHead(400, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Expected JSON request body' }))
-
-    await appendLog(
-      {
-        timestamp: startedAt,
-        type: 'invalid-json',
-        path: request.url,
-        headers: redactHeaders(request.headers)
-      },
-      logPath
-    )
-    return
-  }
-
-  // ---- Rewrite logic ----
+function rewriteQwen(payload) {
   const hasTools = Array.isArray(payload.tools) && payload.tools.length > 0
   const incomingEnableThinking = payload.enable_thinking
 
@@ -151,80 +79,36 @@ const server = createServer(async (request, response) => {
     delete payload.enable_thinking
   }
 
-  await appendLog(
-    {
-      timestamp: startedAt,
-      type: 'request',
-      path: request.url,
-      headers: redactHeaders(request.headers),
-      summary: summarizePayload(payload, incomingEnableThinking),
-      incomingEnableThinking
-    },
-    logPath
-  )
+  const rewrittenEnableThinking =
+    disableThinkingWithTools && hasTools ? false : undefined
 
-  console.log(
-    `[qwen-proxy] ${request.method} ${request.url} tools=${String(hasTools)} enable_thinking=${String(incomingEnableThinking)} -> ${
-      hasTools && disableThinkingWithTools ? 'false' : '<deleted>'
-    }, model=${payload.model ?? '?'}`
-  )
+  const summary = summarizePayload(payload, hasTools, {
+    incomingEnableThinking,
+    rewrittenEnableThinking
+  })
 
-  try {
-    const upstreamResponse = await fetch(upstreamUrl, {
-      method: 'POST',
-      headers: buildForwardHeaders(request.headers),
-      body: JSON.stringify(payload)
-    })
+  const consoleMsg = `tools=${String(hasTools)} enable_thinking=${String(incomingEnableThinking)} -> ${
+    hasTools && disableThinkingWithTools ? 'false' : '<deleted>'
+  }, model=${payload.model ?? '?'}`
 
-    await appendLog(
-      {
-        timestamp: new Date().toISOString(),
-        type: 'response',
-        path: request.url,
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-        contentType: upstreamResponse.headers.get('content-type'),
-        upstreamRequestId:
-          upstreamResponse.headers.get('x-request-id') ??
-          upstreamResponse.headers.get('request-id')
-      },
-      logPath
-    )
+  return { summary, consoleMsg }
+}
 
-    response.writeHead(
-      upstreamResponse.status,
-      buildResponseHeaders(upstreamResponse.headers)
-    )
+// ---- Create and start ----
 
-    if (!upstreamResponse.body) {
-      response.end()
-      return
-    }
-
-    Readable.fromWeb(upstreamResponse.body).pipe(response)
-  } catch (error) {
-    response.writeHead(502, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Upstream request failed' }))
-
-    await appendLog(
-      {
-        timestamp: new Date().toISOString(),
-        type: 'upstream-error',
-        path: request.url,
-        error: error instanceof Error ? error.message : String(error)
-      },
-      logPath
-    )
-  }
+const { start } = createProxy({
+  upstreamUrl,
+  port,
+  logPath,
+  label: 'qwen-proxy',
+  healthCheckExtras: { disableThinkingWithTools },
+  rewriteRequest: rewriteQwen,
+  startupMessages: (_port, _upstreamUrl) => [
+    `[qwen-proxy] listening on http://127.0.0.1:${_port}/v1/chat/completions`,
+    `[qwen-proxy] forwarding to ${_upstreamUrl}`,
+    `[qwen-proxy] disable thinking with tools=${disableThinkingWithTools}`,
+    `[qwen-proxy] writing redacted request summaries to ${logPath}`
+  ]
 })
 
-server.listen(port, '127.0.0.1', () => {
-  console.log(
-    `[qwen-proxy] listening on http://127.0.0.1:${port}/v1/chat/completions`
-  )
-  console.log(`[qwen-proxy] forwarding to ${upstreamUrl}`)
-  console.log(
-    `[qwen-proxy] disable thinking with tools=${disableThinkingWithTools}`
-  )
-  console.log(`[qwen-proxy] writing redacted request summaries to ${logPath}`)
-})
+start()

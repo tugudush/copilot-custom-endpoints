@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { fork } from 'node:child_process'
 import { rmSync } from 'node:fs'
@@ -32,10 +32,23 @@ if (sub && sub !== 'kimi' && sub !== 'qwen' && sub !== 'all') {
 
 const targets = sub === 'all' || !sub ? ['kimi', 'qwen'] : [sub]
 
-for (const name of targets) {
+// Spawn all target proxies and wait for all to exit.
+// This keeps both proxies alive in "all" mode instead of exiting
+// when the first one terminates.
+const children = targets.map((name) => {
   const proxyFile = resolve(__dirname, 'proxy', `${name}-proxy.mjs`)
-  const child = fork(proxyFile, process.argv.slice(3), { stdio: 'inherit' })
-  child.on('exit', (code) => {
-    process.exit(code ?? 0)
-  })
-}
+  return fork(proxyFile, process.argv.slice(3), { stdio: 'inherit' })
+})
+
+const exitCodes = await Promise.all(
+  children.map(
+    (child) =>
+      new Promise((resolve) => {
+        child.on('exit', (code) => {
+          resolve(code ?? 0)
+        })
+      })
+  )
+)
+
+process.exit(exitCodes.some((code) => code !== 0) ? 1 : 0)

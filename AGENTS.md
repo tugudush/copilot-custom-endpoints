@@ -27,6 +27,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - `npm run proxy` starts **both** proxies concurrently (uses `concurrently`).
 - `npm run proxy:kimi` starts the Kimi proxy on `http://127.0.0.1:3457/v1/chat/completions`.
 - `npm run proxy:qwen` starts the Qwen proxy on `http://127.0.0.1:3458/v1/chat/completions`.
+- `npm run clean:logs` removes the `debug_log/` directory.
 
 After publishing to npm, users can also run:
 
@@ -34,6 +35,7 @@ After publishing to npm, users can also run:
 - `npx copilot-proxy all` — same, explicit `all` subcommand.
 - `npx copilot-proxy kimi` — starts Kimi proxy only.
 - `npx copilot-proxy qwen` — starts Qwen proxy only.
+- `npx copilot-proxy clean` — removes the `debug_log/` directory.
 
 ### Kimi proxy
 
@@ -87,6 +89,6 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 ## Validation Expectations
 
-- `package.json` defines npm scripts for both proxies, the `clean:logs` utility, and `npm test` (18 unit tests via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, and request-body reading).
+- `package.json` defines npm scripts for both proxies, the `clean:logs` utility, and `npm test` (29 tests — 18 unit + 11 integration — via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, request-body reading, and proxy rewrite logic).
 - There is no CI in this repo.
 - Validate proxy changes with the smallest relevant manual checks first: `node proxy/kimi-proxy.mjs --help`, `curl http://127.0.0.1:3457/healthz`, and a targeted request or log review that confirms the intended rewrite.

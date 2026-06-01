@@ -1,13 +1,6 @@
-import { createServer } from 'node:http'
-import { Readable } from 'node:stream'
+#!/usr/bin/env node
 import { fileURLToPath } from 'node:url'
-import {
-  appendLog,
-  buildForwardHeaders,
-  buildResponseHeaders,
-  readRequestBody,
-  redactHeaders
-} from '../lib/shared.mjs'
+import { createProxy } from '../lib/create-proxy.mjs'
 
 /**
  * Supported model scope for this proxy:
@@ -62,10 +55,6 @@ Suggested VS Code model URL:
   process.exit(0)
 }
 
-if (!Number.isInteger(port) || port <= 0) {
-  throw new Error(`Invalid PORT: ${process.env.PORT ?? ''}`)
-}
-
 if (!Number.isFinite(forcedTemperature)) {
   throw new Error(
     `Invalid KIMI_PROXY_FORCE_TEMPERATURE: ${process.env.KIMI_PROXY_FORCE_TEMPERATURE ?? ''}`
@@ -84,101 +73,30 @@ if (!Number.isFinite(forcedTopP)) {
   )
 }
 
-function summarizePayload(
-  payload,
-  incomingTemperature,
-  incomingTopP,
-  rewrittenTemperature
-) {
+// ---- Provider-specific rewrite logic ----
+
+function summarizePayload(payload, hasTools, rewriteInfo) {
   const messages = Array.isArray(payload.messages) ? payload.messages : []
   const tools = Array.isArray(payload.tools) ? payload.tools : []
-  const incomingThinkingType = payload.__incomingThinkingType
-  const rewrittenThinkingType = payload.thinking?.type
 
   return {
     model: payload.model,
     stream: payload.stream,
-    incomingTemperature,
-    rewrittenTemperature,
-    incomingTopP,
-    rewrittenTopP: forcedTopP,
-    incomingThinkingType,
-    rewrittenThinkingType,
+    ...rewriteInfo,
     maxTokens:
       payload.max_tokens ??
       payload.max_completion_tokens ??
       payload.max_output_tokens,
     toolChoice: payload.tool_choice,
     toolCount: tools.length,
-    hasTools: tools.length > 0,
+    hasTools,
     messageCount: messages.length,
     messageRoles: messages.map((message) => message?.role).slice(0, 16),
     topLevelKeys: Object.keys(payload).sort()
   }
 }
 
-const server = createServer(async (request, response) => {
-  if (request.method === 'GET' && request.url === '/healthz') {
-    response.writeHead(200, { 'content-type': 'application/json' })
-    response.end(
-      JSON.stringify({
-        ok: true,
-        upstreamUrl,
-        port,
-        forcedTemperature,
-        forcedTopP
-      })
-    )
-    return
-  }
-
-  if (request.method !== 'POST') {
-    response.writeHead(404, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Not found' }))
-    return
-  }
-
-  const startedAt = new Date().toISOString()
-  let requestBody
-
-  try {
-    requestBody = await readRequestBody(request)
-  } catch (error) {
-    response.writeHead(400, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Unable to read request body' }))
-
-    await appendLog(
-      {
-        timestamp: startedAt,
-        type: 'read-error',
-        path: request.url,
-        error: error instanceof Error ? error.message : String(error)
-      },
-      logPath
-    )
-    return
-  }
-
-  let payload
-
-  try {
-    payload = JSON.parse(requestBody)
-  } catch {
-    response.writeHead(400, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Expected JSON request body' }))
-
-    await appendLog(
-      {
-        timestamp: startedAt,
-        type: 'invalid-json',
-        path: request.url,
-        headers: redactHeaders(request.headers)
-      },
-      logPath
-    )
-    return
-  }
-
+function rewriteKimi(payload) {
   const incomingTemperature = payload.temperature
   const incomingTopP = payload.top_p
   const incomingThinkingType = payload?.thinking?.type
@@ -188,7 +106,10 @@ const server = createServer(async (request, response) => {
     ? forcedNonThinkingTemperature
     : forcedTemperature
 
+  // Capture incoming state before mutation
   payload.__incomingThinkingType = incomingThinkingType
+
+  // Apply rewrites
   payload.temperature = rewrittenTemperature
   payload.top_p = forcedTopP
 
@@ -196,89 +117,42 @@ const server = createServer(async (request, response) => {
     payload.thinking = { type: 'disabled' }
   }
 
-  await appendLog(
-    {
-      timestamp: startedAt,
-      type: 'request',
-      path: request.url,
-      headers: redactHeaders(request.headers),
-      summary: summarizePayload(
-        payload,
-        incomingTemperature,
-        incomingTopP,
-        rewrittenTemperature
-      ),
-      originalTemperature: incomingTemperature,
-      originalTopP: incomingTopP
-    },
-    logPath
-  )
+  const rewrittenThinkingType = payload.thinking?.type
+  const rewriteInfo = {
+    incomingTemperature,
+    rewrittenTemperature,
+    incomingTopP,
+    rewrittenTopP: forcedTopP,
+    incomingThinkingType,
+    rewrittenThinkingType
+  }
 
-  console.log(
-    `[kimi-proxy] ${request.method} ${request.url} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(payload.thinking?.type)}`
-  )
+  const summary = summarizePayload(payload, hasTools, rewriteInfo)
 
+  const consoleMsg = `temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
+
+  // Clean up internal key before forwarding
   delete payload.__incomingThinkingType
 
-  try {
-    const upstreamResponse = await fetch(upstreamUrl, {
-      method: 'POST',
-      headers: buildForwardHeaders(request.headers),
-      body: JSON.stringify(payload)
-    })
+  return { summary, consoleMsg }
+}
 
-    await appendLog(
-      {
-        timestamp: new Date().toISOString(),
-        type: 'response',
-        path: request.url,
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-        contentType: upstreamResponse.headers.get('content-type'),
-        upstreamRequestId:
-          upstreamResponse.headers.get('x-request-id') ??
-          upstreamResponse.headers.get('request-id')
-      },
-      logPath
-    )
+// ---- Create and start ----
 
-    response.writeHead(
-      upstreamResponse.status,
-      buildResponseHeaders(upstreamResponse.headers)
-    )
-
-    if (!upstreamResponse.body) {
-      response.end()
-      return
-    }
-
-    Readable.fromWeb(upstreamResponse.body).pipe(response)
-  } catch (error) {
-    response.writeHead(502, { 'content-type': 'application/json' })
-    response.end(JSON.stringify({ error: 'Upstream request failed' }))
-
-    await appendLog(
-      {
-        timestamp: new Date().toISOString(),
-        type: 'upstream-error',
-        path: request.url,
-        error: error instanceof Error ? error.message : String(error)
-      },
-      logPath
-    )
-  }
+const { start } = createProxy({
+  upstreamUrl,
+  port,
+  logPath,
+  label: 'kimi-proxy',
+  healthCheckExtras: { forcedTemperature, forcedTopP },
+  rewriteRequest: rewriteKimi,
+  startupMessages: (_port, _upstreamUrl) => [
+    `[kimi-proxy] listening on http://127.0.0.1:${_port}/v1/chat/completions`,
+    `[kimi-proxy] forwarding to ${_upstreamUrl}`,
+    `[kimi-proxy] forcing temperature=${forcedTemperature}, non-thinking temperature=${forcedNonThinkingTemperature}, and top_p=${forcedTopP}`,
+    `[kimi-proxy] disable thinking with tools=${disableThinkingWithTools}`,
+    `[kimi-proxy] writing redacted request summaries to ${logPath}`
+  ]
 })
 
-server.listen(port, '127.0.0.1', () => {
-  console.log(
-    `[kimi-proxy] listening on http://127.0.0.1:${port}/v1/chat/completions`
-  )
-  console.log(`[kimi-proxy] forwarding to ${upstreamUrl}`)
-  console.log(
-    `[kimi-proxy] forcing temperature=${forcedTemperature}, non-thinking temperature=${forcedNonThinkingTemperature}, and top_p=${forcedTopP}`
-  )
-  console.log(
-    `[kimi-proxy] disable thinking with tools=${disableThinkingWithTools}`
-  )
-  console.log(`[kimi-proxy] writing redacted request summaries to ${logPath}`)
-})
+start()
