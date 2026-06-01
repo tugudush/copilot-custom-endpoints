@@ -86,6 +86,18 @@ Health check:
 http://127.0.0.1:3457/healthz
 ```
 
+Response shape:
+
+```json
+{
+  "ok": true,
+  "upstreamUrl": "https://api.moonshot.ai/v1/chat/completions",
+  "port": 3457,
+  "forcedTemperature": 1,
+  "forcedTopP": 0.95
+}
+```
+
 Start command:
 
 ```text

@@ -22,9 +22,19 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 ## Commands
 
+### Both proxies (npm)
+
+- `npm run proxy:kimi` starts the Kimi proxy on `http://127.0.0.1:3457/v1/chat/completions`.
+- `npm run proxy:qwen` starts the Qwen proxy on `http://127.0.0.1:3458/v1/chat/completions`.
+
+After publishing to npm, users can also run:
+
+- `npx copilot-proxy kimi`
+- `npx copilot-proxy qwen`
+
 ### Kimi proxy
 
-- `node proxy/kimi-proxy.mjs` starts the local proxy on `http://127.0.0.1:3457/v1/chat/completions`.
+- `npm run proxy:kimi` (or `node proxy/kimi-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3457/v1/chat/completions`.
 - `node proxy/kimi-proxy.mjs --help` prints the supported environment variables and defaults.
 - `curl http://127.0.0.1:3457/healthz` checks that the proxy is listening.
 
@@ -43,7 +53,7 @@ curl https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions \
 
 The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
 
-- `node proxy/qwen-proxy.mjs` starts the local proxy on `http://127.0.0.1:3458/v1/chat/completions`.
+- `npm run proxy:qwen` (or `node proxy/qwen-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3458/v1/chat/completions`.
 - `node proxy/qwen-proxy.mjs --help` prints the supported environment variables and defaults.
 - `curl http://127.0.0.1:3458/healthz` checks that the proxy is listening.
 
@@ -74,5 +84,5 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 ## Validation Expectations
 
-- There is no `package.json`, automated test suite, or CI in this repo.
+- `package.json` defines npm scripts for both proxies and the `clean:logs` utility. There is no automated test suite or CI in this repo.
 - Validate proxy changes with the smallest relevant manual checks first: `node proxy/kimi-proxy.mjs --help`, `curl http://127.0.0.1:3457/healthz`, and a targeted request or log review that confirms the intended rewrite.
