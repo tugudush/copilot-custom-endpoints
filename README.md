@@ -138,88 +138,15 @@ Open (or create) your user config file (see [Config file location](#config-file-
 
 ### Qwen 3.6 Plus or Qwen 3.7 Max (DashScope)
 
-These models work **without a proxy** — VS Code talks directly to DashScope.
+These models work with the optional `proxy/qwen-proxy.mjs` for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops). They also work **without a proxy** using a static `enable_thinking: false` — see the [direct path alternative](#direct-path-no-proxy) below.
 
 #### 1. Grab a DashScope API key
 
 Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an API key.
 
-#### 2. Register the models in VS Code
+#### 2. Start the optional local proxy (recommended)
 
-Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`):
-
-```json
-{
-  "name": "Qwen",
-  "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
-  "apiType": "chat-completions",
-  "models": [
-    {
-      "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "requestBody": {
-        "enable_thinking": false
-      }
-    },
-    {
-      "id": "qwen3.6-plus",
-      "name": "Qwen 3.6 Plus",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "requestBody": {
-        "enable_thinking": false
-      }
-    }
-  ]
-}
-```
-
-> **Note:** `enable_thinking: false` suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
-
-> **Regional endpoints:** The configuration above uses the **Singapore** region (`dashscope-intl.aliyuncs.com`). DashScope offers endpoints for other regions:
->
-> - **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
-> - **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
-> - **Singapore:** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (used in this guide)
->
-> Choose the endpoint closest to your location for better latency. Note that API keys are region-specific.
-
-#### 3. Chat!
-
-- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
-- Click the model picker (top-right of the chat input).
-- Choose **Qwen 3.6 Plus** (with vision) or **Qwen 3.7 Max** (text only).
-- Ask something. Streaming and tool use work for both. Vision works for Qwen 3.6 Plus.
-
-#### Troubleshooting (Qwen)
-
-| Symptom                                      | Fix                                                                                     |
-| -------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
-| Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
-
----
-
-### Qwen 3.x with Proxy (Optional Enhancement)
-
-The **optional** `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat (you see the model's thought process) but turns OFF automatically when tools are invoked (preventing `reasoning_content` issues). This gives you the best of both worlds without manual config switching.
-
-#### When to use the proxy
-
-- You want to **see reasoning** in plain chat responses
-- You still need **stable tool loops** in agent mode
-- You're okay running a small local Node.js process alongside VS Code
-
-If you prefer simplicity, skip the proxy and keep the static `enable_thinking: false` — everything works fine that way too.
-
-#### 1. Start the proxy
+The proxy dynamically enables thinking in plain chat and disables it during tool calls:
 
 ```bash
 # from this repo
@@ -234,7 +161,6 @@ You should see:
 
 ```
 [qwen-proxy] listening on http://127.0.0.1:3458/v1/chat/completions
-[qwen-proxy] forwarding to https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
 ```
 
 Check it's alive:
@@ -254,11 +180,9 @@ Expected response:
 }
 ```
 
-> **Keep this terminal open** while you use Qwen via the proxy.
+#### 3. Register the models in VS Code
 
-#### 2. Update VS Code config
-
-Edit your user config file (see [Config file location](#config-file-location) above). Change the Qwen model entries to point to the proxy and **remove** the static `enable_thinking`:
+Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`). Point URLs at the proxy and omit `requestBody` — the proxy handles thinking dynamically:
 
 ```json
 {
@@ -287,25 +211,68 @@ Edit your user config file (see [Config file location](#config-file-location) ab
 }
 ```
 
-Key changes:
+> **Keep the proxy terminal open** while using these models.
 
-- `url` changed from DashScope direct to `http://127.0.0.1:3458/v1/chat/completions`
-- `requestBody.enable_thinking` removed entirely — the proxy handles it dynamically
+#### 4. Chat!
 
-#### 3. Reload VS Code and test
+- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
+- Click the model picker (top-right of the chat input).
+- Choose **Qwen 3.6 Plus** (with vision) or **Qwen 3.7 Max** (text only).
+- Ask something. Streaming, tool use, and vision (3.6 Plus) all work.
 
-- Reload VS Code (`Ctrl+Shift+P` → "Reload Window")
-- Pick a Qwen model in the chat panel
-- **Plain chat:** Ask a simple question — you should see streaming output with reasoning visible in proxy logs
-- **Agent/tool use:** Ask something like "open github.com" — the browser tool should invoke cleanly without `reasoning_content` errors
+> **Regional endpoints:** If connecting directly (no proxy), DashScope offers endpoints for several regions. The proxy uses `dashscope-intl.aliyuncs.com` (Singapore) by default, configurable via `QWEN_UPSTREAM_URL`.
+>
+> - **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **Singapore:** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (proxy default)
+>
+> API keys are region-specific.
 
-#### Troubleshooting (Qwen Proxy)
+#### Direct path (no proxy)
 
-| Symptom                            | Fix                                                                                                                        |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| "Connection refused"               | Make sure `node proxy/qwen-proxy.mjs` is still running                                                                     |
-| Tool loops still fail              | Check proxy logs in `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
-| Want to switch back to direct path | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                                        |
+If you prefer not to run the proxy, Qwen models work **directly** with DashScope by using the upstream URL and a static `enable_thinking: false` in `requestBody`:
+
+```json
+{
+  "name": "Qwen",
+  "vendor": "customendpoint",
+  "apiKey": "<your-dashscope-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "qwen3.7-max",
+      "name": "Qwen 3.7 Max",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    },
+    {
+      "id": "qwen3.6-plus",
+      "name": "Qwen 3.6 Plus",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    }
+  ]
+}
+```
+
+> **Trade-off:** `enable_thinking: false` suppresses reasoning in all requests (both plain chat and tool loops). Tool loops stay stable, but you never see the model's thought process. The proxy path avoids this trade-off.
+
+#### Troubleshooting (Qwen)
+
+| Symptom                                      | Fix                                                                                     |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
+| Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
 
 ---
 

@@ -1,8 +1,13 @@
 import { createServer } from 'node:http'
-import { appendFile, mkdir } from 'node:fs/promises'
-import { dirname } from 'node:path'
 import { Readable } from 'node:stream'
 import { fileURLToPath } from 'node:url'
+import {
+  appendLog,
+  buildForwardHeaders,
+  buildResponseHeaders,
+  readRequestBody,
+  redactHeaders
+} from '../lib/shared.mjs'
 
 /**
  * Supported model scope for this proxy:
@@ -50,41 +55,6 @@ if (!Number.isInteger(port) || port <= 0) {
   throw new Error(`Invalid PORT: ${process.env.PORT ?? ''}`)
 }
 
-const hopByHopHeaders = new Set([
-  'connection',
-  'keep-alive',
-  'proxy-authenticate',
-  'proxy-authorization',
-  'te',
-  'trailer',
-  'transfer-encoding',
-  'upgrade'
-])
-
-function redactHeaders(headers) {
-  const redacted = {}
-
-  for (const [name, value] of Object.entries(headers)) {
-    if (value === undefined) {
-      continue
-    }
-
-    if (name.toLowerCase() === 'authorization') {
-      redacted[name] = 'Bearer <redacted>'
-      continue
-    }
-
-    if (name.toLowerCase() === 'x-api-key') {
-      redacted[name] = '<redacted>'
-      continue
-    }
-
-    redacted[name] = value
-  }
-
-  return redacted
-}
-
 function summarizePayload(payload, preRewriteEnableThinking) {
   const messages = Array.isArray(payload.messages) ? payload.messages : []
   const tools = Array.isArray(payload.tools) ? payload.tools : []
@@ -106,65 +76,6 @@ function summarizePayload(payload, preRewriteEnableThinking) {
     messageRoles: messages.map((message) => message?.role).slice(0, 16),
     topLevelKeys: Object.keys(payload).sort()
   }
-}
-
-async function appendLog(entry) {
-  await mkdir(dirname(logPath), { recursive: true })
-  await appendFile(logPath, `${JSON.stringify(entry)}\n`, 'utf8')
-}
-
-async function readRequestBody(request) {
-  const chunks = []
-
-  for await (const chunk of request) {
-    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
-  }
-
-  return Buffer.concat(chunks).toString('utf8')
-}
-
-function buildForwardHeaders(headers) {
-  const forwardHeaders = new Headers()
-
-  for (const [name, value] of Object.entries(headers)) {
-    const lowerName = name.toLowerCase()
-
-    if (
-      value === undefined ||
-      lowerName === 'host' ||
-      lowerName === 'content-length' ||
-      hopByHopHeaders.has(lowerName)
-    ) {
-      continue
-    }
-
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        forwardHeaders.append(name, item)
-      }
-      continue
-    }
-
-    forwardHeaders.set(name, value)
-  }
-
-  forwardHeaders.set('content-type', 'application/json')
-
-  return forwardHeaders
-}
-
-function buildResponseHeaders(headers) {
-  const responseHeaders = {}
-
-  for (const [name, value] of headers.entries()) {
-    if (hopByHopHeaders.has(name.toLowerCase())) {
-      continue
-    }
-
-    responseHeaders[name] = value
-  }
-
-  return responseHeaders
 }
 
 const server = createServer(async (request, response) => {
@@ -196,12 +107,15 @@ const server = createServer(async (request, response) => {
     response.writeHead(400, { 'content-type': 'application/json' })
     response.end(JSON.stringify({ error: 'Unable to read request body' }))
 
-    await appendLog({
-      timestamp: startedAt,
-      type: 'read-error',
-      path: request.url,
-      error: error instanceof Error ? error.message : String(error)
-    })
+    await appendLog(
+      {
+        timestamp: startedAt,
+        type: 'read-error',
+        path: request.url,
+        error: error instanceof Error ? error.message : String(error)
+      },
+      logPath
+    )
     return
   }
 
@@ -213,12 +127,15 @@ const server = createServer(async (request, response) => {
     response.writeHead(400, { 'content-type': 'application/json' })
     response.end(JSON.stringify({ error: 'Expected JSON request body' }))
 
-    await appendLog({
-      timestamp: startedAt,
-      type: 'invalid-json',
-      path: request.url,
-      headers: redactHeaders(request.headers)
-    })
+    await appendLog(
+      {
+        timestamp: startedAt,
+        type: 'invalid-json',
+        path: request.url,
+        headers: redactHeaders(request.headers)
+      },
+      logPath
+    )
     return
   }
 
@@ -234,14 +151,17 @@ const server = createServer(async (request, response) => {
     delete payload.enable_thinking
   }
 
-  await appendLog({
-    timestamp: startedAt,
-    type: 'request',
-    path: request.url,
-    headers: redactHeaders(request.headers),
-    summary: summarizePayload(payload, incomingEnableThinking),
-    incomingEnableThinking
-  })
+  await appendLog(
+    {
+      timestamp: startedAt,
+      type: 'request',
+      path: request.url,
+      headers: redactHeaders(request.headers),
+      summary: summarizePayload(payload, incomingEnableThinking),
+      incomingEnableThinking
+    },
+    logPath
+  )
 
   console.log(
     `[qwen-proxy] ${request.method} ${request.url} tools=${String(hasTools)} enable_thinking=${String(incomingEnableThinking)} -> ${
@@ -256,17 +176,20 @@ const server = createServer(async (request, response) => {
       body: JSON.stringify(payload)
     })
 
-    await appendLog({
-      timestamp: new Date().toISOString(),
-      type: 'response',
-      path: request.url,
-      status: upstreamResponse.status,
-      statusText: upstreamResponse.statusText,
-      contentType: upstreamResponse.headers.get('content-type'),
-      upstreamRequestId:
-        upstreamResponse.headers.get('x-request-id') ??
-        upstreamResponse.headers.get('request-id')
-    })
+    await appendLog(
+      {
+        timestamp: new Date().toISOString(),
+        type: 'response',
+        path: request.url,
+        status: upstreamResponse.status,
+        statusText: upstreamResponse.statusText,
+        contentType: upstreamResponse.headers.get('content-type'),
+        upstreamRequestId:
+          upstreamResponse.headers.get('x-request-id') ??
+          upstreamResponse.headers.get('request-id')
+      },
+      logPath
+    )
 
     response.writeHead(
       upstreamResponse.status,
@@ -283,12 +206,15 @@ const server = createServer(async (request, response) => {
     response.writeHead(502, { 'content-type': 'application/json' })
     response.end(JSON.stringify({ error: 'Upstream request failed' }))
 
-    await appendLog({
-      timestamp: new Date().toISOString(),
-      type: 'upstream-error',
-      path: request.url,
-      error: error instanceof Error ? error.message : String(error)
-    })
+    await appendLog(
+      {
+        timestamp: new Date().toISOString(),
+        type: 'upstream-error',
+        path: request.url,
+        error: error instanceof Error ? error.message : String(error)
+      },
+      logPath
+    )
   }
 })
 
