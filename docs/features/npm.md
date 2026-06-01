@@ -103,7 +103,7 @@ This is implemented via a tiny wrapper script (`cli.mjs`) that inspects `process
     "copilot-custom-endpoint-kimi": "proxy/kimi-proxy.mjs",
     "copilot-custom-endpoint-qwen": "proxy/qwen-proxy.mjs"
   },
-  "files": ["cli.mjs", "proxy/"],
+  "files": ["cli.mjs", "lib/", "proxy/"],
   "scripts": {
     "proxy:kimi": "node proxy/kimi-proxy.mjs",
     "proxy:qwen": "node proxy/qwen-proxy.mjs"
@@ -162,3 +162,4 @@ else {
 | 2026-06-01 | **Phase 2 done.** `cli.mjs` subcommand dispatcher created. `package.json` updated with `bin` entries (`copilot-custom-endpoint`, `copilot-custom-endpoint-kimi`, `copilot-custom-endpoint-qwen`) and `files` for publish. Validated: `node cli.mjs kimi --help`, `node cli.mjs qwen --help`, `node cli.mjs` (usage). |
 | 2026-06-01 | **Phase 3 done.** README.md and AGENTS.md updated with `npm run` and `npx` usage.                                                                                                                                                                                                                                    |
 | 2026-06-01 | **clean:logs added.** `npm run clean:logs` and `npx copilot-custom-endpoint clean` remove `debug_log/`.                                                                                                                                                                                                              |
+| 2026-06-02 | **lib/ added to files field.** Published package was missing `lib/create-proxy.mjs` and `lib/shared.mjs` because `files` only listed `cli.mjs` and `proxy/`. Both proxy scripts import from `../lib/`. Fixed by adding `"lib/"` to the `files` array.                                                                |

@@ -25,12 +25,11 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 | **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs`       | ✅         | ✅        | ✅           | ✅     |
 | **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ✅     |
 | **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ❌     |
-| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension      | ✅         | ✅        | ✅           | ✅¹    |
+| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension      | ✅         | ✅        | ✅           | ✅³    |
 
 ¹ Proxy is optional: direct path works with static `enable_thinking: false`. Proxy adds dynamic thinking suppression (thinking ON in plain chat, OFF in tool loops).  
-² With proxy: reasoning visible in plain chat. Without proxy: always suppressed.
-
-¹ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.
+² With proxy: reasoning visible in plain chat. Without proxy: always suppressed.  
+³ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.
 
 Pick the model you want and follow the corresponding section below.
 
