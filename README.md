@@ -1,6 +1,6 @@
 # Github Copilot Custom Endpoints
 
-> **TL;DR** — This repo documents how to use non-GitHub language models inside VS Code's Copilot chat. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
+> **TL;DR** — As of **June 1, 2026**, GitHub Copilot switched to usage-based billing (AI Credits), making every chat and agent session consume from your monthly allowance. Frontier models like GPT-5.5 and Opus 4.8 burn credits fast. This repo documents a practical workaround: use **cheaper, non-GitHub models** (DeepSeek, Kimi, Qwen) inside VS Code's Copilot chat — often at **5–55× lower cost** while retaining agent mode, tool calling, and streaming. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
 
 ## What is this?
 
@@ -10,13 +10,13 @@ Each provider/model gets one durable record under `docs/models/` plus any local 
 
 ### Why custom endpoints instead of OpenRouter?
 
-[OpenRouter](https://openrouter.ai) is a popular unified gateway, but it is not always an option:
+[OpenRouter](https://openrouter.ai) is a popular unified gateway, but it is **not always an option**:
 
-- **Corporate firewalls** block OpenRouter (and many other cloud AI gateways) by default. A custom endpoint lets you talk directly to a provider that _is_ allowed, or run a small local proxy on `localhost` that forwards through an approved egress path.
+- **Corporate firewalls often block OpenRouter** (and many other cloud AI gateways) by default. If your employer's network blocks OpenRouter, you cannot use it — full stop. A custom endpoint lets you talk directly to a provider that _is_ allowed, or run a small local proxy on `localhost` that forwards through an approved egress path.
 - **Provider-specific features** (Kimi's thinking mode, vision quirks, etc.) often need request rewriting that a generic aggregator does not support.
 - **Cost or contract reasons** may mean your organisation already has a direct relationship with a specific provider and does not want traffic routed through a third party.
 
-This repo is for those situations: validated, copy-paste-ready configs when OpenRouter is not the right tool for the job.
+This repo is for those situations: validated, copy-paste-ready configs when OpenRouter is blocked, too expensive, or simply the wrong tool for the job.
 
 ## Quick start
 
@@ -238,6 +238,10 @@ For the full research notes, tested values, and known limitations, see:
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
+> Before this change, Copilot was a flat subscription — unlimited chat, unlimited agent sessions. Now **every interaction burns AI credits** from your monthly allowance. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
+>
+> **The practical workaround:** use cheaper alternative models (DeepSeek V4 Flash, Kimi K2.6, Qwen) that are still powerful enough for coding — often at **5–55× less cost** than the Copilot defaults. The tables below show the exact comparison.
+>
 > 1 AI credit = $0.01 USD. All paid plans include a monthly credit allowance:
 >
 > | Plan | Price/mo | Base credits | Flex allotment | Total monthly |
@@ -246,7 +250,7 @@ For the full research notes, tested values, and known limitations, see:
 > | Pro+ | $39      | 3,900        | 3,100          | **7,000**     |
 > | Max  | $100     | 10,000       | 10,000         | **20,000**    |
 >
-> Code completions remain unlimited and **not** billed. Auto model selection gets a 10% discount. The tables below show the prices that Copilot charges per model (which match direct API rates), alongside the custom-endpoint alternatives this project enables.
+> Code completions remain unlimited and **not** billed. Auto model selection gets a 10% discount.
 
 All prices below are in **USD per 1M tokens** (non-cached). To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M).
 
@@ -356,3 +360,17 @@ Want to validate Qwen, GLM, Mimo, or something else?
 
 - This repo covers **chat only**. GitHub Copilot features like inline completions, semantic search, and next-edit suggestions still require a GitHub-hosted model.
 - Each proxy is tuned for a specific provider family. Don't point the Kimi proxy at an arbitrary OpenAI-compatible endpoint and expect it to work.
+
+---
+
+## Support
+
+If you find this project helpful, please consider supporting its development:
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-pink?logo=github)](https://github.com/sponsors/tugudush)
+
+**Solana (SOL)**
+
+```
+CWZccD3Ny3XotFZtnkcyzP3hapmu3ExknN1PF4rEvP3u
+```
