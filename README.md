@@ -55,6 +55,11 @@ Sign up at [platform.moonshot.ai](https://platform.moonshot.ai) and create an AP
 The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `temperature`, `top_p`, and disabling "thinking" during tool calls).
 
 ```bash
+# from this repo
+npm run proxy:kimi
+# or with npx (after npm publish)
+npx copilot-proxy kimi
+# or directly
 node proxy/kimi-proxy.mjs
 ```
 
@@ -68,6 +73,18 @@ Check it's alive:
 
 ```bash
 curl http://127.0.0.1:3457/healthz
+```
+
+Expected response:
+
+```json
+{
+  "ok": true,
+  "upstreamUrl": "https://api.moonshot.ai/v1/chat/completions",
+  "port": 3457,
+  "forcedTemperature": 1,
+  "forcedTopP": 0.95
+}
 ```
 
 > **Keep this terminal open** while you use Kimi in VS Code.
@@ -205,6 +222,11 @@ If you prefer simplicity, skip the proxy and keep the static `enable_thinking: f
 #### 1. Start the proxy
 
 ```bash
+# from this repo
+npm run proxy:qwen
+# or with npx (after npm publish)
+npx copilot-proxy qwen
+# or directly
 node proxy/qwen-proxy.mjs
 ```
 
@@ -219,6 +241,17 @@ Check it's alive:
 
 ```bash
 curl http://127.0.0.1:3458/healthz
+```
+
+Expected response:
+
+```json
+{
+  "ok": true,
+  "upstreamUrl": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+  "port": 3458,
+  "disableThinkingWithTools": true
+}
 ```
 
 > **Keep this terminal open** while you use Qwen via the proxy.

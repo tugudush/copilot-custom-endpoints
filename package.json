@@ -1,0 +1,47 @@
+{
+  "name": "copilot-proxy",
+  "version": "1.0.0",
+  "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2 & Qwen 3.x",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "copilot-proxy": "cli.mjs",
+    "copilot-proxy-kimi": "proxy/kimi-proxy.mjs",
+    "copilot-proxy-qwen": "proxy/qwen-proxy.mjs"
+  },
+  "files": [
+    "cli.mjs",
+    "proxy/"
+  ],
+  "scripts": {
+    "proxy:kimi": "node proxy/kimi-proxy.mjs",
+    "proxy:qwen": "node proxy/qwen-proxy.mjs",
+    "clean:logs": "node -e \"import{rmSync}from'node:fs';rmSync('debug_log',{recursive:true,force:true});console.log('debug_log/ removed')\"",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "lf": "npm run lint && npm run format:fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jerom/custom-endpoint"
+  },
+  "keywords": [
+    "copilot",
+    "vscode",
+    "custom-endpoint",
+    "kimi",
+    "qwen",
+    "moonshot",
+    "dashscope",
+    "proxy"
+  ],
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.1",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3"
+  }
+}

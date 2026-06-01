@@ -97,9 +97,7 @@ function summarizePayload(payload, preRewriteEnableThinking) {
     toolChoice: payload.tool_choice,
     incomingEnableThinking: preRewriteEnableThinking,
     rewrittenEnableThinking:
-      disableThinkingWithTools && tools.length > 0
-        ? false
-        : undefined, // deleted
+      disableThinkingWithTools && tools.length > 0 ? false : undefined, // deleted
     maxTokens:
       payload.max_tokens ??
       payload.max_completion_tokens ??

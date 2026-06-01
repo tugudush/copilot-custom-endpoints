@@ -195,6 +195,17 @@ Verify it's alive:
 curl http://127.0.0.1:3458/healthz
 ```
 
+Expected response:
+
+```json
+{
+  "ok": true,
+  "upstreamUrl": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+  "port": 3458,
+  "disableThinkingWithTools": true
+}
+```
+
 Then update VS Code config — change `url` to point to the proxy and **remove** `requestBody.enable_thinking`:
 
 ```json
