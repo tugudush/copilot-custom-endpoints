@@ -24,13 +24,16 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 ### Both proxies (npm)
 
+- `npm run proxy` starts **both** proxies concurrently (uses `concurrently`).
 - `npm run proxy:kimi` starts the Kimi proxy on `http://127.0.0.1:3457/v1/chat/completions`.
 - `npm run proxy:qwen` starts the Qwen proxy on `http://127.0.0.1:3458/v1/chat/completions`.
 
 After publishing to npm, users can also run:
 
-- `npx copilot-proxy kimi`
-- `npx copilot-proxy qwen`
+- `npx copilot-proxy` — starts both proxies concurrently (default).
+- `npx copilot-proxy all` — same, explicit `all` subcommand.
+- `npx copilot-proxy kimi` — starts Kimi proxy only.
+- `npx copilot-proxy qwen` — starts Qwen proxy only.
 
 ### Kimi proxy
 
