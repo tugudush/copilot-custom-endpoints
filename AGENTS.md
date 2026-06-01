@@ -84,5 +84,6 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 ## Validation Expectations
 
-- `package.json` defines npm scripts for both proxies and the `clean:logs` utility. There is no automated test suite or CI in this repo.
+- `package.json` defines npm scripts for both proxies, the `clean:logs` utility, and `npm test` (18 unit tests via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, and request-body reading).
+- There is no CI in this repo.
 - Validate proxy changes with the smallest relevant manual checks first: `node proxy/kimi-proxy.mjs --help`, `curl http://127.0.0.1:3457/healthz`, and a targeted request or log review that confirms the intended rewrite.
