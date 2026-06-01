@@ -1,4 +1,4 @@
-# Custom Endpoint Experiments
+# Github Copilot Custom Endpoint
 
 > **TL;DR** — This repo documents how to use non-GitHub language models inside VS Code's Copilot chat. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
 
@@ -18,15 +18,25 @@ Each provider/model gets one durable record under `docs/models/` plus any local 
 
 This repo is for those situations: validated, copy-paste-ready configs when OpenRouter is not the right tool for the job.
 
-## Quick start — Kimi K2.6
+## Quick start
 
-The only fully validated setup today is **Kimi K2.6** (Moonshot). If that's what you're here for, you can be chatting in ~2 minutes.
+We have two fully validated provider setups:
 
-### 1. Grab a Moonshot API key
+| Provider                      | Model          | Needs proxy?                    | Vision | Tool calling |
+| ----------------------------- | -------------- | ------------------------------- | ------ | ------------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`    | ✅ Yes — `proxy/kimi-proxy.mjs` | ✅     | ✅           |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | ❌ No                           | ✅     | ✅           |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | ❌ No                           | ❌     | ✅           |
+
+Pick the one you want and follow the corresponding section below.
+
+### Kimi K2.6 (Moonshot)
+
+#### 1. Grab a Moonshot API key
 
 Sign up at [platform.moonshot.ai](https://platform.moonshot.ai) and create an API key.
 
-### 2. Start the local proxy
+#### 2. Start the local proxy
 
 The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `temperature`, `top_p`, and disabling "thinking" during tool calls).
 
@@ -48,7 +58,7 @@ curl http://127.0.0.1:3457/healthz
 
 > **Keep this terminal open** while you use Kimi in VS Code.
 
-### 3. Register the model in VS Code
+#### 3. Register the model in VS Code
 
 Open (or create) your user config file:
 
@@ -86,14 +96,14 @@ Paste this entry (replace `<your-moonshot-key>`):
 
 > **Note:** The `requestBody.temperature` here is a hint to VS Code, but the proxy will enforce the exact values Kimi requires regardless.
 
-### 4. Chat!
+#### 4. Chat!
 
 - Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
 - Click the model picker (top-right of the chat input).
 - Choose **Kimi K2.6**.
 - Ask something. Streaming, tool use, and vision all work.
 
-### Troubleshooting
+#### Troubleshooting (Kimi)
 
 | Symptom                                 | Fix                                                                                                                                                           |
 | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -101,24 +111,139 @@ Paste this entry (replace `<your-moonshot-key>`):
 | `invalid temperature` / `invalid top_p` | You're talking directly to Moonshot instead of through the proxy. Double-check the `url` in `chatLanguageModels.json`.                                        |
 | Tool calls fail after first turn        | This happens if "thinking" stays enabled during tool loops. The proxy normally disables it automatically; ensure you're on the latest `proxy/kimi-proxy.mjs`. |
 
+---
+
+### Qwen 3.6 Plus or Qwen 3.7 Max (DashScope)
+
+These models work **without a proxy** — VS Code talks directly to DashScope.
+
+#### 1. Grab a DashScope API key
+
+Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an API key.
+
+#### 2. Register the models in VS Code
+
+Open (or create) your user config file:
+
+| OS      | Path                                                              |
+| ------- | ----------------------------------------------------------------- |
+| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
+| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
+| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
+
+Paste this entry (replace `<your-dashscope-key>`):
+
+```json
+{
+  "name": "Qwen",
+  "vendor": "customendpoint",
+  "apiKey": "<your-dashscope-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "qwen3.7-max",
+      "name": "Qwen 3.7 Max",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    },
+    {
+      "id": "qwen3.6-plus",
+      "name": "Qwen 3.6 Plus",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    }
+  ]
+}
+```
+
+> **Note:** `enable_thinking: false` suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
+
+> **Regional endpoints:** The configuration above uses the **Singapore** region (`dashscope-intl.aliyuncs.com`). DashScope offers endpoints for other regions:
+>
+> - **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **Singapore:** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (used in this guide)
+>
+> Choose the endpoint closest to your location for better latency. Note that API keys are region-specific.
+
+#### 3. Chat!
+
+- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
+- Click the model picker (top-right of the chat input).
+- Choose **Qwen 3.6 Plus** (with vision) or **Qwen 3.7 Max** (text only).
+- Ask something. Streaming and tool use work for both. Vision works for Qwen 3.6 Plus.
+
+#### Troubleshooting (Qwen)
+
+| Symptom                                      | Fix                                                                                     |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
+| Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
+
 ## What's validated?
 
-| Capability        | Kimi K2.6 |
-| ----------------- | --------- |
-| Plain chat        | ✅        |
-| Streaming         | ✅        |
-| Tool / agent use  | ✅        |
-| Vision            | ✅        |
-| Direct (no proxy) | ❌        |
+| Capability        | Kimi K2.6 | Qwen 3.6 Plus | Qwen 3.7 Max |
+| ----------------- | --------- | ------------- | ------------ |
+| Plain chat        | ✅        | ✅            | ✅           |
+| Streaming         | ✅        | ✅            | ✅           |
+| Tool / agent use  | ✅        | ✅            | ✅           |
+| Vision            | ✅        | ✅            | ❌           |
+| Direct (no proxy) | ❌        | ✅            | ✅           |
 
-For the full research notes, tested values, and known limitations, see [`docs/models/kimi-k2.6.md`](docs/models/kimi-k2.6.md).
+For the full research notes, tested values, and known limitations, see:
+
+- [`docs/models/kimi-k2.6.md`](docs/models/kimi-k2.6.md)
+- [`docs/models/qwen3.6-plus.md`](docs/models/qwen3.6-plus.md)
+- [`docs/models/qwen3.7-max.md`](docs/models/qwen3.7-max.md)
+
+## Pricing comparison
+
+All prices are in USD per 1M tokens. Prices reflect the **International** deployment scope for DashScope and direct Moonshot API pricing for Kimi.
+
+| Model             | Provider  | Input (per 1M)                | Output (per 1M)                         | Context window |
+| ----------------- | --------- | ----------------------------- | --------------------------------------- | -------------- |
+| **Kimi K2.6**     | Moonshot  | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
+| **Qwen 3.6 Plus** | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
+| **Qwen 3.7 Max**  | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
+
+> **Notes:**
+>
+> - Qwen models use **tiered pricing** — the tier is determined by the total input tokens in a single request. The prices above are for non-thinking mode; thinking mode (chain-of-thought + response) is priced the same for Qwen 3.6 Plus and Qwen 3.7 Max.
+> - Kimi K2.6 pricing shown is from the **Moonshot platform** (direct). If you access Kimi K2.6 through DashScope as a third-party model, pricing differs ($0.89 input / $3.71 output per 1M tokens).
+> - DashScope offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
+> - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
+
+**Quick cost comparison for a typical coding session** (~10K input + ~2K output tokens per turn, 50 turns):
+
+| Model                    | Estimated session cost |
+| ------------------------ | ---------------------- |
+| Kimi K2.6 (non-thinking) | ~$0.18                 |
+| Kimi K2.6 (thinking)     | ~$0.48                 |
+| Qwen 3.6 Plus            | ~$0.55                 |
+| Qwen 3.7 Max             | ~$1.33                 |
+
+> Prices last verified: June 2026. Always check the provider's official pricing page for the latest rates:
+>
+> - [Moonshot (Kimi) pricing](https://platform.kimi.ai/docs/pricing/chat-k26)
+> - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 
 ## Repo layout
 
 ```
 .
 ├── docs/models/<provider>-<model>.md   # One merged record per model
-├── proxy/                              # Local compatibility shims
+├── proxy/                              # Local compatibility shims (Kimi only)
+├── tests/                              # Test assets (images, etc.)
 └── debug_log/                          # Runtime logs (git-ignored)
 ```
 
