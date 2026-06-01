@@ -63,6 +63,11 @@ npx copilot-custom-endpoint kimi
 npx copilot-custom-endpoint       # starts both proxies
 # or directly
 node proxy/kimi-proxy.mjs
+
+# clean up debug logs
+npm run clean:logs
+# or with npx
+npx copilot-custom-endpoint clean
 ```
 
 You should see:
