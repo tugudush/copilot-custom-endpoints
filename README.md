@@ -20,11 +20,11 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 ## Quick start
 
-| Provider                      | Model          | Needs proxy?                    | Plain chat | Streaming | Tool calling | Vision |
-| ----------------------------- | -------------- | ------------------------------- | ---------- | --------- | ------------ | ------ |
-| **Moonshot (Kimi)**           | `kimi-k2.6`    | ✅ Yes — `proxy/kimi-proxy.mjs` | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | ❌ No                           | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | ❌ No                           | ✅         | ✅        | ✅           | ❌     |
+| Provider                      | Model          | Needs proxy?                 | Plain chat | Streaming | Tool calling | Vision |
+| ----------------------------- | -------------- | ---------------------------- | ---------- | --------- | ------------ | ------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs` | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | No                           | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | No                           | ✅         | ✅        | ✅           | ❌     |
 
 Pick the model you want and follow the corresponding section below.
 
