@@ -236,37 +236,73 @@ For the full research notes, tested values, and known limitations, see:
 
 ## Pricing comparison
 
-All prices are in USD per 1M tokens. Prices reflect the **International** deployment scope for DashScope, direct Moonshot API pricing for Kimi, and direct DeepSeek API pricing.
+> **⏰ June 1, 2026 — GitHub Copilot pricing changed today.** This project was built partly to find cheaper alternatives to the default GitHub Copilot models. The table below includes both the default GitHub Copilot models (first group) and the custom-endpoint alternatives (second group) for comparison.
 
-| Model                 | Provider  | Input (per 1M)                | Output (per 1M)                         | Context window |
-| --------------------- | --------- | ----------------------------- | --------------------------------------- | -------------- |
-| **Kimi K2.6**         | Moonshot  | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
-| **Qwen 3.6 Plus**     | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
-| **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
-| **DeepSeek V4 Flash** | DeepSeek  | $0.14                         | $0.28                                   | 1M             |
-| **DeepSeek V4 Pro**   | DeepSeek  | $1.74                         | $3.48                                   | 1M             |
+All prices are in USD per 1M tokens. Prices reflect standard API pricing from each provider (non-batch, non-cached unless noted).
+
+### Default GitHub Copilot models
+
+These are the models available through GitHub Copilot's default model roster.
+
+| Model                    | Provider   | Input (per 1M)                | Output (per 1M)       | Context window |
+| ------------------------ | ---------- | ----------------------------- | --------------------- | -------------- |
+| **GPT-5.5**              | OpenAI     | $5.00                         | $30.00                | —              |
+| **Claude Opus 4.8**      | Anthropic  | $5.00                         | $25.00                | 1M             |
+| **Claude Opus 4.7**      | Anthropic  | $5.00                         | $25.00                | 1M             |
+| **GPT-5.4**              | OpenAI     | $2.50                         | $15.00                | —              |
+| **Gemini 3.1 Pro**       | Google     | $2.00 (≤200K) / $4.00 (>200K) | $12.00 (≤200K) / $18.00 (>200K) | 1M  |
+| **Gemini 3.5 Flash**     | Google     | $1.50                         | $9.00                 | 1M             |
+| **Claude Sonnet 4.6**    | Anthropic  | $3.00                         | $15.00                | 1M             |
+| **GPT-5.4 mini**         | OpenAI     | $0.75                         | $4.50                 | —              |
+| **Gemini 3 Flash**       | Google     | $0.50                         | $3.00                 | 1M             |
+
+### Custom-endpoint alternatives
+
+| Model                  | Provider      | Input (per 1M)                | Output (per 1M)                         | Context window |
+| ---------------------- | ------------- | ----------------------------- | --------------------------------------- | -------------- |
+| **DeepSeek V4 Flash**  | DeepSeek      | $0.14                         | $0.28                                   | 1M             |
+| **Kimi K2.6**          | Moonshot      | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
+| **DeepSeek V4 Pro**    | DeepSeek      | $1.74                         | $3.48                                   | 1M             |
+| **Qwen 3.6 Plus**      | DashScope     | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
+| **Qwen 3.7 Max**       | DashScope     | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
 
 > **Notes:**
 >
-> - DeepSeek V4 input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.0145/M for Pro).
-> - Qwen models use **tiered pricing** — the tier is determined by the total input tokens in a single request. The prices above are for non-thinking mode; thinking mode (chain-of-thought + response) is priced the same for Qwen 3.6 Plus and Qwen 3.7 Max.
-> - Kimi K2.6 pricing shown is from the **Moonshot platform** (direct). If you access Kimi K2.6 through DashScope as a third-party model, pricing differs ($0.89 input / $3.71 output per 1M tokens).
-> - DashScope offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
+> - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.0145/M for Pro).
+> - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
+> - **Gemini 3.1 Pro** pricing is for prompts ≤200K tokens; prompts >200K are $4.00 input / $18.00 output.
+> - **Gemini 3.5 Flash** pricing above is standard (non-batch, non-flex). Batch API offers 50% discount.
+> - **Anthropic (Claude)** pricing includes cache reads at 0.1× base input rate. Opus 4.7 and later use a new tokenizer that may use up to 35% more tokens for the same text.
+> - **OpenAI** models support cached input at 0.1× base input rate.
+> - **Qwen** models use **tiered pricing** — determined by total input tokens in a single request. Prices above are for non-thinking mode.
+> - **Kimi K2.6** pricing shown is from the **Moonshot platform** (direct). If accessed through DashScope as a third-party model, pricing differs ($0.89 input / $3.71 output per 1M tokens).
+> - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
 **Quick cost comparison for a typical coding session** (~10K input + ~2K output tokens per turn, 50 turns):
 
 | Model                    | Estimated session cost |
 | ------------------------ | ---------------------- |
-| DeepSeek V4 Flash        | ~$0.10                 |
+| DeepSeek V4 Flash 🏆     | ~$0.10                 |
 | Kimi K2.6 (non-thinking) | ~$0.18                 |
-| DeepSeek V4 Pro          | ~$1.22                 |
 | Kimi K2.6 (thinking)     | ~$0.48                 |
+| Gemini 3 Flash           | ~$0.55                 |
 | Qwen 3.6 Plus            | ~$0.55                 |
+| GPT-5.4 mini             | ~$0.83                 |
+| DeepSeek V4 Pro          | ~$1.22                 |
 | Qwen 3.7 Max             | ~$1.33                 |
+| Gemini 3.5 Flash         | ~$1.65                 |
+| Gemini 3.1 Pro           | ~$2.20                 |
+| GPT-5.4                  | ~$2.75                 |
+| Claude Sonnet 4.6        | ~$3.00                 |
+| Claude Opus 4.8 / 4.7    | ~$5.00                 |
+| GPT-5.5                  | ~$5.50                 |
 
 > Prices last verified: June 2026. Always check the provider's official pricing page for the latest rates:
 >
+> - [OpenAI pricing](https://openai.com/api/pricing/)
+> - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+> - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [Moonshot (Kimi) pricing](https://platform.kimi.ai/docs/pricing/chat-k26)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
