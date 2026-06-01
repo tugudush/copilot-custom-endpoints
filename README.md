@@ -238,7 +238,7 @@ For the full research notes, tested values, and known limitations, see:
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
-> Before this change, Copilot was a flat subscription — unlimited chat, unlimited agent sessions. Now **every interaction burns AI credits** from your monthly allowance. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
+> Before this change, Copilot was a flat subscription — no per-turn metering, so you could use chat and agent mode as much as you wanted within rate-limit bounds. Now **every interaction burns AI credits** from your monthly allowance. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
 >
 > **The practical workaround:** use cheaper alternative models (DeepSeek V4 Flash, Kimi K2.6, Qwen) that are still powerful enough for coding — often at **5–55× less cost** than the Copilot defaults. The tables below show the exact comparison.
 >
