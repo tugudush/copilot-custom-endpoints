@@ -5,8 +5,8 @@
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
 - **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
-- **Qwen 3.6 Plus** (DashScope) — works direct, no proxy.
-- **Qwen 3.7 Max** (DashScope) — works direct, no proxy.
+- **Qwen 3.6 Plus** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
+- **Qwen 3.7 Max** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
@@ -15,9 +15,9 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
 - [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md) — full compatibility assessment for Kimi K2.6.
-- [docs/models/qwen3.6-plus.md](docs/models/qwen3.6-plus.md) — full compatibility assessment for Qwen 3.6 Plus (vision + text).
-- [docs/models/qwen3.7-max.md](docs/models/qwen3.7-max.md) — full compatibility assessment for Qwen 3.7 Max (text only).
-- [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests, preserves streaming, and writes redacted NDJSON summaries.
+- [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.6 Plus (vision + text) and Qwen 3.7 Max (text only), plus the optional proxy feature.
+- [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
+- [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
 - `debug_log/` contains local runtime artifacts. It is git-ignored and should not be treated as canonical documentation.
 
 ## Commands
@@ -39,6 +39,16 @@ curl https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions \
   -d '{"model":"qwen3.6-plus","messages":[{"role":"user","content":"Hello"}]}'
 ```
 
+### Qwen (with optional proxy)
+
+The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
+
+- `node proxy/qwen-proxy.mjs` starts the local proxy on `http://127.0.0.1:3458/v1/chat/completions`.
+- `node proxy/qwen-proxy.mjs --help` prints the supported environment variables and defaults.
+- `curl http://127.0.0.1:3458/healthz` checks that the proxy is listening.
+
+When using the proxy, update VS Code config to point Qwen model URLs to `http://127.0.0.1:3458/v1/chat/completions` and remove static `enable_thinking` from `requestBody`. The proxy handles it dynamically.
+
 ## Working Rules
 
 - Prefer updating the existing model record under `docs/models/` over creating ad hoc root notes. New validations should use `docs/models/<provider>-<model>.md`.
@@ -57,9 +67,10 @@ curl https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions \
 ### Qwen 3.x (DashScope)
 
 - Direct VS Code -> DashScope works without a proxy for both `qwen3.6-plus` and `qwen3.7-max`.
-- `enable_thinking: false` must be set in `requestBody` for every Qwen model to prevent `reasoning_content` issues during tool loops.
+- Static `enable_thinking: false` in `requestBody` prevents `reasoning_content` issues during tool loops but suppresses reasoning in plain chat.
+- Optional `proxy/qwen-proxy.mjs` provides dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
 - `qwen3.6-plus` supports vision; `qwen3.7-max` does not.
-- The full rationale, tested values, and evidence live in [docs/models/qwen3.6-plus.md](docs/models/qwen3.6-plus.md) and [docs/models/qwen3.7-max.md](docs/models/qwen3.7-max.md); do not duplicate those records here.
+- The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 
 ## Validation Expectations
 

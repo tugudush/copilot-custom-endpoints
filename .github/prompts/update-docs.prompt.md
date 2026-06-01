@@ -19,8 +19,7 @@ Read in parallel:
 - `README.md`
 - `AGENTS.md`
 - `docs/models/kimi-k2.6.md`
-- `docs/models/qwen3.6-plus.md`
-- `docs/models/qwen3.7-max.md`
+- `docs/models/qwen.md`
 
 ## Step 3 — Audit against source of truth
 

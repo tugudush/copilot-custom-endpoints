@@ -20,12 +20,15 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 ## Quick start
 
-| Provider                      | Model          | Needs proxy?                  | Plain chat | Streaming | Tool calling | Vision |
-| ----------------------------- | -------------- | ----------------------------- | ---------- | --------- | ------------ | ------ |
-| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs`  | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | No                            | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | No                            | ✅         | ✅        | ✅           | ❌     |
-| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension | ✅         | ✅        | ✅           | ✅¹    |
+| Provider                      | Model          | Needs proxy?                       | Plain chat | Streaming | Tool calling | Vision |
+| ----------------------------- | -------------- | ---------------------------------- | ---------- | --------- | ------------ | ------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs`       | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ❌     |
+| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension      | ✅         | ✅        | ✅           | ✅¹    |
+
+¹ Proxy is optional: direct path works with static `enable_thinking: false`. Proxy adds dynamic thinking suppression (thinking ON in plain chat, OFF in tool loops).  
+² With proxy: reasoning visible in plain chat. Without proxy: always suppressed.
 
 ¹ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.
 
@@ -187,6 +190,92 @@ Open (or create) your user config file (see [Config file location](#config-file-
 
 ---
 
+### Qwen 3.x with Proxy (Optional Enhancement)
+
+The **optional** `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat (you see the model's thought process) but turns OFF automatically when tools are invoked (preventing `reasoning_content` issues). This gives you the best of both worlds without manual config switching.
+
+#### When to use the proxy
+
+- You want to **see reasoning** in plain chat responses
+- You still need **stable tool loops** in agent mode
+- You're okay running a small local Node.js process alongside VS Code
+
+If you prefer simplicity, skip the proxy and keep the static `enable_thinking: false` — everything works fine that way too.
+
+#### 1. Start the proxy
+
+```bash
+node proxy/qwen-proxy.mjs
+```
+
+You should see:
+
+```
+[qwen-proxy] listening on http://127.0.0.1:3458/v1/chat/completions
+[qwen-proxy] forwarding to https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+```
+
+Check it's alive:
+
+```bash
+curl http://127.0.0.1:3458/healthz
+```
+
+> **Keep this terminal open** while you use Qwen via the proxy.
+
+#### 2. Update VS Code config
+
+Edit your user config file (see [Config file location](#config-file-location) above). Change the Qwen model entries to point to the proxy and **remove** the static `enable_thinking`:
+
+```json
+{
+  "name": "Qwen",
+  "vendor": "customendpoint",
+  "apiKey": "<your-dashscope-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "qwen3.7-max",
+      "name": "Qwen 3.7 Max",
+      "url": "http://127.0.0.1:3458/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true
+    },
+    {
+      "id": "qwen3.6-plus",
+      "name": "Qwen 3.6 Plus",
+      "url": "http://127.0.0.1:3458/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true
+    }
+  ]
+}
+```
+
+Key changes:
+
+- `url` changed from DashScope direct to `http://127.0.0.1:3458/v1/chat/completions`
+- `requestBody.enable_thinking` removed entirely — the proxy handles it dynamically
+
+#### 3. Reload VS Code and test
+
+- Reload VS Code (`Ctrl+Shift+P` → "Reload Window")
+- Pick a Qwen model in the chat panel
+- **Plain chat:** Ask a simple question — you should see streaming output with reasoning visible in proxy logs
+- **Agent/tool use:** Ask something like "open github.com" — the browser tool should invoke cleanly without `reasoning_content` errors
+
+#### Troubleshooting (Qwen Proxy)
+
+| Symptom                            | Fix                                                                                                                        |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| "Connection refused"               | Make sure `node proxy/qwen-proxy.mjs` is still running                                                                     |
+| Tool loops still fail              | Check proxy logs in `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
+| Want to switch back to direct path | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                                        |
+
+---
+
 ### DeepSeek V4 (VS Code Extension)
 
 DeepSeek V4 Pro & Flash are available via a **dedicated VS Code extension** rather than a raw custom endpoint. The extension plugs DeepSeek directly into Copilot Chat's model picker while preserving agent mode, tool calling, skills, and MCP support.
@@ -231,8 +320,7 @@ DeepSeek V4 is text-only, but the extension handles images automatically — dro
 For the full research notes, tested values, and known limitations, see:
 
 - [`docs/models/kimi-k2.6.md`](docs/models/kimi-k2.6.md)
-- [`docs/models/qwen3.6-plus.md`](docs/models/qwen3.6-plus.md)
-- [`docs/models/qwen3.7-max.md`](docs/models/qwen3.7-max.md)
+- [`docs/models/qwen.md`](docs/models/qwen.md)
 
 ## Pricing comparison
 
