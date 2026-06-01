@@ -55,10 +55,13 @@ Sign up at [platform.moonshot.ai](https://platform.moonshot.ai) and create an AP
 The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `temperature`, `top_p`, and disabling "thinking" during tool calls).
 
 ```bash
-# from this repo
+# from this repo — Kimi only
 npm run proxy:kimi
+# from this repo — both proxies concurrently
+npm run proxy
 # or with npx (after npm publish)
 npx copilot-proxy kimi
+npx copilot-proxy       # starts both proxies
 # or directly
 node proxy/kimi-proxy.mjs
 ```
@@ -149,10 +152,13 @@ Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an AP
 The proxy dynamically enables thinking in plain chat and disables it during tool calls:
 
 ```bash
-# from this repo
+# from this repo — Qwen only
 npm run proxy:qwen
+# from this repo — both proxies concurrently
+npm run proxy
 # or with npx (after npm publish)
 npx copilot-proxy qwen
+npx copilot-proxy       # starts both proxies
 # or directly
 node proxy/qwen-proxy.mjs
 ```

@@ -14,6 +14,7 @@
     "proxy/"
   ],
   "scripts": {
+    "proxy": "concurrently --names kimi,qwen --prefix-colors cyan,green \"npm run proxy:kimi\" \"npm run proxy:qwen\"",
     "proxy:kimi": "node proxy/kimi-proxy.mjs",
     "proxy:qwen": "node proxy/qwen-proxy.mjs",
     "clean:logs": "node -e \"import{rmSync}from'node:fs';rmSync('debug_log',{recursive:true,force:true});console.log('debug_log/ removed')\"",
@@ -40,6 +41,7 @@
   ],
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "concurrently": "^10.0.1",
     "eslint": "^10.4.1",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.6.0",
