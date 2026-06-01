@@ -2,20 +2,41 @@
 
 ## Scope
 
-This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setup is Kimi K2.6 behind a local proxy shim; treat the model record as the source of truth and this file as the quick-start guidance for agents.
+This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
+
+- **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
+- **Qwen 3.6 Plus** (DashScope) — works direct, no proxy.
+- **Qwen 3.7 Max** (DashScope) — works direct, no proxy.
+
+Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
 ## Project Map
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
-- [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md) contains the full compatibility assessment, working VS Code configuration, validation history, known limitations, and sources.
+- [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md) — full compatibility assessment for Kimi K2.6.
+- [docs/models/qwen3.6-plus.md](docs/models/qwen3.6-plus.md) — full compatibility assessment for Qwen 3.6 Plus (vision + text).
+- [docs/models/qwen3.7-max.md](docs/models/qwen3.7-max.md) — full compatibility assessment for Qwen 3.7 Max (text only).
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests, preserves streaming, and writes redacted NDJSON summaries.
 - `debug_log/` contains local runtime artifacts. It is git-ignored and should not be treated as canonical documentation.
 
 ## Commands
 
+### Kimi proxy
+
 - `node proxy/kimi-proxy.mjs` starts the local proxy on `http://127.0.0.1:3457/v1/chat/completions`.
 - `node proxy/kimi-proxy.mjs --help` prints the supported environment variables and defaults.
 - `curl http://127.0.0.1:3457/healthz` checks that the proxy is listening.
+
+### Qwen (direct — no proxy)
+
+No local proxy is needed for Qwen models. Verify connectivity directly:
+
+```bash
+curl https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions \
+  -H "Authorization: Bearer $DASHSCOPE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"qwen3.6-plus","messages":[{"role":"user","content":"Hello"}]}'
+```
 
 ## Working Rules
 
@@ -24,11 +45,20 @@ This repository keeps durable validation records for custom language-model endpo
 - Keep proxy behavior provider-specific. [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is tuned for Kimi K2-family constraints, not for arbitrary OpenAI-compatible providers.
 - Preserve redaction when touching logging code. Auth headers and equivalent secrets must stay out of `debug_log/` artifacts.
 
-## Kimi K2 Constraints
+## Provider-specific constraints
+
+### Kimi K2
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
 - Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md); do not duplicate that record here.
+
+### Qwen 3.x (DashScope)
+
+- Direct VS Code -> DashScope works without a proxy for both `qwen3.6-plus` and `qwen3.7-max`.
+- `enable_thinking: false` must be set in `requestBody` for every Qwen model to prevent `reasoning_content` issues during tool loops.
+- `qwen3.6-plus` supports vision; `qwen3.7-max` does not.
+- The full rationale, tested values, and evidence live in [docs/models/qwen3.6-plus.md](docs/models/qwen3.6-plus.md) and [docs/models/qwen3.7-max.md](docs/models/qwen3.7-max.md); do not duplicate those records here.
 
 ## Validation Expectations
 

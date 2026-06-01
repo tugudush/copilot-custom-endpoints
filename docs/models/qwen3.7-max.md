@@ -1,15 +1,15 @@
 # Qwen 3.7 Max Validation Record
 
-> **Status: In progress** — Phase 3–4 (VS Code config + in-editor validation). Updated as each milestone completes.
+> **Status: Validated** — All phases complete. Direct VS Code → DashScope path works without a proxy for plain chat, streaming, and tool calling. Vision is not targeted (text-generation model).
 
 ## Summary
 
 - Goal: validate `qwen3.7-max` as a VS Code / GitHub Copilot Custom Endpoint model without a local proxy.
 - Provider: Alibaba Cloud DashScope (OpenAI-compatible Chat Completions surface).
 - Region under test: Singapore (`https://dashscope-intl.aliyuncs.com/compatible-mode/v1`).
-- First-pass path: direct VS Code → DashScope, no proxy shim.
-- First-pass capabilities targeted: plain chat, streaming, tool calling.
-- Final verdict: **pending** — see Validation Summary once complete.
+- Path: direct VS Code → DashScope, no proxy shim.
+- Capabilities validated: plain chat, streaming, tool calling.
+- Final verdict: **acceptable** for plain chat, streaming, and tool-enabled agent use — all without a local proxy. Vision is not supported by this model.
 
 ## Compatibility Assessment
 
@@ -43,9 +43,19 @@ Unlike Kimi K2.6, DashScope does not document mandatory fixed sampling values or
 | Tool calling                          | `tools` array, `tool_calls` response                                      |
 | Non-OpenAI extras                     | `enable_thinking`, `thinking_budget`, `enable_search` (via `extra_body`)  |
 
-## Planned VS Code Configuration
+## Final Working Configuration
 
-The entry below reflects Phase 2 findings. It will be promoted to **Final Working Configuration** once in-editor validation passes.
+### VS Code user config
+
+User config file (path is OS-specific):
+
+| OS      | Path                                                              |
+| ------- | ----------------------------------------------------------------- |
+| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
+| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
+| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
+
+Applied model entry shape:
 
 ```json
 {
@@ -82,9 +92,9 @@ The entry below reflects Phase 2 findings. It will be promoted to **Final Workin
 | Tool-enabled chat (external curl, thinking on)             | ✅ | HTTP 200, `finish_reason: tool_calls`, correct `tool_calls` — `reasoning_content` present |
 | Tool-enabled chat (external curl, `enable_thinking: false`) | ✅ | HTTP 200, clean OpenAI-shape, no `reasoning_content`, 25 tokens vs 170                 |
 | Model appears in VS Code picker                            | ✅ | Visible in model picker; "Agent \| Qwen 3.7 Max" confirmed in VS Code chat panel        |
-| Plain chat in VS Code                                      | ⏳ | Phase 4                                                                                 |
-| Streaming in VS Code                                       | ⏳ | Phase 4                                                                                 |
-| Tool / agent use in VS Code                                | ⏳ | Phase 4                                                                                 |
+| Plain chat in VS Code                                      | ✅ | Model replied with one-sentence confirmation when asked to confirm availability         |
+| Streaming in VS Code                                       | ✅ | Token-by-token streaming output confirmed in chat panel                                 |
+| Tool / agent use in VS Code                                | ✅ | Tool calling works — model invoked browser tool successfully                              |
 
 ## Validation Details
 
@@ -114,20 +124,31 @@ Second run (`enable_thinking: false` added as a top-level request body field): H
 
 `enable_thinking: false` must be included in the VS Code model config via `requestBody` to avoid the tool-loop `reasoning_content` issue. Unlike the Kimi K2.6 case (where VS Code overwrote a conflicting parameter like `temperature`), `enable_thinking` is not a standard OpenAI field that VS Code would send at all — so a `requestBody`-level injection has a good chance of reaching the upstream model unmodified.
 
-### Phase 4 — VS Code in-editor validation
+### Phase 4 — VS Code in-editor validation ✅
 
-> Results will be recorded here once the VS Code config is in place and retested.
+- Confirmed `qwen3.7-max` appears in the VS Code model picker and is selectable.
+- Confirmed plain chat: model replied with a one-sentence confirmation when asked to confirm availability.
+- Confirmed streaming: token-by-token output observed in the chat panel during responses.
+- Confirmed tool / agent use: model invoked the browser tool successfully.
 
 ## Known Limitations
 
-> To be filled after validation. Confirmed limitations from research:
->
-> - Vision is not targeted in this pass; `qwen3.7-max` is a text-generation model.
-> - GitHub Copilot inline completions and semantic-search features remain outside scope.
+- Vision is not supported; `qwen3.7-max` is a text-generation model. Use `qwen3.6-plus` for vision.
+- GitHub Copilot inline completions and semantic-search features remain outside scope.
+- `maxInputTokens` / `maxOutputTokens` are not yet confirmed from official DashScope documentation.
 
 ## Final Verdict
 
-> **Pending.**
+- acceptable for plain chat: yes
+- acceptable for streaming chat: yes
+- acceptable for tool-enabled agent use: yes
+- acceptable for vision: no (not a vision model)
+- acceptable without a proxy: yes
+
+Recommended operating mode:
+
+- keep the model URL pointed at `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`
+- keep `enable_thinking: false` in the `requestBody` to prevent `reasoning_content` issues during tool loops
 
 ## Sources
 
