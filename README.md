@@ -20,17 +20,20 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 ## Quick start
 
-| Provider                      | Model          | Needs proxy?                 | Plain chat | Streaming | Tool calling | Vision |
-| ----------------------------- | -------------- | ---------------------------- | ---------- | --------- | ------------ | ------ |
-| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs` | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | No                           | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | No                           | ✅         | ✅        | ✅           | ❌     |
+| Provider                      | Model          | Needs proxy?                  | Plain chat | Streaming | Tool calling | Vision |
+| ----------------------------- | -------------- | ----------------------------- | ---------- | --------- | ------------ | ------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs`  | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | No                            | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | No                            | ✅         | ✅        | ✅           | ❌     |
+| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension | ✅         | ✅        | ✅           | ✅¹    |
+
+¹ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.
 
 Pick the model you want and follow the corresponding section below.
 
 ### Config file location
 
-Both setups require editing the same VS Code config file:
+The Kimi and Qwen setups require editing the same VS Code config file:
 
 | OS      | Path                                                              |
 | ------- | ----------------------------------------------------------------- |
@@ -178,10 +181,52 @@ Open (or create) your user config file (see [Config file location](#config-file-
 #### Troubleshooting (Qwen)
 
 | Symptom                                      | Fix                                                                                     |
-| -------------------------------------------- | --------------------------------------------------------------------------------------- | --- | --- |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
 | Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
-| Direct (no proxy)                            | ❌                                                                                      | ✅  | ✅  |
+
+---
+
+### DeepSeek V4 (VS Code Extension)
+
+DeepSeek V4 Pro & Flash are available via a **dedicated VS Code extension** rather than a raw custom endpoint. The extension plugs DeepSeek directly into Copilot Chat's model picker while preserving agent mode, tool calling, skills, and MCP support.
+
+> **How this differs:** Unlike Kimi and Qwen (which use VS Code's built-in `chatLanguageModels.json` custom endpoint mechanism), DeepSeek uses a VS Code extension that registers itself with Copilot. The experience is the same — pick the model in chat — but the setup path goes through the extension.
+
+#### 1. Install the Extension
+
+- VS Code 1.116 or later.
+- A [GitHub Copilot subscription](https://github.com/features/copilot) (Free / Pro / Enterprise all work).
+- Install **[DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot)** from the VS Code Marketplace ([source](https://github.com/Vizards/deepseek-v4-for-copilot)).
+
+#### 2. Get a DeepSeek API Key
+
+Go to [platform.deepseek.com/api_keys](https://platform.deepseek.com/api_keys) and create an API key (starts with `sk-`).
+
+#### 3. Configure the API Key
+
+Open the Command Palette (`Ctrl+Shift+P`) and run **DeepSeek: Set API Key**, then paste your key. The key is stored in your OS keychain.
+
+#### 4. Select the Model and Start Chatting
+
+- Open Copilot Chat (`Ctrl+Shift+I`).
+- Click the model picker (top-right of the chat panel).
+- Choose **DeepSeek V4 Pro** or **DeepSeek V4 Flash**.
+- Agent mode, tool calling, skills, and MCP all work out of the box.
+
+#### Optional: Configure Thinking Effort
+
+In the model picker, click the gear icon next to a DeepSeek model to choose:
+
+- **None** — fastest, no reasoning.
+- **High** — balanced (default).
+- **Max** — deep reasoning for complex tasks.
+
+#### Optional: Vision Support
+
+DeepSeek V4 is text-only, but the extension handles images automatically — drop a screenshot into chat and it proxies through another installed Copilot model (Claude, GPT-4o) to describe the image first. Run **DeepSeek: Set Vision Proxy Model** to pick which model handles image descriptions.
+
+> For the full official guide, see: [github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md](https://github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md)
 
 For the full research notes, tested values, and known limitations, see:
 

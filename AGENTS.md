@@ -7,6 +7,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
 - **Qwen 3.6 Plus** (DashScope) — works direct, no proxy.
 - **Qwen 3.7 Max** (DashScope) — works direct, no proxy.
+- **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
