@@ -1,6 +1,6 @@
 # Github Copilot Custom Endpoints
 
-> **TL;DR** — As of **June 1, 2026**, GitHub Copilot switched to usage-based billing (AI Credits), making every chat and agent session consume from your monthly allowance. Frontier models like GPT-5.5 and Opus 4.8 burn credits fast. This repo documents a practical workaround: use **cheaper, non-GitHub models** (DeepSeek, Kimi, Qwen) inside VS Code's Copilot chat — often at **5–55× lower cost** while retaining agent mode, tool calling, and streaming. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
+> **TL;DR** — As of **June 1, 2026**, GitHub Copilot switched to usage-based billing (AI Credits), making every chat and agent session burn credits fast. This repo documents a practical workaround: use **cheaper, non-GitHub models** (DeepSeek, Kimi, Qwen) inside VS Code's Copilot chat — often at **5–55× lower cost** while retaining agent mode, tool calling, and streaming. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
 
 ## What is this?
 
@@ -58,7 +58,7 @@ The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `
 npm run proxy:kimi
 # from this repo — both proxies concurrently
 npm run proxy
-# or with npx (after npm publish)
+# or with npx
 npx copilot-custom-endpoint kimi
 npx copilot-custom-endpoint       # starts both proxies
 # or directly
@@ -160,11 +160,16 @@ The proxy dynamically enables thinking in plain chat and disables it during tool
 npm run proxy:qwen
 # from this repo — both proxies concurrently
 npm run proxy
-# or with npx (after npm publish)
+# or with npx
 npx copilot-custom-endpoint qwen
 npx copilot-custom-endpoint       # starts both proxies
 # or directly
 node proxy/qwen-proxy.mjs
+
+# clean up debug logs
+npm run clean:logs
+# or with npx
+npx copilot-custom-endpoint clean
 ```
 
 You should see:
