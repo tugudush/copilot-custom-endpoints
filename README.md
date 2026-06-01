@@ -60,8 +60,8 @@ npm run proxy:kimi
 # from this repo — both proxies concurrently
 npm run proxy
 # or with npx (after npm publish)
-npx copilot-proxy kimi
-npx copilot-proxy       # starts both proxies
+npx copilot-custom-endpoint kimi
+npx copilot-custom-endpoint       # starts both proxies
 # or directly
 node proxy/kimi-proxy.mjs
 ```
@@ -157,8 +157,8 @@ npm run proxy:qwen
 # from this repo — both proxies concurrently
 npm run proxy
 # or with npx (after npm publish)
-npx copilot-proxy qwen
-npx copilot-proxy       # starts both proxies
+npx copilot-custom-endpoint qwen
+npx copilot-custom-endpoint       # starts both proxies
 # or directly
 node proxy/qwen-proxy.mjs
 ```

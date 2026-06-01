@@ -31,11 +31,11 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 After publishing to npm, users can also run:
 
-- `npx copilot-proxy` — starts both proxies concurrently (default).
-- `npx copilot-proxy all` — same, explicit `all` subcommand.
-- `npx copilot-proxy kimi` — starts Kimi proxy only.
-- `npx copilot-proxy qwen` — starts Qwen proxy only.
-- `npx copilot-proxy clean` — removes the `debug_log/` directory.
+- `npx copilot-custom-endpoint` — starts both proxies concurrently (default).
+- `npx copilot-custom-endpoint all` — same, explicit `all` subcommand.
+- `npx copilot-custom-endpoint kimi` — starts Kimi proxy only.
+- `npx copilot-custom-endpoint qwen` — starts Qwen proxy only.
+- `npx copilot-custom-endpoint clean` — removes the `debug_log/` directory.
 
 ### Kimi proxy
 

@@ -1,13 +1,13 @@
 {
-  "name": "copilot-proxy",
+  "name": "copilot-custom-endpoint",
   "version": "1.0.0",
   "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2 & Qwen 3.x",
   "license": "MIT",
   "type": "module",
   "bin": {
-    "copilot-proxy": "cli.mjs",
-    "copilot-proxy-kimi": "proxy/kimi-proxy.mjs",
-    "copilot-proxy-qwen": "proxy/qwen-proxy.mjs"
+    "copilot-custom-endpoint": "cli.mjs",
+    "copilot-custom-endpoint-kimi": "proxy/kimi-proxy.mjs",
+    "copilot-custom-endpoint-qwen": "proxy/qwen-proxy.mjs"
   },
   "files": [
     "cli.mjs",
@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jerom/custom-endpoint"
+    "url": "git+https://github.com/tugudush/copilot-custom-endpoints.git"
   },
   "keywords": [
     "copilot",

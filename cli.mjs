@@ -7,14 +7,14 @@ import { rmSync } from 'node:fs'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const sub = process.argv[2]
 
-const usage = `Usage: copilot-proxy [all|kimi|qwen|clean]
+const usage = `Usage: copilot-custom-endpoint [all|kimi|qwen|clean]
 
 Start a local proxy for VS Code Copilot custom endpoints.
 
-  copilot-proxy all     Start both proxies concurrently (default)
-  copilot-proxy kimi    Start the Kimi K2 proxy on port 3457
-  copilot-proxy qwen    Start the Qwen 3.x proxy on port 3458
-  copilot-proxy clean   Remove the debug_log/ directory
+  copilot-custom-endpoint all     Start both proxies concurrently (default)
+  copilot-custom-endpoint kimi    Start the Kimi K2 proxy on port 3457
+  copilot-custom-endpoint qwen    Start the Qwen 3.x proxy on port 3458
+  copilot-custom-endpoint clean   Remove the debug_log/ directory
 
 Environment variables: see --help for each proxy.
 `

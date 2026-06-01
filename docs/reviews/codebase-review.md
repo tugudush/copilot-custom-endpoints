@@ -1,4 +1,4 @@
-# Codebase Review — `copilot-proxy`
+# Codebase Review — `copilot-custom-endpoint`
 
 > **Reviewed:** 2026-06-02 | **Version:** 1.0.0 | **Tests:** 29/29 passing | **Lint:** clean
 
@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-`copilot-proxy` is a lightweight Node.js tool that enables VS Code Copilot to use non-GitHub language models (Kimi K2.x via Moonshot, Qwen 3.x via DashScope) as custom chat endpoints. It consists of two standalone HTTP proxies that rewrite outbound chat-completion requests to satisfy provider-specific constraints, plus a small CLI dispatcher for `npx` usage.
+`copilot-custom-endpoint` is a lightweight Node.js tool that enables VS Code Copilot to use non-GitHub language models (Kimi K2.x via Moonshot, Qwen 3.x via DashScope) as custom chat endpoints. It consists of two standalone HTTP proxies that rewrite outbound chat-completion requests to satisfy provider-specific constraints, plus a small CLI dispatcher for `npx` usage.
 
 The repo also serves as a **validation knowledge base** — model records under `docs/models/` document which capabilities work, which don't, and why, backed by hands-on testing evidence.
 
@@ -136,7 +136,7 @@ The layout is clean and flat. No build step, no transpilation — the `.mjs` fil
 
 ### 3.5 `cli.mjs` — CLI Dispatcher
 
-**Purpose:** Single entry point for `npx copilot-proxy [all|kimi|qwen|clean]`. Spawns the appropriate proxy as a child process.
+**Purpose:** Single entry point for `npx copilot-custom-endpoint [all|kimi|qwen|clean]`. Spawns the appropriate proxy as a child process.
 
 **What's good:**
 
@@ -147,7 +147,7 @@ The layout is clean and flat. No build step, no transpilation — the `.mjs` fil
 **Minor observations:**
 
 - The `fork` loop for `all` spawns both proxies and uses `Promise.all` to wait for **all** children to exit before terminating. The exit code reflects whether any child exited non-zero.
-- The `bin` entries in `package.json` list both `cli.mjs` (with subcommands) and direct paths (`proxy/kimi-proxy.mjs`, `proxy/qwen-proxy.mjs`) — users can invoke `npx copilot-proxy-kimi` directly. Good UX.
+- The `bin` entries in `package.json` list both `cli.mjs` (with subcommands) and direct paths (`proxy/kimi-proxy.mjs`, `proxy/qwen-proxy.mjs`) — users can invoke `npx copilot-custom-endpoint-kimi` directly. Good UX.
 
 **Verdict:** Minimal, correct, gets the job done. ✅
 
@@ -238,7 +238,7 @@ No security vulnerabilities, data leaks, race conditions, or correctness bugs we
 
 ## 8. Summary
 
-`copilot-proxy` is a well-crafted, narrowly-scoped tool that solves a real problem: VS Code's custom endpoint feature sends request shapes that providers like Kimi and Qwen reject, and this repo provides validated, copy-paste-ready workarounds.
+`copilot-custom-endpoint` is a well-crafted, narrowly-scoped tool that solves a real problem: VS Code's custom endpoint feature sends request shapes that providers like Kimi and Qwen reject, and this repo provides validated, copy-paste-ready workarounds.
 
 The code is clean, the tests are thorough for the shared layer, the documentation is outstanding, and the zero-dependency design keeps maintenance surface minimal. The proxy logic correctly handles the documented provider constraints (Kimi's fixed sampling + thinking/tool incompatibility, Qwen's dynamic `enable_thinking`).
 
