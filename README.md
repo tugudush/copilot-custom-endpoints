@@ -1,4 +1,4 @@
-# Github Copilot Custom Endpoint
+# Github Copilot Custom Endpoints
 
 > **TL;DR** — This repo documents how to use non-GitHub language models inside VS Code's Copilot chat. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
 
