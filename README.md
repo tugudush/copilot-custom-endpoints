@@ -20,15 +20,23 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 ## Quick start
 
-We have two fully validated provider setups:
+| Provider                      | Model          | Needs proxy?                    | Plain chat | Streaming | Tool calling | Vision |
+| ----------------------------- | -------------- | ------------------------------- | ---------- | --------- | ------------ | ------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`    | ✅ Yes — `proxy/kimi-proxy.mjs` | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | ❌ No                           | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | ❌ No                           | ✅         | ✅        | ✅           | ❌     |
 
-| Provider                      | Model          | Needs proxy?                    | Vision | Tool calling |
-| ----------------------------- | -------------- | ------------------------------- | ------ | ------------ |
-| **Moonshot (Kimi)**           | `kimi-k2.6`    | ✅ Yes — `proxy/kimi-proxy.mjs` | ✅     | ✅           |
-| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | ❌ No                           | ✅     | ✅           |
-| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | ❌ No                           | ❌     | ✅           |
+Pick the model you want and follow the corresponding section below.
 
-Pick the one you want and follow the corresponding section below.
+### Config file location
+
+Both setups require editing the same VS Code config file:
+
+| OS      | Path                                                              |
+| ------- | ----------------------------------------------------------------- |
+| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
+| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
+| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
 ### Kimi K2.6 (Moonshot)
 
@@ -60,15 +68,7 @@ curl http://127.0.0.1:3457/healthz
 
 #### 3. Register the model in VS Code
 
-Open (or create) your user config file:
-
-| OS      | Path                                                              |
-| ------- | ----------------------------------------------------------------- |
-| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
-| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
-| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
-
-Paste this entry (replace `<your-moonshot-key>`):
+Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-moonshot-key>`):
 
 ```json
 {
@@ -123,15 +123,7 @@ Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an AP
 
 #### 2. Register the models in VS Code
 
-Open (or create) your user config file:
-
-| OS      | Path                                                              |
-| ------- | ----------------------------------------------------------------- |
-| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
-| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
-| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
-
-Paste this entry (replace `<your-dashscope-key>`):
+Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`):
 
 ```json
 {
@@ -186,19 +178,10 @@ Paste this entry (replace `<your-dashscope-key>`):
 #### Troubleshooting (Qwen)
 
 | Symptom                                      | Fix                                                                                     |
-| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- | --- | --- |
 | `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
 | Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
-
-## What's validated?
-
-| Capability        | Kimi K2.6 | Qwen 3.6 Plus | Qwen 3.7 Max |
-| ----------------- | --------- | ------------- | ------------ |
-| Plain chat        | ✅        | ✅            | ✅           |
-| Streaming         | ✅        | ✅            | ✅           |
-| Tool / agent use  | ✅        | ✅            | ✅           |
-| Vision            | ✅        | ✅            | ❌           |
-| Direct (no proxy) | ❌        | ✅            | ✅           |
+| Direct (no proxy)                            | ❌                                                                                      | ✅  | ✅  |
 
 For the full research notes, tested values, and known limitations, see:
 
