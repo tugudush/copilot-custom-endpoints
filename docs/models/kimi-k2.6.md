@@ -98,6 +98,18 @@ Response shape:
 }
 ```
 
+#### Environment variables
+
+| Variable                                    | Default                                               | Purpose                                                 |
+| ------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
+| `PORT`                                      | `3457`                                                | Local listen port                                       |
+| `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`         | Upstream Moonshot endpoint                              |
+| `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                   | Temperature for thinking-mode requests                  |
+| `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                 | Temperature when thinking is disabled (tool requests)   |
+| `KIMI_PROXY_FORCE_TOP_P`                    | `0.95`                                                | `top_p` to force into the request body                  |
+| `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                   | Force `thinking={"type":"disabled"}` when tools present |
+| `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to repo root) | Redacted NDJSON log path                                |
+
 Start command:
 
 ```text

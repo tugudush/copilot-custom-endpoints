@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { fork } from 'node:child_process'

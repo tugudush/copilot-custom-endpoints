@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { createProxy } from '../lib/create-proxy.mjs'
 
