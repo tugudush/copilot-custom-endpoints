@@ -160,6 +160,9 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
 ]
 ```
 
+<details>
+<summary>Kimi K2.6 (Moonshot)</summary>
+
 ### Kimi K2.6 (Moonshot)
 
 #### 1. Grab a Moonshot API key
@@ -272,47 +275,98 @@ Open (or create) your user config file (see [Config file location](#config-file-
 | `invalid temperature` / `invalid top_p` | You're talking directly to Moonshot instead of through the proxy. Double-check the `url` in `chatLanguageModels.json`.                                        |
 | Tool calls fail after first turn        | This happens if "thinking" stays enabled during tool loops. The proxy normally disables it automatically; ensure you're on the latest `proxy/kimi-proxy.mjs`. |
 
+</details>
+
 ---
+
+<details>
+<summary>Qwen 3.6 Plus / Qwen 3.7 Max (DashScope)</summary>
 
 ### Qwen 3.6 Plus or Qwen 3.7 Max (DashScope)
 
-These models work with the optional `proxy/qwen-proxy.mjs` for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops). They also work **without a proxy** using a static `enable_thinking: false` — see the [direct path alternative](#direct-path-no-proxy) below.
+Qwen models work **directly** with DashScope — no proxy needed. Just add `enable_thinking: false` to `requestBody` for tool-calling stability. An optional `proxy/qwen-proxy.mjs` is also available for dynamic thinking suppression (see [below](#optional-local-proxy-for-dynamic-thinking)).
 
 #### 1. Grab a DashScope API key
 
 Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an API key.
 
-#### 2. Start the optional local proxy (recommended)
+> **Regional endpoints:** DashScope offers endpoints for several regions. API keys are region-specific.
+>
+> - **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
+> - **Singapore (default):** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`
 
-The proxy dynamically enables thinking in plain chat and disables it during tool calls:
+#### 2. Register the models in VS Code
 
-Run Qwen proxy
+Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`):
+
+```json
+{
+  "name": "Qwen",
+  "vendor": "customendpoint",
+  "apiKey": "<your-dashscope-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "qwen3.7-max",
+      "name": "Qwen 3.7 Max",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    },
+    {
+      "id": "qwen3.6-plus",
+      "name": "Qwen 3.6 Plus",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "requestBody": {
+        "enable_thinking": false
+      }
+    }
+  ]
+}
+```
+
+> **Trade-off:** `enable_thinking: false` suppresses reasoning in all requests (both plain chat and tool loops). Tool loops stay stable, but you never see the model's thought process. The [optional proxy](#optional-local-proxy-for-dynamic-thinking) below avoids this trade-off.
+
+#### 3. Chat!
+
+- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
+- Click the model picker (top-right of the chat input).
+- Choose **Qwen 3.6 Plus** (with vision) or **Qwen 3.7 Max** (text only).
+- Ask something. Streaming, tool use, and vision (3.6 Plus) all work.
+
+---
+
+#### Optional: Local proxy for dynamic thinking
+
+If you want reasoning visible in plain chat but automatically suppressed during tool loops, run the optional `proxy/qwen-proxy.mjs` instead.
+
+Start the proxy:
 
 ```bash
 npm run proxy:qwen
 ```
 
-Run all proxies
+Or with all proxies:
 
 ```bash
 npm run proxy
 ```
 
-Run globally (from any directory)
+Or globally (from any directory):
 
 ```bash
 # Qwen only
 npx copilot-custom-endpoint qwen
 # All proxies
 npx copilot-custom-endpoint
-```
-
-Clean up debug logs
-
-```bash
-npm run clean:logs
-# or with npx
-npx copilot-custom-endpoint clean
 ```
 
 You should see:
@@ -338,9 +392,7 @@ Expected response:
 }
 ```
 
-#### 3. Register the models in VS Code
-
-Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`). Point URLs at the proxy and omit `requestBody` — the proxy handles thinking dynamically:
+Then update your VS Code config to point URLs at the proxy and remove `requestBody` — the proxy handles thinking dynamically:
 
 ```json
 {
@@ -371,59 +423,7 @@ Open (or create) your user config file (see [Config file location](#config-file-
 
 > **Keep the proxy terminal open** while using these models.
 
-#### 4. Chat!
-
-- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
-- Click the model picker (top-right of the chat input).
-- Choose **Qwen 3.6 Plus** (with vision) or **Qwen 3.7 Max** (text only).
-- Ask something. Streaming, tool use, and vision (3.6 Plus) all work.
-
-> **Regional endpoints:** If connecting directly (no proxy), DashScope offers endpoints for several regions. The proxy uses `dashscope-intl.aliyuncs.com` (Singapore) by default, configurable via `QWEN_UPSTREAM_URL`.
->
-> - **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
-> - **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
-> - **Singapore:** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (proxy default)
->
-> API keys are region-specific.
-
-#### Direct path (no proxy)
-
-If you prefer not to run the proxy, Qwen models work **directly** with DashScope by using the upstream URL and a static `enable_thinking: false` in `requestBody`:
-
-```json
-{
-  "name": "Qwen",
-  "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
-  "apiType": "chat-completions",
-  "models": [
-    {
-      "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "requestBody": {
-        "enable_thinking": false
-      }
-    },
-    {
-      "id": "qwen3.6-plus",
-      "name": "Qwen 3.6 Plus",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "requestBody": {
-        "enable_thinking": false
-      }
-    }
-  ]
-}
-```
-
-> **Trade-off:** `enable_thinking: false` suppresses reasoning in all requests (both plain chat and tool loops). Tool loops stay stable, but you never see the model's thought process. The proxy path avoids this trade-off.
+The proxy URL is configurable via the `QWEN_UPSTREAM_URL` environment variable (defaults to the Singapore endpoint shown in [step 1](#1-grab-a-dashscope-api-key)).
 
 #### Troubleshooting (Qwen)
 
@@ -432,7 +432,12 @@ If you prefer not to run the proxy, Qwen models work **directly** with DashScope
 | `reasoning_content` errors during tool loops | Ensure `enable_thinking: false` is present in `requestBody` for every Qwen model.       |
 | Vision images fail to upload                 | Use base64-encoded images; external image URLs may fail if DashScope cannot reach them. |
 
+</details>
+
 ---
+
+<details>
+<summary>DeepSeek V4 (VS Code Extension)</summary>
 
 ### DeepSeek V4 (VS Code Extension)
 
@@ -475,7 +480,12 @@ DeepSeek V4 is text-only, but the extension handles images automatically — dro
 
 > For the full official guide, see: [github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md](https://github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md)
 
+</details>
+
 ---
+
+<details>
+<summary>Xiaomi MiMo</summary>
 
 ### Xiaomi MiMo
 
@@ -563,6 +573,8 @@ Open your user config file (see [Config file location](#config-file-location) ab
 | 400 error `reasoning_content` during tool loops | Ensure `thinking: { "type": "disabled" }` is present in `requestBody` for every MiMo model.                       |
 | Vision images fail to upload                    | Use `mimo-v2.5` (the only model with native vision). Text-only models (`pro`, `flash`) don't support image input. |
 
+</details>
+
 ---
 
 For the full research notes, tested values, and known limitations, see:
@@ -575,7 +587,7 @@ For the full research notes, tested values, and known limitations, see:
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
-> Before this change, Copilot was a flat subscription — no per-turn metering, so you could use chat and agent mode as much as you wanted within rate-limit bounds. Now **every interaction burns AI credits** from your monthly allowance. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
+> Before this change, Copilot used **premium request-based billing** — each model had its own multiplier (e.g., GPT-5.5 = 7.5×, Claude Sonnet 4.6 = 1×, Haiku 4.5 = 0.33×), and every request consumed `multiplier × 1` from your monthly premium-request allowance. Now **every interaction burns AI credits** based on actual token consumption. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
 >
 > **The practical workaround:** use cheaper alternative models (DeepSeek V4 Flash, Kimi K2.6, Qwen) that are still powerful enough for coding — often at **5–55× less cost** than the Copilot defaults. The tables below show the exact comparison.
 >
