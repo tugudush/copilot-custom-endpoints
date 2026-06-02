@@ -1,6 +1,6 @@
 # MiniMax — Research & Validation Plan
 
-> **Status: Validated.** Direct VS Code → MiniMax path works. The current live `chatLanguageModels.json` uses `thinking: { "type": "disabled" }`; to enable reasoning, set `thinking: { "type": "adaptive" }` and add `reasoning_split: true` in `requestBody`. No proxy needed.
+> **Status: Validated.** Direct VS Code → MiniMax path works. Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody` so the model can reason and the response is in a clean OpenAI format. No proxy needed.
 
 ## Overview
 
@@ -77,31 +77,11 @@ When thinking is enabled (adaptive mode), responses include thinking content. Mi
 
 This is the same class of problem as Qwen's `reasoning_content` and MiMo's `reasoning_content` issues.
 
-**Implication for VS Code Copilot:** VS Code's agent mode is unlikely to preserve thinking content across multi-turn tool loops. This means:
+**Implication for VS Code Copilot:** VS Code's agent mode is unlikely to preserve thinking content across multi-turn tool loops. This is moot in practice for MiniMax-M3 because the model reasons regardless of the `thinking` setting (see "Validation finding" below).
 
-- **Thinking enabled + tool calling = potentially broken** (reasoning chain interrupted, degraded performance).
-- **Thinking disabled + tool calling = should work** (no thinking content to preserve).
-- **Thinking enabled + plain chat = should work** (no tool calls in history).
+### Option 1 — Direct path with adaptive thinking (recommended)
 
-### Option 1 — Direct path (simplest, static suppression)
-
-Disable thinking in every request via `requestBody`:
-
-```json
-{
-  "thinking": { "type": "disabled" }
-}
-```
-
-**Trade-off:** No reasoning visible anywhere. Tool loops stay stable.
-
-> **⚠️ Validation finding (June 3, 2026):** `thinking: {"type": "disabled"}` does **not** actually suppress ``tags or`reasoning_content`in responses. The model still outputs reasoning tokens — the parameter appears to be treated as a soft hint rather than a hard override. The`reasoning_content` field is populated in both non-streaming and streaming responses regardless of the setting.
->
-> Despite this, Phase 3 (3-turn tool loop test) showed the model remains stable end-to-end in VS Code Copilot Chat with this setting. The "potentially broken" wording in the implication above is overcautious — in practice the chat-completions adapter seems to handle `` tags well.
-
-### Option 2 — Direct path with adaptive thinking (recommended)
-
-The simplest way to enable reasoning is to set `thinking: { type: "adaptive" }` and `reasoning_split: true` directly in `requestBody`:
+Set `thinking: { type: "adaptive" }` and `reasoning_split: true` in `requestBody`:
 
 ```json
 {
@@ -122,10 +102,16 @@ The simplest way to enable reasoning is to set `thinking: { type: "adaptive" }` 
 }
 ```
 
-- `thinking: { type: "adaptive" }` — the model decides when to reason. Reasoning is preserved across tool-call round-trips.
+- `thinking: { type: "adaptive" }` — the model decides when to reason. This is MiniMax's recommended default.
 - `reasoning_split: true` — the server returns thinking in a structured `reasoning_details` field instead of mixing ``tags into`content`. VS Code sees a clean `content` field.
 
 VS Code will most likely just **ignore** the extra `reasoning_details` / `reasoning_content` / `delta.reasoning` fields it doesn't recognize, so this is the cleanest and simplest way to enable thinking — no proxy required.
+
+### Option 2 — Direct path with thinking "disabled" (legacy / not recommended)
+
+Setting `thinking: { "type": "disabled" }` was once thought to skip reasoning entirely, but Phase 1 testing showed that MiniMax-M3 still reasons internally regardless of this value. The parameter is treated as a soft hint, not a hard override. The model still emits ``tags and`reasoning_content` regardless.
+
+If you have an older config that already uses `disabled` (e.g., to mirror the MiMo convention), it will still work — the difference vs `adaptive` is purely cosmetic (response field layout). Phase 3 confirmed the model remains stable in 3-turn tool loops under both settings.
 
 ## Sampling Parameters
 
@@ -205,21 +191,21 @@ MiniMax-M3 at $0.60/$2.40 per 1M tokens (with 50% promotional discount: $0.30/$1
   "maxInputTokens": 1048576,
   "maxOutputTokens": 131072,
   "requestBody": {
-    "thinking": { "type": "disabled" },
+    "thinking": { "type": "adaptive" },
+    "reasoning_split": true,
     "temperature": 1.0,
     "top_p": 0.95
   }
 }
 ```
 
-### To enable reasoning
+### Legacy alternative (not recommended)
 
-Swap the `requestBody` to use `adaptive` thinking and add `reasoning_split: true`:
+If you want to mirror the MiMo convention, you can use `thinking: { "type": "disabled" }` and omit `reasoning_split`. The model will still reason internally — this only changes the response field layout:
 
 ```json
 "requestBody": {
-  "thinking": { "type": "adaptive" },
-  "reasoning_split": true,
+  "thinking": { "type": "disabled" },
   "temperature": 1.0,
   "top_p": 0.95
 }
@@ -256,7 +242,7 @@ All 4 connectivity checks passed:
 | Tool calling       | ✅     | `finish_reason: "tool_calls"` with `get_weather({"location": "San Francisco"})`       |
 | Vision             | ✅     | Correctly identified Google logo colors (blue, red, yellow, green) from PNG URL       |
 
-**Key finding:** The `thinking: {"type": "disabled"}` parameter does **not** suppress `<think>` tags or `reasoning_content` in responses. The model always reasons internally. VS Code must handle `<think>` tags across tool-call round-trips even with this setting. This is why the recommended config (Option 2 above) uses `thinking: { "type": "adaptive" }` — the model is allowed to reason, and `reasoning_split: true` keeps the response format clean for VS Code.
+**Key finding:** The `thinking: {"type": "disabled"}` parameter does **not** suppress `<think>` tags or `reasoning_content` in responses. The model always reasons internally. The `thinking` parameter is treated as a soft hint, not a hard override. This is why the recommended config (Option 1 above) uses `thinking: { "type": "adaptive" }` and adds `reasoning_split: true` — the model is allowed to reason, and the split keeps the response format clean for VS Code.
 
 ### Phase 2 — VS Code integration test
 

@@ -174,7 +174,8 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
         "requestBody": {
-          "thinking": { "type": "disabled" },
+          "thinking": { "type": "adaptive" },
+          "reasoning_split": true,
           "temperature": 1,
           "top_p": 0.95
         }
@@ -606,7 +607,7 @@ Open your user config file (see [Config file location](#config-file-location) ab
 
 ### MiniMax M3 (MiniMax)
 
-MiniMax works **directly** with the OpenAI-compatible Chat Completions endpoint — no proxy needed.
+MiniMax works **directly** with the OpenAI-compatible Chat Completions endpoint — no proxy needed. The recommended config enables MiniMax's native reasoning via `thinking: { "type": "adaptive" }` + `reasoning_split: true`.
 
 #### 1. Grab a MiniMax API key
 
@@ -638,7 +639,8 @@ Open (or create) your user config file (see [Config file location](#config-file-
       "maxInputTokens": 1048576,
       "maxOutputTokens": 131072,
       "requestBody": {
-        "thinking": { "type": "disabled" },
+        "thinking": { "type": "adaptive" },
+        "reasoning_split": true,
         "temperature": 1,
         "top_p": 0.95
       }
@@ -647,7 +649,12 @@ Open (or create) your user config file (see [Config file location](#config-file-
 }
 ```
 
-> **To enable reasoning**, change `thinking: { "type": "disabled" }` to `thinking: { "type": "adaptive" }` and add `"reasoning_split": true`. See [`docs/models/minimax.md`](docs/models/minimax.md) for the trade-offs.
+**Why this config?**
+
+- `thinking: { "type": "adaptive" }` — MiniMax's documented default. The model decides when to reason.
+- `reasoning_split: true` — the server returns reasoning in a structured `reasoning_details` field instead of mixing `<think>` tags into `content`. VS Code sees a clean OpenAI-format message.
+
+> **Note:** `thinking: { "type": "disabled" }` is **not** a hard override — Phase 1 testing confirmed MiniMax-M3 still reasons internally regardless of this setting, and emits `<think>` tags in `content` either way. Setting it to `disabled` only changes the response field layout, not actual model behavior. We recommend `adaptive` for clarity.
 
 #### 3. Chat!
 
@@ -657,11 +664,11 @@ Open (or create) your user config file (see [Config file location](#config-file-
 
 #### Troubleshooting (MiniMax)
 
-| Symptom                       | Fix                                                                                                                |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Model not appearing in picker | Check your `chatLanguageModels.json` syntax. Reload the VS Code window.                                            |
-| 400 on tool calls             | Confirm the model ID is `MiniMax-M3` (capital M's, lowercase i, hyphen). Check the API key region.                 |
-| Reasoning not visible in chat | Switch `thinking: { "type": "disabled" }` to `thinking: { "type": "adaptive" }` and add `"reasoning_split": true`. |
+| Symptom                              | Fix                                                                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Model not appearing in picker        | Check your `chatLanguageModels.json` syntax. Reload the VS Code window.                                       |
+| 400 on tool calls                    | Confirm the model ID is `MiniMax-M3` (capital M's, lowercase i, hyphen). Check the API key region.            |
+| Responses show leaked `<think>` tags | Make sure `"reasoning_split": true` is set in `requestBody` so reasoning goes to `reasoning_details` instead. |
 
 </details>
 

@@ -9,7 +9,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Qwen 3.7 Max** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 - **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; no proxy needed.
-- **MiniMax M3** — works direct with `thinking: { "type": "disabled" }` in `requestBody` (matches live config); to enable reasoning, switch to `thinking: { "type": "adaptive" }` and add `"reasoning_split": true`. No proxy needed.
+- **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
@@ -104,7 +104,8 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 ### MiniMax M3
 
 - Direct VS Code → MiniMax API works without a proxy.
-- The current live config uses `thinking: { "type": "disabled" }` in `requestBody` to mirror the MiMo convention. To enable reasoning, change to `thinking: { "type": "adaptive" }` and add `"reasoning_split": true` (the API then returns reasoning in a structured `reasoning_details` field instead of mixing ``tags into`content`).
+- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code).
+- **Important:** `thinking: { "type": "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless. The setting only changes the response field layout, not actual model behavior.
 - `MiniMax-M3` is multimodal (text + image + video). M3 has 1M context window.
 - Endpoint (international): `https://api.minimax.io/v1/chat/completions`. China: `https://api.minimaxi.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MINIMAX_API_KEY` header (standard).
