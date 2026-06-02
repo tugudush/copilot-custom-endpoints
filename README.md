@@ -29,6 +29,7 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 | **Xiaomi MiMo**               | `mimo-v2.5`     | No                                 | ✅         | ✅        | ✅           | ✅⁴    |
 | **Xiaomi MiMo**               | `mimo-v2.5-pro` | No                                 | ✅         | ✅        | ✅           | ❌     |
 | **Xiaomi MiMo**               | `mimo-v2-flash` | No                                 | ✅         | ✅        | ✅           | ❌     |
+| **MiniMax**                   | `MiniMax-M3`    | No                                 | ✅         | ✅        | ✅           | ✅     |
 
 ¹ Proxy is optional: direct path works with static `enable_thinking: false`. Proxy adds dynamic thinking suppression (thinking ON in plain chat, OFF in tool loops).  
 ² With proxy: reasoning visible in plain chat. Without proxy: always suppressed.  
@@ -152,6 +153,30 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
         "requestBody": {
           "thinking": { "type": "disabled" },
           "temperature": 0.3,
+          "top_p": 0.95
+        }
+      }
+    ]
+  },
+  {
+    "name": "MiniMax",
+    "vendor": "customendpoint",
+    "apiKey": "<your-minimax-api-key>",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "MiniMax-M3",
+        "name": "MiniMax M3",
+        "url": "https://api.minimax.io/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "thinking": { "type": "adaptive" },
+          "reasoning_split": true,
+          "temperature": 1,
           "top_p": 0.95
         }
       }
@@ -577,11 +602,84 @@ Open your user config file (see [Config file location](#config-file-location) ab
 
 ---
 
+<details>
+<summary>MiniMax M3 (MiniMax)</summary>
+
+### MiniMax M3 (MiniMax)
+
+MiniMax works **directly** with the OpenAI-compatible Chat Completions endpoint — no proxy needed. The recommended config enables MiniMax's native reasoning via `thinking: { "type": "adaptive" }` + `reasoning_split: true`.
+
+#### 1. Grab a MiniMax API key
+
+Create an API key at the [MiniMax Developer Platform](https://platform.minimax.io/user-center/basic-information/interface-key).
+
+> **Regional endpoints:** MiniMax offers endpoints for different regions. API keys are region-specific.
+>
+> - **International (default):** `https://api.minimax.io/v1/chat/completions`
+> - **China:** `https://api.minimaxi.com/v1/chat/completions`
+
+#### 2. Register the model in VS Code
+
+Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-minimax-api-key>`):
+
+```json
+{
+  "name": "MiniMax",
+  "vendor": "customendpoint",
+  "apiKey": "<your-minimax-api-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "MiniMax-M3",
+      "name": "MiniMax M3",
+      "url": "https://api.minimax.io/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "adaptive" },
+        "reasoning_split": true,
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    }
+  ]
+}
+```
+
+**Why this config?**
+
+- `thinking: { "type": "adaptive" }` — MiniMax's documented default. The model decides when to reason.
+- `reasoning_split: true` — the server returns reasoning in a structured `reasoning_details` field instead of mixing `<think>` tags into `content`. VS Code sees a clean OpenAI-format message.
+
+> **Note:** `thinking: { "type": "disabled" }` is **not** a hard override — Phase 1 testing confirmed MiniMax-M3 still reasons internally regardless of this setting, and emits `<think>` tags in `content` either way. Setting it to `disabled` only changes the response field layout, not actual model behavior. We recommend `adaptive` for clarity.
+
+#### 3. Chat!
+
+- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
+- Click the model picker and select **MiniMax M3**.
+- Ask something. Plain chat, streaming, tool use, and vision all work.
+
+#### Troubleshooting (MiniMax)
+
+| Symptom                              | Fix                                                                                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Model not appearing in picker        | Check your `chatLanguageModels.json` syntax. Reload the VS Code window.                                       |
+| 400 on tool calls                    | Confirm the model ID is `MiniMax-M3` (capital M's, lowercase i, hyphen). Check the API key region.            |
+| Responses show leaked `<think>` tags | Make sure `"reasoning_split": true` is set in `requestBody` so reasoning goes to `reasoning_details` instead. |
+
+</details>
+
+---
+
 For the full research notes, tested values, and known limitations, see:
 
 - [`docs/models/kimi-k2.6.md`](docs/models/kimi-k2.6.md)
 - [`docs/models/qwen.md`](docs/models/qwen.md)
 - [`docs/models/mimo.md`](docs/models/mimo.md)
+- [`docs/models/minimax.md`](docs/models/minimax.md)
 
 ## Pricing comparison
 
@@ -637,6 +735,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 | **MiMo V2.5 Pro**     | Xiaomi    | $1.00                         | $3.00                                   | 1M             |
 | **Qwen 3.6 Plus**     | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
 | **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
+| **MiniMax M3**        | MiniMax   | $0.60 (≤512K) / $1.20 (>512K) | $2.40 (≤512K) / $4.80 (>512K)           | 1M             |
 
 > **Notes:**
 >
@@ -648,6 +747,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi K2.6** pricing is from the **Moonshot platform** (direct). Via DashScope: $0.89 input / $3.71 output.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
+> - **MiniMax M3** uses **tiered pricing** — input price doubles above 512K input tokens. A 7-day 50% off promotion is available for new accounts.
 > - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
@@ -662,6 +762,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 | Kimi K2.6 (thinking)     | ~$0.48                 | —                    |
 | Gemini 3 Flash           | ~$0.55                 | ~55                  |
 | Qwen 3.6 Plus            | ~$0.55                 | —                    |
+| MiniMax M3               | ~$0.54                 | —                    |
 | MiMo V2.5 Pro            | ~$0.80                 | —                    |
 | GPT-5.4 mini             | ~$0.83                 | ~83                  |
 | Claude Haiku 4.5         | ~$1.00                 | ~100                 |
@@ -687,6 +788,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
 > - [MiMo pricing](https://platform.xiaomimimo.com/docs/en-US/pricing)
+> - [MiniMax pricing](https://platform.minimax.io/docs/pricing/overview)
 
 ## Repo layout
 
