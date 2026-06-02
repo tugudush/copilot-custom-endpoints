@@ -218,17 +218,28 @@ Cache writing is currently free of charge (limited-time offer).
 
 ### Full provider entry (for `chatLanguageModels.json`)
 
+Leave `apiKey` as an empty string — you'll set it via the Language Models UI:
+
 ```json
 {
   "name": "MiMo",
   "vendor": "customendpoint",
-  "apiKey": "<your-mimo-api-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     // ... insert model entries above ...
   ]
 }
 ```
+
+To set your MiMo API key:
+
+1. Open the Command Palette (`Ctrl+Shift+P`).
+2. Run **Chat: Manage Language Models**.
+3. Find the **MiMo** group, right-click it → **Update API Key**.
+4. Paste your MiMo API key.
+
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
 ## Validation Plan
 

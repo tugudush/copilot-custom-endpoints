@@ -40,13 +40,13 @@ User config file (path is OS-specific):
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
-Applied model entry shape:
+Applied model entry shape (leave `apiKey` as empty string — set it via the Language Models UI):
 
 ```json
 {
   "name": "Kimi",
   "vendor": "customendpoint",
-  "apiKey": "<your-moonshot-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -65,6 +65,15 @@ Applied model entry shape:
   ]
 }
 ```
+
+To set your Moonshot API key:
+
+1. Open the Command Palette (`Ctrl+Shift+P`).
+2. Run **Chat: Manage Language Models**.
+3. Find the **Kimi** group, right-click it → **Update API Key**.
+4. Paste your Moonshot API key.
+
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
 ### Local proxy
 

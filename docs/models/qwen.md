@@ -143,7 +143,7 @@ All 8 checks passed on June 1, 2026:
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -171,6 +171,15 @@ All 8 checks passed on June 1, 2026:
   ]
 }
 ```
+
+To set your DashScope API key:
+
+1. Open the Command Palette (`Ctrl+Shift+P`).
+2. Run **Chat: Manage Language Models**.
+3. Find the **Qwen** group, right-click it → **Update API Key**.
+4. Paste your DashScope API key.
+
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
 > **Note:** `enable_thinking: false` suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
 
@@ -206,13 +215,13 @@ Expected response:
 }
 ```
 
-Then update VS Code config — change `url` to point to the proxy and **remove** `requestBody.enable_thinking`:
+Then update VS Code config — change `url` to point to the proxy and **remove** `requestBody.enable_thinking` (leave `apiKey` as empty string — set it via the UI):
 
 ```json
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
