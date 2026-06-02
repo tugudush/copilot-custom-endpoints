@@ -1,6 +1,6 @@
 # MiniMax — Research & Validation Plan
 
-> **Status: Partially Validated** — Phase 1 (connectivity) ✅, Phase 2 steps 1–6 ✅ (config, model selection, plain chat, streaming, tool calling, vision). Phase 3 (multi-turn tool loops) still pending. MiniMax offers both OpenAI-compatible and Anthropic-compatible endpoints. The OpenAI-compatible path is relevant for VS Code Copilot Custom Endpoint integration.
+> **Status: Validated** — All planned Phase 1, Phase 2 (steps 1–6), and Phase 3 (multi-turn tool loops) checks have passed. Phase 4 (long-context, optional) is the only remaining step. MiniMax offers both OpenAI-compatible and Anthropic-compatible endpoints. The OpenAI-compatible path is relevant for VS Code Copilot Custom Endpoint integration.
 
 ## Overview
 
@@ -252,7 +252,9 @@ The Copilot Chat panel in this VS Code session is running on `MiniMax M3` (visib
 | 5. Tool calling (agent mode)                        | ✅     | Asked MiniMax-M3 (in agent mode) to "open google site using integrated browser". Tool `open_browser_page` was invoked successfully, navigated to `https://www.google.com/`, page title "Google" confirmed, search combobox active.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | 6. Vision                                           | ✅     | Attached a Facebook screenshot (dark theme, homepage of logged-in user "Jerome Gomez"). Model parsed: browser tab bar with 10 tabs (Video Providers, ModelStudio Console, Request Management, Custom Endpoints, Notion, MiniMax, DeepSeek Platform, Facebook, Ask Gemini); left sidebar with profile, navigation (Manus AI, Friends, Memories, Saved, Groups, Reels, Marketplace) and shortcuts (IT Philippines, Video Context MCP Server, IITians, Greater Milwaukee College Workshop, Relx Hub Iligan); main feed with story carousel (5 profile photos + "Create story"), a shared post from "Ling Yang" (1h ago) about Ex-Congressman Kiko Barzaga (1.7M followers, "The First Prince of Dasma", House of Representatives of the Philippines, shared from INQUIRER.net); right sidebar with birthdays; bottom "Reels" section. All text, names, and metadata correctly identified. |
 
-### Phase 3 — Multi-turn tool loop test
+### Phase 3 — Multi-turn tool loop test ✅
+
+**Date:** June 3, 2026
 
 **Goal:** Verify that tool calling works correctly across multiple turns.
 
@@ -260,6 +262,23 @@ The Copilot Chat panel in this VS Code session is running on `MiniMax M3` (visib
 2. Verify that the model can chain tool calls correctly.
 3. Verify that thinking is disabled (no `<think>` tags in responses).
 4. Monitor for any errors or degraded performance.
+
+**Test executed:** Asked the model to inspect a YouTube video (`https://www.youtube.com/watch?v=rAzT5lcezPs`) using videoMcp tools. The model chained three tool calls in sequence:
+
+| #   | Tool                                          | Purpose                                                      | Result                                                                                                         |
+| --- | --------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| 1   | `mcp_videomcp_get_video_info`                 | Fetch metadata (duration, resolution, fps, codec, file size) | ✅ 17 min 6 sec, 1280×720 @ 30 fps, h264, 96 MB                                                                |
+| 2   | `mcp_videomcp_analyze_video` (gemini backend) | Get presenter + topic summary                                | ✅ Identified presenter (PewDiePie), topic (Odysseus — local self-hosted AI workspace), key features, sponsors |
+| 3   | `mcp_videomcp_transcribe_video` (deepgram)    | Get full transcript                                          | ✅ 17 KB transcript written to file, readable from disk                                                        |
+
+**Findings:**
+
+- ✅ All three tool calls succeeded without errors.
+- ✅ Model chained calls logically (metadata → analysis → transcript) rather than asking the user to re-prompt.
+- ✅ Each tool result was incorporated into subsequent reasoning.
+- ✅ No `<think>` tag or `reasoning_content` degradation observed mid-conversation — the multi-turn loop did not visibly break the model, contradicting the original Phase 1 worry that `<think>` tags would cause problems.
+
+**Content of the video (for the record):** PewDiePie announces and demonstrates **Odysseus**, his free, self-hosted local AI workspace. Key features: AI agents, email assistant, deep research, document editor, and a "Cookbook" that recommends local models based on hardware. Sponsor segments for Incogni and Saily are included.
 
 ### Phase 4 — Long-context test (optional)
 
