@@ -38,26 +38,37 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 Pick the model you want and follow the corresponding section below.
 
-### Config file location
+### Config setup: two-step workflow
 
-The Kimi and Qwen setups require editing the same VS Code config file:
+VS Code separates **model configuration** from **API key storage** for security. You set up each provider in two steps:
 
-| OS      | Path                                                              |
-| ------- | ----------------------------------------------------------------- |
-| Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
-| macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
-| Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
+1. **Create/update `chatLanguageModels.json`** — this file defines the models, URLs, and settings. API keys are **not** stored here (leave `apiKey` out entirely, or use an empty string).
+
+   | OS      | Path                                                              |
+   | ------- | ----------------------------------------------------------------- |
+   | Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
+   | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
+   | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
+
+2. **Set each API key through the Language Models UI:**
+   - Open the Command Palette (`Ctrl+Shift+P`).
+   - Run **Chat: Manage Language Models**.
+   - Find your provider group in the list.
+   - Right-click the group name → **Update API Key**.
+   - Paste your key. It is stored securely (not in the JSON file).
+
+> **Why this way?** The JSON config file is often tracked in dotfile repos or shared across machines. API keys don't belong there. The VS Code UI stores them in your OS keychain instead.
 
 ### Full example config
 
-Here's a complete, real-world example of `chatLanguageModels.json` combining all the providers documented in this repo.
+Here's a complete, real-world example of `chatLanguageModels.json` combining all the providers documented in this repo. Note the `apiKey` fields are left as empty strings — you'll set them via the Language Models UI instead. After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 
 ```json
 [
   {
     "name": "Qwen",
     "vendor": "customendpoint",
-    "apiKey": "<your-dashscope-key>",
+    "apiKey": "",
     "apiType": "chat-completions",
     "models": [
       {
@@ -87,7 +98,7 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
   {
     "name": "Kimi",
     "vendor": "customendpoint",
-    "apiKey": "<your-moonshot-key>",
+    "apiKey": "",
     "apiType": "chat-completions",
     "models": [
       {
@@ -108,7 +119,7 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
   {
     "name": "MiMo",
     "vendor": "customendpoint",
-    "apiKey": "<your-mimo-api-key>",
+    "apiKey": "",
     "apiType": "chat-completions",
     "models": [
       {
@@ -161,7 +172,7 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
   {
     "name": "MiniMax",
     "vendor": "customendpoint",
-    "apiKey": "<your-minimax-api-key>",
+    "apiKey": "",
     "apiType": "chat-completions",
     "models": [
       {
@@ -233,6 +244,10 @@ You should see:
 
 ```
 [kimi-proxy] listening on http://127.0.0.1:3457/v1/chat/completions
+[kimi-proxy] forwarding to https://api.moonshot.ai/v1/chat/completions
+[kimi-proxy] forcing temperature=1, non-thinking temperature=0.6, and top_p=0.95
+[kimi-proxy] disable thinking with tools=true
+[kimi-proxy] writing redacted request summaries to debug_log/kimi-proxy.ndjson
 ```
 
 Check it's alive:
@@ -257,13 +272,13 @@ Expected response:
 
 #### 3. Register the model in VS Code
 
-Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-moonshot-key>`):
+First, open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (leave `apiKey` as empty string — you'll set it via the UI):
 
 ```json
 {
   "name": "Kimi",
   "vendor": "customendpoint",
-  "apiKey": "<your-moonshot-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -284,6 +299,13 @@ Open (or create) your user config file (see [Config file location](#config-file-
 ```
 
 > **Note:** The `requestBody.temperature` here is a hint to VS Code, but the proxy will enforce the exact values Kimi requires regardless.
+
+Then set your Moonshot API key via the Language Models UI:
+
+- Open the Command Palette (`Ctrl+Shift+P`).
+- Run **Chat: Manage Language Models**.
+- Find the **Kimi** group, right-click it → **Update API Key**.
+- Paste your Moonshot API key.
 
 #### 4. Chat!
 
@@ -323,13 +345,13 @@ Create an API key [here](https://modelstudio.console.alibabacloud.com/ap-southea
 
 #### 2. Register the models in VS Code
 
-Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-dashscope-key>`):
+First, open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (leave `apiKey` as empty string — you'll set it via the UI):
 
 ```json
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -357,6 +379,13 @@ Open (or create) your user config file (see [Config file location](#config-file-
   ]
 }
 ```
+
+Then set your DashScope API key via the Language Models UI:
+
+- Open the Command Palette (`Ctrl+Shift+P`).
+- Run **Chat: Manage Language Models**.
+- Find the **Qwen** group, right-click it → **Update API Key**.
+- Paste your DashScope API key.
 
 > **Trade-off:** `enable_thinking: false` suppresses reasoning in all requests (both plain chat and tool loops). Tool loops stay stable, but you never see the model's thought process. The [optional proxy](#optional-local-proxy-for-dynamic-thinking) below avoids this trade-off.
 
@@ -417,13 +446,13 @@ Expected response:
 }
 ```
 
-Then update your VS Code config to point URLs at the proxy and remove `requestBody` — the proxy handles thinking dynamically:
+Then update your VS Code config to point URLs at the proxy and remove `requestBody` — the proxy handles thinking dynamically (remember, `apiKey` stays empty — set it via the UI):
 
 ```json
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "<your-dashscope-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -524,13 +553,13 @@ Sign up at [platform.xiaomimimo.com](https://platform.xiaomimimo.com) and create
 
 #### 2. Register the models in VS Code
 
-Open your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-mimo-api-key>`):
+First, open your user config file (see [Config file location](#config-file-location) above) and paste this entry (leave `apiKey` as empty string — you'll set it via the UI):
 
 ```json
 {
   "name": "MiMo",
   "vendor": "customendpoint",
-  "apiKey": "<your-mimo-api-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -582,6 +611,13 @@ Open your user config file (see [Config file location](#config-file-location) ab
 }
 ```
 
+Then set your MiMo API key via the Language Models UI:
+
+- Open the Command Palette (`Ctrl+Shift+P`).
+- Run **Chat: Manage Language Models**.
+- Find the **MiMo** group, right-click it → **Update API Key**.
+- Paste your MiMo API key.
+
 > **Note:** `thinking: { "type": "disabled" }` is required for tool-calling stability. Without it, MiMo returns a 400 error when conversation history contains tool calls with missing `reasoning_content`.
 
 #### 3. Chat!
@@ -620,13 +656,13 @@ Create an API key at the [MiniMax Developer Platform](https://platform.minimax.i
 
 #### 2. Register the model in VS Code
 
-Open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-minimax-api-key>`):
+First, open (or create) your user config file (see [Config file location](#config-file-location) above) and paste this entry (leave `apiKey` as empty string — you'll set it via the UI):
 
 ```json
 {
   "name": "MiniMax",
   "vendor": "customendpoint",
-  "apiKey": "<your-minimax-api-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
@@ -648,6 +684,13 @@ Open (or create) your user config file (see [Config file location](#config-file-
   ]
 }
 ```
+
+Then set your MiniMax API key via the Language Models UI:
+
+- Open the Command Palette (`Ctrl+Shift+P`).
+- Run **Chat: Manage Language Models**.
+- Find the **MiniMax** group, right-click it → **Update API Key**.
+- Paste your MiniMax API key.
 
 **Why this config?**
 

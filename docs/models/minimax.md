@@ -213,17 +213,28 @@ If you want to mirror the MiMo convention, you can use `thinking: { "type": "dis
 
 ### Full provider entry (for `chatLanguageModels.json`)
 
+Leave `apiKey` as an empty string — you'll set it via the Language Models UI:
+
 ```json
 {
   "name": "MiniMax",
   "vendor": "customendpoint",
-  "apiKey": "<your-minimax-api-key>",
+  "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     // ... insert model entries above ...
   ]
 }
 ```
+
+To set your MiniMax API key:
+
+1. Open the Command Palette (`Ctrl+Shift+P`).
+2. Run **Chat: Manage Language Models**.
+3. Find the **MiniMax** group, right-click it → **Update API Key**.
+4. Paste your MiniMax API key.
+
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
 ## Validation Plan
 
