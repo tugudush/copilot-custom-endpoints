@@ -43,6 +43,66 @@ The Kimi and Qwen setups require editing the same VS Code config file:
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
+### Full example config
+
+Here's a complete, real-world example of `chatLanguageModels.json` combining all the providers documented in this repo.
+
+```json
+[
+  {
+    "name": "Qwen",
+    "vendor": "customendpoint",
+    "apiKey": "<your-dashscope-key>",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "qwen3.7-max",
+        "name": "Qwen 3.7 Max",
+        "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "requestBody": {
+          "enable_thinking": false
+        }
+      },
+      {
+        "id": "qwen3.6-plus",
+        "name": "Qwen 3.6 Plus",
+        "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "requestBody": {
+          "enable_thinking": false
+        }
+      }
+    ]
+  },
+  {
+    "name": "Kimi",
+    "vendor": "customendpoint",
+    "apiKey": "<your-moonshot-key>",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "kimi-k2.6",
+        "name": "Kimi K2.6",
+        "url": "http://127.0.0.1:3457/v1/chat/completions",
+        "requestBody": {
+          "temperature": 1
+        },
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 262144,
+        "maxOutputTokens": 32768
+      }
+    ]
+  }
+]
+```
+
 ### Kimi K2.6 (Moonshot)
 
 #### 1. Grab a Moonshot API key
@@ -53,18 +113,32 @@ Sign up at [platform.moonshot.ai](https://platform.moonshot.ai) and create an AP
 
 The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `temperature`, `top_p`, and disabling "thinking" during tool calls).
 
-```bash
-# from this repo — Kimi only
-npm run proxy:kimi
-# from this repo — both proxies concurrently
-npm run proxy
-# or with npx
-npx copilot-custom-endpoint kimi
-npx copilot-custom-endpoint       # starts both proxies
-# or directly
-node proxy/kimi-proxy.mjs
+> **Local config:** Create a `.env` file in this repo root to set environment variables like `PORT`, `KIMI_UPSTREAM_URL`, etc. It's loaded automatically via `dotenv` — no need to prefix commands.
 
-# clean up debug logs
+Run Kimi proxy
+
+```bash
+npm run proxy:kimi
+```
+
+Run all proxies
+
+```bash
+npm run proxy
+```
+
+Run globally (from any directory)
+
+```bash
+# Kimi only
+npx copilot-custom-endpoint kimi
+# All proxies
+npx copilot-custom-endpoint
+```
+
+Clean up debug logs
+
+```bash
 npm run clean:logs
 # or with npx
 npx copilot-custom-endpoint clean
@@ -155,18 +229,30 @@ Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an AP
 
 The proxy dynamically enables thinking in plain chat and disables it during tool calls:
 
-```bash
-# from this repo — Qwen only
-npm run proxy:qwen
-# from this repo — both proxies concurrently
-npm run proxy
-# or with npx
-npx copilot-custom-endpoint qwen
-npx copilot-custom-endpoint       # starts both proxies
-# or directly
-node proxy/qwen-proxy.mjs
+Run Qwen proxy
 
-# clean up debug logs
+```bash
+npm run proxy:qwen
+```
+
+Run all proxies
+
+```bash
+npm run proxy
+```
+
+Run globally (from any directory)
+
+```bash
+# Qwen only
+npx copilot-custom-endpoint qwen
+# All proxies
+npx copilot-custom-endpoint
+```
+
+Clean up debug logs
+
+```bash
 npm run clean:logs
 # or with npx
 npx copilot-custom-endpoint clean
