@@ -17,7 +17,10 @@ import { createProxy } from '../lib/create-proxy.mjs'
  */
 const upstreamUrl =
   process.env.KIMI_UPSTREAM_URL ?? 'https://api.moonshot.ai/v1/chat/completions'
-const port = Number.parseInt(process.env.PORT ?? '3457', 10)
+const port = Number.parseInt(
+  process.env.KIMI_PROXY_PORT ?? process.env.PORT ?? '3457',
+  10
+)
 const forcedTemperature = Number(
   process.env.KIMI_PROXY_FORCE_TEMPERATURE ?? '1'
 )
@@ -38,7 +41,7 @@ if (process.argv.includes('--help')) {
 Starts a local HTTP proxy that rewrites the outbound chat-completions request body to use Kimi-compatible sampling values.
 
 Environment variables:
-  PORT                         Local listen port. Default: 3457
+  KIMI_PROXY_PORT              Local listen port. Default: 3457 (falls back to PORT)
   KIMI_UPSTREAM_URL            Upstream Moonshot chat-completions URL.
                                Default: https://api.moonshot.ai/v1/chat/completions
   KIMI_PROXY_FORCE_TEMPERATURE Temperature to force into the request body. Default: 1

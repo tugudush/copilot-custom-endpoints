@@ -104,7 +104,7 @@ This gives you the best of both worlds.
 
 | Variable                                 | Default                                                                   | Purpose                                            |
 | ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
-| `PORT`                                   | `3458`                                                                    | Local listen port                                  |
+| `QWEN_PROXY_PORT`                        | `3458` (falls back to `PORT`)                                             | Local listen port                                  |
 | `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
 | `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson` (relative to repo root)                     | Redacted NDJSON log path                           |
 | `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |

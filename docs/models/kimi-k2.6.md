@@ -102,7 +102,7 @@ Response shape:
 
 | Variable                                    | Default                                               | Purpose                                                 |
 | ------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
-| `PORT`                                      | `3457`                                                | Local listen port                                       |
+| `KIMI_PROXY_PORT`                           | `3457` (falls back to `PORT`)                         | Local listen port                                       |
 | `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`         | Upstream Moonshot endpoint                              |
 | `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                   | Temperature for thinking-mode requests                  |
 | `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                 | Temperature when thinking is disabled (tool requests)   |

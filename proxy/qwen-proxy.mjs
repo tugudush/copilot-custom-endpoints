@@ -15,7 +15,10 @@ import { createProxy } from '../lib/create-proxy.mjs'
 const upstreamUrl =
   process.env.QWEN_UPSTREAM_URL ??
   'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions'
-const port = Number.parseInt(process.env.PORT ?? '3458', 10)
+const port = Number.parseInt(
+  process.env.QWEN_PROXY_PORT ?? process.env.PORT ?? '3458',
+  10
+)
 const disableThinkingWithTools =
   (process.env.QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS ?? '1') !== '0'
 const defaultLogPath = fileURLToPath(
@@ -31,7 +34,7 @@ when the request includes a tools array, letting Qwen hybrid-thinking models
 show reasoning in plain chat while keeping tool loops stable.
 
 Environment variables:
-  PORT                         Local listen port. Default: 3458
+  QWEN_PROXY_PORT              Local listen port. Default: 3458 (falls back to PORT)
   QWEN_UPSTREAM_URL            Upstream DashScope chat-completions URL.
                                Default: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
   QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS
