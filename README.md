@@ -288,7 +288,7 @@ Qwen models work **directly** with DashScope — no proxy needed. Just add `enab
 
 #### 1. Grab a DashScope API key
 
-Sign up at [dashscope.aliyun.com](https://dashscope.aliyun.com) and create an API key.
+Create an API key [here](https://modelstudio.console.alibabacloud.com/ap-southeast-1?tab=dashboard#/api-key).
 
 > **Regional endpoints:** DashScope offers endpoints for several regions. API keys are region-specific.
 >
