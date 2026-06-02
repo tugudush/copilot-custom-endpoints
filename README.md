@@ -1,6 +1,6 @@
 # Github Copilot Custom Endpoints
 
-> **TL;DR** — As of **June 1, 2026**, GitHub Copilot switched to usage-based billing (AI Credits), making every chat and agent session burn credits fast. This repo documents a practical workaround: use **cheaper, non-GitHub models** (DeepSeek, Kimi, Qwen) inside VS Code's Copilot chat — often at **5–55× lower cost** while retaining agent mode, tool calling, and streaming. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
+> **TL;DR** — As of **June 1, 2026**, GitHub Copilot switched to usage-based billing (AI Credits), making every chat and agent session burn credits fast. This repo documents a practical workaround: use **cheaper, non-GitHub models** (DeepSeek, Kimi, Qwen, MiMo) inside VS Code's Copilot chat — often at **5–55× lower cost** while retaining agent mode, tool calling, and streaming. We keep validated, copy-paste-ready configs and a small local proxy that smooths out provider quirks.
 
 ## What is this?
 
@@ -20,16 +20,20 @@ This repo is for those situations: validated, copy-paste-ready configs when Open
 
 ## Quick start
 
-| Provider                      | Model          | Needs proxy?                       | Plain chat | Streaming | Tool calling | Vision |
-| ----------------------------- | -------------- | ---------------------------------- | ---------- | --------- | ------------ | ------ |
-| **Moonshot (Kimi)**           | `kimi-k2.6`    | Yes — `proxy/kimi-proxy.mjs`       | ✅         | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.6-plus` | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ✅     |
-| **Alibaba Cloud (DashScope)** | `qwen3.7-max`  | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ❌     |
-| **DeepSeek**                  | `deepseek-v4`  | No — uses a VS Code extension      | ✅         | ✅        | ✅           | ✅³    |
+| Provider                      | Model           | Needs proxy?                       | Plain chat | Streaming | Tool calling | Vision |
+| ----------------------------- | --------------- | ---------------------------------- | ---------- | --------- | ------------ | ------ |
+| **Moonshot (Kimi)**           | `kimi-k2.6`     | Yes — `proxy/kimi-proxy.mjs`       | ✅         | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.6-plus`  | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ✅     |
+| **Alibaba Cloud (DashScope)** | `qwen3.7-max`   | Optional — `proxy/qwen-proxy.mjs`¹ | ✅²        | ✅        | ✅           | ❌     |
+| **DeepSeek**                  | `deepseek-v4`   | No — uses a VS Code extension      | ✅         | ✅        | ✅           | ✅³    |
+| **Xiaomi MiMo**               | `mimo-v2.5`     | No                                 | ✅         | ✅        | ✅           | ✅⁴    |
+| **Xiaomi MiMo**               | `mimo-v2.5-pro` | No                                 | ✅         | ✅        | ✅           | ❌     |
+| **Xiaomi MiMo**               | `mimo-v2-flash` | No                                 | ✅         | ✅        | ✅           | ❌     |
 
 ¹ Proxy is optional: direct path works with static `enable_thinking: false`. Proxy adds dynamic thinking suppression (thinking ON in plain chat, OFF in tool loops).  
 ² With proxy: reasoning visible in plain chat. Without proxy: always suppressed.  
-³ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.
+³ Vision is supported through a proxy model (Claude, GPT-4o) that describes the image before sending to DeepSeek.  
+⁴ Native vision via dedicated ViT encoder. Tested via VS Code image attachment in agent mode.
 
 Pick the model you want and follow the corresponding section below.
 
@@ -97,6 +101,59 @@ Here's a complete, real-world example of `chatLanguageModels.json` combining all
         "streaming": true,
         "maxInputTokens": 262144,
         "maxOutputTokens": 32768
+      }
+    ]
+  },
+  {
+    "name": "MiMo",
+    "vendor": "customendpoint",
+    "apiKey": "<your-mimo-api-key>",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "mimo-v2.5-pro",
+        "name": "MiMo V2.5 Pro",
+        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "thinking": { "type": "disabled" },
+          "temperature": 1,
+          "top_p": 0.95
+        }
+      },
+      {
+        "id": "mimo-v2.5",
+        "name": "MiMo V2.5",
+        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 32768,
+        "requestBody": {
+          "thinking": { "type": "disabled" },
+          "temperature": 1,
+          "top_p": 0.95
+        }
+      },
+      {
+        "id": "mimo-v2-flash",
+        "name": "MiMo V2 Flash",
+        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 262144,
+        "maxOutputTokens": 65536,
+        "requestBody": {
+          "thinking": { "type": "disabled" },
+          "temperature": 0.3,
+          "top_p": 0.95
+        }
       }
     ]
   }
@@ -418,10 +475,101 @@ DeepSeek V4 is text-only, but the extension handles images automatically — dro
 
 > For the full official guide, see: [github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md](https://github.com/deepseek-ai/awesome-deepseek-agent/blob/main/docs/github_copilot.md)
 
+---
+
+### Xiaomi MiMo
+
+MiMo works **directly** — no proxy needed. Just add the provider entry to your VS Code config and select the model in the chat picker.
+
+No proxy means lower latency, fewer moving parts, and nothing extra to keep running.
+
+#### 1. Get a MiMo API key
+
+Sign up at [platform.xiaomimimo.com](https://platform.xiaomimimo.com) and create an API key from the [Console](https://platform.xiaomimimo.com/console/api-keys).
+
+#### 2. Register the models in VS Code
+
+Open your user config file (see [Config file location](#config-file-location) above) and paste this entry (replace `<your-mimo-api-key>`):
+
+```json
+{
+  "name": "MiMo",
+  "vendor": "customendpoint",
+  "apiKey": "<your-mimo-api-key>",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "mimo-v2.5-pro",
+      "name": "MiMo V2.5 Pro",
+      "url": "https://api.xiaomimimo.com/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "disabled" },
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    },
+    {
+      "id": "mimo-v2.5",
+      "name": "MiMo V2.5",
+      "url": "https://api.xiaomimimo.com/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 32768,
+      "requestBody": {
+        "thinking": { "type": "disabled" },
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    },
+    {
+      "id": "mimo-v2-flash",
+      "name": "MiMo V2 Flash",
+      "url": "https://api.xiaomimimo.com/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 262144,
+      "maxOutputTokens": 65536,
+      "requestBody": {
+        "thinking": { "type": "disabled" },
+        "temperature": 0.3,
+        "top_p": 0.95
+      }
+    }
+  ]
+}
+```
+
+> **Note:** `thinking: { "type": "disabled" }` is required for tool-calling stability. Without it, MiMo returns a 400 error when conversation history contains tool calls with missing `reasoning_content`.
+
+#### 3. Chat!
+
+- Open the Copilot chat panel (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
+- Click the model picker (top-right of the chat input).
+- Choose **MiMo V2 Flash** (fastest/cheapest), **MiMo V2.5** (omnimodal with vision), or **MiMo V2.5 Pro** (most capable for agentic work).
+- Ask something. Streaming, tool use, and vision (V2.5) all work.
+
+#### Troubleshooting (MiMo)
+
+| Symptom                                         | Fix                                                                                                               |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 400 error `reasoning_content` during tool loops | Ensure `thinking: { "type": "disabled" }` is present in `requestBody` for every MiMo model.                       |
+| Vision images fail to upload                    | Use `mimo-v2.5` (the only model with native vision). Text-only models (`pro`, `flash`) don't support image input. |
+
+---
+
 For the full research notes, tested values, and known limitations, see:
 
 - [`docs/models/kimi-k2.6.md`](docs/models/kimi-k2.6.md)
 - [`docs/models/qwen.md`](docs/models/qwen.md)
+- [`docs/models/mimo.md`](docs/models/mimo.md)
 
 ## Pricing comparison
 
@@ -470,32 +618,39 @@ These are the models available through GitHub Copilot's model roster as of June 
 | Model                 | Provider  | Input (per 1M)                | Output (per 1M)                         | Context window |
 | --------------------- | --------- | ----------------------------- | --------------------------------------- | -------------- |
 | **DeepSeek V4 Flash** | DeepSeek  | $0.14                         | $0.28                                   | 1M             |
+| **MiMo V2 Flash** 🏆  | Xiaomi    | $0.10                         | $0.30                                   | 256K           |
 | **Kimi K2.6**         | Moonshot  | $0.16                         | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
 | **DeepSeek V4 Pro**   | DeepSeek  | $1.74                         | $3.48                                   | 1M             |
+| **MiMo V2.5**         | Xiaomi    | $0.40                         | $2.00                                   | 1M             |
+| **MiMo V2.5 Pro**     | Xiaomi    | $1.00                         | $3.00                                   | 1M             |
 | **Qwen 3.6 Plus**     | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
 | **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
 
 > **Notes:**
 >
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.0145/M for Pro).
+> - **MiMo** input pricing shown is the **cache miss** price. Cache hits are 5× cheaper for V2.5 Pro ($0.20/M) and V2.5 ($0.08/M), and 10× cheaper for V2 Flash ($0.01/M).
 > - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
 > - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+ use a new tokenizer that may use up to 35% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi K2.6** pricing is from the **Moonshot platform** (direct). Via DashScope: $0.89 input / $3.71 output.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
+> - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
 **Quick cost comparison for a typical coding session** (~10K input + ~2K output tokens per turn, 50 turns):
 
 | Model                    | Estimated session cost | Copilot Pro+ credits |
 | ------------------------ | ---------------------- | -------------------- |
+| MiMo V2 Flash 🏆         | ~$0.08                 | —                    |
 | DeepSeek V4 Flash 🏆     | ~$0.10                 | —                    |
 | Kimi K2.6 (non-thinking) | ~$0.18                 | —                    |
-| Raptor mini              | ~$0.33                 | ~33                  |
+| MiMo V2.5                | ~$0.40                 | —                    |
 | Kimi K2.6 (thinking)     | ~$0.48                 | —                    |
 | Gemini 3 Flash           | ~$0.55                 | ~55                  |
 | Qwen 3.6 Plus            | ~$0.55                 | —                    |
+| MiMo V2.5 Pro            | ~$0.80                 | —                    |
 | GPT-5.4 mini             | ~$0.83                 | ~83                  |
 | Claude Haiku 4.5         | ~$1.00                 | ~100                 |
 | DeepSeek V4 Pro          | ~$1.22                 | —                    |
@@ -519,6 +674,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
+> - [MiMo pricing](https://platform.xiaomimimo.com/docs/en-US/pricing)
 
 ## Repo layout
 
