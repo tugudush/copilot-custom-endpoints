@@ -119,6 +119,8 @@ Response shape:
 | `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                   | Force `thinking={"type":"disabled"}` when tools present |
 | `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to repo root) | Redacted NDJSON log path                                |
 
+All of the above can be set in a `.env` file at the repo root — both proxies `import 'dotenv/config'` at startup, so values are loaded automatically without prefixing commands. See `node proxy/kimi-proxy.mjs --help` for the full list.
+
 Start command:
 
 ```text

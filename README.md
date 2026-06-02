@@ -209,8 +209,6 @@ Sign up at [platform.moonshot.ai](https://platform.moonshot.ai) and create an AP
 
 The proxy rewrites VS Code's requests into shapes Kimi actually accepts (fixed `temperature`, `top_p`, and disabling "thinking" during tool calls).
 
-> **Local config:** Create a `.env` file in this repo root to set environment variables like `KIMI_PROXY_PORT`, `KIMI_UPSTREAM_URL`, etc. It's loaded automatically via `dotenv` — no need to prefix commands.
-
 Run Kimi proxy
 
 ```bash
