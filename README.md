@@ -215,27 +215,11 @@ Run Kimi proxy
 npm run proxy:kimi
 ```
 
-Run all proxies
-
-```bash
-npm run proxy
-```
-
-Run globally (from any directory)
+You can also run it globally from any directory (no need to clone/download this repo):
 
 ```bash
 # Kimi only
 npx copilot-custom-endpoint kimi
-# All proxies
-npx copilot-custom-endpoint
-```
-
-Clean up debug logs
-
-```bash
-npm run clean:logs
-# or with npx
-npx copilot-custom-endpoint clean
 ```
 
 You should see:
@@ -406,19 +390,11 @@ Start the proxy:
 npm run proxy:qwen
 ```
 
-Or with all proxies:
-
-```bash
-npm run proxy
-```
-
-Or globally (from any directory):
+You can also run it globally from any directory (no need to clone/download this repo):
 
 ```bash
 # Qwen only
 npx copilot-custom-endpoint qwen
-# All proxies
-npx copilot-custom-endpoint
 ```
 
 You should see:
@@ -721,6 +697,32 @@ For the full research notes, tested values, and known limitations, see:
 - [`docs/models/qwen.md`](docs/models/qwen.md)
 - [`docs/models/mimo.md`](docs/models/mimo.md)
 - [`docs/models/minimax.md`](docs/models/minimax.md)
+
+### Additional commands
+
+Running all proxies
+
+```bash
+npm run proxy
+```
+
+npx (global) method
+
+```bash
+npx copilot-custom-endpoint
+```
+
+Clean up debug logs
+
+```bash
+npm run clean:logs
+```
+
+npx (global) method
+
+```bash
+npx copilot-custom-endpoint clean
+```
 
 ## Pricing comparison
 
