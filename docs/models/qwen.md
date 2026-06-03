@@ -1,143 +1,55 @@
-# Qwen (DashScope) — Validation Record & Optional Proxy
+# Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **Status: Validated** — All phases complete. Direct VS Code → DashScope path works without a proxy for both `qwen3.6-plus` (vision) and `qwen3.7-max` (text-only). Optional `proxy/qwen-proxy.mjs` available for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops).
+> **TL;DR:** Direct path works for both `qwen3.6-plus` (vision) and `qwen3.7-max` (text-only) without a proxy. The optional `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. Pick the mode that matches your tradeoff.
 
-## Overview
+## At a Glance
 
-This document covers both Qwen models validated on Alibaba Cloud DashScope's OpenAI-compatible Chat Completions surface:
+| Field                           | Value                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| Mode                            | **Direct** (no proxy) **or** **Proxy** (optional, for dynamic thinking)   |
+| Vision                          | ✅ Yes (`qwen3.6-plus` only)                                              |
+| Tool calling                    | ✅ Yes                                                                    |
+| Context                         | 1M                                                                        |
+| Required `requestBody` (direct) | `enable_thinking: false`                                                  |
+| Required `requestBody` (proxy)  | none — proxy injects based on `tools` presence                            |
+| Endpoint                        | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` |
+| Proxy endpoint                  | `http://127.0.0.1:3458/v1/chat/completions`                               |
+
+### Models at a glance
 
 | Model          | Vision | Role                                   |
 | -------------- | ------ | -------------------------------------- |
 | `qwen3.6-plus` | ✅ Yes | Primary model with image understanding |
 | `qwen3.7-max`  | ❌ No  | Larger text-only model                 |
 
-They share the same provider, endpoint, auth, and `enable_thinking` constraints, so they're documented together.
+> The snapshot `qwen3.6-plus-2026-04-02` is also available; the floating `qwen3.6-plus` alias is preferred.
 
-### Official API surface
+## Quick Start — Direct Path (Recommended for Simplicity)
 
-| Property                              | Value                                                                          |
-| ------------------------------------- | ------------------------------------------------------------------------------ |
-| Provider                              | Alibaba Cloud DashScope                                                        |
-| Chat Completions endpoint (Singapore) | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`      |
-| Auth header                           | `Authorization: Bearer <DASHSCOPE_API_KEY>`                                    |
-| Streaming                             | `stream: true` (SSE, `data: [DONE]` terminator)                                |
-| Tool calling                          | `tools` array, `tool_calls` response                                           |
-| Vision                                | Image input via OpenAI-compatible `content` array format (`qwen3.6-plus` only) |
-| Non-OpenAI extras                     | `enable_thinking`, `thinking_budget`, `enable_search` (via `extra_body`)       |
+1. **Edit `chatLanguageModels.json`** — add the Qwen block from [Setup § Direct](#direct-path) below.
+2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
+3. **Restart VS Code** and pick "Qwen 3.6 Plus" or "Qwen 3.7 Max".
+
+## Quick Start — With Proxy (Dynamic Thinking)
+
+1. **Start the proxy:** `npm run proxy:qwen`.
+2. **Edit `chatLanguageModels.json`** — use the proxy-path block from [Setup § Proxy](#proxy-path) below.
+3. **Set your DashScope API key** via the Language Models UI.
+4. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
+
+## Setup
 
 ### Regional endpoints
 
-DashScope offers endpoints for other regions:
+DashScope is region-specific — your API key only works on the endpoint it was created for:
 
-- **China (Beijing):** `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`
-- **US (Virginia):** `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`
-- **Singapore:** `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (used in this guide)
+| Region                             | Endpoint                                                                  |
+| ---------------------------------- | ------------------------------------------------------------------------- |
+| **Singapore (used in this guide)** | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` |
+| China (Beijing)                    | `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`      |
+| US (Virginia)                      | `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`   |
 
-Choose the endpoint closest to your location for better latency. Note that API keys are region-specific.
-
-## Models
-
-### qwen3.7-max (text only)
-
-- Listed under DashScope's **text generation** model family.
-- No image/video understanding.
-- Validated capabilities: plain chat, streaming, tool calling.
-
-#### Caveats
-
-- Part of the Qwen3 hybrid thinking model family — `enable_thinking` defaults to `true`, producing `reasoning_content` in responses.
-- `maxInputTokens` / `maxOutputTokens` not yet confirmed from official DashScope documentation.
-
-### qwen3.6-plus (vision + text)
-
-- Listed under both **text generation** and **image/video understanding** model families.
-- Supports image input via OpenAI-compatible `content` array format (base64 data URIs).
-- Validated capabilities: plain chat, streaming, tool calling, **vision**.
-
-#### Caveats
-
-- Same Qwen3 hybrid thinking model family — same `enable_thinking` default behavior.
-- External image URLs may fail if DashScope's servers cannot reach them; base64-encoded images work reliably.
-- Snapshot version `qwen3.6-plus-2026-04-02` also available; floating `qwen3.6-plus` alias preferred.
-- `maxInputTokens` / `maxOutputTokens` not yet confirmed from official DashScope documentation.
-
-## Thinking Mode & The Optional Proxy
-
-### The problem
-
-The Qwen3 hybrid-thinking models default to `enable_thinking: true`, producing `reasoning_content` in responses. This is **harmless in plain chat** (you see the model's reasoning) but **breaks agent/tool-calling loops**: VS Code may not preserve `reasoning_content` in follow-up tool-result messages, and the model may reject the continuation.
-
-### Option 1 — Direct path (simplest, static suppression)
-
-Works without a proxy. Static `enable_thinking: false` is injected via `requestBody` for **every** request:
-
-```
-enable_thinking: false  →  always suppressed (both plain chat and tool loops)
-```
-
-**Trade-off:** reasoning suppressed in all requests. Tool loops stay stable, but you never see the model's thought process.
-
-### Option 2 — With proxy (dynamic suppression)
-
-The optional `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked:
-
-```
-no tools → enable_thinking deleted (model defaults to true, reasoning visible)
-tools    → enable_thinking: false injected (no reasoning_content issues)
-```
-
-This gives you the best of both worlds.
-
-#### Proxy design
-
-| Component            | Value                                                                       |
-| -------------------- | --------------------------------------------------------------------------- |
-| Local listen         | `http://127.0.0.1:3458/v1/chat/completions`                                 |
-| Health check         | `GET http://127.0.0.1:3458/healthz`                                         |
-| Upstream             | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`   |
-| Auth passthrough     | `Authorization: Bearer <key>` forwarded as-is                               |
-| Response passthrough | Streaming (SSE) and non-streaming, headers stripped of hop-by-hop           |
-| Logging              | Redacted NDJSON → `debug_log/qwen-proxy.ndjson`                             |
-| Pattern              | Follows `proxy/kimi-proxy.mjs` but simpler — no temperature/top_p rewriting |
-
-#### Environment variables
-
-| Variable                                 | Default                                                                   | Purpose                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
-| `QWEN_PROXY_PORT`                        | `3458` (falls back to `PORT`)                                             | Local listen port                                  |
-| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
-| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson` (relative to repo root)                     | Redacted NDJSON log path                           |
-| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
-
-#### Request rewriting rules
-
-| Condition                                | Action                                                      |
-| ---------------------------------------- | ----------------------------------------------------------- |
-| `body.tools` is a non-empty array        | Set `body.enable_thinking = false`                          |
-| `body.tools` is missing, empty, or falsy | Delete `body.enable_thinking` (let model default to `true`) |
-
-> **Why delete rather than set `true`?** Omitting the key lets Qwen use its built-in default (`true`). Deletion is closer to "don't interfere."
-
-#### Proxy validation results
-
-All 8 checks passed on June 1, 2026:
-
-| #   | Check                                    | Result                                                                           |
-| --- | ---------------------------------------- | -------------------------------------------------------------------------------- |
-| 1   | Proxy starts                             | ✅ `--help` prints correct usage and defaults                                    |
-| 2   | Health check                             | ✅ Returns `{"ok":true,"port":3458,...}`                                         |
-| 3   | Plain chat (no tools) → thinking ON      | ✅ Response contains `reasoning_content`; `enable_thinking` deleted              |
-| 4   | Tool chat (tools present) → thinking OFF | ✅ No `reasoning_content`; clean `tool_calls`; `enable_thinking: false` injected |
-| 5   | Streaming passthrough                    | ✅ SSE chunks arrive correctly with `text/event-stream` content type             |
-| 6   | Error passthrough                        | ✅ Invalid JSON returns HTTP 400 with useful error message                       |
-| 7   | Auth passthrough                         | ✅ Missing key forwarded to DashScope → 401; valid key → 200                     |
-| 8   | Logging                                  | ✅ All entries redact `Authorization: Bearer <redacted>`                         |
-
-**VS Code integration:** Both models visible in picker, agent/tool use works cleanly, vision requests succeed via proxy. Proxy logs confirmed multiple VS Code Copilot Chat requests with `hasTools: true`, all returning HTTP 200.
-
-## VS Code Configuration
-
-### Direct path (no proxy)
+### Direct path
 
 ```json
 {
@@ -172,20 +84,11 @@ All 8 checks passed on June 1, 2026:
 }
 ```
 
-To set your DashScope API key:
+> **`enable_thinking: false`** suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
 
-1. Open the Command Palette (`Ctrl+Shift+P`).
-2. Run **Chat: Manage Language Models**.
-3. Find the **Qwen** group, right-click it → **Update API Key**.
-4. Paste your DashScope API key.
+### Proxy path
 
-> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
-
-> **Note:** `enable_thinking: false` suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
-
-### Proxy path (dynamic thinking suppression)
-
-Start the proxy:
+#### 1. Start the proxy
 
 ```bash
 node proxy/qwen-proxy.mjs
@@ -215,7 +118,7 @@ Expected response:
 }
 ```
 
-Then update VS Code config — change `url` to point to the proxy and **remove** `requestBody.enable_thinking` (leave `apiKey` as empty string — set it via the UI):
+#### 2. Update VS Code config — point URLs to the proxy and remove `requestBody.enable_thinking`
 
 ```json
 {
@@ -246,105 +149,159 @@ Then update VS Code config — change `url` to point to the proxy and **remove**
 
 > **Keep the proxy terminal open** while using Qwen via proxy.
 
-#### Troubleshooting (proxy)
+#### Proxy environment variables
 
-| Symptom                       | Fix                                                                                                          |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| "Connection refused"          | Make sure `node proxy/qwen-proxy.mjs` is still running                                                       |
-| Tool loops fail               | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
-| Want to switch back to direct | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
+All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/config'` automatically).
 
-## Validation Results (Direct Path)
+| Variable                                 | Default                                                                   | Purpose                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
+| `QWEN_PROXY_PORT`                        | `3458` (falls back to `PORT`)                                             | Local listen port                                  |
+| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
+| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson` (relative to repo root)                     | Redacted NDJSON log path                           |
+| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
 
-### qwen3.7-max
+#### Proxy request rewriting rules
 
-| Capability                                   | Direct (no proxy) | Notes                                                                               |
-| -------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------- |
-| Non-streaming chat (external curl)           | ✅                | HTTP 200, valid assistant message; `reasoning_content` present                      |
-| Streaming chat (external curl)               | ✅                | HTTP 200, SSE chunks with `[DONE]`; `reasoning_content` streams alongside `content` |
-| Tool-enabled chat (thinking on)              | ✅                | HTTP 200, `finish_reason: tool_calls` — `reasoning_content` present                 |
-| Tool-enabled chat (`enable_thinking: false`) | ✅                | HTTP 200, clean OpenAI-shape, no `reasoning_content`, 25 tokens vs 170              |
-| Model appears in VS Code picker              | ✅                | Visible; "Agent \| Qwen 3.7 Max" confirmed                                          |
-| Plain chat in VS Code                        | ✅                | Streaming output confirmed                                                          |
-| Streaming in VS Code                         | ✅                | Token-by-token streaming confirmed                                                  |
-| Tool / agent use in VS Code                  | ✅                | Browser tool invoked successfully                                                   |
+| Condition                                | Action                                                      |
+| ---------------------------------------- | ----------------------------------------------------------- |
+| `body.tools` is a non-empty array        | Set `body.enable_thinking = false`                          |
+| `body.tools` is missing, empty, or falsy | Delete `body.enable_thinking` (let model default to `true`) |
 
-### qwen3.6-plus
+> **Why delete rather than set `true`?** Omitting the key lets Qwen use its built-in default (`true`). Deletion is closer to "don't interfere."
 
-| Capability                                   | Direct (no proxy) | Notes                                                                                       |
-| -------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------- |
-| Non-streaming chat (external curl)           | ✅                | HTTP 200, valid response; `reasoning_content` present (727 reasoning tokens)                |
-| Streaming chat (external curl)               | ✅                | SSE chunks with `reasoning_content` deltas streaming correctly                              |
-| Tool-enabled chat (`enable_thinking: false`) | ✅                | Clean `tool_calls`, no `reasoning_content`, 25 tokens                                       |
-| Vision: image + text (external curl)         | ✅                | Base64 image understood correctly; external URL failed (DashScope couldn't reach Wikipedia) |
-| Model appears in VS Code picker              | ✅                | Visible; "Agent \| Qwen 3.6 Plus" confirmed                                                 |
-| Plain chat in VS Code                        | ✅                | Streaming output confirmed                                                                  |
-| Streaming in VS Code                         | ✅                | Token-by-token streaming confirmed                                                          |
-| Tool / agent use in VS Code                  | ✅                | Browser tool invoked to open Qwen docs and Google successfully                              |
-| Vision in VS Code                            | ✅                | Image attachment analyzed correctly                                                         |
+### API key
 
-## Validation Details
+1. Open the Command Palette (`Ctrl+Shift+P`).
+2. Run **Chat: Manage Language Models**.
+3. Find the **Qwen** group → **Update API Key**.
+4. Paste your DashScope API key.
 
-### qwen3.7-max — Phase 2: External API checks
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
-Three checks ran against `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` with `model: qwen3.7-max`.
+## Configuration Reference
 
-#### Non-streaming chat
+### Thinking mode
 
-Standard `messages` array, `stream: false`. HTTP 200, valid assistant `content`. `reasoning_content` present — thinking mode enabled by default.
+The Qwen3 hybrid-thinking models default to `enable_thinking: true`, producing `reasoning_content` in responses. This is **harmless in plain chat** (you see the model's reasoning) but **breaks agent/tool-calling loops**: VS Code may not preserve `reasoning_content` in follow-up tool-result messages, and the model may reject the continuation.
 
-#### Streaming chat
+| Mode                | Plain chat                      | Tool turns                    |
+| ------------------- | ------------------------------- | ----------------------------- |
+| Direct path         | Thinking OFF (always)           | Thinking OFF                  |
+| Proxy path          | Thinking ON (default preserved) | Thinking OFF (auto-injected)  |
+| No config (default) | Thinking ON                     | Risk: history may be rejected |
 
-`stream: true`. HTTP 200, SSE `data:` chunks arrived correctly. `reasoning_content` streamed in every chunk before `content` started. `data: [DONE]` terminator present.
+### Vision (`qwen3.6-plus` only)
 
-#### Tool-enabled chat
+- Image input via OpenAI-compatible `content` array format (base64 data URIs).
+- **External image URLs may fail** if DashScope's servers cannot reach them — base64-encoded images work reliably.
 
-First run (thinking on, default): HTTP 200, correct `tool_calls` — but `reasoning_content` present alongside `tool_calls`. Mirrors the Kimi K2.6 risk pattern.
+### Capabilities
 
-Second run (`enable_thinking: false`): HTTP 200, clean response — **no `reasoning_content`**, standard OpenAI-compatible shape, `finish_reason: "tool_calls"`, 25 tokens vs 170. Confirms `enable_thinking: false` is a valid top-level JSON field.
+- Streaming (SSE, `data: [DONE]` terminator).
+- Tool calling with `tools` array and `tool_calls` response.
+- Vision (image input) on `qwen3.6-plus` only.
+- Non-OpenAI extras: `enable_thinking`, `thinking_budget`, `enable_search` (via `extra_body`).
 
-### qwen3.6-plus — Phase 2: External API checks
+## Troubleshooting
 
-Four checks ran against the same endpoint with `model: qwen3.6-plus`.
+| Symptom                                         | Likely cause                                 | Fix                                                                                                          |
+| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| "Connection refused" (proxy mode)               | Proxy not running                            | `npm run proxy:qwen`                                                                                         |
+| Tool loops fail with `reasoning_content` errors | Direct path missing `enable_thinking: false` | Add `enable_thinking: false` to `requestBody`                                                                |
+| Tool loops still fail with proxy                | Proxy not rewriting                          | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
+| Vision fails with external image URL            | DashScope couldn't reach the URL             | Use a base64 data URI instead                                                                                |
+| 401 Unauthorized                                | API key region mismatch                      | Match your key to the regional endpoint                                                                      |
+| Intermittent `net::ERR_CONNECTION_RESET`        | Transient VS Code / Electron transport       | Retry; not reproducible via `curl` or Node.js                                                                |
+| Want to switch back to direct                   | Proxy mode active                            | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
 
-#### Non-streaming chat
+## Pricing
 
-HTTP 200, valid assistant `content`. `reasoning_content` present (727 reasoning tokens for a simple greeting).
+For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashScope (international) rates for **non-thinking** mode:
 
-#### Streaming chat
+| Model          | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
+| -------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
+| `qwen3.6-plus` | $0.50 / 1M            | $2.00 / 1M            | $3.00 / 1M             | $6.00 / 1M             |
+| `qwen3.7-max`  | $2.50 / 1M (≤ 1M)     | —                     | $7.50 / 1M (≤ 1M)      | —                      |
 
-HTTP 200, SSE chunks with `reasoning_content` deltas before `content`. `data: [DONE]` present.
+> **Free quota:** DashScope offers 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
 
-#### Tool-enabled chat
+---
 
-`enable_thinking: false` added as top-level field. HTTP 200, clean response — **no `reasoning_content`**, standard shape, `finish_reason: "tool_calls"`, 25 tokens.
+## Background & Findings
 
-#### Vision: image + text prompt
+> This appendix preserves the validation narrative for future reference. It is not required to use the model.
 
-First attempt (external image URL): HTTP 400, `Failed to download multimodal content` — Wikipedia URL unreachable from DashScope's servers.
+### Why a proxy is useful (and why a static `enable_thinking: false` is enough)
 
-Second attempt (base64-encoded image): HTTP 200, valid response. Model correctly identified a 10×10 test pattern. `usage` included `image_tokens: 66`, confirming vision processing.
+Both work — pick based on your preference:
 
-**Key finding:** Vision works with base64 data URIs but external image URLs may fail if DashScope cannot reach them. Provider-side limitation, not a model limitation.
+- **Direct path** is the simplest: static `enable_thinking: false` suppresses reasoning in all requests. Tool loops stay stable. Trade-off: you never see the model's thought process.
+- **Proxy path** is dynamic: reasoning stays ON in plain chat (you see it), and the proxy automatically sets `enable_thinking: false` when `tools` is present (loops stay stable). Best of both worlds, at the cost of running a local process.
 
-### Phase 4 — VS Code in-editor validation (both models)
+### Validation results (June 1, 2026)
 
-- Both models appear in VS Code picker and are selectable.
-- Plain chat, streaming, and tool/agent use confirmed working for both.
-- Vision confirmed working for `qwen3.6-plus` (attached Facebook screenshot identified correctly).
-- One intermittent `net::ERR_CONNECTION_RESET` observed during `qwen3.6-plus` Phase 4 — **not reproducible** via direct `curl` or Node.js requests to DashScope. Treated as transient VS Code / Electron transport issue.
+#### Proxy validation (8 checks, all passed)
 
-#### Intermittent connection reset investigation
+| #   | Check                                    | Result                                                                           |
+| --- | ---------------------------------------- | -------------------------------------------------------------------------------- |
+| 1   | Proxy starts                             | ✅ `--help` prints correct usage and defaults                                    |
+| 2   | Health check                             | ✅ Returns `{"ok":true,"port":3458,...}`                                         |
+| 3   | Plain chat (no tools) → thinking ON      | ✅ Response contains `reasoning_content`; `enable_thinking` deleted              |
+| 4   | Tool chat (tools present) → thinking OFF | ✅ No `reasoning_content`; clean `tool_calls`; `enable_thinking: false` injected |
+| 5   | Streaming passthrough                    | ✅ SSE chunks arrive correctly with `text/event-stream`                          |
+| 6   | Error passthrough                        | ✅ Invalid JSON returns HTTP 400 with useful error message                       |
+| 7   | Auth passthrough                         | ✅ Missing key → 401; valid key → 200                                            |
+| 8   | Logging                                  | ✅ All entries redact `Authorization: Bearer <redacted>`                         |
 
-The reset did not reproduce on the same machine outside VS Code:
+#### Direct-path validation — `qwen3.7-max`
+
+| Capability                                   | Result | Notes                                                                  |
+| -------------------------------------------- | ------ | ---------------------------------------------------------------------- |
+| Non-streaming chat (curl)                    | ✅     | HTTP 200, valid assistant message; `reasoning_content` present         |
+| Streaming chat (curl)                        | ✅     | HTTP 200, SSE chunks; `reasoning_content` streamed alongside `content` |
+| Tool-enabled chat (thinking on)              | ✅     | HTTP 200, `finish_reason: tool_calls` — `reasoning_content` present    |
+| Tool-enabled chat (`enable_thinking: false`) | ✅     | HTTP 200, clean OpenAI shape, no `reasoning_content`, 25 tokens vs 170 |
+| Model appears in VS Code picker              | ✅     | "Agent \| Qwen 3.7 Max" confirmed                                      |
+| Plain chat in VS Code                        | ✅     | Streaming output confirmed                                             |
+| Streaming in VS Code                         | ✅     | Token-by-token streaming confirmed                                     |
+| Tool / agent use in VS Code                  | ✅     | Browser tool invoked successfully                                      |
+
+#### Direct-path validation — `qwen3.6-plus`
+
+| Capability                                   | Result | Notes                                                                        |
+| -------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
+| Non-streaming chat (curl)                    | ✅     | HTTP 200; `reasoning_content` present (727 reasoning tokens)                 |
+| Streaming chat (curl)                        | ✅     | SSE chunks with `reasoning_content` deltas streaming correctly               |
+| Tool-enabled chat (`enable_thinking: false`) | ✅     | Clean `tool_calls`, no `reasoning_content`, 25 tokens                        |
+| Vision: image + text (curl, base64)          | ✅     | Model correctly identified a 10×10 test pattern; `image_tokens: 66`          |
+| Vision: image + text (curl, external URL)    | ❌     | `Failed to download multimodal content` — DashScope couldn't reach Wikipedia |
+| Model appears in VS Code picker              | ✅     | "Agent \| Qwen 3.6 Plus" confirmed                                           |
+| Plain chat in VS Code                        | ✅     | Streaming output confirmed                                                   |
+| Streaming in VS Code                         | ✅     | Token-by-token streaming confirmed                                           |
+| Tool / agent use in VS Code                  | ✅     | Browser tool invoked to open Qwen docs and Google                            |
+| Vision in VS Code                            | ✅     | Image attachment analyzed correctly                                          |
+
+#### Intermittent `ERR_CONNECTION_RESET` investigation
+
+A `net::ERR_CONNECTION_RESET` was observed once during `qwen3.6-plus` validation, but did not reproduce on the same machine outside VS Code:
 
 - Direct `curl` POST to DashScope Singapore → HTTP 200.
 - Direct Node.js HTTPS POST → HTTP 200.
 - Direct Node.js HTTPS **streaming** POST with full `qwen3.6-plus.md` content embedded → HTTP 200.
 
-Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to intermittent VS Code / Electron transport issue or transient network interruption local to the editor process.
+Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to an intermittent VS Code / Electron transport issue or transient network interruption local to the editor process.
 
-## Known Limitations
+### Final verdict
+
+| Criterion              | `qwen3.7-max`  | `qwen3.6-plus` |
+| ---------------------- | -------------- | -------------- |
+| Plain chat             | ✅             | ✅             |
+| Streaming chat         | ✅             | ✅             |
+| Tool-enabled agent use | ✅             | ✅             |
+| Vision                 | ❌ (text-only) | ✅             |
+| Without a proxy        | ✅             | ✅             |
+
+### Known limitations
 
 - GitHub Copilot inline completions and semantic-search features remain outside scope.
 - One intermittent VS Code-side `net::ERR_CONNECTION_RESET` was observed — not reproducible externally, treated as transient transport issue.
@@ -353,26 +310,11 @@ Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to in
 - `maxInputTokens` / `maxOutputTokens` not yet confirmed from official DashScope documentation.
 - API keys are region-specific — a key created for one regional endpoint will not work with another.
 
-## Final Verdict
-
-| Criterion              | qwen3.7-max    | qwen3.6-plus |
-| ---------------------- | -------------- | ------------ |
-| Plain chat             | ✅             | ✅           |
-| Streaming chat         | ✅             | ✅           |
-| Tool-enabled agent use | ✅             | ✅           |
-| Vision                 | ❌ (text-only) | ✅           |
-| Without a proxy        | ✅             | ✅           |
-
-**Choose your operating mode:**
-
-**Option 1 — Direct path (simplest):** Keep `enable_thinking: false` in `requestBody`. Works fine for all use cases. Reasoning suppressed in all requests.
-
-**Option 2 — With proxy (dynamic thinking):** Start `proxy/qwen-proxy.mjs`, point URLs to `http://127.0.0.1:3458/v1/chat/completions`, remove `enable_thinking`. Reasoning visible in plain chat, suppressed in tool loops.
-
-## Sources
+## References
 
 - VS Code custom endpoint docs: `https://code.visualstudio.com/docs/copilot/customization/language-models#_add-a-custom-endpoint-model`
 - DashScope OpenAI-compatible Chat Completions overview: `https://help.aliyun.com/zh/model-studio/compatibility-of-openai-with-dashscope`
 - DashScope model index: `https://help.aliyun.com/zh/model-studio/getting-started/models`
 - DashScope vision model guide: `https://help.aliyun.com/zh/model-studio/vision`
+- DashScope pricing: `https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio`
 - Kimi K2.6 validation record (separate provider): [kimi-k2.6.md](kimi-k2.6.md)
