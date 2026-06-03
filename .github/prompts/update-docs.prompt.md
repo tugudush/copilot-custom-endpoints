@@ -1,5 +1,5 @@
 ---
-mode: agent
+agent: agent
 description: Audit and update all documentation (README.md, AGENTS.md, docs/models/) against the live chatLanguageModels.json config and proxy source files.
 ---
 
@@ -18,8 +18,8 @@ Read in parallel:
 
 - `README.md`
 - `AGENTS.md`
-- `docs/models/kimi-k2.6.md`
-- `docs/models/qwen.md`
+- `docs/example-config.md`
+- All files currently in `docs/models/` (at time of writing: `kimi-k2.6.md`, `qwen.md`, `mimo.md`, `minimax.md` — but a new provider doc may have been added since). Use `file_search` for `docs/models/*.md` to discover the current set rather than assuming.
 
 ## Step 3 — Audit against source of truth
 
@@ -52,8 +52,9 @@ For each provider in `chatLanguageModels.json`, verify the following in the docs
 
 ### JSON config snippets in README.md and model docs
 
-- [ ] The Kimi snippet matches the live chatLanguageModels.json entry exactly (field order and values).
-- [ ] The Qwen snippet matches the live chatLanguageModels.json entry exactly.
+- [ ] Every provider's "Final Working Configuration" snippet in its model doc (Kimi, Qwen, MiMo, MiniMax, and any new provider) matches the live `chatLanguageModels.json` entry exactly — same field order, same values, including numeric formatting (e.g. `1` vs `1.0`).
+- [ ] The combined full-config snippet in `docs/example-config.md` matches the live `chatLanguageModels.json` for every provider it covers, end to end.
+- [ ] "At a Glance" summary tables in each model doc (e.g. context, max output) reflect the actual `maxInputTokens` / `maxOutputTokens` values from the live config, not just the JSON snippet below.
 - [ ] Placeholder text uses `<your-moonshot-key>` / `<your-dashscope-key>` consistently.
 
 ### AGENTS.md

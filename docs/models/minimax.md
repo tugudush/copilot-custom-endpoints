@@ -52,7 +52,7 @@ Config file location:
       "requestBody": {
         "thinking": { "type": "adaptive" },
         "reasoning_split": true,
-        "temperature": 1.0,
+        "temperature": 1,
         "top_p": 0.95
       }
     }
