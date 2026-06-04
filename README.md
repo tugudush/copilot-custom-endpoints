@@ -106,6 +106,21 @@ All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01.
 
 For the full pricing comparison (cached rates, full Copilot roster, footnotes, sources) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
+## Companion tools
+
+These work alongside the providers above and fill gaps that VS Code's built-in tool surface doesn't cover natively.
+
+### 🎬 [Video Context MCP](https://www.videocontextmcp.com/) — _video understanding for AI coding assistants_
+
+VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, GIF, WebP). That's a hard wall if you want to ask an AI assistant about a screen recording, a screencast, a product demo, or any other video. Several vision-capable models in this repo (notably **GLM-5V-Turbo**) actually accept video natively — but VS Code's tool pipeline never gets the chance to forward it.
+
+**Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
+
+- **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
+- **Routes them through a multi-provider fallback chain** — `Gemini → GLM-4.6V → Qwen3.6 → Kimi K2.6 → MiMo-V2.5` — so a single `GLM 5V Turbo` rate-limit hiccup doesn't kill your session.
+- **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
+- **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
+
 ## Need help?
 
 - **Per-model issues:** check the troubleshooting section at the bottom of each model's doc.
