@@ -53,7 +53,6 @@ These are the models available through GitHub Copilot's model roster as of June 
 | **Qwen 3.7 Plus**     | DashScope | $0.40 (≤256K) / $1.20 (>256K) | $1.60 (≤256K) / $4.80 (>256K)           | 1M             |
 | **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
 | **MiniMax M3**        | MiniMax   | $0.60 (≤512K) / $1.20 (>512K) | $2.40 (≤512K) / $4.80 (>512K)           | 1M             |
-| **GLM 4.7 Flash**     | Z.ai      | Free (rate-limited ¹)         | Free (rate-limited ¹)                   | 200K           |
 | **GLM 5V Turbo**      | Z.ai      | $1.20                         | $4.00                                   | 200K           |
 | **GLM 5.1**           | Z.ai      | $1.40                         | $4.40                                   | 200K           |
 
@@ -68,7 +67,6 @@ These are the models available through GitHub Copilot's model roster as of June 
 > - **Kimi K2.6** pricing is from the **Moonshot platform** (direct). Via DashScope: $0.89 input / $3.71 output.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
 > - **MiniMax M3** uses **tiered pricing** — input price doubles above 512K input tokens. A 7-day 50% off promotion is available for new accounts.
-> - **GLM** free-tier models (`glm-4.7-flash`) are aggressively rate-limited (HTTP `1302 / ChatRateLimited`), especially on context > 8K or with thinking enabled. Paid GLM models share a much larger concurrency pool.
 > - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
@@ -87,7 +85,6 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 | Gemini 3 Flash           | ~$0.55                 | ~55                  |
 | MiniMax M3               | ~$0.54                 | —                    |
 | MiMo V2.5 Pro            | ~$0.80                 | —                    |
-| GLM 4.7 Flash (free)     | ~$0.00 ¹               | —                    |
 | GPT-5.4 mini             | ~$0.83                 | ~83                  |
 | Claude Haiku 4.5         | ~$1.00                 | ~100                 |
 | DeepSeek V4 Pro          | ~$1.22                 | —                    |
