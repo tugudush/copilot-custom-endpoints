@@ -193,13 +193,13 @@ Well-structured: correct `"type": "module"`, three `bin` entries, published `fil
 
 ## 5. Documentation
 
-| Document                   | Quality                                                                   |
-| -------------------------- | ------------------------------------------------------------------------- |
-| `README.md`                | Excellent. Quick-start table, step-by-step config, troubleshooting.       |
-| `AGENTS.md`                | Concise agent guidance with project map, commands, and constraints.       |
-| `docs/models/kimi-k2.6.md` | Comprehensive. Documents failures and successes, not just the happy path. |
-| `docs/models/qwen.md`      | Thorough. Covers both models, proxy vs direct, regional endpoints.        |
-| `docs/features/npm.md`     | Good planning artifact with progress log.                                 |
+| Document               | Quality                                                                   |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `README.md`            | Excellent. Quick-start table, step-by-step config, troubleshooting.       |
+| `AGENTS.md`            | Concise agent guidance with project map, commands, and constraints.       |
+| `docs/models/kimi.md`  | Comprehensive. Documents failures and successes, not just the happy path. |
+| `docs/models/qwen.md`  | Thorough. Covers both models, proxy vs direct, regional endpoints.        |
+| `docs/features/npm.md` | Good planning artifact with progress log.                                 |
 
 The model documentation is notably thorough — it documents what _didn't_ work (e.g., the failed direct-path attempts, the `ERR_CONNECTION_RESET` investigation) rather than just the final working state. This is valuable for future troubleshooting.
 

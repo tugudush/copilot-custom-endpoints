@@ -1,4 +1,4 @@
-# Kimi K2.6 — VS Code Custom Endpoint Setup Guide
+# Kimi — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** Kimi K2.6 requires the local proxy. The K2 family locks `temperature: 1` and `top_p: 0.95`, and requires `thinking: { type: "disabled" }` on tool turns. The proxy rewrites sampling values, suppresses thinking on tool turns, and preserves streaming. Direct VS Code → Moonshot integration is not viable in this environment.
 
