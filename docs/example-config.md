@@ -155,21 +155,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
           "top_p": 0.95
         }
       },
-      {
-        "id": "glm-4.7-flash",
-        "name": "GLM 4.7 Flash (free)",
-        "url": "https://api.z.ai/api/paas/v4/chat/completions",
-        "toolCalling": true,
-        "vision": false,
-        "streaming": true,
-        "maxInputTokens": 204800,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "temperature": 1,
-          "top_p": 0.95
-        }
-      },
+
       {
         "id": "glm-5v-turbo",
         "name": "GLM 5V Turbo (vision flagship)",
@@ -198,6 +184,6 @@ If you only need one provider, jump straight to its setup guide:
 - [Qwen 3.7 Plus / 3.7 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro / V2 Flash)](mimo.md)
 - [MiniMax M3](minimax.md)
-- [GLM (5.1 / 4.7 Flash / 5V Turbo)](glm.md)
+- [GLM (5.1 / 5V Turbo)](glm.md)
 
 > **DeepSeek V4 Pro / V4 Flash** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension — they don't appear in `chatLanguageModels.json`.

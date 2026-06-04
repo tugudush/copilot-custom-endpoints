@@ -1,6 +1,6 @@
 {
   "name": "copilot-custom-endpoint",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2 & Qwen 3.x",
   "license": "MIT",
   "type": "module",
