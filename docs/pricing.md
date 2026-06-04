@@ -50,7 +50,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 | **DeepSeek V4 Pro**   | DeepSeek  | $1.74                         | $3.48                                   | 1M             |
 | **MiMo V2.5**         | Xiaomi    | $0.40                         | $2.00                                   | 1M             |
 | **MiMo V2.5 Pro**     | Xiaomi    | $1.00                         | $3.00                                   | 1M             |
-| **Qwen 3.6 Plus**     | DashScope | $0.50 (≤256K) / $2.00 (>256K) | $3.00 (≤256K) / $6.00 (>256K)           | 1M             |
+| **Qwen 3.7 Plus**     | DashScope | $0.40 (≤256K) / $1.20 (>256K) | $1.60 (≤256K) / $4.80 (>256K)           | 1M             |
 | **Qwen 3.7 Max**      | DashScope | $2.50 (≤1M)                   | $7.50 (≤1M)                             | 1M             |
 | **MiniMax M3**        | MiniMax   | $0.60 (≤512K) / $1.20 (>512K) | $2.40 (≤512K) / $4.80 (>512K)           | 1M             |
 | **GLM 4.7 Flash**     | Z.ai      | Free (rate-limited ¹)         | Free (rate-limited ¹)                   | 200K           |
@@ -83,8 +83,8 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 | Kimi K2.6 (non-thinking) | ~$0.18                 | —                    |
 | MiMo V2.5                | ~$0.40                 | —                    |
 | Kimi K2.6 (thinking)     | ~$0.48                 | —                    |
+| Qwen 3.7 Plus            | ~$0.36                 | —                    |
 | Gemini 3 Flash           | ~$0.55                 | ~55                  |
-| Qwen 3.6 Plus            | ~$0.55                 | —                    |
 | MiniMax M3               | ~$0.54                 | —                    |
 | MiMo V2.5 Pro            | ~$0.80                 | —                    |
 | GLM 4.7 Flash (free)     | ~$0.00 ¹               | —                    |

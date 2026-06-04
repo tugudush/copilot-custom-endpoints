@@ -25,7 +25,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiMo V2.5**               | Xiaomi    | No                     | ✅           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5 Pro**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **Kimi K2.6**               | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
-| **Qwen 3.6 Plus**           | DashScope | Optional               | ✅           | [Setup](docs/models/qwen.md)                                                                       |
+| **Qwen 3.7 Plus**           | DashScope | Optional               | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional               | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
 | **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
@@ -97,7 +97,7 @@ All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01.
 | **DeepSeek V4 Flash** 🏆     | $0.14 | $0.28  | 1M      |
 | **Kimi K2.6** (non-thinking) | $0.16 | $0.95  | 256K    |
 | **MiMo V2.5**                | $0.40 | $2.00  | 1M      |
-| **Qwen 3.6 Plus**            | $0.50 | $3.00  | 1M      |
+| **Qwen 3.7 Plus**            | $0.40 | $1.60  | 1M      |
 | **MiniMax M3**               | $0.60 | $2.40  | 1M      |
 | **MiMo V2.5 Pro**            | $1.00 | $3.00  | 1M      |
 | **GLM 5V Turbo**             | $1.20 | $4.00  | 200K    |
@@ -117,7 +117,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 **Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
 
 - **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
-- **Routes them through a multi-provider fallback chain** — `Gemini → GLM-4.6V → Qwen3.6 → Kimi K2.6 → MiMo-V2.5` — so a single `GLM 5V Turbo` rate-limit hiccup doesn't kill your session.
+- **Routes them through a multi-provider fallback chain** — `Gemini → GLM-4.6V-flash → Qwen3.6-plus → Kimi K2.6 → MiMo-V2.5` — so a single `GLM 5V Turbo` rate-limit hiccup doesn't kill your session.
 - **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
 - **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
 

@@ -5,7 +5,7 @@ import { createProxy } from '../lib/create-proxy.mjs'
 
 /**
  * Supported model scope for this proxy:
- * - Validated with `qwen3.6-plus` and `qwen3.7-max`.
+ * - Validated with `qwen3.7-plus` and `qwen3.7-max`.
  * - Expected to work for any Qwen3 hybrid-thinking model (qwen3-* series)
  *   that supports the `enable_thinking` top-level field on DashScope's
  *   OpenAI-compatible surface.

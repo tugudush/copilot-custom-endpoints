@@ -304,7 +304,7 @@ describe('Qwen proxy rewrite logic', () => {
 
   it('plain chat: deletes enable_thinking (model defaults to true)', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'qwen3.6-plus',
+      model: 'qwen3.7-plus',
       messages: [{ role: 'user', content: 'Hello' }],
       stream: false
     })
@@ -318,7 +318,7 @@ describe('Qwen proxy rewrite logic', () => {
 
   it('tool-enabled chat: sets enable_thinking to false', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'qwen3.6-plus',
+      model: 'qwen3.7-plus',
       messages: [{ role: 'user', content: 'Search' }],
       tools: [{ type: 'function', function: { name: 'search' } }],
       enable_thinking: true,
@@ -334,7 +334,7 @@ describe('Qwen proxy rewrite logic', () => {
 
   it('tool-enabled chat: overrides explicit enable_thinking: true', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'qwen3.6-plus',
+      model: 'qwen3.7-plus',
       messages: [{ role: 'user', content: 'Search' }],
       tools: [{ type: 'function', function: { name: 'search' } }],
       enable_thinking: true,

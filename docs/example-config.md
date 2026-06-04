@@ -24,8 +24,8 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
         }
       },
       {
-        "id": "qwen3.6-plus",
-        "name": "Qwen 3.6 Plus",
+        "id": "qwen3.7-plus",
+        "name": "Qwen 3.7 Plus",
         "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -195,7 +195,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
 If you only need one provider, jump straight to its setup guide:
 
 - [Kimi K2.6](kimi.md)
-- [Qwen 3.6 Plus / 3.7 Max](qwen.md)
+- [Qwen 3.7 Plus / 3.7 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro / V2 Flash)](mimo.md)
 - [MiniMax M3](minimax.md)
 - [GLM (5.1 / 4.7 Flash / 5V Turbo)](glm.md)

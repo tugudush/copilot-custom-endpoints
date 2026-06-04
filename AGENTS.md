@@ -5,7 +5,7 @@
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
 - **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
-- **Qwen 3.6 Plus** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
+- **Qwen 3.7 Plus** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **Qwen 3.7 Max** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 - **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; no proxy needed.
@@ -18,7 +18,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
 - [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6.
-- [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.6 Plus (vision + text) and Qwen 3.7 Max (text only), plus the optional proxy feature.
+- [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.7 Plus (vision) and Qwen 3.7 Max (text only), plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1, GLM 4.7 Flash, and GLM 5V Turbo (Z.ai / Zhipu AI).
@@ -57,7 +57,7 @@ No local proxy is needed for Qwen models. Verify connectivity directly:
 curl https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions \
   -H "Authorization: Bearer $DASHSCOPE_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"model":"qwen3.6-plus","messages":[{"role":"user","content":"Hello"}]}'
+  -d '{"model":"qwen3.7-plus","messages":[{"role":"user","content":"Hello"}]}'
 ```
 
 ### Qwen (with optional proxy)
@@ -87,10 +87,10 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 ### Qwen 3.x (DashScope)
 
-- Direct VS Code -> DashScope works without a proxy for both `qwen3.6-plus` and `qwen3.7-max`.
+- Direct VS Code -> DashScope works without a proxy for both `qwen3.7-plus` and `qwen3.7-max`.
 - Static `enable_thinking: false` in `requestBody` prevents `reasoning_content` issues during tool loops but suppresses reasoning in plain chat.
 - Optional `proxy/qwen-proxy.mjs` provides dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
-- `qwen3.6-plus` supports vision; `qwen3.7-max` does not.
+- `qwen3.7-plus` supports vision; `qwen3.7-max` does not.
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 
 ### Xiaomi MiMo

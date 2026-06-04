@@ -1,13 +1,13 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** Direct path works for both `qwen3.6-plus` (vision) and `qwen3.7-max` (text-only) without a proxy. The optional `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. Pick the mode that matches your tradeoff.
+> **TL;DR:** Direct path works for `qwen3.7-plus` (vision) and `qwen3.7-max` (text-only) without a proxy. The optional `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. Pick the mode that matches your tradeoff.
 
 ## At a Glance
 
 | Field                           | Value                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------- |
 | Mode                            | **Direct** (no proxy) **or** **Proxy** (optional, for dynamic thinking)   |
-| Vision                          | ✅ Yes (`qwen3.6-plus` only)                                              |
+| Vision                          | ✅ Yes (`qwen3.7-plus`)                                                   |
 | Tool calling                    | ✅ Yes                                                                    |
 | Context                         | 1M                                                                        |
 | Required `requestBody` (direct) | `enable_thinking: false`                                                  |
@@ -19,16 +19,16 @@
 
 | Model          | Vision | Role                                   |
 | -------------- | ------ | -------------------------------------- |
-| `qwen3.6-plus` | ✅ Yes | Primary model with image understanding |
+| `qwen3.7-plus` | ✅ Yes | Primary model with image understanding |
 | `qwen3.7-max`  | ❌ No  | Larger text-only model                 |
 
-> The snapshot `qwen3.6-plus-2026-04-02` is also available; the floating `qwen3.6-plus` alias is preferred.
+> The snapshot `qwen3.7-plus-2026-05-26` is also available; the floating `qwen3.7-plus` alias is preferred.
 
 ## Quick Start — Direct Path (Recommended for Simplicity)
 
 1. **Edit `chatLanguageModels.json`** — add the Qwen block from [Setup § Direct](#direct-path) below.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Restart VS Code** and pick "Qwen 3.6 Plus" or "Qwen 3.7 Max".
+3. **Restart VS Code** and pick "Qwen 3.7 Plus" or "Qwen 3.7 Max".
 
 ## Quick Start — With Proxy (Dynamic Thinking)
 
@@ -70,8 +70,8 @@ DashScope is region-specific — your API key only works on the endpoint it was 
       }
     },
     {
-      "id": "qwen3.6-plus",
-      "name": "Qwen 3.6 Plus",
+      "id": "qwen3.7-plus",
+      "name": "Qwen 3.7 Plus",
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -136,8 +136,8 @@ Expected response:
       "streaming": true
     },
     {
-      "id": "qwen3.6-plus",
-      "name": "Qwen 3.6 Plus",
+      "id": "qwen3.7-plus",
+      "name": "Qwen 3.7 Plus",
       "url": "http://127.0.0.1:3458/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -190,16 +190,18 @@ The Qwen3 hybrid-thinking models default to `enable_thinking: true`, producing `
 | Proxy path          | Thinking ON (default preserved) | Thinking OFF (auto-injected)  |
 | No config (default) | Thinking ON                     | Risk: history may be rejected |
 
-### Vision (`qwen3.6-plus` only)
+### Vision (`qwen3.7-plus`)
 
 - Image input via OpenAI-compatible `content` array format (base64 data URIs).
 - **External image URLs may fail** if DashScope's servers cannot reach them — base64-encoded images work reliably.
+- **Image attachment behavior**: Unlike some other models, Qwen may fail to read images that are directly dragged and dropped into the Copilot Chat. If this happens, provide the absolute file path to the image (e.g., `c:\path\to\image.png`) in your prompt as a reliable workaround.
+- **Pricing**: **$0.40 / $1.60 per 1M input/output (≤ 256K)** and **$1.20 / $4.80 per 1M (> 256K)**.
 
 ### Capabilities
 
 - Streaming (SSE, `data: [DONE]` terminator).
 - Tool calling with `tools` array and `tool_calls` response.
-- Vision (image input) on `qwen3.6-plus` only.
+- Vision (image input) on `qwen3.7-plus`.
 - Non-OpenAI extras: `enable_thinking`, `thinking_budget`, `enable_search` (via `extra_body`).
 
 ## Troubleshooting
@@ -220,7 +222,7 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashSco
 
 | Model          | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
 | -------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
-| `qwen3.6-plus` | $0.50 / 1M            | $2.00 / 1M            | $3.00 / 1M             | $6.00 / 1M             |
+| `qwen3.7-plus` | $0.40 / 1M            | $1.20 / 1M            | $1.60 / 1M             | $4.80 / 1M             |
 | `qwen3.7-max`  | $2.50 / 1M (≤ 1M)     | —                     | $7.50 / 1M (≤ 1M)      | —                      |
 
 > **Free quota:** DashScope offers 1M input + 1M output tokens per model, valid for 90 days after activating Model Studio.
@@ -266,7 +268,7 @@ Both work — pick based on your preference:
 | Streaming in VS Code                         | ✅     | Token-by-token streaming confirmed                                     |
 | Tool / agent use in VS Code                  | ✅     | Browser tool invoked successfully                                      |
 
-#### Direct-path validation — `qwen3.6-plus`
+#### Direct-path validation — `qwen3.7-plus`
 
 | Capability                                   | Result | Notes                                                                        |
 | -------------------------------------------- | ------ | ---------------------------------------------------------------------------- |
@@ -275,7 +277,7 @@ Both work — pick based on your preference:
 | Tool-enabled chat (`enable_thinking: false`) | ✅     | Clean `tool_calls`, no `reasoning_content`, 25 tokens                        |
 | Vision: image + text (curl, base64)          | ✅     | Model correctly identified a 10×10 test pattern; `image_tokens: 66`          |
 | Vision: image + text (curl, external URL)    | ❌     | `Failed to download multimodal content` — DashScope couldn't reach Wikipedia |
-| Model appears in VS Code picker              | ✅     | "Agent \| Qwen 3.6 Plus" confirmed                                           |
+| Model appears in VS Code picker              | ✅     | "Agent \| Qwen 3.7 Plus" confirmed                                           |
 | Plain chat in VS Code                        | ✅     | Streaming output confirmed                                                   |
 | Streaming in VS Code                         | ✅     | Token-by-token streaming confirmed                                           |
 | Tool / agent use in VS Code                  | ✅     | Browser tool invoked to open Qwen docs and Google                            |
@@ -283,17 +285,17 @@ Both work — pick based on your preference:
 
 #### Intermittent `ERR_CONNECTION_RESET` investigation
 
-A `net::ERR_CONNECTION_RESET` was observed once during `qwen3.6-plus` validation, but did not reproduce on the same machine outside VS Code:
+A `net::ERR_CONNECTION_RESET` was observed once during `qwen3.7-plus` validation, but did not reproduce on the same machine outside VS Code:
 
 - Direct `curl` POST to DashScope Singapore → HTTP 200.
 - Direct Node.js HTTPS POST → HTTP 200.
-- Direct Node.js HTTPS **streaming** POST with full `qwen3.6-plus.md` content embedded → HTTP 200.
+- Direct Node.js HTTPS **streaming** POST with full `qwen3.7-plus.md` content embedded → HTTP 200.
 
 Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to an intermittent VS Code / Electron transport issue or transient network interruption local to the editor process.
 
 ### Final verdict
 
-| Criterion              | `qwen3.7-max`  | `qwen3.6-plus` |
+| Criterion              | `qwen3.7-max`  | `qwen3.7-plus` |
 | ---------------------- | -------------- | -------------- |
 | Plain chat             | ✅             | ✅             |
 | Streaming chat         | ✅             | ✅             |
@@ -305,7 +307,7 @@ Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to an
 
 - GitHub Copilot inline completions and semantic-search features remain outside scope.
 - One intermittent VS Code-side `net::ERR_CONNECTION_RESET` was observed — not reproducible externally, treated as transient transport issue.
-- External image URLs may fail if DashScope's servers cannot reach them; base64-encoded images work reliably (`qwen3.6-plus`).
+- External image URLs may fail if DashScope's servers cannot reach them; base64-encoded images work reliably.
 - Vision is not supported on `qwen3.7-max` (text-generation model).
 - `maxInputTokens` / `maxOutputTokens` not yet confirmed from official DashScope documentation.
 - API keys are region-specific — a key created for one regional endpoint will not work with another.
