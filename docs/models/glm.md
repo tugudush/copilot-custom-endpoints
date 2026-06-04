@@ -8,7 +8,7 @@
 > - When `thinking: { type: "enabled" }` is set — thinking tokens still hold the in-flight slot, so the model occupies the throttle window longer.
 > - During peak hours, when many users are sharing the same free pool.
 >
-> **This is the free tier behaving as designed, not a bug.** For uninterrupted work, use a paid model: `glm-4.6v-flashx` is the cheapest paid option ($0.04/$0.40 per 1M), `glm-4.7` is the best cost/quality balance ($0.60/$2.20 per 1M), and `glm-5.1` is the flagship ($1.40/$4.40 per 1M). See [Rate limits](#rate-limits) for the full breakdown.
+> **This is the free tier behaving as designed, not a bug.** For uninterrupted work, use a paid model: `glm-4.6v` is the cheapest paid vision option ($0.30/$0.90 per 1M), `glm-4.7` is the best cost/quality balance for text-only ($0.60/$2.20 per 1M), and `glm-5.1` is the flagship ($1.40/$4.40 per 1M). See [Rate limits](#rate-limits) for the full breakdown.
 
 ## At a Glance
 
@@ -26,19 +26,18 @@
 
 ### Models at a glance
 
-| Model             | Vision | Context | Max output | Thinking      | Cost (in / out per 1M) | Role                                                      |
-| ----------------- | ------ | ------- | ---------- | ------------- | ---------------------- | --------------------------------------------------------- |
-| `glm-5.1`         | ❌     | 200K    | 128K       | `enabled`     | $1.40 / $4.40          | Current flagship — long-horizon / 8h autonomous work      |
-| `glm-4.7`         | ❌     | 200K    | 128K       | `enabled`     | $0.60 / $2.20          | Flagship 4.x — strong coding/agent                        |
-| `glm-4.7-flash`   | ❌     | 200K    | 128K       | `enabled`     | Free ¹                 | **Free** — newest 4.x tier at no cost                     |
-| `glm-5v-turbo`    | ✅     | 200K    | 128K       | `enabled`     | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding |
-| `glm-4.6v`        | ✅     | 128K    | 32K        | hybrid (auto) | $0.30 / $0.90          | Vision + **native multimodal tool calls**                 |
-| `glm-4.6v-flashx` | ✅     | 128K    | 32K        | hybrid (auto) | $0.04 / $0.40          | Cheap vision                                              |
-| `glm-4.6v-flash`  | ✅     | 128K    | 32K        | hybrid (auto) | Free ¹                 | **Free** vision tier                                      |
+| Model            | Vision | Context | Max output | Thinking      | Cost (in / out per 1M) | Role                                                      |
+| ---------------- | ------ | ------- | ---------- | ------------- | ---------------------- | --------------------------------------------------------- |
+| `glm-5.1`        | ❌     | 200K    | 128K       | `enabled`     | $1.40 / $4.40          | Current flagship — long-horizon / 8h autonomous work      |
+| `glm-4.7`        | ❌     | 200K    | 128K       | `enabled`     | $0.60 / $2.20          | Flagship 4.x — strong coding/agent                        |
+| `glm-4.7-flash`  | ❌     | 200K    | 128K       | `enabled`     | Free ¹                 | **Free** — newest 4.x tier at no cost                     |
+| `glm-5v-turbo`   | ✅     | 200K    | 128K       | `enabled`     | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding |
+| `glm-4.6v`       | ✅     | 128K    | 32K        | hybrid (auto) | $0.30 / $0.90          | Vision + **native multimodal tool calls**                 |
+| `glm-4.6v-flash` | ✅     | 128K    | 32K        | hybrid (auto) | Free ¹                 | **Free** vision tier                                      |
 
-> ¹ **Free-tier caveat:** the two `*flash` free models are heavily rate-limited — see the [warning at the top of this document](#glm-zai--zhipu-ai--vs-code-custom-endpoint-setup-guide) and the [Rate limits](#rate-limits) section. Expect frequent HTTP `1302 / ChatRateLimited` errors, especially on context > 8K or with thinking enabled. For reliable use, prefer `glm-4.6v-flashx` (cheapest paid) or `glm-4.7` (best cost/quality).
+> ¹ **Free-tier caveat:** the two `*flash` free models are heavily rate-limited — see the [warning at the top of this document](#glm-zai--zhipu-ai--vs-code-custom-endpoint-setup-guide) and the [Rate limits](#rate-limits) section. Expect frequent HTTP `1302 / ChatRateLimited` errors, especially on context > 8K or with thinking enabled. For reliable use, prefer `glm-4.6v` (cheapest paid vision) or `glm-4.7` (best cost/quality, text-only).
 
-> Other GLM models — `glm-5`, `glm-5-turbo`, `glm-4.7`, `glm-4.6`, `glm-4.6v`, `glm-4.6v-flashx`, `glm-4.6v-flash`, `glm-4.5`, `glm-4.5-air`, `glm-4.5-flash`, `glm-4.5-x`, `glm-4.5-airx`, `glm-4-32b-0414-128k` — are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them.
+> Other GLM models — `glm-5`, `glm-5-turbo`, `glm-4.7`, `glm-4.6`, `glm-4.6v`, `glm-4.6v-flashx`, `glm-4.6v-flash`, `glm-4.5`, `glm-4.5-air`, `glm-4.5-flash`, `glm-4.5-x`, `glm-4.5-airx`, `glm-4-32b-0414-128k` — are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
 ## Quick Start
 
@@ -177,7 +176,7 @@ Config file location:
 - **Tool calling** with the standard `tools` array. `tool_choice` accepts only `auto`.
 - **Max 128 functions** per request.
 - **Tool stream** (`tool_stream: true`) is supported on the `glm-4.6v` family and above for streaming tool-call deltas.
-- **Vision** on `glm-4.6v`, `glm-4.6v-flashx`, `glm-4.6v-flash`, and `glm-5v-turbo` using the OpenAI `image_url` content-part format. External URLs and base64 data URIs both work.
+- **Vision** on `glm-4.6v`, `glm-4.6v-flash`, and `glm-5v-turbo` using the OpenAI `image_url` content-part format. External URLs and base64 data URIs both work.
 - **Video input** on `glm-5v-turbo` — the model natively accepts video (Input Modality: **Video / Image / Text / File**). Use a public video URL in an `image_url` content part via direct API call; VS Code's chat UI does not currently forward video attachments to the model. For a turnkey VS Code integration that bridges the gap (extracts frames, routes them to GLM or a fallback provider, and answers natural-language questions about the video), see [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives Copilot/Cursor/Claude Code video understanding via the `glm-4.6v` provider and a multi-provider fallback chain (Gemini → GLM-4.6V → Qwen3.6 → Kimi K2.6 → MiMo-V2.5).
 - **Native multimodal tool calling** on `glm-4.6v` (and inherited by `glm-5v-turbo`) — images, screenshots, and document pages can be passed directly as tool parameters and tool results can be consumed visually.
 - **Built-in web search** is exposed as a tool type `web_search` (different from `function`).
@@ -219,8 +218,8 @@ ChatRateLimited: Rate limit exceeded
 
 #### Paid-tier specifics
 
-- Paid models (`glm-5.1`, `glm-4.7`, `glm-4.6v`, `glm-4.6v-flashx`, `glm-5v-turbo`) share a much larger concurrency pool sized to your prepaid balance.
-- `glm-4.6v-flashx` is the cheapest paid option ($0.04 input / $0.40 output per 1M) and is usually the right "I just want it to work" pick if you want to stay near-free in cost.
+- Paid models (`glm-5.1`, `glm-4.7`, `glm-4.6v`, `glm-5v-turbo`) share a much larger concurrency pool sized to your prepaid balance. (Note: `glm-4.6v-flashx` was previously listed here as the cheapest paid option, but it has been removed from the recommended set because live testing showed it is not reliable for tool calling.)
+- For the cheapest reliable paid option, use `glm-4.6v` ($0.30 / $0.90 per 1M) if you need vision, or `glm-4.7` ($0.60 / $2.20 per 1M) for text-only work.
 - `glm-4.7` ($0.60 / $2.20 per 1M) is the recommended default for agent/coding work — strong quality at a low price.
 - `glm-5.1` ($1.40 / $4.40 per 1M) is the flagship and only worth it for long-horizon autonomous tasks.
 
@@ -248,7 +247,7 @@ If you want to keep using `glm-4.7-flash` despite the limits:
 | 401 Unauthorized                                           | Region mismatch (international key used on China URL, or vice versa)  | Match your key to the regional endpoint                                                                    |
 | Upstream complains about `reasoning_content is missing`    | You set `clear_thinking: false` from a client that doesn't forward it | Drop `clear_thinking` from `requestBody`                                                                   |
 | 429 / "concurrency limit exceeded"                         | Too many in-flight requests                                           | Reduce concurrent agent sessions, or upgrade your Z.ai plan                                                |
-| `1302` / `ChatRateLimited` on a free-tier model (`*flash`) | Expected behavior — free tier is heavily throttled                    | Wait ~30s and retry, disable `thinking`, start a new chat, or switch to `glm-4.6v-flashx` / `glm-4.7`      |
+| `1302` / `ChatRateLimited` on a free-tier model (`*flash`) | Expected behavior — free tier is heavily throttled                    | Wait ~30s and retry, disable `thinking`, start a new chat, or switch to `glm-4.7`                          |
 | Long Chinese responses when the prompt is English          | Missing `Accept-Language: en-US,en` (Z.ai default)                    | Optional — VS Code's custom-endpoint provider doesn't set custom headers; usually the prompt language wins |
 
 ## Pricing
@@ -278,7 +277,7 @@ That makes VS Code's `chat-completions` provider the obvious starting point — 
 
 | Concern                           | Z.ai / GLM behaviour                                                                                                                                                                                                             | Why it matters for VS Code                                                                                                                  |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thinking default                  | Hybrid for `glm-4.6v` / `glm-4.6v-flashx` / `glm-4.6v-flash`; always-on for `glm-5.1` / `glm-4.7` / `glm-4.7-flash` / `glm-5v-turbo`.                                                                                            | VS Code can simply set `thinking: { type: "enabled" }` in `requestBody` to make thinking deterministic on every model.                      |
+| Thinking default                  | Hybrid for `glm-4.6v` / `glm-4.6v-flash`; always-on for `glm-5.1` / `glm-4.7` / `glm-4.7-flash` / `glm-5v-turbo`.                                                                                                                | VS Code can simply set `thinking: { type: "enabled" }` in `requestBody` to make thinking deterministic on every model.                      |
 | `reasoning_content` on tool turns | Z.ai defaults to `clear_thinking: true`, **silently stripping historical `reasoning_content`**.                                                                                                                                  | This is a near-perfect match for VS Code, which does **not** preserve `reasoning_content` between turns. Loops work without extra plumbing. |
 | `tool_choice`                     | Only `auto` is accepted.                                                                                                                                                                                                         | VS Code's default behaviour is `auto`, so no override needed.                                                                               |
 | `temperature` hard cap            | `[0.0, 1.0]` — strictly enforced server-side.                                                                                                                                                                                    | Use `1.0` for coding/agent work; never go above.                                                                                            |
