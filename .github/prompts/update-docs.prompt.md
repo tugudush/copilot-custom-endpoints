@@ -19,7 +19,7 @@ Read in parallel:
 - `README.md`
 - `AGENTS.md`
 - `docs/example-config.md`
-- All files currently in `docs/models/` (at time of writing: `kimi-k2.6.md`, `qwen.md`, `mimo.md`, `minimax.md` — but a new provider doc may have been added since). Use `file_search` for `docs/models/*.md` to discover the current set rather than assuming.
+- All files in `docs/models/` (discover the current set with `file_search` for `docs/models/*.md` — do not assume a fixed list).
 
 ## Step 3 — Audit against source of truth
 

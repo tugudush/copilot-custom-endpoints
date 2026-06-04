@@ -1,6 +1,6 @@
 # GitHub Copilot Custom Endpoints
 
-> **TL;DR** — GitHub Copilot switched to usage-based billing on **June 1, 2026**. Every chat and agent session now burns AI credits — fast. This repo shows you how to plug **cheaper non-GitHub models** (DeepSeek, Kimi, Qwen, MiMo, MiniMax) into VS Code's Copilot chat — often **5–55× cheaper** than the built-ins — while keeping agent mode, tools, streaming, and vision.
+> **TL;DR** — GitHub Copilot switched to usage-based billing on **June 1, 2026**. Every chat and agent session now burns AI credits — fast. This repo shows you how to plug **cheaper non-GitHub models** (DeepSeek, Kimi, Qwen, MiMo, MiniMax, GLM) into VS Code's Copilot chat — often **5–55× cheaper** than the built-ins — while keeping agent mode, tools, streaming, and vision.
 
 ## What is this?
 
@@ -28,6 +28,9 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **Qwen 3.6 Plus**           | DashScope | Optional               | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional               | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
+| **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
+| **GLM 4.7 Flash (free)**    | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
+| **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
 | **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
 
 ## Setup
@@ -97,6 +100,8 @@ All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01.
 | **Qwen 3.6 Plus**            | $0.50 | $3.00  | 1M      |
 | **MiniMax M3**               | $0.60 | $2.40  | 1M      |
 | **MiMo V2.5 Pro**            | $1.00 | $3.00  | 1M      |
+| **GLM 5V Turbo**             | $1.20 | $4.00  | 200K    |
+| **GLM 5.1**                  | $1.40 | $4.40  | 200K    |
 | **Qwen 3.7 Max**             | $2.50 | $7.50  | 1M      |
 
 For the full pricing comparison (cached rates, full Copilot roster, footnotes, sources) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
