@@ -10,16 +10,18 @@ This repository keeps durable validation records for custom language-model endpo
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 - **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; no proxy needed.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
+- **GLM 5.1 / GLM 4.7 Flash / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
 ## Project Map
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
-- [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md) — full compatibility assessment for Kimi K2.6.
+- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.6 Plus (vision + text) and Qwen 3.7 Max (text only), plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
+- [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1, GLM 4.7 Flash, and GLM 5V Turbo (Z.ai / Zhipu AI).
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
 - `debug_log/` contains local runtime artifacts. It is git-ignored and should not be treated as canonical documentation.
@@ -81,7 +83,7 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
 - Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
-- The full rationale, tested values, and evidence live in [docs/models/kimi-k2.6.md](docs/models/kimi-k2.6.md); do not duplicate that record here.
+- The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.
 
 ### Qwen 3.x (DashScope)
 
@@ -112,6 +114,19 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 - Model IDs are case-sensitive: `MiniMax-M3` (capital M's, lowercase i).
 - Rate limits: 200 RPM / 10M TPM.
 - The full rationale, tested values, and evidence live in [docs/models/minimax.md](docs/models/minimax.md); do not duplicate that record here.
+
+### GLM (Z.ai / Zhipu AI)
+
+- Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.1`, `glm-4.7-flash`, and `glm-5v-turbo`.
+- Recommended `requestBody`: `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95`. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
+- `tool_choice` only supports `auto`; VS Code's default is `auto` so no override needed.
+- `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. Do **not** set `clear_thinking: false` from `requestBody`.
+- Vision is supported only on `glm-5v-turbo` (and the glm-4.6v family on the same endpoint). `glm-5.1` and `glm-4.7-flash` are text-only.
+- Endpoint (international): `https://api.z.ai/api/paas/v4/chat/completions`. China: `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
+- Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).
+- The **GLM Coding Plan** endpoint is **not** usable from VS Code custom endpoints — it is locked to a curated list of officially supported tools. Use the general PaaS endpoint above.
+- Free-tier `*flash` models are aggressively rate-limited (HTTP `1302 / ChatRateLimited` on a significant fraction of requests, especially on context > 8K or with thinking enabled). For uninterrupted work, prefer `glm-5.1`, `glm-5v-turbo`, or a paid model.
+- The full rationale, tested values, and evidence live in [docs/models/glm.md](docs/models/glm.md); do not duplicate that record here.
 
 ## Validation Expectations
 
