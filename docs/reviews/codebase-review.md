@@ -32,7 +32,7 @@ tests/
 docs/
   models/
     kimi-k2.6.md         Kimi K2.6 validation record
-    qwen.md              Qwen 3.6/3.7 validation record + proxy guide
+    qwen.md              Qwen 3.7 validation record + proxy guide
   features/
     npm.md               npm packaging plan & progress log
   reviews/

@@ -343,7 +343,7 @@ This file is the **research record and the user-facing setup guide**. The implem
 
 ## Companion tools
 
-- [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives AI coding assistants (GitHub Copilot, Cursor, Claude Code) the ability to **understand video content** via natural language. Extracts frames from local or remote videos, routes them through a multi-provider fallback chain (**Gemini → GLM-4.6V-flash → Qwen 3.6 Plus → Kimi K2.6 → MiMo-V2.5**), and returns answers grounded in actual video frames. Also handles summarization, timestamp search, audio transcription with speaker diarization, and video metadata. Works around the limitation that VS Code's built-in `view_image` tool only accepts static images — so it lets `glm-5v-turbo`'s native video support actually be exercised end-to-end from inside VS Code.
+- [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives AI coding assistants (GitHub Copilot, Cursor, Claude Code) the ability to **understand video content** via natural language. Extracts frames from local or remote videos, routes them through a multi-provider fallback chain (**Gemini → GLM-4.6V-flash → Qwen 3.7 Plus → Kimi K2.6 → MiMo-V2.5**), and returns answers grounded in actual video frames. Also handles summarization, timestamp search, audio transcription with speaker diarization, and video metadata. Works around the limitation that VS Code's built-in `view_image` tool only accepts static images — so it lets `glm-5v-turbo`'s native video support actually be exercised end-to-end from inside VS Code.
 
 ## References
 
