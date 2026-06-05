@@ -17,7 +17,10 @@
 
 ## Quick Start
 
-1. **Start the proxy:** `npm run proxy:kimi`
+1. **Start the proxy** — choose one:
+   - `npm run proxy:kimi` (from the repo root)
+   - `npx copilot-custom-endpoint kimi` (standalone, no clone needed)
+   - `npx copilot-custom-endpoint` (also starts the Qwen proxy concurrently)
 2. **Edit `chatLanguageModels.json`** — add the Kimi block from [Setup](#setup) below.
 3. **Set your Moonshot API key** via the Command Palette → **Chat: Manage Language Models**.
 4. **Restart VS Code** and pick "Kimi K2.6" in the chat picker.
