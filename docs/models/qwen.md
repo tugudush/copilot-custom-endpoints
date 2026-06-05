@@ -11,7 +11,7 @@
 | Tool calling                    | ✅ Yes                                                                    |
 | Context                         | 1M                                                                        |
 | Required `requestBody` (direct) | `enable_thinking: false`                                                  |
-| Required `requestBody` (proxy)  | none — proxy injects based on `tools` presence                            |
+| Required `requestBody` (proxy)  | none — proxy injects based on tool activity in the conversation          |
 | Endpoint                        | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` |
 | Proxy endpoint                  | `http://127.0.0.1:3458/v1/chat/completions`                               |
 
@@ -165,12 +165,16 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 #### Proxy request rewriting rules
 
-| Condition                                | Action                                                      |
-| ---------------------------------------- | ----------------------------------------------------------- |
-| `body.tools` is a non-empty array        | Set `body.enable_thinking = false`                          |
-| `body.tools` is missing, empty, or falsy | Delete `body.enable_thinking` (let model default to `true`) |
+The proxy detects active tool use by examining the conversation state, not just the `tools` array:
+
+| Condition                                                                                        | Action                                                      |
+| ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| A `"tool"`-role message exists in the conversation **or** `tool_choice` is set to a non-default value | Set `body.enable_thinking = false`                          |
+| No tool-role messages and no non-default `tool_choice` (plain chat)                              | Delete `body.enable_thinking` (let model default to `true`) |
 
 > **Why delete rather than set `true`?** Omitting the key lets Qwen use its built-in default (`true`). Deletion is closer to "don't interfere."
+>
+> **Why not check `body.tools`?** The proxy checks for tool *activity* — tool results in the message history or an explicit `tool_choice` directive — rather than the mere presence of a tools array. This correctly handles tool-enabled conversations even when the client sends `tools` in an earlier request but omits it from subsequent turns.
 
 ### API key
 

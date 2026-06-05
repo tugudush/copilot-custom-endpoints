@@ -72,7 +72,16 @@ function summarizePayload(payload, hasTools, rewriteInfo) {
 }
 
 function rewriteQwen(payload) {
-  const hasTools = Array.isArray(payload.tools) && payload.tools.length > 0
+  // Determine if a tool is actually being invoked:
+  // - tool_choice is set and not "none"
+  // - OR there is a "tool" role message in the conversation
+  const messages = Array.isArray(payload.messages) ? payload.messages : []
+  const hasToolRole = messages.some((message) => message?.role === 'tool')
+  const toolChoice = payload.tool_choice
+  const hasActiveToolCall =
+    hasToolRole ||
+    (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
+  const hasTools = hasActiveToolCall
   const incomingEnableThinking = payload.enable_thinking
 
   if (disableThinkingWithTools && hasTools) {
@@ -91,7 +100,8 @@ function rewriteQwen(payload) {
     rewrittenEnableThinking
   })
 
-  const consoleMsg = `tools=${String(hasTools)} enable_thinking=${String(incomingEnableThinking)} -> ${
+  const modeTag = hasTools ? '[tools]' : '[chat]'
+  const consoleMsg = `${modeTag} enable_thinking=${String(incomingEnableThinking)} -> ${
     hasTools && disableThinkingWithTools ? 'false' : '<deleted>'
   }, model=${payload.model ?? '?'}`
 

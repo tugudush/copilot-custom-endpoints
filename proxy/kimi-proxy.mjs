@@ -104,7 +104,18 @@ function rewriteKimi(payload) {
   const incomingTemperature = payload.temperature
   const incomingTopP = payload.top_p
   const incomingThinkingType = payload?.thinking?.type
-  const hasTools = Array.isArray(payload.tools) && payload.tools.length > 0
+
+  // Determine if a tool is actually being invoked:
+  // - tool_choice is set and not "none"
+  // - OR there is a "tool" role message in the conversation
+  const messages = Array.isArray(payload.messages) ? payload.messages : []
+  const hasToolRole = messages.some((message) => message?.role === 'tool')
+  const toolChoice = payload.tool_choice
+  const hasActiveToolCall =
+    hasToolRole ||
+    (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
+  const hasTools = hasActiveToolCall
+
   const useNonThinkingMode = disableThinkingWithTools && hasTools
   const rewrittenTemperature = useNonThinkingMode
     ? forcedNonThinkingTemperature
@@ -133,7 +144,8 @@ function rewriteKimi(payload) {
 
   const summary = summarizePayload(payload, hasTools, rewriteInfo)
 
-  const consoleMsg = `temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
+  const modeTag = hasTools ? '[tools]' : '[chat]'
+  const consoleMsg = `${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
 
   // Clean up internal key before forwarding
   delete payload.__incomingThinkingType
