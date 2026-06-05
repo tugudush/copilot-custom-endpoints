@@ -116,7 +116,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 **Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
 
 - **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
-- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 5V Turbo → Qwen3.7-plus → Kimi K2.6 → MiMo-V2.5` — so a single `GLM 5V Turbo` rate-limit hiccup doesn't kill your session.
+- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash→ Qwen3.7-plus → Kimi K2.6 → MiMo-V2.5` — so a single `GLM 5V Turbo` rate-limit hiccup doesn't kill your session.
 - **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
 - **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
 

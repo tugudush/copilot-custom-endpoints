@@ -45,9 +45,6 @@ Config file location:
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
-<details>
-<summary><strong>GLM config — collapse for brevity</strong></summary>
-
 ```json
 {
   "name": "GLM",
@@ -88,8 +85,6 @@ Config file location:
   ]
 }
 ```
-
-</details>
 
 > **Leave `apiKey` as `""`** — set it through the Language Models UI so VS Code stores it in the OS keychain (it will replace the empty string with a `${input:chat.lm.secret.<id>}` reference).
 
@@ -259,14 +254,6 @@ This file is the **research record and the user-facing setup guide**. The implem
 | 10  | `curl` tool-call follow-up turn (proves `clear_thinking`)                 | HTTP 200, prior `reasoning_content` is auto-stripped | ⏳     |
 
 > **`glm-5v-turbo` fully validated** ✅ for VS Code custom-endpoint use: plain chat ✅, streaming ✅, tool calling ✅ (tested with `open_browser_page` opening Google), vision ✅ (accurately described a daily.dev screenshot including post titles, tags, sidebar navigation, browser tabs, and ad content).
->
-> **Video input: GLM-5V-Turbo supports it natively, but VS Code's tool pipeline blocks it.** Z.ai's official docs state GLM-5V-Turbo's **Input Modality is "Video / Image / Text / File"**, and the Chat Completion API accepts **video** alongside images, audio, and files. There is even an official **"Video Object Tracking"** skill/example for `glm-5v-turbo`. However, VS Code's `view_image` tool only accepts static image formats (`png`, `jpg`, `jpeg`, `gif`, `webp`) and **rejects video files at the tool layer before they reach the model**. To test video input with GLM-5V-Turbo, use a direct API call (e.g., `curl`) with a public video URL in an `image_url` content part, or extract frames as images first (e.g., `ffmpeg -i video.mp4 -vframes 1 frame.png`). For a turnkey bridge that does this automatically inside VS Code, see [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that extracts frames from a video and routes them to a model provider (e.g. GLM 5V Turbo) in a fallback chain so you can ask natural-language questions about any video. See [GLM-5V-Turbo docs](https://docs.z.ai/guides/vlm/glm-5v-turbo) for the official video input examples.
->
-> **`glm-5.1` partially validated** ✅ for text-only use: plain chat ✅, streaming ✅, tool calling ✅. The remaining `curl`-based checks are pending.
-
-## Companion tools
-
-- [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives AI coding assistants (GitHub Copilot, Cursor, Claude Code) the ability to **understand video content** via natural language. Extracts frames from local or remote videos, routes them through a multi-provider fallback chain (**Gemini → GLM 5V Turbo → Qwen 3.7 Plus → Kimi K2.6 → MiMo-V2.5**), and returns answers grounded in actual video frames. Also handles summarization, timestamp search, audio transcription with speaker diarization, and video metadata. Works around the limitation that VS Code's built-in `view_image` tool only accepts static images — so it lets `glm-5v-turbo`'s native video support actually be exercised end-to-end from inside VS Code.
 
 ## References
 
