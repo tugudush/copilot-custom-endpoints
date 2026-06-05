@@ -6,7 +6,7 @@
 
 VS Code lets you add your own language-model endpoint via a small JSON config file. Many providers advertise "OpenAI-compatible" APIs but reject the exact request shapes VS Code sends. This repo collects **real, tested setups** — one per provider — plus a tiny local proxy that smooths over the rough edges when needed.
 
-If [OpenRouter](https://openrouter.ai) is blocked by your network, too expensive, or too generic for your model's quirks, this is the workaround.
+If [OpenRouter](https://openrouter.ai) is blocked by your network or too generic for your model's quirks, this is the workaround.
 
 ## How it works (4 steps)
 
