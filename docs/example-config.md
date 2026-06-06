@@ -14,7 +14,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
     "models": [
       {
         "id": "qwen3.7-max",
-        "name": "Qwen 3.7 Max",
+        "name": "Qwen 3.7 Max (text)",
         "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
@@ -25,7 +25,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       },
       {
         "id": "qwen3.7-plus",
-        "name": "Qwen 3.7 Plus",
+        "name": "Qwen 3.7 Plus (vision)",
         "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -44,7 +44,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
     "models": [
       {
         "id": "kimi-k2.6",
-        "name": "Kimi K2.6",
+        "name": "Kimi K2.6 (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
         "requestBody": {
           "temperature": 1
@@ -65,7 +65,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
     "models": [
       {
         "id": "mimo-v2.5-pro",
-        "name": "MiMo V2.5 Pro",
+        "name": "MiMo V2.5 Pro (text)",
         "url": "https://api.xiaomimimo.com/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
@@ -80,7 +80,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       },
       {
         "id": "mimo-v2.5",
-        "name": "MiMo V2.5",
+        "name": "MiMo V2.5 (vision)",
         "url": "https://api.xiaomimimo.com/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -95,7 +95,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       },
       {
         "id": "mimo-v2-flash",
-        "name": "MiMo V2 Flash",
+        "name": "MiMo V2 Flash (text)",
         "url": "https://api.xiaomimimo.com/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
@@ -118,7 +118,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
     "models": [
       {
         "id": "MiniMax-M3",
-        "name": "MiniMax M3",
+        "name": "MiniMax M3 (vision)",
         "url": "https://api.minimax.io/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -142,7 +142,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
     "models": [
       {
         "id": "glm-5.1",
-        "name": "GLM 5.1 (flagship)",
+        "name": "GLM 5.1 (text)",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
         "toolCalling": true,
         "vision": false,
@@ -158,7 +158,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
 
       {
         "id": "glm-5v-turbo",
-        "name": "GLM 5V Turbo (vision flagship)",
+        "name": "GLM 5V Turbo (vision)",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
         "toolCalling": true,
         "vision": true,
