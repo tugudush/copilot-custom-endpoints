@@ -149,7 +149,7 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). MiniMax
 
 \* Input tokens above 512K are available in limited quantity for a limited time.
 
-> **Promo:** A 7-day 50% off promotion is available for new accounts, making the ≤ 512K tier effectively $0.30 / 1M input and $1.20 / 1M output for the first week.
+> **Permanent 50% off:** A standing 50% discount applies to all MiniMax-M3 pay-as-you-go usage on both the Standard and Priority tiers (verified June 9, 2026). The effective rates are $0.30 / 1M input, $1.20 / 1M output, and $0.06 / 1M cached input (≤ 512K tier).
 
 ### Token Plan (subscription)
 

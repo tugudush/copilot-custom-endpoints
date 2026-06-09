@@ -66,7 +66,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi K2.6** pricing is from the **Moonshot platform** (direct). Via DashScope: $0.89 input / $3.71 output.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
-> - **MiniMax M3** uses **tiered pricing** — input price doubles above 512K input tokens. Cache hits are priced at 20% of the input rate ($0.12/M ≤512K, $0.24/M >512K). A 7-day 50% off promotion is available for new accounts.
+> - **MiniMax M3** uses **tiered pricing** — input price doubles above 512K input tokens. Cache hits are priced at 20% of the input rate ($0.12/M ≤512K, $0.24/M >512K). A **permanent 50% off** discount applies to all MiniMax-M3 pay-as-you-go usage (Standard and Priority tiers), making the effective rates half the list prices above.
 > - **GLM** models support prompt caching — cache hits are priced at $0.24/M for 5V Turbo and $0.26/M for 5.1.
 > - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
@@ -80,12 +80,12 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 | MiMo V2 Flash            | ~$0.08                 |
 | DeepSeek V4 Flash        | ~$0.10                 |
 | Kimi K2.6 (non-thinking) | ~$0.18                 |
+| MiniMax M3 (50% off)     | ~$0.27                 |
 | DeepSeek V4 Pro          | ~$0.30                 |
 | Raptor mini              | ~$0.33                 |
 | Qwen 3.7 Plus            | ~$0.36                 |
 | MiMo V2.5                | ~$0.40                 |
 | Kimi K2.6 (thinking)     | ~$0.48                 |
-| MiniMax M3               | ~$0.54                 |
 | Gemini 3 Flash           | ~$0.55                 |
 | MiMo V2.5 Pro            | ~$0.80                 |
 | GPT-5.4 mini             | ~$0.83                 |
@@ -102,7 +102,7 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: June 1, 2026. Always check the official pages for the latest rates:
+> Prices last verified: June 9, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
