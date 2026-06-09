@@ -88,16 +88,16 @@ npx copilot-custom-endpoint clean    # Remove debug_log/
 
 ## Pricing snapshot
 
-All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01.
+All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01. **MiniMax M3** figures reflect a permanent 50% off list price — see the model doc for the full rate card.
 
 | Model                        | Input | Output | Context |
 | ---------------------------- | ----- | ------ | ------- |
 | **MiMo V2 Flash** 🏆         | $0.10 | $0.30  | 256K    |
 | **DeepSeek V4 Flash** 🏆     | $0.14 | $0.28  | 1M      |
 | **Kimi K2.6** (non-thinking) | $0.16 | $0.95  | 256K    |
+| **MiniMax M3**               | $0.30 | $1.20  | 1M      |
 | **MiMo V2.5**                | $0.40 | $2.00  | 1M      |
 | **Qwen 3.7 Plus**            | $0.40 | $1.60  | 1M      |
-| **MiniMax M3**               | $0.60 | $2.40  | 1M      |
 | **MiMo V2.5 Pro**            | $1.00 | $3.00  | 1M      |
 | **GLM 5V Turbo**             | $1.20 | $4.00  | 200K    |
 | **GLM 5.1**                  | $1.40 | $4.40  | 200K    |
