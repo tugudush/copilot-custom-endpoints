@@ -1,19 +1,19 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** Direct path works for `qwen3.7-plus` (vision) and `qwen3.7-max` (text-only) without a proxy. The optional `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. Pick the mode that matches your tradeoff.
+> **TL;DR:** The live config points `qwen3.7-plus` (vision) and `qwen3.7-max` (text-only) at `proxy/qwen-proxy.mjs` for dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. A direct DashScope path with static `enable_thinking: false` is also supported if you prefer not to run the proxy.
 
 ## At a Glance
 
 | Field                           | Value                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------- |
-| Mode                            | **Direct** (no proxy) **or** **Proxy** (optional, for dynamic thinking)   |
-| Vision                          | ✅ Yes (`qwen3.7-plus`)                                                   |
-| Tool calling                    | ✅ Yes                                                                    |
-| Context                         | 1M                                                                        |
-| Required `requestBody` (direct) | `enable_thinking: false`                                                  |
-| Required `requestBody` (proxy)  | none — proxy injects based on tool activity in the conversation           |
-| Endpoint                        | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` |
-| Proxy endpoint                  | `http://127.0.0.1:3458/v1/chat/completions`                               |
+| Mode                            | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
+| Vision                          | ✅ Yes (`qwen3.7-plus`)                                                          |
+| Tool calling                    | ✅ Yes                                                                           |
+| Context                         | 1M                                                                               |
+| Required `requestBody` (direct) | `enable_thinking: false`                                                         |
+| Required `requestBody` (proxy)  | none — proxy injects based on tool activity in the conversation                  |
+| Endpoint                        | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
+| Proxy endpoint                  | `http://127.0.0.1:3458/v1/chat/completions`                                      |
 
 ### Models at a glance
 
@@ -22,15 +22,9 @@
 | `qwen3.7-plus` | ✅ Yes | Primary model with image understanding |
 | `qwen3.7-max`  | ❌ No  | Larger text-only model                 |
 
-> The snapshot `qwen3.7-plus-2026-05-26` is also available; the floating `qwen3.7-plus` alias is preferred.
+> The live `chatLanguageModels.json` points Qwen models at the local proxy by default; the direct DashScope URL is shown for users who prefer a static `enable_thinking: false` setup.
 
-## Quick Start — Direct Path (Recommended for Simplicity)
-
-1. **Edit `chatLanguageModels.json`** — add the Qwen block from [Setup § Direct](#direct-path) below.
-2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Restart VS Code** and pick "Qwen 3.7 Plus" or "Qwen 3.7 Max".
-
-## Quick Start — With Proxy (Dynamic Thinking)
+## Quick Start — With Proxy (Recommended)
 
 1. **Start the proxy** — choose one:
    - `npm run proxy:qwen` (from the repo root)
@@ -39,6 +33,12 @@
 2. **Edit `chatLanguageModels.json`** — use the proxy-path block from [Setup § Proxy](#proxy-path) below.
 3. **Set your DashScope API key** via the Language Models UI.
 4. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
+
+## Quick Start — Direct Path (No Proxy)
+
+1. **Edit `chatLanguageModels.json`** — add the Qwen block from [Setup § Direct](#direct-path) below.
+2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
+3. **Restart VS Code** and pick "Qwen 3.7 Plus" or "Qwen 3.7 Max".
 
 ## Setup
 
@@ -63,7 +63,7 @@ DashScope is region-specific — your API key only works on the endpoint it was 
   "models": [
     {
       "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max",
+      "name": "Qwen 3.7 Max (text)",
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": false,
@@ -74,7 +74,7 @@ DashScope is region-specific — your API key only works on the endpoint it was 
     },
     {
       "id": "qwen3.7-plus",
-      "name": "Qwen 3.7 Plus",
+      "name": "Qwen 3.7 Plus (vision)",
       "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -88,6 +88,8 @@ DashScope is region-specific — your API key only works on the endpoint it was 
 ```
 
 > **`enable_thinking: false`** suppresses the Qwen3 family's default thinking mode, which prevents `reasoning_content` issues during tool loops.
+
+> **Live config note:** The checked-in `chatLanguageModels.json` points Qwen at the local proxy (`http://127.0.0.1:3458`) with no `requestBody` override, so the proxy manages `enable_thinking` dynamically. Use the snippet above only if you are not running the proxy.
 
 ### Proxy path
 
@@ -132,7 +134,7 @@ Expected response:
   "models": [
     {
       "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max",
+      "name": "Qwen 3.7 Max (text)",
       "url": "http://127.0.0.1:3458/v1/chat/completions",
       "toolCalling": true,
       "vision": false,
@@ -140,7 +142,7 @@ Expected response:
     },
     {
       "id": "qwen3.7-plus",
-      "name": "Qwen 3.7 Plus",
+      "name": "Qwen 3.7 Plus (vision)",
       "url": "http://127.0.0.1:3458/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -160,7 +162,7 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 | ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
 | `QWEN_PROXY_PORT`                        | `3458` (falls back to `PORT`)                                             | Local listen port                                  |
 | `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
-| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson` (relative to repo root)                     | Redacted NDJSON log path                           |
+| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson` (relative to proxy script)                  | Redacted NDJSON log path                           |
 | `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
 
 #### Proxy request rewriting rules
@@ -175,6 +177,8 @@ The proxy detects active tool use by examining the conversation state, not just 
 > **Why delete rather than set `true`?** Omitting the key lets Qwen use its built-in default (`true`). Deletion is closer to "don't interfere."
 >
 > **Why not check `body.tools`?** The proxy checks for tool _activity_ — tool results in the message history or an explicit `tool_choice` directive — rather than the mere presence of a tools array. This correctly handles tool-enabled conversations even when the client sends `tools` in an earlier request but omits it from subsequent turns.
+>
+> **Proxy vs. direct:** The live config uses the proxy URL with no `requestBody` override so this dynamic behavior is applied to every request. The direct-path snippet above keeps `enable_thinking: false` static in `requestBody` as a no-proxy alternative.
 
 ### API key
 
@@ -196,6 +200,8 @@ The Qwen3 hybrid-thinking models default to `enable_thinking: true`, producing `
 | Direct path         | Thinking OFF (always)           | Thinking OFF                  |
 | Proxy path          | Thinking ON (default preserved) | Thinking OFF (auto-injected)  |
 | No config (default) | Thinking ON                     | Risk: history may be rejected |
+
+> The live `chatLanguageModels.json` uses the proxy path by default, so plain-chat reasoning is visible and tool turns are stable.
 
 ### Vision (`qwen3.7-plus`)
 

@@ -25,8 +25,8 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiMo V2.5**               | Xiaomi    | No                     | ✅           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5 Pro**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
-| **Qwen 3.7 Plus**           | DashScope | Optional               | ✅           | [Setup](docs/models/qwen.md)                                                                       |
-| **Qwen 3.7 Max**            | DashScope | Optional               | ❌           | [Setup](docs/models/qwen.md)                                                                       |
+| **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                       |
+| **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
 | **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
 | **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
@@ -94,7 +94,7 @@ All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01. **MiniMa
 | ---------------------------- | ----- | ------ | ------- |
 | **MiMo V2 Flash** 🏆         | $0.10 | $0.30  | 256K    |
 | **DeepSeek V4 Flash** 🏆     | $0.14 | $0.28  | 1M      |
-| **Kimi K2.6** (non-thinking) | $0.16 | $0.95  | 256K    |
+| **Kimi K2.6** (non-thinking) | $0.16 | $0.95  | 262K    |
 | **Kimi K2.7 Code**           | $0.19 | $4.00  | 262K    |
 | **MiniMax M3**               | $0.30 | $1.20  | 1M      |
 | **MiMo V2.5**                | $0.40 | $2.00  | 1M      |

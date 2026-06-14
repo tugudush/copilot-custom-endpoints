@@ -17,8 +17,8 @@
 | Field                  | Value                                |
 | ---------------------- | ------------------------------------ |
 | Model id               | `kimi-k2.6`                          |
-| Context                | 256K                                 |
-| Max output             | 32K                                  |
+| Context                | 262K                                 |
+| Max output             | 32768                                |
 | Required `requestBody` | `temperature: 1`                     |
 | Tool calling           | ✅ Proxy forces `thinking: disabled` |
 
@@ -28,7 +28,7 @@
 | ---------------------- | ---------------------------------------------------------- |
 | Model id               | `kimi-k2.7-code`                                           |
 | Context                | 262K                                                       |
-| Max output             | 32K (recommend **4096** for VS Code agent mode)            |
+| Max output             | 4096                                                       |
 | Required `requestBody` | `temperature: 1`, `max_tokens: 4096`                       |
 | Tool calling           | ✅ Proxy lets K2.7 think (it rejects `thinking: disabled`) |
 
@@ -63,7 +63,7 @@ Config file location:
   "models": [
     {
       "id": "kimi-k2.6",
-      "name": "Kimi K2.6",
+      "name": "Kimi K2.6 (vision)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
       "requestBody": {
         "temperature": 1
@@ -117,15 +117,15 @@ Config file location:
 
 All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/config'` automatically).
 
-| Variable                                    | Default                                               | Purpose                                                 |
-| ------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
-| `KIMI_PROXY_PORT`                           | `3457` (falls back to `PORT`)                         | Local listen port                                       |
-| `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`         | Upstream Moonshot endpoint                              |
-| `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                   | Temperature for thinking-mode requests                  |
-| `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                 | Temperature when thinking is disabled (tool requests)   |
-| `KIMI_PROXY_FORCE_TOP_P`                    | `0.95`                                                | `top_p` forced into request body                        |
-| `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                   | Force `thinking={"type":"disabled"}` when tools present |
-| `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to repo root) | Redacted NDJSON log path                                |
+| Variable                                    | Default                                                  | Purpose                                                 |
+| ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------- |
+| `KIMI_PROXY_PORT`                           | `3457` (falls back to `PORT`)                            | Local listen port                                       |
+| `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`            | Upstream Moonshot endpoint                              |
+| `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                      | Temperature for thinking-mode requests                  |
+| `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                    | Temperature when thinking is disabled (tool requests)   |
+| `KIMI_PROXY_FORCE_TOP_P`                    | `0.95`                                                   | `top_p` forced into request body                        |
+| `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                      | Force `thinking={"type":"disabled"}` when tools present |
+| `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to proxy script) | Redacted NDJSON log path                                |
 
 #### Health check response
 
@@ -161,8 +161,8 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 | Model       | Turn type    | Behavior                                                    |
 | ----------- | ------------ | ----------------------------------------------------------- |
-| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`                          |
-| K2.5 / K2.6 | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6` |
+| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`, `top_p: 0.95`           |
+| K2.5 / K2.6 | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6`, `top_p: 0.95` |
 | K2.7 Code   | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`            |
 
 ### Capabilities

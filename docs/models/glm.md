@@ -10,7 +10,7 @@
 | Vision                 | ✅ Yes (`glm-5v-turbo` only)                            |
 | Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)   |
 | Context (flagship)     | 200K (`glm-5.1` / `glm-5v-turbo`)                       |
-| Max output (flagship)  | 128K                                                    |
+| Max output (flagship)  | 131072                                                  |
 | Required `requestBody` | `thinking: { type: "enabled" }` (recommended)           |
 | Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`         |
 | Endpoint (China)       | `https://open.bigmodel.cn/api/paas/v4/chat/completions` |
@@ -20,8 +20,8 @@
 
 | Model          | Vision | Context | Max output | Thinking  | Cost (in / out per 1M) | Role                                                      |
 | -------------- | ------ | ------- | ---------- | --------- | ---------------------- | --------------------------------------------------------- |
-| `glm-5.1`      | ❌     | 200K    | 128K       | `enabled` | $1.40 / $4.40          | Current flagship — long-horizon / 8h autonomous work      |
-| `glm-5v-turbo` | ✅     | 200K    | 128K       | `enabled` | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding |
+| `glm-5.1`      | ❌     | 200K    | 131072     | `enabled` | $1.40 / $4.40          | Current flagship — long-horizon / 8h autonomous work      |
+| `glm-5v-turbo` | ✅     | 200K    | 131072     | `enabled` | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding |
 
 > Other GLM models — `glm-5`, `glm-5-turbo`, `glm-4.6v-flashx`, `glm-4.5`, `glm-4.5-air`, `glm-4.5-flash`, `glm-4.5-x`, `glm-4.5-airx`, `glm-4-32b-0414-128k` — are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
@@ -54,7 +54,7 @@ Config file location:
   "models": [
     {
       "id": "glm-5.1",
-      "name": "GLM 5.1 (flagship)",
+      "name": "GLM 5.1 (text)",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",
       "toolCalling": true,
       "vision": false,
@@ -69,7 +69,7 @@ Config file location:
     },
     {
       "id": "glm-5v-turbo",
-      "name": "GLM 5V Turbo (vision flagship)",
+      "name": "GLM 5V Turbo (vision)",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",
       "toolCalling": true,
       "vision": true,

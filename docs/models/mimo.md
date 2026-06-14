@@ -10,7 +10,7 @@
 | Vision                 | ✅ Yes (`mimo-v2.5` only)                        |
 | Tool calling           | ✅ Yes (with `thinking: disabled`)               |
 | Context                | 1M (V2.5 Pro / V2.5) / 256K (V2 Flash)           |
-| Max output             | 128K (V2.5 Pro) / 32K (V2.5) / 64K (V2 Flash)    |
+| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5) / 65536 (V2 Flash) |
 | Required `requestBody` | `thinking: { type: "disabled" }`                 |
 | Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions` |
 
@@ -51,7 +51,7 @@ Config file location:
   "models": [
     {
       "id": "mimo-v2.5-pro",
-      "name": "MiMo V2.5 Pro",
+      "name": "MiMo V2.5 Pro (text)",
       "url": "https://api.xiaomimimo.com/v1/chat/completions",
       "toolCalling": true,
       "vision": false,
@@ -66,7 +66,7 @@ Config file location:
     },
     {
       "id": "mimo-v2.5",
-      "name": "MiMo V2.5",
+      "name": "MiMo V2.5 (vision)",
       "url": "https://api.xiaomimimo.com/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -81,7 +81,7 @@ Config file location:
     },
     {
       "id": "mimo-v2-flash",
-      "name": "MiMo V2 Flash",
+      "name": "MiMo V2 Flash (text)",
       "url": "https://api.xiaomimimo.com/v1/chat/completions",
       "toolCalling": true,
       "vision": false,
