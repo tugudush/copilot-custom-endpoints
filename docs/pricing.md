@@ -47,6 +47,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 | **MiMo V2 Flash**     | Xiaomi    | $0.10                         | $0.01                         | $0.30                                   | 256K           |
 | **DeepSeek V4 Flash** | DeepSeek  | $0.14                         | $0.0028                       | $0.28                                   | 1M             |
 | **Kimi K2.6**         | Moonshot  | $0.16                         | —                             | $0.95 (non-thinking) / $4.00 (thinking) | 256K           |
+| **Kimi K2.7 Code**    | Moonshot  | $0.19                         | $0.95                         | $4.00                                   | 262K           |
 | **Qwen 3.7 Plus**     | DashScope | $0.40 (≤256K) / $1.20 (>256K) | —                             | $1.60 (≤256K) / $4.80 (>256K)           | 1M             |
 | **MiMo V2.5**         | Xiaomi    | $0.40                         | $0.08                         | $2.00                                   | 1M             |
 | **DeepSeek V4 Pro**   | DeepSeek  | $0.435                        | $0.003625                     | $0.87                                   | 1M             |

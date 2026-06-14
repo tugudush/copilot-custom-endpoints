@@ -92,9 +92,11 @@ describe('Kimi proxy rewrite logic', () => {
         const incomingTemperature = payload.temperature
         const incomingTopP = payload.top_p
         const incomingThinkingType = payload?.thinking?.type
+        const model = payload.model ?? ''
+        const isK27 = model.startsWith('kimi-k2.7')
         const hasTools =
           Array.isArray(payload.tools) && payload.tools.length > 0
-        const useNonThinkingMode = hasTools
+        const useNonThinkingMode = !isK27 && hasTools
         const rewrittenTemperature = useNonThinkingMode
           ? forcedNonThinkingTemperature
           : forcedTemperature
@@ -115,6 +117,7 @@ describe('Kimi proxy rewrite logic', () => {
         return {
           summary: {
             model: payload.model,
+            isK27,
             hasTools,
             incomingTemperature,
             rewrittenTemperature,
@@ -194,6 +197,26 @@ describe('Kimi proxy rewrite logic', () => {
     assert.equal(received.temperature, forcedNonThinkingTemperature)
     assert.equal(received.top_p, forcedTopP)
     assert.deepEqual(received.thinking, { type: 'disabled' })
+  })
+
+  it('K2.7 tool-enabled chat: keeps thinking enabled and uses thinking temperature', async () => {
+    const res = await proxyRequest(proxyPort, {
+      model: 'kimi-k2.7-code',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: [{ type: 'function', function: { name: 'search' } }],
+      temperature: 0.1,
+      top_p: 0.5,
+      stream: false
+    })
+
+    assert.equal(res.status, 200)
+    const data = await res.json()
+    const received = data.receivedBody
+
+    // K2.7 should NOT have thinking disabled — it rejects it
+    assert.equal(received.temperature, forcedTemperature)
+    assert.equal(received.top_p, forcedTopP)
+    assert.equal(received.thinking, undefined)
   })
 
   it('returns 404 for non-POST methods', async () => {
