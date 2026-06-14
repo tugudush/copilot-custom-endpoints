@@ -1,19 +1,36 @@
 # Kimi — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** Kimi K2.6 requires the local proxy. The K2 family locks `temperature: 1` and `top_p: 0.95`, and requires `thinking: { type: "disabled" }` on tool turns. The proxy rewrites sampling values, suppresses thinking on tool turns, and preserves streaming. Direct VS Code → Moonshot integration is not viable in this environment.
+> **TL;DR:** Kimi models require the local proxy. The K2 family locks `temperature: 1` and `top_p: 0.95`. K2.6 requires `thinking: { type: "disabled" }` on tool turns; **K2.7 Code is always-thinking and rejects `thinking: disabled`**, so the proxy detects `kimi-k2.7*` and skips that rewrite while keeping sampling enforcement. Direct VS Code → Moonshot integration is not viable in this environment.
 
 ## At a Glance
 
-| Field                  | Value                                         |
-| ---------------------- | --------------------------------------------- |
-| Mode                   | **Proxy required** (local on `:3457`)         |
-| Vision                 | ✅ Yes                                        |
-| Tool calling           | ✅ Yes (proxy forces `thinking: disabled`)    |
-| Context                | 256K                                          |
-| Max output             | 32K                                           |
-| Required `requestBody` | `temperature: 1`                              |
-| Upstream endpoint      | `https://api.moonshot.ai/v1/chat/completions` |
-| Proxy endpoint         | `http://127.0.0.1:3457/v1/chat/completions`   |
+| Field             | Value                                         |
+| ----------------- | --------------------------------------------- |
+| Mode              | **Proxy required** (local on `:3457`)         |
+| Vision            | ✅ Yes                                        |
+| Tool calling      | ✅ Yes                                        |
+| Upstream endpoint | `https://api.moonshot.ai/v1/chat/completions` |
+| Proxy endpoint    | `http://127.0.0.1:3457/v1/chat/completions`   |
+
+### K2.6
+
+| Field                  | Value                                |
+| ---------------------- | ------------------------------------ |
+| Model id               | `kimi-k2.6`                          |
+| Context                | 262K                                 |
+| Max output             | 32768                                |
+| Required `requestBody` | `temperature: 1`                     |
+| Tool calling           | ✅ Proxy forces `thinking: disabled` |
+
+### K2.7 Code
+
+| Field                  | Value                                                      |
+| ---------------------- | ---------------------------------------------------------- |
+| Model id               | `kimi-k2.7-code`                                           |
+| Context                | 262K                                                       |
+| Max output             | 4096                                                       |
+| Required `requestBody` | `temperature: 1`, `max_tokens: 4096`                       |
+| Tool calling           | ✅ Proxy lets K2.7 think (it rejects `thinking: disabled`) |
 
 ## Quick Start
 
@@ -23,7 +40,7 @@
    - `npx copilot-custom-endpoint` (also starts the Qwen proxy concurrently)
 2. **Edit `chatLanguageModels.json`** — add the Kimi block from [Setup](#setup) below.
 3. **Set your Moonshot API key** via the Command Palette → **Chat: Manage Language Models**.
-4. **Restart VS Code** and pick "Kimi K2.6" in the chat picker.
+4. **Restart VS Code** and pick "Kimi K2.6" or "Kimi K2.7 Code" in the chat picker.
 
 ## Setup
 
@@ -46,7 +63,7 @@ Config file location:
   "models": [
     {
       "id": "kimi-k2.6",
-      "name": "Kimi K2.6",
+      "name": "Kimi K2.6 (vision)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
       "requestBody": {
         "temperature": 1
@@ -56,10 +73,26 @@ Config file location:
       "streaming": true,
       "maxInputTokens": 262144,
       "maxOutputTokens": 32768
+    },
+    {
+      "id": "kimi-k2.7-code",
+      "name": "Kimi K2.7 Code",
+      "url": "http://127.0.0.1:3457/v1/chat/completions",
+      "requestBody": {
+        "temperature": 1,
+        "max_tokens": 4096
+      },
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 262144,
+      "maxOutputTokens": 4096
     }
   ]
 }
 ```
+
+> **K2.7 note:** `max_tokens` and `maxOutputTokens` are intentionally conservative at **4096**. K2.7 is always-thinking, so reasoning tokens inflate response size. Values above 24K triggered VS Code's "Response too long" error in agent mode during validation. Raise this only if you have tested your specific workload.
 
 ### 2. API key
 
@@ -84,15 +117,15 @@ Config file location:
 
 All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/config'` automatically).
 
-| Variable                                    | Default                                               | Purpose                                                 |
-| ------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- |
-| `KIMI_PROXY_PORT`                           | `3457` (falls back to `PORT`)                         | Local listen port                                       |
-| `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`         | Upstream Moonshot endpoint                              |
-| `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                   | Temperature for thinking-mode requests                  |
-| `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                 | Temperature when thinking is disabled (tool requests)   |
-| `KIMI_PROXY_FORCE_TOP_P`                    | `0.95`                                                | `top_p` forced into request body                        |
-| `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                   | Force `thinking={"type":"disabled"}` when tools present |
-| `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to repo root) | Redacted NDJSON log path                                |
+| Variable                                    | Default                                                  | Purpose                                                 |
+| ------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------- |
+| `KIMI_PROXY_PORT`                           | `3457` (falls back to `PORT`)                            | Local listen port                                       |
+| `KIMI_UPSTREAM_URL`                         | `https://api.moonshot.ai/v1/chat/completions`            | Upstream Moonshot endpoint                              |
+| `KIMI_PROXY_FORCE_TEMPERATURE`              | `1`                                                      | Temperature for thinking-mode requests                  |
+| `KIMI_PROXY_FORCE_NON_THINKING_TEMPERATURE` | `0.6`                                                    | Temperature when thinking is disabled (tool requests)   |
+| `KIMI_PROXY_FORCE_TOP_P`                    | `0.95`                                                   | `top_p` forced into request body                        |
+| `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                                      | Force `thinking={"type":"disabled"}` when tools present |
+| `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson` (relative to proxy script) | Redacted NDJSON log path                                |
 
 #### Health check response
 
@@ -110,7 +143,8 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 - Forwards the existing `Authorization` header upstream.
 - Rewrites plain-chat requests to `temperature: 1` and `top_p: 0.95`.
-- Rewrites tool-enabled requests to `thinking: {"type": "disabled"}`, `temperature: 0.6`, and `top_p: 0.95`.
+- For **K2.5/K2.6**: rewrites tool-enabled requests to `thinking: {"type": "disabled"}`, `temperature: 0.6`, and `top_p: 0.95`.
+- For **K2.7 Code**: keeps thinking enabled (K2.7 rejects `thinking: disabled` with HTTP 400) and rewrites to `temperature: 1`, `top_p: 0.95`.
 - Preserves streaming responses.
 - Writes redacted request summaries to `debug_log/kimi-proxy.ndjson`.
 
@@ -125,10 +159,11 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 ### Thinking mode
 
-| Turn type    | Behavior                                                    |
-| ------------ | ----------------------------------------------------------- |
-| Plain chat   | Thinking enabled, `temperature: 1`                          |
-| Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6` |
+| Model       | Turn type    | Behavior                                                    |
+| ----------- | ------------ | ----------------------------------------------------------- |
+| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`, `top_p: 0.95`           |
+| K2.5 / K2.6 | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6`, `top_p: 0.95` |
+| K2.7 Code   | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`            |
 
 ### Capabilities
 
@@ -151,12 +186,14 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 ## Pricing
 
-For the cross-provider comparison, see [docs/pricing.md](../pricing.md). Kimi K2.6 on the **Moonshot direct platform**:
+For the cross-provider comparison, see [docs/pricing.md](../pricing.md). Kimi models on the **Moonshot direct platform**:
 
-| Model       | Input      | Output (non-thinking) | Output (thinking) |
-| ----------- | ---------- | --------------------- | ----------------- |
-| `kimi-k2.6` | $0.16 / 1M | $0.95 / 1M            | $4.00 / 1M        |
+| Model            | Input      | Cached input | Output (non-thinking) | Output (thinking) |
+| ---------------- | ---------- | ------------ | --------------------- | ----------------- |
+| `kimi-k2.6`      | $0.16 / 1M | —            | $0.95 / 1M            | $4.00 / 1M        |
+| `kimi-k2.7-code` | $0.19 / 1M | $0.95 / 1M   | —                     | $4.00 / 1M        |
 
+> **K2.7:** No non-thinking mode — always-thinking. Cached input pricing applies.
 > Via DashScope, K2.6 is also available at $0.89 / 1M input and $3.71 / 1M output (same model, regional pricing).
 
 ---
@@ -213,11 +250,25 @@ The model-level `requestBody.temperature = 1` override validated locally but was
 - Redacted proxy logs confirmed `temperature 0.1 -> 1` and `top_p 1 -> 0.95` for plain-chat requests.
 - Redacted proxy logs later confirmed `thinking undefined -> disabled` and `temperature 0.1 -> 0.6` for tool-enabled requests.
 
+### K2.7 Code validation results (June 14, 2026)
+
+| Check                                                 | Result                                     |
+| ----------------------------------------------------- | ------------------------------------------ |
+| `GET /v1/models` — slug confirmed                     | ✅ `kimi-k2.7-code`                        |
+| Plain chat via proxy                                  | ✅                                         |
+| Tool turn with `thinking: disabled`                   | ❌ HTTP 400 — rejected by model            |
+| Tool turn letting K2.7 think                          | ✅                                         |
+| Two-turn tool loop via proxy                          | ✅ No `reasoning_content is missing` error |
+| VS Code Agent mode — integrated browser opened Google | ✅                                         |
+| `maxOutputTokens` 24K–32K in agent mode               | ❌ VS Code "Response too long"             |
+| `maxOutputTokens` 4096 in agent mode                  | ✅                                         |
+
 ### Final verdict
 
 - Acceptable for plain chat: **yes** (proxy)
 - Acceptable for streaming chat: **yes** (proxy)
 - Acceptable for tool-enabled agent use: **yes**, with the local proxy workaround
+- K2.7 specifically: **yes**, but keep `maxOutputTokens` low (4096 validated) to avoid VS Code's response-size limit
 - Acceptable without a proxy: **no**
 
 ## References
@@ -233,3 +284,4 @@ The model-level `requestBody.temperature = 1` override validated locally but was
 - Kimi web search guide: `https://platform.kimi.ai/docs/guide/use-web-search.md`
 - Kimi coding tools / agent guide: `https://platform.kimi.ai/docs/guide/agent-support.md`
 - Kimi K2.6 pricing: `https://platform.kimi.ai/docs/pricing/chat-k26`
+- Kimi K2.7 Code pricing: `https://platform.kimi.ai/docs/pricing/chat-k27-code`

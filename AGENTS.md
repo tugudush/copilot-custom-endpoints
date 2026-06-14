@@ -4,9 +4,9 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
-- **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
-- **Qwen 3.7 Plus** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
-- **Qwen 3.7 Max** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
+- **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
+- **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
+- **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 - **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; no proxy needed.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
@@ -17,7 +17,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 ## Project Map
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
-- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6.
+- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6 and K2.7 Code.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.7 Plus (vision) and Qwen 3.7 Max (text only), plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
@@ -82,14 +82,15 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 ### Kimi K2
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
-- Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
+- **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
+- **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.
 
 ### Qwen 3.x (DashScope)
 
-- Direct VS Code -> DashScope works without a proxy for both `qwen3.7-plus` and `qwen3.7-max`.
-- Static `enable_thinking: false` in `requestBody` prevents `reasoning_content` issues during tool loops but suppresses reasoning in plain chat.
-- Optional `proxy/qwen-proxy.mjs` provides dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
+- Direct VS Code -> DashScope works without a proxy for both `qwen3.7-plus` and `qwen3.7-max` when `enable_thinking: false` is set in `requestBody`.
+- The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
+- When using the proxy, keep `enable_thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `false` on tool turns.
 - `qwen3.7-plus` supports vision; `qwen3.7-max` does not.
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 

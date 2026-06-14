@@ -10,7 +10,7 @@
 | Vision                   | ✅ Yes (image + video)                                  |
 | Tool calling             | ✅ Yes                                                  |
 | Context                  | 1M (guaranteed 512K)                                    |
-| Max output               | 512K (recommended 128K)                                 |
+| Max output               | 131072                                                  |
 | Required `requestBody`   | `thinking: { type: "adaptive" }, reasoning_split: true` |
 | Endpoint (international) | `https://api.minimax.io/v1/chat/completions`            |
 | Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`          |
@@ -42,7 +42,7 @@ Config file location:
   "models": [
     {
       "id": "MiniMax-M3",
-      "name": "MiniMax M3",
+      "name": "MiniMax M3 (vision)",
       "url": "https://api.minimax.io/v1/chat/completions",
       "toolCalling": true,
       "vision": true,

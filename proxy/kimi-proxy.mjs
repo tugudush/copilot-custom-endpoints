@@ -8,12 +8,16 @@ import { createProxy } from '../lib/create-proxy.mjs'
  * - Validated in this repo with `kimi-k2.6`.
  * - Expected to work for `kimi-k2.5`, because Kimi documents the same fixed
  *   sampling and thinking behavior for `kimi-k2.6` / `kimi-k2.5`.
+ * - Validated in this repo with `kimi-k2.7-code` (June 14, 2026). K2.7 is
+ *   always-thinking and rejects `thinking: { type: 'disabled' }`. The proxy
+ *   detects K2.7 and skips the thinking-disable rewrite while keeping
+ *   temperature/top_p enforcement.
  * - Not intended for `moonshot-v1` models or non-Kimi providers, because this
  *   proxy rewrites requests to K2-family-specific values:
  *   - thinking mode temperature = 1.0
  *   - non-thinking mode temperature = 0.6
  *   - top_p = 0.95
- *   - tool-enabled requests force `thinking: { type: 'disabled' }`
+ *   - tool-enabled requests force `thinking: { type: 'disabled' }` (K2.5/K2.6 only)
  */
 const upstreamUrl =
   process.env.KIMI_UPSTREAM_URL ?? 'https://api.moonshot.ai/v1/chat/completions'
@@ -104,6 +108,12 @@ function rewriteKimi(payload) {
   const incomingTemperature = payload.temperature
   const incomingTopP = payload.top_p
   const incomingThinkingType = payload?.thinking?.type
+  const model = payload.model ?? ''
+
+  // K2.7 is always-thinking and rejects thinking: disabled.
+  // Detect K2.7 variants (e.g. kimi-k2.7-code) and skip the thinking-disable
+  // rewrite while keeping temperature/top_p enforcement.
+  const isK27 = model.startsWith('kimi-k2.7')
 
   // Determine if a tool is actually being invoked:
   // - tool_choice is set and not "none"
@@ -116,7 +126,7 @@ function rewriteKimi(payload) {
     (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
   const hasTools = hasActiveToolCall
 
-  const useNonThinkingMode = disableThinkingWithTools && hasTools
+  const useNonThinkingMode = !isK27 && disableThinkingWithTools && hasTools
   const rewrittenTemperature = useNonThinkingMode
     ? forcedNonThinkingTemperature
     : forcedTemperature
@@ -134,6 +144,8 @@ function rewriteKimi(payload) {
 
   const rewrittenThinkingType = payload.thinking?.type
   const rewriteInfo = {
+    model,
+    isK27,
     incomingTemperature,
     rewrittenTemperature,
     incomingTopP,
@@ -145,7 +157,8 @@ function rewriteKimi(payload) {
   const summary = summarizePayload(payload, hasTools, rewriteInfo)
 
   const modeTag = hasTools ? '[tools]' : '[chat]'
-  const consoleMsg = `${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
+  const k27Tag = isK27 ? '[k2.7]' : ''
+  const consoleMsg = `${k27Tag}${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
 
   // Clean up internal key before forwarding
   delete payload.__incomingThinkingType
