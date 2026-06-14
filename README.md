@@ -100,6 +100,7 @@ All prices are **USD per 1M tokens** (cache miss). 1 AI credit = $0.01. **MiniMa
 | **MiniMax M3**               | $0.30 | $1.20  | 1M        |
 | **MiMo V2.5**                | $0.40 | $2.00  | 1M        |
 | **Qwen 3.7 Plus**            | $0.40 | $1.60  | 1M        |
+| **MAI-Code-1-Flash**         | $0.75 | $4.50  | —         |
 | **MiMo V2.5 Pro**            | $1.00 | $3.00  | 1M        |
 | **GLM 5V Turbo**             | $1.20 | $4.00  | 200K      |
 | **GLM 5.1**                  | $1.40 | $4.40  | 200K      |

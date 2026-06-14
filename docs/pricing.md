@@ -22,23 +22,25 @@ All prices below are in **USD per 1M tokens** (non-cached). To convert to AI cre
 
 These are the models available through GitHub Copilot's model roster as of June 1, 2026.
 
-| Model                 | Provider  | Tier        | Input (per 1M) | Cached input | Output (per 1M) | Context window |
-| --------------------- | --------- | ----------- | -------------- | ------------ | --------------- | -------------- |
-| **Raptor mini**       | GitHub    | Versatile   | $0.25          | $0.025       | $2.00           | 264K           |
-| **Gemini 3 Flash**    | Google    | Lightweight | $0.50          | $0.05        | $3.00           | 173K           |
-| **GPT-5.4 mini**      | OpenAI    | Lightweight | $0.75          | $0.075       | $4.50           | 400K           |
-| **Claude Haiku 4.5**  | Anthropic | Versatile   | $1.00          | $0.10        | $5.00           | 160K           |
-| **Gemini 2.5 Pro**    | Google    | Powerful    | $1.25¹         | $0.125       | $10.00¹         | 173K           |
-| **Gemini 3.5 Flash**  | Google    | Lightweight | $1.50          | $0.15        | $9.00           | 1M             |
-| **GPT-5.3-Codex**     | OpenAI    | Powerful    | $1.75          | $0.175       | $14.00          | 400K           |
-| **Gemini 3.1 Pro**    | Google    | Powerful    | $2.00¹         | $0.20        | $12.00¹         | 1M             |
-| **GPT-5.4**           | OpenAI    | Versatile   | $2.50          | $0.25        | $15.00          | 1M             |
-| **Claude Sonnet 4.6** | Anthropic | Versatile   | $3.00          | $0.30        | $15.00          | 1M             |
-| **Claude Opus 4.8**   | Anthropic | Powerful    | $5.00          | $0.50        | $25.00          | 1M             |
-| **Claude Opus 4.7**   | Anthropic | Powerful    | $5.00          | $0.50        | $25.00          | 1M             |
-| **GPT-5.5**           | OpenAI    | Powerful    | $5.00          | $0.50        | $30.00          | 1M             |
+| Model                  | Provider  | Tier        | Input (per 1M) | Cached input | Output (per 1M) | Context window |
+| ---------------------- | --------- | ----------- | -------------- | ------------ | --------------- | -------------- |
+| **Raptor mini**        | GitHub    | Versatile   | $0.25          | $0.025       | $2.00           | 264K           |
+| **Gemini 3 Flash**     | Google    | Lightweight | $0.50          | $0.05        | $3.00           | 173K           |
+| **GPT-5.4 mini**       | OpenAI    | Lightweight | $0.75          | $0.075       | $4.50           | 400K           |
+| **MAI-Code-1-Flash** ² | Microsoft | Lightweight | $0.75          | $0.075       | $4.50           | —              |
+| **Claude Haiku 4.5**   | Anthropic | Versatile   | $1.00          | $0.10        | $5.00           | 160K           |
+| **Gemini 2.5 Pro**     | Google    | Powerful    | $1.25¹         | $0.125       | $10.00¹         | 173K           |
+| **Gemini 3.5 Flash**   | Google    | Lightweight | $1.50          | $0.15        | $9.00           | 1M             |
+| **GPT-5.3-Codex**      | OpenAI    | Powerful    | $1.75          | $0.175       | $14.00          | 400K           |
+| **Gemini 3.1 Pro**     | Google    | Powerful    | $2.00¹         | $0.20        | $12.00¹         | 1M             |
+| **GPT-5.4**            | OpenAI    | Versatile   | $2.50          | $0.25        | $15.00          | 1M             |
+| **Claude Sonnet 4.6**  | Anthropic | Versatile   | $3.00          | $0.30        | $15.00          | 1M             |
+| **Claude Opus 4.8**    | Anthropic | Powerful    | $5.00          | $0.50        | $25.00          | 1M             |
+| **Claude Opus 4.7**    | Anthropic | Powerful    | $5.00          | $0.50        | $25.00          | 1M             |
+| **GPT-5.5**            | OpenAI    | Powerful    | $5.00          | $0.50        | $30.00          | 1M             |
 
 ¹ Gemini 3.1 Pro and 2.5 Pro pricing applies to prompts ≤200K tokens.
+² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 
 ## Custom-endpoint alternatives
 
@@ -59,6 +61,7 @@ These are the models available through GitHub Copilot's model roster as of June 
 
 > **Notes:**
 >
+> - **MAI-Code-1-Flash** is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are 5× cheaper for V2.5 Pro ($0.20/M) and V2.5 ($0.08/M), and 10× cheaper for V2 Flash ($0.01/M).
 > - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
@@ -90,6 +93,7 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 | Kimi K2.7 Code           | ~$0.50                 |
 | Gemini 3 Flash           | ~$0.55                 |
 | MiMo V2.5 Pro            | ~$0.80                 |
+| MAI-Code-1-Flash         | ~$0.83                 |
 | GPT-5.4 mini             | ~$0.83                 |
 | Claude Haiku 4.5         | ~$1.00                 |
 | Qwen 3.7 Max             | ~$1.33                 |
@@ -104,9 +108,10 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: June 9, 2026. Always check the official pages for the latest rates:
+> Prices last verified: June 14, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
+> - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
 > - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
