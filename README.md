@@ -24,8 +24,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiMo V2 Flash**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5**               | Xiaomi    | No                     | ✅           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5 Pro**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
-| **Kimi K2.7 Code**          | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi-2.7.md)                                                                   |
-| **Kimi K2.6**               | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
+| **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
 | **Qwen 3.7 Plus**           | DashScope | Optional               | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional               | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |

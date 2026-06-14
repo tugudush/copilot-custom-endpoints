@@ -4,8 +4,7 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
-- **Kimi K2.7 Code** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
-- **Kimi K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`.
+- **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **Qwen 3.7 Max** (DashScope) — works direct with static `enable_thinking: false`, or optionally via `proxy/qwen-proxy.mjs` for dynamic thinking suppression.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
@@ -18,8 +17,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 ## Project Map
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
-- [docs/models/kimi-2.7.md](docs/models/kimi-2.7.md) — full compatibility assessment for Kimi K2.7 Code.
-- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6.
+- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6 and K2.7 Code.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.7 Plus (vision) and Qwen 3.7 Max (text only), plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
@@ -84,9 +82,9 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 ### Kimi K2
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
-- **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. See [docs/models/kimi-2.7.md](docs/models/kimi-2.7.md) for validated config.
+- **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
-- The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md) and [docs/models/kimi-2.7.md](docs/models/kimi-2.7.md); do not duplicate those records here.
+- The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.
 
 ### Qwen 3.x (DashScope)
 
