@@ -4,33 +4,33 @@
 
 ## At a Glance
 
-| Field                    | Value                                         |
-| ------------------------ | --------------------------------------------- |
-| Mode                     | **Proxy required** (local on `:3457`)         |
-| Vision                   | ✅ Yes                                        |
-| Tool calling             | ✅ Yes                                        |
-| Upstream endpoint        | `https://api.moonshot.ai/v1/chat/completions` |
-| Proxy endpoint           | `http://127.0.0.1:3457/v1/chat/completions`   |
+| Field             | Value                                         |
+| ----------------- | --------------------------------------------- |
+| Mode              | **Proxy required** (local on `:3457`)         |
+| Vision            | ✅ Yes                                        |
+| Tool calling      | ✅ Yes                                        |
+| Upstream endpoint | `https://api.moonshot.ai/v1/chat/completions` |
+| Proxy endpoint    | `http://127.0.0.1:3457/v1/chat/completions`   |
 
 ### K2.6
 
-| Field                  | Value                                      |
-| ---------------------- | ------------------------------------------ |
-| Model id               | `kimi-k2.6`                                |
-| Context                | 256K                                       |
-| Max output             | 32K                                        |
-| Required `requestBody` | `temperature: 1`                           |
-| Tool calling           | ✅ Proxy forces `thinking: disabled`       |
+| Field                  | Value                                |
+| ---------------------- | ------------------------------------ |
+| Model id               | `kimi-k2.6`                          |
+| Context                | 256K                                 |
+| Max output             | 32K                                  |
+| Required `requestBody` | `temperature: 1`                     |
+| Tool calling           | ✅ Proxy forces `thinking: disabled` |
 
 ### K2.7 Code
 
-| Field                  | Value                                                         |
-| ---------------------- | ------------------------------------------------------------- |
-| Model id               | `kimi-k2.7-code`                                              |
-| Context                | 262K                                                          |
-| Max output             | 32K (recommend **4096** for VS Code agent mode)               |
-| Required `requestBody` | `temperature: 1`, `max_tokens: 4096`                          |
-| Tool calling           | ✅ Proxy lets K2.7 think (it rejects `thinking: disabled`)    |
+| Field                  | Value                                                      |
+| ---------------------- | ---------------------------------------------------------- |
+| Model id               | `kimi-k2.7-code`                                           |
+| Context                | 262K                                                       |
+| Max output             | 32K (recommend **4096** for VS Code agent mode)            |
+| Required `requestBody` | `temperature: 1`, `max_tokens: 4096`                       |
+| Tool calling           | ✅ Proxy lets K2.7 think (it rejects `thinking: disabled`) |
 
 ## Quick Start
 
@@ -159,11 +159,11 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 ### Thinking mode
 
-| Model        | Turn type    | Behavior                                                    |
-| ------------ | ------------ | ----------------------------------------------------------- |
-| K2.5 / K2.6  | Plain chat   | Thinking enabled, `temperature: 1`                          |
-| K2.5 / K2.6  | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6` |
-| K2.7 Code    | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`            |
+| Model       | Turn type    | Behavior                                                    |
+| ----------- | ------------ | ----------------------------------------------------------- |
+| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`                          |
+| K2.5 / K2.6 | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6` |
+| K2.7 Code   | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`            |
 
 ### Capabilities
 
@@ -252,16 +252,16 @@ The model-level `requestBody.temperature = 1` override validated locally but was
 
 ### K2.7 Code validation results (June 14, 2026)
 
-| Check                                                   | Result |
-| ------------------------------------------------------- | ------ |
-| `GET /v1/models` — slug confirmed                       | ✅ `kimi-k2.7-code` |
-| Plain chat via proxy                                    | ✅     |
-| Tool turn with `thinking: disabled`                     | ❌ HTTP 400 — rejected by model |
-| Tool turn letting K2.7 think                            | ✅     |
-| Two-turn tool loop via proxy                            | ✅ No `reasoning_content is missing` error |
-| VS Code Agent mode — integrated browser opened Google   | ✅     |
-| `maxOutputTokens` 24K–32K in agent mode                 | ❌ VS Code "Response too long" |
-| `maxOutputTokens` 4096 in agent mode                    | ✅     |
+| Check                                                 | Result                                     |
+| ----------------------------------------------------- | ------------------------------------------ |
+| `GET /v1/models` — slug confirmed                     | ✅ `kimi-k2.7-code`                        |
+| Plain chat via proxy                                  | ✅                                         |
+| Tool turn with `thinking: disabled`                   | ❌ HTTP 400 — rejected by model            |
+| Tool turn letting K2.7 think                          | ✅                                         |
+| Two-turn tool loop via proxy                          | ✅ No `reasoning_content is missing` error |
+| VS Code Agent mode — integrated browser opened Google | ✅                                         |
+| `maxOutputTokens` 24K–32K in agent mode               | ❌ VS Code "Response too long"             |
+| `maxOutputTokens` 4096 in agent mode                  | ✅                                         |
 
 ### Final verdict
 
