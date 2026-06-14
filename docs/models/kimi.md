@@ -159,11 +159,11 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 ### Thinking mode
 
-| Model       | Turn type    | Behavior                                                    |
-| ----------- | ------------ | ----------------------------------------------------------- |
-| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`, `top_p: 0.95`           |
+| Model       | Turn type    | Behavior                                                                   |
+| ----------- | ------------ | -------------------------------------------------------------------------- |
+| K2.5 / K2.6 | Plain chat   | Thinking enabled, `temperature: 1`, `top_p: 0.95`                          |
 | K2.5 / K2.6 | Tool-enabled | `thinking: { type: "disabled" }` forced, `temperature: 0.6`, `top_p: 0.95` |
-| K2.7 Code   | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`            |
+| K2.7 Code   | All turns    | Always-thinking, `temperature: 1`, `top_p: 0.95`                           |
 
 ### Capabilities
 
