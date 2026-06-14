@@ -87,6 +87,7 @@ For a typical coding session (~10K input + ~2K output tokens per turn, 50 turns)
 | Qwen 3.7 Plus            | ~$0.36                 |
 | MiMo V2.5                | ~$0.40                 |
 | Kimi K2.6 (thinking)     | ~$0.48                 |
+| Kimi K2.7 Code           | ~$0.50                 |
 | Gemini 3 Flash           | ~$0.55                 |
 | MiMo V2.5 Pro            | ~$0.80                 |
 | GPT-5.4 mini             | ~$0.83                 |
