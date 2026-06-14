@@ -53,7 +53,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       },
       {
         "id": "kimi-k2.7-code",
-        "name": "Kimi K2.7 Code",
+        "name": "Kimi K2.7 Code (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
         "requestBody": {
           "temperature": 1,
