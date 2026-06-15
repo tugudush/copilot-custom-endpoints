@@ -395,3 +395,153 @@ describe('Qwen proxy rewrite logic', () => {
     assert.equal(res.status, 400)
   })
 })
+
+// ---- MiMo proxy tests ----
+
+describe('MiMo proxy rewrite logic', () => {
+  /** @type {import('node:http').Server} */
+  let mockUpstream
+  /** @type {import('node:http').Server} */
+  let proxyServer
+  let proxyPort
+  let logDir
+
+  before(async () => {
+    mockUpstream = await createMockUpstream()
+    const mockAddr = mockUpstream.address()
+    const mockUrl = `http://127.0.0.1:${mockAddr.port}/v1/chat/completions`
+
+    const { dir, path: logPath } = tmpLogPath('mimo-test')
+    logDir = dir
+
+    const { server } = createProxy({
+      upstreamUrl: mockUrl,
+      port: 0,
+      logPath,
+      label: 'mimo-test',
+      healthCheckExtras: { disableThinkingWithTools: true },
+      rewriteRequest(payload) {
+        const hasTools =
+          Array.isArray(payload.tools) && payload.tools.length > 0
+        const incomingThinkingType = payload?.thinking?.type
+
+        if (hasTools) {
+          payload.thinking = { type: 'disabled' }
+        } else {
+          delete payload.thinking
+        }
+
+        const rewrittenThinkingType = hasTools ? 'disabled' : undefined
+
+        return {
+          summary: {
+            model: payload.model,
+            hasTools,
+            incomingThinkingType,
+            rewrittenThinkingType
+          },
+          consoleMsg: `tools=${hasTools} thinking.type=${incomingThinkingType} -> ${hasTools ? '"disabled"' : '<deleted>'}`
+        }
+      },
+      startupMessages: () => []
+    })
+
+    proxyServer = server
+    proxyServer.listen(0, '127.0.0.1', () => {
+      proxyPort = proxyServer.address().port
+    })
+
+    await new Promise((resolve) => proxyServer.once('listening', resolve))
+  })
+
+  after(() => {
+    proxyServer?.close()
+    mockUpstream?.close()
+    // Allow pending log writes to flush before cleanup
+    setTimeout(() => {
+      try {
+        if (logDir) rmSync(logDir, { recursive: true, force: true })
+      } catch {
+        /* ok */
+      }
+    }, 200)
+  })
+
+  it('health check returns ok', async () => {
+    const res = await fetch(`http://127.0.0.1:${proxyPort}/healthz`)
+    assert.equal(res.status, 200)
+    const body = await res.json()
+    assert.equal(body.ok, true)
+    assert.equal(body.disableThinkingWithTools, true)
+  })
+
+  it('plain chat: deletes thinking (model defaults to enabled)', async () => {
+    const res = await proxyRequest(proxyPort, {
+      model: 'mimo-v2.5-pro',
+      messages: [{ role: 'user', content: 'Hello' }],
+      stream: false
+    })
+
+    assert.equal(res.status, 200)
+    const data = await res.json()
+    const received = data.receivedBody
+
+    assert.equal(Object.hasOwn(received, 'thinking'), false)
+  })
+
+  it('tool-enabled chat: sets thinking.type to disabled', async () => {
+    const res = await proxyRequest(proxyPort, {
+      model: 'mimo-v2.5-pro',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: [{ type: 'function', function: { name: 'search' } }],
+      thinking: { type: 'enabled' },
+      stream: false
+    })
+
+    assert.equal(res.status, 200)
+    const data = await res.json()
+    const received = data.receivedBody
+
+    assert.deepEqual(received.thinking, { type: 'disabled' })
+  })
+
+  it('tool-enabled chat: overrides explicit thinking.type: enabled', async () => {
+    const res = await proxyRequest(proxyPort, {
+      model: 'mimo-v2.5-pro',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: [{ type: 'function', function: { name: 'search' } }],
+      thinking: { type: 'enabled' },
+      stream: false
+    })
+
+    assert.equal(res.status, 200)
+    const data = await res.json()
+    const received = data.receivedBody
+
+    assert.deepEqual(received.thinking, { type: 'disabled' })
+  })
+
+  it('returns 404 for non-POST methods', async () => {
+    const res = await fetch(
+      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: '{}'
+      }
+    )
+    assert.equal(res.status, 404)
+  })
+
+  it('returns 400 for invalid JSON', async () => {
+    const res = await fetch(
+      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: '{broken'
+      }
+    )
+    assert.equal(res.status, 400)
+  })
+})

@@ -1,18 +1,18 @@
 # Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** MiMo works directly — no proxy needed. Set `thinking: { type: "disabled" }` in `requestBody` for tool-loop stability, because MiMo's API rejects (HTTP 400) any tool turn that is missing historical `reasoning_content`. Disabling thinking eliminates the field, so loops stay stable.
+> **TL;DR:** MiMo works direct with static `thinking: { type: "disabled" }` in `requestBody`, or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops). Static suppression is simpler; the proxy lets you see reasoning in non-agent chats.
 
 ## At a Glance
 
-| Field                  | Value                                               |
-| ---------------------- | --------------------------------------------------- |
-| Mode                   | **Direct** (no proxy)                               |
-| Vision                 | ✅ Yes (`mimo-v2.5` only)                           |
-| Tool calling           | ✅ Yes (with `thinking: disabled`)                  |
-| Context                | 1M (V2.5 Pro / V2.5) / 256K (V2 Flash)              |
-| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5) / 65536 (V2 Flash) |
-| Required `requestBody` | `thinking: { type: "disabled" }`                    |
-| Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`    |
+| Field                  | Value                                                                                                          |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Mode                   | **Direct** (proxy optional)                                                                                    |
+| Vision                 | ✅ Yes (`mimo-v2.5` only)                                                                                      |
+| Tool calling           | ✅ Yes (with `thinking: disabled`)                                                                             |
+| Context                | 1M (V2.5 Pro / V2.5) / 256K (V2 Flash)                                                                         |
+| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5) / 65536 (V2 Flash)                                                            |
+| Required `requestBody` | Direct: `thinking: { type: "disabled" }`<br>Proxy: none (proxy handles it)                                     |
+| Endpoint               | Direct: `https://api.xiaomimimo.com/v1/chat/completions`<br>Proxy: `http://127.0.0.1:3459/v1/chat/completions` |
 
 ### Models at a glance
 
@@ -26,9 +26,20 @@
 
 ## Quick Start
 
+### Direct (no proxy)
+
 1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) from [Setup](#setup) below.
 2. **Set your `MIMO_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Restart VS Code** and pick "MiMo V2.5 Pro", "MiMo V2.5", or "MiMo V2 Flash".
+
+### With optional proxy (dynamic thinking)
+
+The `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
+
+- `npm run proxy:mimo` (or `node proxy/mimo-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3459/v1/chat/completions`.
+- `node proxy/mimo-proxy.mjs --help` prints the supported environment variables and defaults.
+
+When using the proxy, update your model URLs to `http://127.0.0.1:3459/v1/chat/completions` and **remove** `thinking` from `requestBody`. The proxy handles it dynamically.
 
 ## Setup
 
@@ -41,6 +52,8 @@ Config file location:
 | Windows | `%APPDATA%\Code\User\chatLanguageModels.json`                     |
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
+
+#### Direct (static `thinking: disabled`)
 
 ```json
 {
@@ -90,6 +103,61 @@ Config file location:
       "maxOutputTokens": 65536,
       "requestBody": {
         "thinking": { "type": "disabled" },
+        "temperature": 0.3,
+        "top_p": 0.95
+      }
+    }
+  ]
+}
+```
+
+#### With proxy (dynamic thinking, no `requestBody` override)
+
+```json
+{
+  "name": "MiMo (proxy)",
+  "vendor": "customendpoint",
+  "apiKey": "",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "mimo-v2.5-pro",
+      "name": "MiMo V2.5 Pro (text, proxy)",
+      "url": "http://127.0.0.1:3459/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    },
+    {
+      "id": "mimo-v2.5",
+      "name": "MiMo V2.5 (vision, proxy)",
+      "url": "http://127.0.0.1:3459/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 32768,
+      "requestBody": {
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    },
+    {
+      "id": "mimo-v2-flash",
+      "name": "MiMo V2 Flash (text, proxy)",
+      "url": "http://127.0.0.1:3459/v1/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 262144,
+      "maxOutputTokens": 65536,
+      "requestBody": {
         "temperature": 0.3,
         "top_p": 0.95
       }
@@ -156,13 +224,13 @@ When thinking is enabled, responses include a `reasoning_content` field alongsid
 
 ## Troubleshooting
 
-| Symptom                                    | Likely cause                                             | Fix                                                   |
-| ------------------------------------------ | -------------------------------------------------------- | ----------------------------------------------------- |
-| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Add `thinking: { type: "disabled" }` to `requestBody` |
-| Vision request returns an error            | Used `mimo-v2.5-pro` or `mimo-v2-flash` (text-only)      | Use `mimo-v2.5` for vision                            |
-| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                       |
-| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint     |
-| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                      |
+| Symptom                                    | Likely cause                                             | Fix                                                                                            |
+| ------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Add `thinking: { type: "disabled" }` to `requestBody`, or use the proxy (`npm run proxy:mimo`) |
+| Vision request returns an error            | Used `mimo-v2.5-pro` or `mimo-v2-flash` (text-only)      | Use `mimo-v2.5` for vision                                                                     |
+| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                |
+| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                              |
+| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                               |
 
 ## Pricing
 
@@ -194,14 +262,14 @@ This is the same class of problem as Qwen's `reasoning_content` issue, but **str
 - **Thinking disabled + tool calling = works** (no `reasoning_content` to preserve).
 - **Thinking enabled + plain chat = works** (no tool calls in history).
 
-### Why a static `thinking: disabled` is enough
+### Proxy for dynamic thinking suppression
 
-VS Code's agent mode is the only flow that triggers tool loops, and we already disable thinking for those turns. Plain chat with thinking enabled works fine because no `reasoning_content` accumulates in history.
+A dynamic proxy (`proxy/mimo-proxy.mjs`) is now available — same pattern as `proxy/qwen-proxy.mjs`. It suppresses thinking only when tools are present, letting plain chat show reasoning while keeping tool loops stable.
 
-A dynamic proxy (suppress thinking only when tools are present — same pattern as `proxy/qwen-proxy.mjs`) would let plain chat show reasoning, but it is **not implemented** because:
+- **Plain chat** → `thinking` is removed from the request body, so MiMo uses its API default (enabled for V2.5 Pro / V2.5).
+- **Tool-enabled requests** → `thinking: { type: "disabled" }` is injected, preventing `reasoning_content` 400 errors.
 
-- The cost of losing visible reasoning in plain chat is low for most users.
-- Static suppression is one less moving part to maintain.
+Static suppression (direct mode) remains a perfectly valid simpler alternative.
 
 ### Benchmark highlights (from official MiMo V2.5 announcement)
 
@@ -233,13 +301,13 @@ External API checks (curl):
 
 ### Known risks
 
-| Risk                                  | Detail                                                             | Mitigation                                              |
-| ------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------- |
-| `reasoning_content` 400 errors        | If thinking is accidentally enabled in tool loops, API returns 400 | Always set `thinking.type: "disabled"` in `requestBody` |
-| `tool_choice` only supports `"auto"`  | Non-`auto` values are stripped                                     | Should not affect VS Code, which uses `auto`            |
-| Auth header format                    | Both `api-key:` and `Authorization: Bearer` work                   | VS Code sends `Authorization: Bearer` — works directly  |
-| `temperature` locked in thinking mode | V2.5 Pro / V2.5 force `temperature: 1.0` when thinking is on       | Not an issue when thinking is disabled                  |
-| 1M context window                     | VS Code may not send enough tokens to benefit                      | Set conservatively; adjust after testing                |
+| Risk                                  | Detail                                                             | Mitigation                                                                 |
+| ------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `reasoning_content` 400 errors        | If thinking is accidentally enabled in tool loops, API returns 400 | Set `thinking.type: "disabled"` in `requestBody` (direct) or use the proxy |
+| `tool_choice` only supports `"auto"`  | Non-`auto` values are stripped                                     | Should not affect VS Code, which uses `auto`                               |
+| Auth header format                    | Both `api-key:` and `Authorization: Bearer` work                   | VS Code sends `Authorization: Bearer` — works directly                     |
+| `temperature` locked in thinking mode | V2.5 Pro / V2.5 force `temperature: 1.0` when thinking is on       | Not an issue when thinking is disabled                                     |
+| 1M context window                     | VS Code may not send enough tokens to benefit                      | Set conservatively; adjust after testing                                   |
 
 ## References
 

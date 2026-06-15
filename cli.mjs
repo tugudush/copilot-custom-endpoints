@@ -8,13 +8,14 @@ import { rmSync } from 'node:fs'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const sub = process.argv[2]
 
-const usage = `Usage: copilot-custom-endpoint [all|kimi|qwen|clean]
+const usage = `Usage: copilot-custom-endpoint [all|kimi|qwen|mimo|clean]
 
 Start a local proxy for VS Code Copilot custom endpoints.
 
-  copilot-custom-endpoint all     Start both proxies concurrently (default)
+  copilot-custom-endpoint all     Start all proxies concurrently (default)
   copilot-custom-endpoint kimi    Start the Kimi K2 proxy on port 3457
   copilot-custom-endpoint qwen    Start the Qwen 3.x proxy on port 3458
+  copilot-custom-endpoint mimo    Start the MiMo V2.5 proxy on port 3459
   copilot-custom-endpoint clean   Remove the debug_log/ directory
 
 Environment variables: see --help for each proxy.
@@ -26,12 +27,18 @@ if (sub === 'clean') {
   process.exit(0)
 }
 
-if (sub && sub !== 'kimi' && sub !== 'qwen' && sub !== 'all') {
+if (
+  sub &&
+  sub !== 'kimi' &&
+  sub !== 'qwen' &&
+  sub !== 'mimo' &&
+  sub !== 'all'
+) {
   console.error(usage)
   process.exit(1)
 }
 
-const targets = sub === 'all' || !sub ? ['kimi', 'qwen'] : [sub]
+const targets = sub === 'all' || !sub ? ['kimi', 'qwen', 'mimo'] : [sub]
 
 // Spawn all target proxies and wait for all to exit.
 // This keeps both proxies alive in "all" mode instead of exiting
