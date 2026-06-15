@@ -8,7 +8,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
-- **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; no proxy needed.
+- **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points all three models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 
@@ -24,23 +24,26 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
+- [proxy/mimo-proxy.mjs](proxy/mimo-proxy.mjs) is an optional proxy for MiMo V2.5 models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
 - `debug_log/` contains local runtime artifacts. It is git-ignored and should not be treated as canonical documentation.
 
 ## Commands
 
-### Both proxies (npm)
+### All proxies (npm)
 
-- `npm run proxy` starts **both** proxies concurrently (uses `concurrently`).
+- `npm run proxy` starts **all** proxies concurrently (uses `concurrently`).
 - `npm run proxy:kimi` starts the Kimi proxy on `http://127.0.0.1:3457/v1/chat/completions`.
 - `npm run proxy:qwen` starts the Qwen proxy on `http://127.0.0.1:3458/v1/chat/completions`.
+- `npm run proxy:mimo` starts the MiMo proxy on `http://127.0.0.1:3459/v1/chat/completions`.
 - `npm run clean:logs` removes the `debug_log/` directory.
 
 After publishing to npm, users can also run:
 
-- `npx copilot-custom-endpoint` — starts both proxies concurrently (default).
+- `npx copilot-custom-endpoint` — starts all proxies concurrently (default).
 - `npx copilot-custom-endpoint all` — same, explicit `all` subcommand.
 - `npx copilot-custom-endpoint kimi` — starts Kimi proxy only.
 - `npx copilot-custom-endpoint qwen` — starts Qwen proxy only.
+- `npx copilot-custom-endpoint mimo` — starts MiMo proxy only.
 - `npx copilot-custom-endpoint clean` — removes the `debug_log/` directory.
 
 ### Kimi proxy
@@ -70,6 +73,16 @@ The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON
 
 When using the proxy, update VS Code config to point Qwen model URLs to `http://127.0.0.1:3458/v1/chat/completions` and remove static `enable_thinking` from `requestBody`. The proxy handles it dynamically.
 
+### MiMo (with optional proxy)
+
+The `proxy/mimo-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
+
+- `npm run proxy:mimo` (or `node proxy/mimo-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3459/v1/chat/completions`.
+- `node proxy/mimo-proxy.mjs --help` prints the supported environment variables and defaults.
+- `curl http://127.0.0.1:3459/healthz` checks that the proxy is listening.
+
+When using the proxy, update VS Code config to point MiMo model URLs to `http://127.0.0.1:3459/v1/chat/completions` and remove static `thinking` from `requestBody`. The proxy handles it dynamically.
+
 ## Working Rules
 
 - Prefer updating the existing model record under `docs/models/` over creating ad hoc root notes. New validations should use `docs/models/<provider>-<model>.md`.
@@ -97,7 +110,9 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 ### Xiaomi MiMo
 
 - Direct VS Code -> MiMo API works without a proxy for all three models (`mimo-v2.5-pro`, `mimo-v2.5`, `mimo-v2-flash`).
+- Works via `proxy/mimo-proxy.mjs` for dynamic thinking suppression; can also work direct with static `thinking: {"type": "disabled"}`.
 - Static `thinking: {"type": "disabled"}` in `requestBody` is **required** for tool-calling stability. Without it, MiMo returns 400 when conversation history contains tool calls with missing `reasoning_content`.
+- When using the proxy, keep `thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `{type: "disabled"}` on tool turns.
 - `mimo-v2.5` supports native vision via a dedicated ViT encoder; `mimo-v2.5-pro` and `mimo-v2-flash` are text-only.
 - `mimo-v2-flash` is the cheapest option ($0.10 input / $0.30 output per 1M tokens) and defaults to thinking off.
 - `mimo-v2.5-pro` and `mimo-v2.5` default to thinking on at the API level; the `requestBody` override suppresses it.
@@ -130,6 +145,6 @@ When using the proxy, update VS Code config to point Qwen model URLs to `http://
 
 ## Validation Expectations
 
-- `package.json` defines npm scripts for both proxies, the `clean:logs` utility, and `npm test` (29 tests — 18 unit + 11 integration — via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, request-body reading, and proxy rewrite logic).
+- `package.json` defines npm scripts for all proxies, the `clean:logs` utility, and `npm test` (36 tests — 18 unit + 18 integration — via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, request-body reading, and proxy rewrite logic).
 - There is no CI in this repo.
 - Validate proxy changes with the smallest relevant manual checks first: `node proxy/kimi-proxy.mjs --help`, `curl http://127.0.0.1:3457/healthz`, and a targeted request or log review that confirms the intended rewrite.

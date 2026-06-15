@@ -1,10 +1,10 @@
 # Full example config
 
-Here's a complete, real-world `chatLanguageModels.json` that combines **all the providers documented in this repo**. Copy what you need, leave the rest out.
+Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**. Copy what you need, leave the rest out.
 
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
-> This combined config reflects the same provider blocks as the live `chatLanguageModels.json`. Qwen is pointed at the local proxy; remove `requestBody.enable_thinking` when using the proxy.
+> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat).
 
 ```json
 [
@@ -76,14 +76,13 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       {
         "id": "mimo-v2.5-pro",
         "name": "MiMo V2.5 Pro (text)",
-        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "url": "http://127.0.0.1:3459/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
         "requestBody": {
-          "thinking": { "type": "disabled" },
           "temperature": 1,
           "top_p": 0.95
         }
@@ -91,14 +90,13 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       {
         "id": "mimo-v2.5",
         "name": "MiMo V2.5 (vision)",
-        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "url": "http://127.0.0.1:3459/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 32768,
         "requestBody": {
-          "thinking": { "type": "disabled" },
           "temperature": 1,
           "top_p": 0.95
         }
@@ -106,14 +104,13 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **all the 
       {
         "id": "mimo-v2-flash",
         "name": "MiMo V2 Flash (text)",
-        "url": "https://api.xiaomimimo.com/v1/chat/completions",
+        "url": "http://127.0.0.1:3459/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
         "streaming": true,
         "maxInputTokens": 262144,
         "maxOutputTokens": 65536,
         "requestBody": {
-          "thinking": { "type": "disabled" },
           "temperature": 0.3,
           "top_p": 0.95
         }
@@ -195,4 +192,4 @@ If you only need one provider, jump straight to its setup guide:
 - [MiniMax M3](minimax.md)
 - [GLM (5.1 / 5V Turbo)](glm.md)
 
-> **DeepSeek V4 Pro / V4 Flash** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension — they don't appear in `chatLanguageModels.json`.
+> **DeepSeek V4 Pro / V4 Flash** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.

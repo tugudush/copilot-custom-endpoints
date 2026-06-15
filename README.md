@@ -21,9 +21,9 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 | Model                       | Provider  | Needs proxy?           | Vision       | Setup guide                                                                                        |
 | --------------------------- | --------- | ---------------------- | ------------ | -------------------------------------------------------------------------------------------------- |
-| **MiMo V2 Flash**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
-| **MiMo V2.5**               | Xiaomi    | No                     | ✅           | [Setup](docs/models/mimo.md)                                                                       |
-| **MiMo V2.5 Pro**           | Xiaomi    | No                     | ❌           | [Setup](docs/models/mimo.md)                                                                       |
+| **MiMo V2 Flash**           | Xiaomi    | Optional (recommended) | ❌           | [Setup](docs/models/mimo.md)                                                                       |
+| **MiMo V2.5**               | Xiaomi    | Optional (recommended) | ✅           | [Setup](docs/models/mimo.md)                                                                       |
+| **MiMo V2.5 Pro**           | Xiaomi    | Optional (recommended) | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
 | **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                       |
@@ -70,9 +70,10 @@ If a model needs a proxy, the setup guide will tell you to run a command first. 
 Run from the repo root:
 
 ```bash
-npm run proxy        # Start both proxies (Kimi + Qwen)
+npm run proxy        # Start all proxies (Kimi + Qwen + MiMo)
 npm run proxy:kimi   # Start only the Kimi proxy
 npm run proxy:qwen   # Start only the Qwen proxy
+npm run proxy:mimo   # Start only the MiMo proxy
 npm run clean:logs   # Remove debug_log/
 npm test             # Run the test suite
 ```
@@ -80,9 +81,10 @@ npm test             # Run the test suite
 Or globally via npx (no clone needed):
 
 ```bash
-npx copilot-custom-endpoint          # Start both proxies
+npx copilot-custom-endpoint          # Start all proxies
 npx copilot-custom-endpoint kimi     # Kimi only
 npx copilot-custom-endpoint qwen     # Qwen only
+npx copilot-custom-endpoint mimo     # MiMo only
 npx copilot-custom-endpoint clean    # Remove debug_log/
 ```
 

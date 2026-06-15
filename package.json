@@ -1,13 +1,14 @@
 {
   "name": "copilot-custom-endpoint",
-  "version": "1.4.2",
-  "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2 & Qwen 3.x",
+  "version": "1.5.0",
+  "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2, Qwen 3.x & MiMo V2.5",
   "license": "MIT",
   "type": "module",
   "bin": {
     "copilot-custom-endpoint": "cli.mjs",
     "copilot-custom-endpoint-kimi": "proxy/kimi-proxy.mjs",
-    "copilot-custom-endpoint-qwen": "proxy/qwen-proxy.mjs"
+    "copilot-custom-endpoint-qwen": "proxy/qwen-proxy.mjs",
+    "copilot-custom-endpoint-mimo": "proxy/mimo-proxy.mjs"
   },
   "files": [
     "README.md",
@@ -19,9 +20,10 @@
     "proxy/"
   ],
   "scripts": {
-    "proxy": "concurrently --names kimi,qwen --prefix-colors cyan,green \"npm run proxy:kimi\" \"npm run proxy:qwen\"",
+    "proxy": "concurrently --names kimi,qwen,mimo --prefix-colors cyan,green,magenta \"npm run proxy:kimi\" \"npm run proxy:qwen\" \"npm run proxy:mimo\"",
     "proxy:kimi": "node proxy/kimi-proxy.mjs",
     "proxy:qwen": "node proxy/qwen-proxy.mjs",
+    "proxy:mimo": "node proxy/mimo-proxy.mjs",
     "clean:logs": "node -e \"import{rmSync}from'node:fs';rmSync('debug_log',{recursive:true,force:true});console.log('debug_log/ removed')\"",
     "test": "node --test tests/**/*.test.mjs",
     "lint": "eslint .",
