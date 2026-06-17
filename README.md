@@ -136,7 +136,10 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - Only ~$0.27/session with vision + 1M context
 > - No local proxy required — works direct
 >
-> If you need something even cheaper for simpler tasks, **DeepSeek V4 Flash** (~$0.10/session, 40.3 score) is a solid fallback. MiMo V2 Flash is the absolute cheapest (~$0.08/session), but its low score (23.0) makes it unreliable for multi-step agentic changes.
+> Cheaper alternatives for simpler tasks:
+>
+> - **DeepSeek V4 Flash** — ~$0.10/session, 40.3 score (solid fallback)
+> - **MiMo V2 Flash** — ~$0.08/session, 23.0 score (cheapest, but unreliable for multi-step agentic work)
 
 ## Companion tools
 
