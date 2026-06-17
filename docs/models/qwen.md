@@ -332,4 +332,4 @@ Conclusion: not a DashScope or Qwen model incompatibility. Evidence points to an
 - DashScope model index: `https://help.aliyun.com/zh/model-studio/getting-started/models`
 - DashScope vision model guide: `https://help.aliyun.com/zh/model-studio/vision`
 - DashScope pricing: `https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio`
-- Kimi K2.6 validation record (separate provider): [kimi-k2.6.md](kimi-k2.6.md)
+- Kimi K2.6 validation record (separate provider): [kimi.md](kimi.md)

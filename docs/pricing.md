@@ -23,7 +23,6 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | Model                  | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
 | ---------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
 | **DeepSeek V4 Flash**  | DeepSeek  | **~$0.0025**          | **40.3**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
-| **MiMo V2 Flash**      | Xiaomi    | **~$0.0035**          | **23.0** ³         | $0.10                         | $0.01                         | $0.30                         | ~$0.08       | 256K           |
 | **MiniMax M3**         | MiniMax   | **~$0.0061**          | **44.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |
 | **DeepSeek V4 Pro**    | DeepSeek  | **~$0.0068**          | **44.3**           | $0.435                        | $0.003625                     | $0.87                         | ~$0.30       | 1M             |
 | **Qwen 3.7 Plus**      | DashScope | **~$0.0092**          | **39.0**           | $0.40 (≤256K) / $1.20 (>256K) | —                             | $1.60 (≤256K) / $4.80 (>256K) | ~$0.36       | 1M             |
@@ -43,6 +42,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Claude Opus 4.8**    | Anthropic | **~$0.090**           | **55.7**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.7**    | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **GPT-5.5**            | OpenAI    | **~$0.10**            | **54.8**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
+| **MiMo V2 Flash**      | Xiaomi    | —                     | —                  | $0.10                         | $0.01                         | $0.30                         | ~$0.08       | 256K           |
 | **Raptor mini**        | GitHub    | —                     | —                  | $0.25                         | $0.025                        | $2.00                         | ~$0.33       | 264K           |
 | **MiMo V2.5**          | Xiaomi    | —                     | —                  | $0.40                         | $0.08                         | $2.00                         | ~$0.40       | 1M             |
 | **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | —              |
