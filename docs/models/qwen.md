@@ -29,7 +29,7 @@
 1. **Start the proxy** — choose one:
    - `npm run proxy:qwen` (from the repo root)
    - `npx copilot-custom-endpoint qwen` (standalone, no clone needed)
-   - `npx copilot-custom-endpoint` (also starts the Kimi proxy concurrently)
+   - `npx copilot-custom-endpoint` (also starts the Kimi and MiMo proxies concurrently)
 2. **Edit `chatLanguageModels.json`** — use the proxy-path block from [Setup § Proxy](#proxy-path) below.
 3. **Set your DashScope API key** via the Language Models UI.
 4. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
