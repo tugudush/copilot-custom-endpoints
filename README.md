@@ -99,16 +99,13 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **DeepSeek V4 Pro**    | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
 | **Qwen 3.7 Plus**      | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
 | **MiMo V2.5 Pro**      | Xiaomi    | **~$0.019**           | **42.2**           | ~$0.80       | ❌     | 1M             |
-| **Gemini 3 Flash**     | Google    | **~$0.020**           | **27.0** ³         | ~$0.55       | ✅     | 173K           |
 | **Kimi K2.6**          | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**     | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**       | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
 | **GLM 5.1**            | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
-| **GLM 5V Turbo**       | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.5 Flash**   | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
 | **Qwen 3.7 Max**       | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**     | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
-| **GPT-5.3-Codex**      | OpenAI    | **~$0.052**           | **44.0** ³         | ~$2.28       | ❌     | 400K           |
 | **GPT-5.4**            | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
 | **Claude Sonnet 4.6**  | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
 | **Claude Opus 4.8**    | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
@@ -117,14 +114,15 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **MiMo V2 Flash**      | Xiaomi    | —                     | —                  | ~$0.08       | ❌     | 256K           |
 | **Raptor mini**        | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
 | **MiMo V2.5**          | Xiaomi    | —                     | —                  | ~$0.40       | ✅     | 1M             |
+| **Gemini 3 Flash**     | Google    | —                     | —                  | ~$0.55       | ✅     | 173K           |
 | **MAI-Code-1-Flash ²** | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
+| **GLM 5V Turbo**       | Z.ai      | —                     | —                  | ~$1.00       | ✅     | 200K           |
 | **Claude Haiku 4.5**   | Anthropic | —                     | —                  | ~$1.00       | ❌     | 160K           |
+| **GPT-5.3-Codex**      | OpenAI    | —                     | —                  | ~$2.28       | ❌     | 400K           |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 
 ² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
-
-³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite.
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
@@ -135,6 +133,8 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - Highest intelligence score (44.4) among affordable models
 > - Only ~$0.27/session with vision + 1M context
 > - No local proxy required — works direct
+>
+> **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >
 > Cheaper alternatives for simpler tasks:
 >
