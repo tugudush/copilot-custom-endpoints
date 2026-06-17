@@ -128,7 +128,15 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
-> **👤 Personal picks** — For serious coding work, **MiniMax M3** is my top recommendation: it has the highest intelligence score (44.4) among the affordable models, costs only ~$0.27/session, supports vision and 1M context, and requires no local proxy. If you need something even cheaper for simpler tasks, **DeepSeek V4 Flash** (~$0.10/session, 40.3 score) is a solid fallback. MiMo V2 Flash is the absolute cheapest (~$0.08/session), but its low score (23.0) makes it unreliable for multi-step agentic changes.
+> **👤 Personal picks** —
+>
+> For serious coding work, **MiniMax M3** is my top recommendation:
+>
+> - Highest intelligence score (44.4) among affordable models
+> - Only ~$0.27/session with vision + 1M context
+> - No local proxy required — works direct
+>
+> If you need something even cheaper for simpler tasks, **DeepSeek V4 Flash** (~$0.10/session, 40.3 score) is a solid fallback. MiMo V2 Flash is the absolute cheapest (~$0.08/session), but its low score (23.0) makes it unreliable for multi-step agentic changes.
 
 ## Companion tools
 
