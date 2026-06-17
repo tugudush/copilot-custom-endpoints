@@ -36,8 +36,10 @@
 
 The `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
 
-- `npm run proxy:mimo` (or `node proxy/mimo-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3459/v1/chat/completions`.
-- `node proxy/mimo-proxy.mjs --help` prints the supported environment variables and defaults.
+- `npm run proxy:mimo` (from the repo root)
+- `npx copilot-custom-endpoint mimo` (standalone, no clone needed)
+- `npx copilot-custom-endpoint` (also starts the Kimi and Qwen proxies concurrently)
+- `node proxy/mimo-proxy.mjs --help` — prints all supported environment variables and defaults
 
 When using the proxy, update your model URLs to `http://127.0.0.1:3459/v1/chat/completions` and **remove** `thinking` from `requestBody`. The proxy handles it dynamically.
 

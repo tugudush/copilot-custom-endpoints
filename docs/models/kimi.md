@@ -37,7 +37,7 @@
 1. **Start the proxy** — choose one:
    - `npm run proxy:kimi` (from the repo root)
    - `npx copilot-custom-endpoint kimi` (standalone, no clone needed)
-   - `npx copilot-custom-endpoint` (also starts the Qwen proxy concurrently)
+   - `npx copilot-custom-endpoint` (also starts the Qwen and MiMo proxies concurrently)
 2. **Edit `chatLanguageModels.json`** — add the Kimi block from [Setup](#setup) below.
 3. **Set your Moonshot API key** via the Command Palette → **Chat: Manage Language Models**.
 4. **Restart VS Code** and pick "Kimi K2.6" or "Kimi K2.7 Code" in the chat picker.
@@ -188,10 +188,10 @@ All can be set in a `.env` file at the repo root (both proxies `import 'dotenv/c
 
 For the cross-provider comparison, see [docs/pricing.md](../pricing.md). Kimi models on the **Moonshot direct platform**:
 
-| Model            | Input      | Cached input | Output (non-thinking) | Output (thinking) |
-| ---------------- | ---------- | ------------ | --------------------- | ----------------- |
-| `kimi-k2.6`      | $0.16 / 1M | —            | $0.95 / 1M            | $4.00 / 1M        |
-| `kimi-k2.7-code` | $0.19 / 1M | $0.95 / 1M   | —                     | $4.00 / 1M        |
+| Model            | Input (cache miss) | Cached input (cache hit) | Output       |
+| ---------------- | ------------------ | ------------------------ | ------------ |
+| `kimi-k2.6`      | $0.95 / 1M         | $0.16 / 1M               | $4.00 / 1M   |
+| `kimi-k2.7-code` | $0.95 / 1M         | $0.19 / 1M               | $4.00 / 1M   |
 
 > **K2.7:** No non-thinking mode — always-thinking. Cached input pricing applies.
 > Via DashScope, K2.6 is also available at $0.89 / 1M input and $3.71 / 1M output (same model, regional pricing).
