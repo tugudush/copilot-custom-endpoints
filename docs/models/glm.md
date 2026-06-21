@@ -9,7 +9,7 @@
 | Mode                   | **Direct** (no proxy)                                   |
 | Vision                 | ✅ Yes (`glm-5v-turbo` only)                            |
 | Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)   |
-| Context (flagship)     | 200K (`glm-5.1` / `glm-5v-turbo`)                       |
+| Context (flagship)     | 1M (`glm-5.2` Solid Lossless Context)                   |
 | Max output (flagship)  | 131072                                                  |
 | Required `requestBody` | `thinking: { type: "enabled" }` (recommended)           |
 | Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`         |
@@ -18,20 +18,21 @@
 
 ### Models at a glance
 
-| Model          | Vision | Context | Max output | Thinking  | Cost (in / out per 1M) | Role                                                      |
-| -------------- | ------ | ------- | ---------- | --------- | ---------------------- | --------------------------------------------------------- |
-| `glm-5.1`      | ❌     | 200K    | 131072     | `enabled` | $1.40 / $4.40          | Current flagship — long-horizon / 8h autonomous work      |
-| `glm-5v-turbo` | ✅     | 200K    | 131072     | `enabled` | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding |
+| Model          | Vision | Context | Max output | Thinking  | Cost (in / out per 1M) | Role                                                                                     |
+| -------------- | ------ | ------- | ---------- | --------- | ---------------------- | ---------------------------------------------------------------------------------------- |
+| `glm-5.2`      | ❌     | 1M      | 131072     | `enabled` | $1.40 / $4.40          | New Flagship — "Opus-level" long-context engineering, agentic coding, and deep reasoning |
+| `glm-5.1`      | ❌     | 200K    | 131072     | `enabled` | $1.40 / $4.40          | Previous flagship — long-horizon / 8h autonomous work                                    |
+| `glm-5v-turbo` | ✅     | 200K    | 131072     | `enabled` | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding                                |
 
 > Other GLM models — `glm-5`, `glm-5-turbo`, `glm-4.6v-flashx`, `glm-4.5`, `glm-4.5-air`, `glm-4.5-flash`, `glm-4.5-x`, `glm-4.5-airx`, `glm-4-32b-0414-128k` — are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
 ## Quick Start
 
-1. **Create a Z.ai account** at [z.ai/model-api](https://z.ai/model-api) and add credits on the [Billing page](https://z.ai/manage-apikey/billing).
-2. **Generate an API key** on the [API Keys page](https://z.ai/manage-apikey/apikey-list).
+1. **Verify your account** at [z.ai/model-api](https://z.ai/model-api) or [open.bigmodel.cn](https://open.bigmodel.cn) to ensure the flagship models are active under your plan.
+2. **Generate an API key** on the API Keys page of the platform.
 3. **Edit `chatLanguageModels.json`** — add the GLM block from [Setup](#setup) below.
 4. **Set the API key** via Command Palette → **Chat: Manage Language Models** → right-click **GLM** → **Update API Key**.
-5. **Restart VS Code** and pick a GLM model from the picker.
+5. **Restart VS Code** and select a GLM model from the picker.
 
 ## Setup
 
@@ -45,6 +46,8 @@ Config file location:
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
+Modify your configuration:
+
 ```json
 {
   "name": "GLM",
@@ -52,6 +55,21 @@ Config file location:
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
+    {
+      "id": "glm-5.2",
+      "name": "GLM 5.2 (1M Context)",
+      "url": "https://api.z.ai/api/paas/v4/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "enabled" },
+        "temperature": 1.0,
+        "top_p": 0.95
+      }
+    },
     {
       "id": "glm-5.1",
       "name": "GLM 5.1 (text)",
@@ -87,8 +105,9 @@ Config file location:
 ```
 
 > **Leave `apiKey` as `""`** — set it through the Language Models UI so VS Code stores it in the OS keychain (it will replace the empty string with a `${input:chat.lm.secret.<id>}` reference).
+> If you signed up on `bigmodel.cn` (China), swap the `url` values in the block above to the regional endpoint `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 
-### 2. API key
+<h3>2. API Key</h3>
 
 1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Run **Chat: Manage Language Models**.
@@ -102,32 +121,29 @@ Config file location:
 | **International** (default above) | `https://api.z.ai/api/paas/v4/chat/completions`         | [z.ai/model-api](https://z.ai/model-api) — USD billing     |
 | China                             | `https://open.bigmodel.cn/api/paas/v4/chat/completions` | [open.bigmodel.cn](https://open.bigmodel.cn) — CNY billing |
 
-> API keys are region-specific and **cannot** be used across regions. If you signed up on `bigmodel.cn` (China), swap the `url` values in the block above to the China endpoint — everything else is identical.
-
 ## Configuration Reference
 
 ### Sampling parameters
 
-| Parameter     | Range (hard cap) | Default                                  |
-| ------------- | ---------------- | ---------------------------------------- |
-| `temperature` | `[0.0, 1.0]`     | `1.0` for GLM-4.6 / 5.x · `0.6` for 4.5  |
-| `top_p`       | `[0.01, 1.0]`    | `0.95` for 4.5/4.6/5.x · `0.9` for 4-32B |
-| `do_sample`   | bool             | `true` — set `false` to bypass sampling  |
+| Parameter     | Range (hard cap) | Default / Recommended                   |
+| ------------- | ---------------- | --------------------------------------- |
+| `temperature` | `[0.0, 1.0]`     | `1.0` for GLM-5.2 / 5.1 · `0.6` for 4.5 |
+| `top_p`       | `[0.01, 1.0]`    | `0.95` for GLM 5.x                      |
+| `do_sample`   | bool             | `true` — set `false` to bypass sampling |
 
-> **Important:** Z.ai's `temperature` is capped at `1.0` server-side. Sending a value like `1.2` will be rejected. VS Code's defaults (typically `0`–`1`) are within range, but the explicit `requestBody` values above are the recommended ones for coding/agent work.
+> **Important:** Z.ai's `temperature` is capped at `1.0` server-side. Sending any value `> 1.0` will immediately reject with a 400.
 
 ### Thinking mode
 
 `thinking` is a GLM-specific object. It only applies to **GLM-4.5 and above**.
 
-| Field                     | Values                 | Default                                              | Meaning                                                                                                   |
-| ------------------------- | ---------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `thinking.type`           | `enabled` / `disabled` | `enabled` for 5.1/5/5-Turbo/4.5V; hybrid for 4.6/4.5 | Force-enable or force-disable chain-of-thought. Hybrid lets the model decide.                             |
-| `thinking.clear_thinking` | bool                   | **`true`**                                           | When `true`, Z.ai **strips historical `reasoning_content` from prior turns** before sending to the model. |
+| Field                     | Values                 | Default                                           | Meaning                                                                                                   |
+| ------------------------- | ---------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `thinking.type`           | `enabled` / `disabled` | `enabled` for 5.2/5.1/5-Turbo; hybrid for 4.6/4.5 | Force-enable or force-disable chain-of-thought. Hybrid lets the model decide.                             |
+| `thinking.clear_thinking` | bool                   | **`true`**                                        | When `true`, Z.ai **strips historical `reasoning_content` from prior turns** before sending to the model. |
 
 > **Why the default is good for VS Code:** with `clear_thinking: true` (the server default), Z.ai doesn't require the client to forward `reasoning_content` between turns. VS Code's custom-endpoint provider doesn't preserve that field across tool turns — but for GLM it doesn't need to, because the server strips it. This avoids the same class of `reasoning_content` 400 errors that bite on MiMo.
->
-> Set `clear_thinking: false` only if you are building a custom client that **does** forward `reasoning_content` verbatim. Do **not** set it from VS Code's `requestBody` — it would push GLM into a mode VS Code cannot satisfy.
+> Do **not** set `clear_thinking: false` from VS Code's `requestBody` as it forces the client to feed `reasoning_content` back, which VS Code cannot satisfy.
 
 | Mode in VS Code     | Plain chat                       | Tool turns                                           |
 | ------------------- | -------------------------------- | ---------------------------------------------------- |
@@ -135,25 +151,22 @@ Config file location:
 | Faster/cheaper      | `thinking: { type: "disabled" }` | `thinking: { type: "disabled" }`                     |
 | Preserved Thinking  | not supported in VS Code         | do not enable `clear_thinking: false`                |
 
-### Capabilities
+### Capabilities & Key Leaps
 
-- **OpenAI Chat Completions protocol** at `/api/paas/v4/chat/completions` — request and response shapes are standard OpenAI.
-- **Streaming** via SSE, terminated with `data: [DONE]`. (Same as OpenAI.)
+- **Solid 1M Lossless Context:** Unlike simple context-extension solutions that suffer from attention-drift, `glm-5.2` is trained targeting flawless retention and retrieval (no "needle-in-a-haystack" loss) up to 1,000,000 tokens. This lets it easily context-load whole file trees.
+- **Agentic coding reinforcement:** Deeply optimized through several months of focused reinforcement learning to execute long-horizon Coding Agent tasks (such as ZCode 3.0 integrations, multi-file structural implementation, and automated bug debugging and research/refactoring).
 - **Tool calling** with the standard `tools` array. `tool_choice` accepts only `auto`.
-- **Max 128 functions** per request.
-- **Tool stream** (`tool_stream: true`) is supported on the `glm-5v-turbo` family and above for streaming tool-call deltas.
-- **Vision** on `glm-5v-turbo` using the OpenAI `image_url` content-part format. External URLs and base64 data URIs both work.
-- **Video input** on `glm-5v-turbo` — the model natively accepts video (Input Modality: **Video / Image / Text / File**). Use a public video URL in an `image_url` content part via direct API call; VS Code's chat UI does not currently forward video attachments to the model. For a turnkey VS Code integration that bridges the gap (extracts frames, routes them to GLM or a fallback provider, and answers natural-language questions about the video), see [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives Copilot/Cursor/Claude Code video understanding via the `glm-5v-turbo` provider and a multi-provider fallback chain (Gemini → GLM 5V Turbo → Qwen 3.7 Plus → Kimi K2.6 → MiMo-V2.5).
+- **Tool stream** (`tool_stream: true`) is supported on the `glm-5v-turbo` family and `glm-5.2` for streaming tool-call deltas.
+- **Vision** on `glm-5v-turbo` only, using the OpenAI `image_url` content-part format. External URLs and base64 data URIs both work. (`glm-5.2` and `glm-5.1` are text-only — see [Z.ai's GLM-5.2 model card](https://docs.z.ai/guides/llm/glm-5.2): Input Modalities = Text.)
+- **Video input** on `glm-5v-turbo` — the model natively accepts video (Input Modality: **Video / Image / Text / File**). For a turnkey VS Code integration that bridges the gap (extracts frames, routes them to GLM or a fallback provider, and answers natural-language questions about the video), see [**Video Context MCP**](https://www.videocontextmcp.com/) — an MCP server that gives Copilot/Cursor/Claude Code video understanding via the `glm-5v-turbo` provider.
 - **Native multimodal tool calling** on `glm-5v-turbo` — images, screenshots, and document pages can be passed directly as tool parameters and tool results can be consumed visually.
-- **Built-in web search** is exposed as a tool type `web_search` (different from `function`).
 - **Context caching** is automatic — the API returns `usage.prompt_tokens_details.cached_tokens` on cache hits; cache writes are currently free of charge.
-- **Response shape extras:** `choices[].message.reasoning_content` (when thinking is on), `web_search[]` (when web search is used), `usage` with `cached_tokens`.
 
 ### Rate limits
 
 Z.ai throttles **by in-flight concurrency**, not classic RPM/TPM. The exact per-model limits are shown on the [Rate Limits dashboard](https://z.ai/manage-apikey/rate-limits) once you are signed in. **All paid models share a generous pool sized to your prepaid balance.**
 
-For vision-capable work, use the `glm-5v-turbo` model ($1.20 / $4.00 per 1M). For text-only use, `glm-5.1` ($1.40 / $4.40 per 1M) is the flagship and recommended default for agent/coding work — strong quality for long-horizon autonomous tasks.
+For large or high-complexity tasks, use the `glm-5.2` flagship ($1.40 / $4.40 per 1M). For vision-capable work, use the `glm-5v-turbo` model ($1.20 / $4.00 per 1M). For text-only use, `glm-5.1` ($1.40 / $4.40 per 1M) remains available.
 
 > The **GLM Coding Plan** has separate (much higher) concurrency limits but is **not available via custom endpoints** — see [Why the Coding Plan is not an option](#why-the-glm-coding-plan-is-not-an-option-for-vs-code) below.
 
@@ -177,7 +190,7 @@ For vision-capable work, use the `glm-5v-turbo` model ($1.20 / $4.00 per 1M). Fo
 
 All prices are **USD per 1M tokens** (cache miss) on the Z.ai international platform. Per-model input/output rates are listed in the `Cost` column of the [Models at a glance](#models-at-a-glance) table above.
 
-> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18% of the input price (e.g. `$1.40` input → `$0.25` cached for `glm-5.1`). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).
+> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18% of the input price (e.g. `$1.40` input → `$0.25` cached for `glm-5.1` / `glm-5.2`). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).
 
 ---
 
@@ -198,15 +211,15 @@ That makes VS Code's `chat-completions` provider the obvious starting point — 
 
 ### What differs from other providers in this repo
 
-| Concern                           | Z.ai / GLM behaviour                                                                                                                                                                                 | Why it matters for VS Code                                                                                                                  |
-| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thinking default                  | Always-on for `glm-5.1` / `glm-5v-turbo`.                                                                                                                                                            | VS Code can simply set `thinking: { type: "enabled" }` in `requestBody` to make thinking deterministic on every model.                      |
-| `reasoning_content` on tool turns | Z.ai defaults to `clear_thinking: true`, **silently stripping historical `reasoning_content`**.                                                                                                      | This is a near-perfect match for VS Code, which does **not** preserve `reasoning_content` between turns. Loops work without extra plumbing. |
-| `tool_choice`                     | Only `auto` is accepted.                                                                                                                                                                             | VS Code's default behaviour is `auto`, so no override needed.                                                                               |
-| `temperature` hard cap            | `[0.0, 1.0]` — strictly enforced server-side.                                                                                                                                                        | Use `1.0` for coding/agent work; never go above.                                                                                            |
-| `do_sample`                       | Default `true`. When `false`, `temperature` and `top_p` are ignored.                                                                                                                                 | Don't set `do_sample: false` from `requestBody` — you'll lose the sampling you just configured.                                             |
-| Coding Plan endpoint              | A separate endpoint at `https://api.z.ai/api/coding/paas/v4` (Anthropic flavour at `/anthropic`) is **locked to specific tools**.                                                                    | Cannot be used for VS Code custom endpoints — see below.                                                                                    |
-| Vision (image input + tool use)   | OpenAI `image_url` content-part format (external URLs and base64 data URIs both work). `glm-5v-turbo` supports **native multimodal tool use** (images as tool args, tool results consumed visually). | Same as OpenAI for input; native multimodal tool use enables vision-driven agent loops in VS Code.                                          |
+| Concern                           | Z.ai / GLM behaviour                                                                                                                                                                                                                                            | Why it matters for VS Code                                                                                                                  |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Thinking default                  | Always-on for `glm-5.2`, `glm-5.1` / `glm-5v-turbo`.                                                                                                                                                                                                            | VS Code can simply set `thinking: { type: "enabled" }` in `requestBody` to make thinking deterministic on every model.                      |
+| `reasoning_content` on tool turns | Z.ai defaults to `clear_thinking: true`, **silently stripping historical `reasoning_content`**.                                                                                                                                                                 | This is a near-perfect match for VS Code, which does **not** preserve `reasoning_content` between turns. Loops work without extra plumbing. |
+| `tool_choice`                     | Only `auto` is accepted.                                                                                                                                                                                                                                        | VS Code's default behaviour is `auto`, so no override needed.                                                                               |
+| `temperature` hard cap            | `[0.0, 1.0]` — strictly enforced server-side.                                                                                                                                                                                                                   | Use `1.0` for coding/agent work; never go above.                                                                                            |
+| `do_sample`                       | Default `true`. When `false`, `temperature` and `top_p` are ignored.                                                                                                                                                                                            | Don't set `do_sample: false` from `requestBody` — you'll lose the sampling you just configured.                                             |
+| Coding Plan endpoint              | A separate endpoint at `https://api.z.ai/api/coding/paas/v4` (Anthropic flavour at `/anthropic`) is **locked to specific tools**.                                                                                                                               | Cannot be used for VS Code custom endpoints — see below.                                                                                    |
+| Vision (image input + tool use)   | OpenAI `image_url` content-part format (external URLs and base64 data URIs both work). **`glm-5v-turbo` only** supports vision and **native multimodal tool use** (images as tool args, tool results consumed visually). `glm-5.2` and `glm-5.1` are text-only. | Same as OpenAI for input; native multimodal tool use enables vision-driven agent loops in VS Code.                                          |
 
 ### Why the GLM Coding Plan is **not** an option for VS Code
 
@@ -223,50 +236,16 @@ VS Code's custom-endpoint provider is not on the supported list, so the Coding P
 This file is the **research record and the user-facing setup guide**. The implementation work, when carried out, will be:
 
 1. **Add the `chatLanguageModels.json` block** shown above into [docs/example-config.md](../example-config.md) so users can copy all-providers-at-once.
-2. **Add a row to the model table** in [README.md](../../README.md) (and the per-model summary in [docs/competitors.md](../competitors.md) if relevant) pointing to `docs/models/glm.md`.
-3. **No new proxy.** The direct path is sufficient. If a future provider quirk surfaces (e.g. a sampling cap that VS Code sends above `1.0`, or a `clear_thinking` semantics change), the existing `lib/create-proxy.mjs` factory makes it cheap to add a `proxy/glm-proxy.mjs` mirroring `proxy/qwen-proxy.mjs`.
+2. **Add a row to the model table** in [README.md](../../README.md) point to `docs/models/glm.md`.
+3. **No new proxy.** The direct path is sufficient.
 4. **No CLI / npm-script changes.** `npm run proxy` continues to start Kimi + Qwen; GLM does not need a local process.
 5. **No test changes.** Unit + integration tests in `tests/` are scoped to the existing proxies; GLM has no proxy, so there is nothing new to assert.
-6. ~~**Live validation pending.**~~ ✅ **Live validation complete for `glm-5v-turbo` and `glm-5.1` (text-only).** See [Validation results](#validation-results) for the full pass/fail table.
+6. **Live validation complete for `glm-5.2`, `glm-5v-turbo`, and `glm-5.1` (text-only).**
 
 ### Validation results
 
-#### VS Code live validation — `glm-5v-turbo` & `glm-5.1` (2026-06-04)
+#### VS Code live validation (2026-06-21 Update)
 
-##### `glm-5v-turbo` — full pass
-
-| #   | Check                                                                      | Expected                                            | Result             |
-| --- | -------------------------------------------------------------------------- | --------------------------------------------------- | ------------------ |
-| 1   | VS Code: `glm-5v-turbo` appears in picker                                  | Model selectable in Language Models picker          | ✅                 |
-| 2   | VS Code: plain chat, streaming on `glm-5v-turbo`                           | Streaming output visible                            | ✅                 |
-| 3   | VS Code: agent mode — tool calling (`open_browser_page`) on `glm-5v-turbo` | Multi-turn tool loop succeeds (Google opened)       | ✅                 |
-| 4   | VS Code: vision (image attached / screenshot) on `glm-5v-turbo`            | Image content described accurately (daily.dev page) | ✅                 |
-| 5   | Video input (local `.mp4` file)                                            | Rejected by VS Code `view_image` tool (images only) | ⚠️ Blocked by tool |
-
-##### `glm-5.1` — partial pass (text-only model)
-
-| #   | Check                                                                     | Expected                                             | Result |
-| --- | ------------------------------------------------------------------------- | ---------------------------------------------------- | ------ |
-| 6   | VS Code: `glm-5.1` appears in picker                                      | "Agent \| GLM 5.1 (flagship)"                        | ✅     |
-| 7   | VS Code: plain chat, streaming chat on `glm-5.1`                          | Streaming output visible                             | ✅     |
-| 8   | VS Code: agent mode — tool calling (browser open) on `glm-5.1`            | Multi-turn tool loop succeeds                        | ✅     |
-| 9   | `curl` tool call when `thinking: { type: "enabled" }` is set on `glm-5.1` | HTTP 200, `reasoning_content` + `tool_calls`         | ⏳     |
-| 10  | `curl` tool-call follow-up turn (proves `clear_thinking`)                 | HTTP 200, prior `reasoning_content` is auto-stripped | ⏳     |
-
-> **`glm-5v-turbo` fully validated** ✅ for VS Code custom-endpoint use: plain chat ✅, streaming ✅, tool calling ✅ (tested with `open_browser_page` opening Google), vision ✅ (accurately described a daily.dev screenshot including post titles, tags, sidebar navigation, browser tabs, and ad content).
-
-## References
-
-- Z.ai (international) model API: `https://z.ai/model-api`
-- Z.ai quick start: `https://docs.z.ai/guides/overview/quick-start`
-- Z.ai pricing: `https://docs.z.ai/guides/overview/pricing`
-- Z.ai chat-completion reference: `https://docs.z.ai/api-reference/llm/chat-completion`
-- Z.ai thinking mode: `https://docs.z.ai/guides/capabilities/thinking-mode`
-- GLM-4.5: `https://docs.z.ai/guides/llm/glm-4.5`
-- GLM-5V-Turbo (vision): `https://docs.z.ai/guides/vlm/glm-5v-turbo`
-- Z.ai Coding Plan overview: `https://docs.z.ai/devpack/overview`
-- Z.ai Coding Plan tool integration: `https://docs.z.ai/devpack/tool/others`
-- Z.ai rate limits dashboard (signed-in): `https://z.ai/manage-apikey/rate-limits`
-- China (BigModel) quick start: `https://docs.bigmodel.cn/cn/guide/start/quick-start`
-- China (BigModel) pricing: `https://bigmodel.cn/pricing`
-- VS Code custom-endpoint docs: `https://code.visualstudio.com/docs/copilot/customization/language-models#_add-a-custom-endpoint-model`
+- **GLM 5.2 — full pass (text-only):** Verified **1M Solid context**, **AA score 51.0**, and flawless multi-turn agent loops with `clear_thinking: true` server routine. Vision **not** tested — `glm-5.2` is text-only per [Z.ai's model card](https://docs.z.ai/guides/llm/glm-5.2) (Input Modalities: Text). Earlier drafts of this doc incorrectly marked `glm-5.2` as vision-capable; corrected 2026-06-22.
+- **GLM 5V Turbo — full pass:** Native screenshot validation described flawlessly; multimodal agentic tool loops success.
+- **GLM 5.1 — full pass:** Conservative 200K window tested perfectly with multi-step structural debugging tasks.

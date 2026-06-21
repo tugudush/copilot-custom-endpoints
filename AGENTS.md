@@ -11,6 +11,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points all three models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
+- **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **51.0**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
@@ -22,6 +23,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
+- [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **51.0**).
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
 - [proxy/mimo-proxy.mjs](proxy/mimo-proxy.mjs) is an optional proxy for MiMo V2.5 models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
