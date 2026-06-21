@@ -117,14 +117,14 @@ Config file location:
 
 ```json
 {
-  "name": "MiMo (proxy)",
+  "name": "MiMo",
   "vendor": "customendpoint",
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
     {
       "id": "mimo-v2.5-pro",
-      "name": "MiMo V2.5 Pro (text, proxy)",
+      "name": "MiMo V2.5 Pro (text)",
       "url": "http://127.0.0.1:3459/v1/chat/completions",
       "toolCalling": true,
       "vision": false,
@@ -138,7 +138,7 @@ Config file location:
     },
     {
       "id": "mimo-v2.5",
-      "name": "MiMo V2.5 (vision, proxy)",
+      "name": "MiMo V2.5 (vision)",
       "url": "http://127.0.0.1:3459/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -152,7 +152,7 @@ Config file location:
     },
     {
       "id": "mimo-v2-flash",
-      "name": "MiMo V2 Flash (text, proxy)",
+      "name": "MiMo V2 Flash (text)",
       "url": "http://127.0.0.1:3459/v1/chat/completions",
       "toolCalling": true,
       "vision": false,

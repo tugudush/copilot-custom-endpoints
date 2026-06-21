@@ -33,6 +33,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **GPT-5.4 mini**       | OpenAI    | **~$0.021**           | **40.0**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
 | **GLM 5.1**            | Z.ai      | **~$0.028**           | **40.2**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**       | Z.ai      | **~$0.029**           | **34.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
+| **GLM 5.2** ⁴          | Z.ai      | —                     | —                  | —                             | —                             | —                             | —            | 1M             |
 | **Gemini 3.5 Flash**   | Google    | **~$0.033**           | **50.2**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
 | **Qwen 3.7 Max**       | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
 | **Gemini 3.1 Pro**     | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
@@ -51,6 +52,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 ² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 ³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite.
+⁴ GLM 5.2 is Z.ai's newly released flagship model (Opus-level intelligence / 1M Solid context). It is included in the GLM Coding Plan; standard PaaS API pricing remains to be fully detailed under global schedules.
 
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
