@@ -28,7 +28,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
-| **GLM 5.2**                 | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
+| **GLM 5.2**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
 | **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
 | **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
 | **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
@@ -104,7 +104,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Kimi K2.6**          | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**     | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**       | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
-| **GLM 5.2**            | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ✅     | 1M             |
+| **GLM 5.2**            | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
 | **GLM 5.1**            | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**       | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.5 Flash**   | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
