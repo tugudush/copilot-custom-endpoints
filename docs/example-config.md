@@ -148,6 +148,21 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "glm-5.2",
+        "name": "GLM 5.2 (text)",
+        "url": "https://api.z.ai/api/paas/v4/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "thinking": { "type": "enabled" },
+          "temperature": 1.0,
+          "top_p": 0.95
+        }
+      },
+      {
         "id": "glm-5.1",
         "name": "GLM 5.1 (text)",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
@@ -190,6 +205,6 @@ If you only need one provider, jump straight to its setup guide:
 - [Qwen 3.7 Plus / 3.7 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro / V2 Flash)](mimo.md)
 - [MiniMax M3](minimax.md)
-- [GLM (5.1 / 5V Turbo)](glm.md)
+- [GLM (5.2 / 5.1 / 5V Turbo)](glm.md)
 
 > **DeepSeek V4 Pro / V4 Flash** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.
