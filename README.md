@@ -138,6 +138,12 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 >
 > **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >
+> For **plan mode / architecture & design thinking**, **GLM 5.2** is worth the premium:
+>
+> - Highest intelligence score in the table (**51.0**) — best for reasoning-heavy planning
+> - 1M lossless context, ideal for whole-codebase planning and large spec review
+> - ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
+>
 > Cheaper alternatives for simpler tasks:
 >
 > - **DeepSeek V4 Flash** — ~$0.10/session, 40.3 score (solid fallback)
