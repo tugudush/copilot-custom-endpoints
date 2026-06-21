@@ -28,6 +28,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                       |
 | **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                       |
 | **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
+| **GLM 5.2**                 | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
 | **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
 | **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
 | **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
@@ -99,10 +100,13 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **DeepSeek V4 Pro**    | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
 | **Qwen 3.7 Plus**      | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
 | **MiMo V2.5 Pro**      | Xiaomi    | **~$0.019**           | **42.2**           | ~$0.80       | ❌     | 1M             |
+| **Gemini 3 Flash**     | Google    | **~$0.020**           | **27.0** ³         | ~$0.55       | ✅     | 173K           |
 | **Kimi K2.6**          | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**     | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**       | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
+| **GLM 5.2**            | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ✅     | 1M             |
 | **GLM 5.1**            | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
+| **GLM 5V Turbo**       | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.5 Flash**   | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
 | **Qwen 3.7 Max**       | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**     | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
@@ -114,9 +118,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **MiMo V2 Flash**      | Xiaomi    | —                     | —                  | ~$0.08       | ❌     | 256K           |
 | **Raptor mini**        | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
 | **MiMo V2.5**          | Xiaomi    | —                     | —                  | ~$0.40       | ✅     | 1M             |
-| **Gemini 3 Flash**     | Google    | —                     | —                  | ~$0.55       | ✅     | 173K           |
-| **MAI-Code-1-Flash ²** | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
-| **GLM 5V Turbo**       | Z.ai      | —                     | —                  | ~$1.00       | ✅     | 200K           |
+| **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
 | **Claude Haiku 4.5**   | Anthropic | —                     | —                  | ~$1.00       | ❌     | 160K           |
 | **GPT-5.3-Codex**      | OpenAI    | —                     | —                  | ~$2.28       | ❌     | 400K           |
 
