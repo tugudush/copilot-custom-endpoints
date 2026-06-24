@@ -12,6 +12,18 @@
 | Upstream endpoint | `https://api.moonshot.ai/v1/chat/completions` |
 | Proxy endpoint    | `http://127.0.0.1:3457/v1/chat/completions`   |
 
+### Deprecated K2 model ids
+
+Moonshot's official model catalog says the older `kimi-k2` preview and thinking variants were **officially discontinued on May 25, 2026** and are no longer maintained or supported. Deprecated ids:
+
+- `kimi-k2-0905-preview`
+- `kimi-k2-0711-preview`
+- `kimi-k2-turbo-preview`
+- `kimi-k2-thinking`
+- `kimi-k2-thinking-turbo`
+
+For current use, stick to `kimi-k2.6` or `kimi-k2.7-code`. As of June 24, 2026, Moonshot still lists `kimi-k2.5`, `kimi-k2.6`, `kimi-k2.7-code`, and `kimi-k2.7-code-highspeed` as active models.
+
 ### K2.6
 
 | Field                  | Value                                |
@@ -275,6 +287,7 @@ The model-level `requestBody.temperature = 1` override validated locally but was
 
 - VS Code custom endpoint docs: `https://code.visualstudio.com/docs/copilot/customization/language-models#_add-a-custom-endpoint-model`
 - Kimi docs index: `https://platform.kimi.ai/docs/llms.txt`
+- Kimi model catalog (includes deprecated models): `https://platform.kimi.ai/docs/models.md`
 - Kimi chat completion docs: `https://platform.kimi.ai/docs/api/chat.md`
 - Kimi models list: `https://platform.kimi.ai/docs/api/list-models.md`
 - Kimi model parameter reference: `https://platform.kimi.ai/docs/api/models-overview.md`
