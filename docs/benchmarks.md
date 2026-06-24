@@ -31,11 +31,10 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 21  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
 | 22  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
 | 23  | **Gemini 3 Flash**    | Google    | Copilot native  | **27.0** ²            | #20        | #24         | #31        | #20           |
-| 24  | **MiMo V2 Flash**     | Xiaomi    | Custom endpoint | **23.0** ²            | #129       | —           | #63        | #128          |
-| 25  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | —                     | #69        | —           | #33        | #68           |
-| 26  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
-| 27  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
-| 28  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
+| 24  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | —                     | #69        | —           | #33        | #68           |
+| 25  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
+| 26  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
+| 27  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
 
 ¹ GPT-5.5 (54.8) and GPT-5.4 (51.4) AA scores are from the **xhigh** preset; their high presets score lower.
 

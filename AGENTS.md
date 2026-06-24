@@ -8,7 +8,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
-- **Xiaomi MiMo V2.5 / V2.5 Pro / V2 Flash** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points all three models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
+- **Xiaomi MiMo V2.5 / V2.5 Pro** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points both models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 - **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **51.0**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
@@ -20,7 +20,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
 - [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K2.6 and K2.7 Code.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.7 Plus (vision) and Qwen 3.7 Max (text only), plus the optional proxy feature.
-- [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal), V2.5 Pro (text, largest), and V2.5 Flash (text, fastest/cheapest).
+- [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal) and V2.5 Pro (text, largest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
 - [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **51.0**).
@@ -111,12 +111,12 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 
 ### Xiaomi MiMo
 
-- Direct VS Code -> MiMo API works without a proxy for all three models (`mimo-v2.5-pro`, `mimo-v2.5`, `mimo-v2-flash`).
+- Direct VS Code -> MiMo API works without a proxy for the V2.5 chat models. Xiaomi's June 2026 notice says legacy pre-V2.5 chat aliases are being retired, so check [docs/models/mimo.md](docs/models/mimo.md) before copying an older config.
 - Works via `proxy/mimo-proxy.mjs` for dynamic thinking suppression; can also work direct with static `thinking: {"type": "disabled"}`.
 - Static `thinking: {"type": "disabled"}` in `requestBody` is **required** for tool-calling stability. Without it, MiMo returns 400 when conversation history contains tool calls with missing `reasoning_content`.
 - When using the proxy, keep `thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `{type: "disabled"}` on tool turns.
-- `mimo-v2.5` supports native vision via a dedicated ViT encoder; `mimo-v2.5-pro` and `mimo-v2-flash` are text-only.
-- `mimo-v2-flash` is the cheapest option ($0.10 input / $0.30 output per 1M tokens) and defaults to thinking off.
+- `mimo-v2.5` supports native vision via a dedicated ViT encoder; `mimo-v2.5-pro` is text-only.
+- Xiaomi's June 2026 notice says legacy pre-V2.5 chat aliases auto-switch to V2.5 replacements and become invalid after 2026-06-30 00:00 Beijing time.
 - `mimo-v2.5-pro` and `mimo-v2.5` default to thinking on at the API level; the `requestBody` override suppresses it.
 - Endpoint: `https://api.xiaomimimo.com/v1/chat/completions` (pay-as-you-go). Token Plan uses `https://token-plan-cn.xiaomimimo.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MIMO_API_KEY` header (standard).

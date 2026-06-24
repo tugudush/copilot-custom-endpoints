@@ -43,7 +43,6 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Claude Opus 4.8**    | Anthropic | **~$0.090**           | **55.7**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.7**    | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **GPT-5.5**            | OpenAI    | **~$0.10**            | **54.8**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
-| **MiMo V2 Flash**      | Xiaomi    | —                     | —                  | $0.10                         | $0.01                         | $0.30                         | ~$0.08       | 256K           |
 | **Raptor mini**        | GitHub    | —                     | —                  | $0.25                         | $0.025                        | $2.00                         | ~$0.33       | 264K           |
 | **MiMo V2.5**          | Xiaomi    | —                     | —                  | $0.40                         | $0.08                         | $2.00                         | ~$0.40       | 1M             |
 | **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | —              |
@@ -62,7 +61,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > **Notes:**
 >
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
-> - **MiMo** input pricing shown is the **cache miss** price. Cache hits are 5× cheaper for V2.5 Pro ($0.20/M) and V2.5 ($0.08/M), and 10× cheaper for V2 Flash ($0.01/M).
+> - **MiMo** input pricing shown is the **cache miss** price. Cache hits are 5× cheaper for V2.5 Pro ($0.20/M) and V2.5 ($0.08/M).
 > - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
 > - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+ use a new tokenizer that may use up to 35% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.

@@ -100,20 +100,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
           "temperature": 1,
           "top_p": 0.95
         }
-      },
-      {
-        "id": "mimo-v2-flash",
-        "name": "MiMo V2 Flash (text)",
-        "url": "http://127.0.0.1:3459/v1/chat/completions",
-        "toolCalling": true,
-        "vision": false,
-        "streaming": true,
-        "maxInputTokens": 262144,
-        "maxOutputTokens": 65536,
-        "requestBody": {
-          "temperature": 0.3,
-          "top_p": 0.95
-        }
       }
     ]
   },
@@ -203,7 +189,7 @@ If you only need one provider, jump straight to its setup guide:
 
 - [Kimi K2.6 / K2.7 Code](kimi.md)
 - [Qwen 3.7 Plus / 3.7 Max](qwen.md)
-- [Xiaomi MiMo (V2.5 / V2.5 Pro / V2 Flash)](mimo.md)
+- [Xiaomi MiMo (V2.5 / V2.5 Pro)](mimo.md)
 - [MiniMax M3](minimax.md)
 - [GLM (5.2 / 5.1 / 5V Turbo)](glm.md)
 

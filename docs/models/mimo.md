@@ -1,6 +1,8 @@
 # Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** MiMo works direct with static `thinking: { type: "disabled" }` in `requestBody`, or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops). Static suppression is simpler; the proxy lets you see reasoning in non-agent chats.
+>
+> **June 2026 provider notice:** Xiaomi says the legacy ids `mimo-v2-pro` and `mimo-v2-omni` have already been auto-switched to V2.5 replacements and billed at V2.5-series pricing. Xiaomi's same notice also retires an older legacy chat alias and the `mimo-v2-tts` alias. Requests that still use retired legacy aliases are scheduled to start failing after **2026-06-30 00:00 Beijing time**. This guide now documents only the current V2.5 chat ids.
 
 ## At a Glance
 
@@ -9,8 +11,8 @@
 | Mode                   | **Direct** (proxy optional)                                                                                    |
 | Vision                 | ✅ Yes (`mimo-v2.5` only)                                                                                      |
 | Tool calling           | ✅ Yes (with `thinking: disabled`)                                                                             |
-| Context                | 1M (V2.5 Pro / V2.5) / 256K (V2 Flash)                                                                         |
-| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5) / 65536 (V2 Flash)                                                            |
+| Context                | 1M (V2.5 Pro / V2.5)                                                                                           |
+| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5)                                                                               |
 | Required `requestBody` | Direct: `thinking: { type: "disabled" }`<br>Proxy: none (proxy handles it)                                     |
 | Endpoint               | Direct: `https://api.xiaomimimo.com/v1/chat/completions`<br>Proxy: `http://127.0.0.1:3459/v1/chat/completions` |
 
@@ -20,9 +22,8 @@
 | --------------- | ------ | ------- | ------------------------------------------ |
 | `mimo-v2.5-pro` | ❌     | 1M      | Flagship text-only — best for agentic work |
 | `mimo-v2.5`     | ✅     | 1M      | Omnimodal — text + image + video + audio   |
-| `mimo-v2-flash` | ❌     | 256K    | Fastest and cheapest — strong reasoning    |
 
-> Legacy `mimo-v2-pro` and `mimo-v2-omni` auto-route to V2.5 (with V2.5 pricing) as of June 1, 2026, and will be fully deprecated by June 30, 2026. Use the V2.5 series.
+> Official June 2026 notice: legacy pre-V2.5 chat aliases now auto-route to V2.5 replacements and become invalid after **2026-06-30 00:00 Beijing time**. This guide intentionally omits retired alias names so new configs only show supported ids.
 
 ## Quick Start
 
@@ -30,7 +31,7 @@
 
 1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) from [Setup](#setup) below.
 2. **Set your `MIMO_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Restart VS Code** and pick "MiMo V2.5 Pro", "MiMo V2.5", or "MiMo V2 Flash".
+3. **Restart VS Code** and pick "MiMo V2.5 Pro" or "MiMo V2.5".
 
 ### With optional proxy (dynamic thinking)
 
@@ -93,21 +94,6 @@ Config file location:
         "temperature": 1,
         "top_p": 0.95
       }
-    },
-    {
-      "id": "mimo-v2-flash",
-      "name": "MiMo V2 Flash (text)",
-      "url": "https://api.xiaomimimo.com/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "maxInputTokens": 262144,
-      "maxOutputTokens": 65536,
-      "requestBody": {
-        "thinking": { "type": "disabled" },
-        "temperature": 0.3,
-        "top_p": 0.95
-      }
     }
   ]
 }
@@ -149,20 +135,6 @@ Config file location:
         "temperature": 1,
         "top_p": 0.95
       }
-    },
-    {
-      "id": "mimo-v2-flash",
-      "name": "MiMo V2 Flash (text)",
-      "url": "http://127.0.0.1:3459/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "maxInputTokens": 262144,
-      "maxOutputTokens": 65536,
-      "requestBody": {
-        "temperature": 0.3,
-        "top_p": 0.95
-      }
     }
   ]
 }
@@ -188,6 +160,20 @@ Token Plan subscribers use different base URLs and `tp-` prefixed keys:
 
 > Pay-as-you-go keys are `sk-…`; Token Plan keys are `tp-…`. The endpoint to use depends on which key you set.
 
+### 4. Legacy id retirement schedule
+
+From Xiaomi's June 2026 deprecation notice:
+
+| Legacy id      | Replacement     | Status on 2026-06-24                         | Final cutoff                  |
+| -------------- | --------------- | -------------------------------------------- | ----------------------------- |
+| `mimo-v2-pro`  | `mimo-v2.5-pro` | Auto-switched                                | 2026-06-30 00:00 Beijing time |
+| `mimo-v2-omni` | `mimo-v2.5`     | Auto-switched                                | 2026-06-30 00:00 Beijing time |
+| `mimo-v2-tts`  | `mimo-v2.5-tts` | Auto-switch on 2026-06-25 00:00 Beijing time | 2026-06-30 00:00 Beijing time |
+
+Xiaomi's notice also includes an additional retired legacy chat alias that auto-switches to `mimo-v2.5`; it is intentionally omitted here so the examples only show the ids you should still configure.
+
+For VS Code custom endpoint chat usage, configure the V2.5 ids directly rather than relying on retiring aliases.
+
 ## Configuration Reference
 
 ### Sampling parameters
@@ -208,7 +194,6 @@ MiMo accepts `temperature` in `[0, 1.5]` and `top_p` in `[0.01, 1.0]`.
 | Model                        | API default `thinking.type` | API default `temperature`  |
 | ---------------------------- | --------------------------- | -------------------------- |
 | `mimo-v2.5-pro`, `mimo-v2.5` | `enabled`                   | `1.0` (locked in thinking) |
-| `mimo-v2-flash`              | `disabled`                  | `0.3` (customizable)       |
 
 When thinking is enabled, responses include a `reasoning_content` field alongside `content` and `tool_calls`.
 
@@ -229,7 +214,7 @@ When thinking is enabled, responses include a `reasoning_content` field alongsid
 | Symptom                                    | Likely cause                                             | Fix                                                                                            |
 | ------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Add `thinking: { type: "disabled" }` to `requestBody`, or use the proxy (`npm run proxy:mimo`) |
-| Vision request returns an error            | Used `mimo-v2.5-pro` or `mimo-v2-flash` (text-only)      | Use `mimo-v2.5` for vision                                                                     |
+| Vision request returns an error            | Used `mimo-v2.5-pro` (text-only)                         | Use `mimo-v2.5` for vision                                                                     |
 | Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                |
 | 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                              |
 | 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                               |
@@ -242,7 +227,6 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). Oversea
 | --------------- | ----------------- | ------------------ | ---------- |
 | `mimo-v2.5-pro` | $0.20 / 1M        | $1.00 / 1M         | $3.00 / 1M |
 | `mimo-v2.5`     | $0.08 / 1M        | $0.40 / 1M         | $2.00 / 1M |
-| `mimo-v2-flash` | $0.01 / 1M        | $0.10 / 1M         | $0.30 / 1M |
 
 > Cache writing is currently free of charge (limited-time offer). MiMo also offers a Token Plan subscription with discounted rates and a free cache-writing promotion.
 
@@ -279,7 +263,6 @@ Static suppression (direct mode) remains a perfectly valid simpler alternative.
 | --------------- | ------------------ | ------------- | ------------------ | --------- |
 | `mimo-v2.5-pro` | —                  | 57.2%         | 68.4%              | —         |
 | `mimo-v2.5`     | —                  | 56.1%         | —                  | —         |
-| `mimo-v2-flash` | 73.4%              | —             | —                  | 94.1%     |
 
 > `mimo-v2.5` additionally scores 87.7% on Video-MME and 62.3% on Claw-Eval Text.
 
@@ -294,12 +277,9 @@ Static suppression (direct mode) remains a perfectly valid simpler alternative.
 
 External API checks (curl):
 
-| Check              | Model           | Result                                                  |
-| ------------------ | --------------- | ------------------------------------------------------- |
-| Non-streaming chat | `mimo-v2-flash` | ✅                                                      |
-| Streaming (SSE)    | `mimo-v2-flash` | ✅                                                      |
-| Non-streaming chat | `mimo-v2.5-pro` | ✅                                                      |
-| Tool calling       | `mimo-v2-flash` | ✅ — `finish_reason: "tool_calls"` with valid JSON args |
+| Check              | Model           | Result |
+| ------------------ | --------------- | ------ |
+| Non-streaming chat | `mimo-v2.5-pro` | ✅     |
 
 ### Known risks
 
@@ -323,6 +303,5 @@ External API checks (curl):
 - AI Tools Integration: `https://platform.xiaomimimo.com/docs/en-US/integration/claude-code`
 - HuggingFace (MiMo-V2.5): `https://huggingface.co/XiaomiMiMo/MiMo-V2.5`
 - HuggingFace (MiMo-V2.5-Pro): `https://huggingface.co/XiaomiMiMo/MiMo-V2.5-Pro`
-- HuggingFace (MiMo-V2-Flash): `https://huggingface.co/XiaomiMiMo/MiMo-V2-Flash`
 - MiMo V2.5 Blog: `https://mimo.xiaomi.com/mimo-v2-5`
 - AI Studio (playground): `https://aistudio.xiaomimimo.com/`

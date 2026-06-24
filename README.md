@@ -21,7 +21,6 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 | Model                       | Provider  | Needs proxy?           | Vision       | Setup guide                                                                                        |
 | --------------------------- | --------- | ---------------------- | ------------ | -------------------------------------------------------------------------------------------------- |
-| **MiMo V2 Flash**           | Xiaomi    | Optional (recommended) | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5**               | Xiaomi    | Optional (recommended) | ✅           | [Setup](docs/models/mimo.md)                                                                       |
 | **MiMo V2.5 Pro**           | Xiaomi    | Optional (recommended) | ❌           | [Setup](docs/models/mimo.md)                                                                       |
 | **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
@@ -115,7 +114,6 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Claude Opus 4.8**    | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
 | **Claude Opus 4.7**    | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
 | **GPT-5.5**            | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
-| **MiMo V2 Flash**      | Xiaomi    | —                     | —                  | ~$0.08       | ❌     | 256K           |
 | **Raptor mini**        | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
 | **MiMo V2.5**          | Xiaomi    | —                     | —                  | ~$0.40       | ✅     | 1M             |
 | **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
@@ -147,7 +145,6 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > Cheaper alternatives for simpler tasks:
 >
 > - **DeepSeek V4 Flash** — ~$0.10/session, 40.3 score (solid fallback)
-> - **MiMo V2 Flash** — ~$0.08/session (cheapest, but unreliable for multi-step agentic work)
 
 ## Companion tools
 
