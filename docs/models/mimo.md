@@ -164,11 +164,11 @@ Token Plan subscribers use different base URLs and `tp-` prefixed keys:
 
 From Xiaomi's June 2026 deprecation notice:
 
-| Legacy id        | Replacement       | Status on 2026-06-24 | Final cutoff |
-| ---------------- | ----------------- | -------------------- | ------------ |
-| `mimo-v2-pro`    | `mimo-v2.5-pro`   | Auto-switched        | 2026-06-30 00:00 Beijing time |
-| `mimo-v2-omni`   | `mimo-v2.5`       | Auto-switched        | 2026-06-30 00:00 Beijing time |
-| `mimo-v2-tts`    | `mimo-v2.5-tts`   | Auto-switch on 2026-06-25 00:00 Beijing time | 2026-06-30 00:00 Beijing time |
+| Legacy id      | Replacement     | Status on 2026-06-24                         | Final cutoff                  |
+| -------------- | --------------- | -------------------------------------------- | ----------------------------- |
+| `mimo-v2-pro`  | `mimo-v2.5-pro` | Auto-switched                                | 2026-06-30 00:00 Beijing time |
+| `mimo-v2-omni` | `mimo-v2.5`     | Auto-switched                                | 2026-06-30 00:00 Beijing time |
+| `mimo-v2-tts`  | `mimo-v2.5-tts` | Auto-switch on 2026-06-25 00:00 Beijing time | 2026-06-30 00:00 Beijing time |
 
 Xiaomi's notice also includes an additional retired legacy chat alias that auto-switches to `mimo-v2.5`; it is intentionally omitted here so the examples only show the ids you should still configure.
 
@@ -277,9 +277,9 @@ Static suppression (direct mode) remains a perfectly valid simpler alternative.
 
 External API checks (curl):
 
-| Check              | Model           | Result                                                  |
-| ------------------ | --------------- | ------------------------------------------------------- |
-| Non-streaming chat | `mimo-v2.5-pro` | ✅                                                      |
+| Check              | Model           | Result |
+| ------------------ | --------------- | ------ |
+| Non-streaming chat | `mimo-v2.5-pro` | ✅     |
 
 ### Known risks
 
