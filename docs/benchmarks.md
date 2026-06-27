@@ -1,6 +1,6 @@
 # Benchmark Scores
 
-> **Updated:** June 21, 2026 — scores sourced from official model announcements, the [Arena (Chatbot Arena) leaderboard](https://arena.ai/leaderboard/text), and the [Artificial Analysis Intelligence Index](https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index).
+> **Updated:** June 27, 2026 — scores sourced from official model announcements, the [Arena (Chatbot Arena) leaderboard](https://arena.ai/leaderboard/text), and the [Artificial Analysis Intelligence Index](https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index).
 
 A comparison of the **Arena top 10** alongside models available through **GitHub Copilot** (native) and the **custom-endpoint models** this repo supports. Rows are ordered by **AA Intelligence Index** score (highest first). Models without an AA score are listed after scored ones, sorted by Arena rank. Cells with `—` have no verified public score available. Footnotes explain missing or approximate ranks.
 
@@ -27,11 +27,11 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 17  | **DeepSeek V4 Flash** | DeepSeek  | Custom endpoint | **40.3**              | #67 (#63)  | #18         | —          | #66           |
 | 18  | **GLM 5.1**           | Z.ai      | Custom endpoint | **40.2**              | #15        | #13         | #9         | #15           |
 | 19  | **GPT-5.4 mini**      | OpenAI    | Copilot native  | **40.0**              | #50        | —           | #39        | #48           |
-| 20  | **Qwen 3.6 Plus**     | DashScope | Custom endpoint | **39.6**              | #55        | #20         | #23        | #55           |
-| 21  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
-| 22  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
-| 23  | **Gemini 3 Flash**    | Google    | Copilot native  | **27.0** ²            | #20        | #24         | #31        | #20           |
-| 24  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | —                     | #69        | —           | #33        | #68           |
+| 20  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | **40** ²              | #69        | —           | #33        | #68           |
+| 21  | **Qwen 3.6 Plus**     | DashScope | Custom endpoint | **39.6**              | #55        | #20         | #23        | #55           |
+| 22  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
+| 23  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
+| 24  | **Gemini 3 Flash**    | Google    | Copilot native  | **27.0** ²            | #20        | #24         | #31        | #20           |
 | 25  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
 | 26  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
 | 27  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
