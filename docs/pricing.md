@@ -23,10 +23,11 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | Model                  | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
 | ---------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
 | **DeepSeek V4 Flash**  | DeepSeek  | **~$0.0025**          | **40.3**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
+| **MiMo V2.5**          | Xiaomi    | **~$0.0025**          | **40** ³           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
 | **MiniMax M3**         | MiniMax   | **~$0.0061**          | **44.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |
 | **DeepSeek V4 Pro**    | DeepSeek  | **~$0.0068**          | **44.3**           | $0.435                        | $0.003625                     | $0.87                         | ~$0.30       | 1M             |
+| **MiMo V2.5 Pro**      | Xiaomi    | **~$0.0072**          | **42.2**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
 | **Qwen 3.7 Plus**      | DashScope | **~$0.0092**          | **39.0**           | $0.40 (≤256K) / $1.20 (>256K) | —                             | $1.60 (≤256K) / $4.80 (>256K) | ~$0.36       | 1M             |
-| **MiMo V2.5 Pro**      | Xiaomi    | **~$0.019**           | **42.2**           | $1.00                         | $0.20                         | $3.00                         | ~$0.80       | 1M             |
 | **Gemini 3 Flash**     | Google    | **~$0.020**           | **27.0** ³         | $0.50                         | $0.05                         | $3.00                         | ~$0.55       | 173K           |
 | **Kimi K2.6**          | Moonshot  | **~$0.021**           | **42.8**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **Kimi K2.7 Code**     | Moonshot  | **~$0.021**           | **42.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
@@ -44,7 +45,6 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Claude Opus 4.7**    | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **GPT-5.5**            | OpenAI    | **~$0.10**            | **54.8**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
 | **Raptor mini**        | GitHub    | —                     | —                  | $0.25                         | $0.025                        | $2.00                         | ~$0.33       | 264K           |
-| **MiMo V2.5**          | Xiaomi    | —                     | —                  | $0.40                         | $0.08                         | $2.00                         | ~$0.40       | 1M             |
 | **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | —              |
 | **Claude Haiku 4.5**   | Anthropic | —                     | —                  | $1.00                         | $0.10                         | $5.00                         | ~$1.00       | 160K           |
 
@@ -61,7 +61,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > **Notes:**
 >
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
-> - **MiMo** input pricing shown is the **cache miss** price. Cache hits are 5× cheaper for V2.5 Pro ($0.20/M) and V2.5 ($0.08/M).
+> - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.5 Pro ($0.0036/M, ~120× cheaper) and V2.5 ($0.0028/M, ~50× cheaper). A Xiaomi price cut took effect on 2026-05-27.
 > - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
 > - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+ use a new tokenizer that may use up to 35% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
@@ -77,7 +77,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: June 14, 2026. Always check the official pages for the latest rates:
+> Prices last verified: June 27, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
@@ -86,6 +86,6 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
-> - [MiMo pricing](https://platform.xiaomimimo.com/docs/en-US/pricing)
+> - [MiMo pricing](https://mimo.mi.com/docs/en-US/pricing)
 > - [MiniMax pricing](https://platform.minimax.io/docs/pricing/overview)
 > - [Z.ai (GLM) pricing](https://docs.z.ai/guides/overview/pricing)

@@ -95,10 +95,11 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | Model                  | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | ---------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
 | **DeepSeek V4 Flash**  | DeepSeek  | **~$0.0025**          | **40.3**           | ~$0.10       | ✅     | 1M             |
+| **MiMo V2.5**          | Xiaomi    | **~$0.0025**          | **40** ³           | ~$0.10       | ✅     | 1M             |
 | **MiniMax M3**         | MiniMax   | **~$0.0061**          | **44.4**           | ~$0.27       | ✅     | 1M             |
 | **DeepSeek V4 Pro**    | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
+| **MiMo V2.5 Pro**      | Xiaomi    | **~$0.0072**          | **42.2**           | ~$0.30       | ❌     | 1M             |
 | **Qwen 3.7 Plus**      | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
-| **MiMo V2.5 Pro**      | Xiaomi    | **~$0.019**           | **42.2**           | ~$0.80       | ❌     | 1M             |
 | **Gemini 3 Flash**     | Google    | **~$0.020**           | **27.0** ³         | ~$0.55       | ✅     | 173K           |
 | **Kimi K2.6**          | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**     | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
@@ -115,7 +116,6 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Claude Opus 4.7**    | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
 | **GPT-5.5**            | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
 | **Raptor mini**        | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
-| **MiMo V2.5**          | Xiaomi    | —                     | —                  | ~$0.40       | ✅     | 1M             |
 | **MAI-Code-1-Flash** ² | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
 | **Claude Haiku 4.5**   | Anthropic | —                     | —                  | ~$1.00       | ❌     | 160K           |
 | **GPT-5.3-Codex**      | OpenAI    | —                     | —                  | ~$2.28       | ❌     | 400K           |
@@ -123,6 +123,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 
 ² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
+
+³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite.
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
