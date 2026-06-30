@@ -1,19 +1,24 @@
 # MiniMax — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** MiniMax-M3 works directly — no proxy needed. Use `thinking: { type: "adaptive" }` + `reasoning_split: true` in `requestBody` so the model can reason and the response arrives in a clean OpenAI format (`reasoning_details` field, separate from `content`). **Important:** `thinking: { type: "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless.
+>
+> The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes. See [API key source](#3-api-key-source) below.
 
 ## At a Glance
 
-| Field                    | Value                                                   |
-| ------------------------ | ------------------------------------------------------- |
-| Mode                     | **Direct** (no proxy)                                   |
-| Vision                   | ✅ Yes (image + video)                                  |
-| Tool calling             | ✅ Yes                                                  |
-| Context                  | 1M (guaranteed 512K)                                    |
-| Max output               | 131072                                                  |
-| Required `requestBody`   | `thinking: { type: "adaptive" }, reasoning_split: true` |
-| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`            |
-| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`          |
+| Field                    | Value                                                                    |
+| ------------------------ | ------------------------------------------------------------------------ |
+| Mode                     | **Direct** (no proxy)                                                    |
+| Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)         |
+| Vision                   | ✅ Yes (image + video)                                                   |
+| Tool calling             | ✅ Yes                                                                   |
+| Context                  | 1M (guaranteed 512K)                                                     |
+| Max output               | 131072                                                                   |
+| Required `requestBody`   | `thinking: { type: "adaptive" }, reasoning_split: true`                  |
+| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`                             |
+| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                           |
+| API key (PAYG)           | Open Platform API Key from `user-center/basic-information/interface-key` |
+| API key (Token Plan)     | **Subscription Key** (`sk-cp-…`) from `user-center/payment/token-plan`   |
 
 ## Quick Start
 
@@ -60,23 +65,48 @@ Config file location:
 }
 ```
 
-### 2. API key
+### 2. Select your billing mode
+
+MiniMax exposes the **same** `https://api.minimax.io/v1/chat/completions` endpoint and the **same** `MiniMax-M3` model id to both billing modes. The only field that changes is the API key — the rest of `chatLanguageModels.json` stays identical.
+
+| Billing mode  | Key name in console                     | Where to get it                                                   | How usage is metered                            |
+| ------------- | --------------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------- |
+| Pay-as-You-Go | **Open Platform API Key**               | `platform.minimax.io/user-center/basic-information/interface-key` | Per-token, deducted from your account balance   |
+| Token Plan    | **Subscription Key** (prefix `sk-cp-…`) | `platform.minimax.io/user-center/payment/token-plan`              | Monthly quota (5-hour rolling + weekly windows) |
+
+The two keys are **not interchangeable** — a Subscription Key against a PAYG-only endpoint or a PAYG key against the Token Plan quota will be rejected. The Token Plan docs are explicit: _"Subscription Keys are separate from standard pay-as-you-go API Keys."_ ([FAQ](https://platform.minimax.io/docs/token-plan/faq#api-key-interchangeable))
+
+### 3. API key source
+
+#### Option A — Pay-as-You-Go key
 
 1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Run **Chat: Manage Language Models**.
 3. Find the **MiniMax** group → **Update API Key**.
-4. Paste your MiniMax API key.
+4. Paste your **Open Platform API Key** from `platform.minimax.io/user-center/basic-information/interface-key`.
 
 > After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
 
-### 3. Regional endpoints
+#### Option B — Token Plan Subscription Key
+
+The same `chatLanguageModels.json` block above is reused unchanged. Only the secret stored under `${input:chat.lm.secret.<id>}` is replaced with your Subscription Key.
+
+1. Subscribe to a Token Plan (Plus $20 / Max $50 / Ultra $120) at <https://platform.minimax.io/subscribe/token-plan>. Annual billing is also available.
+2. Open `platform.minimax.io/user-center/payment/token-plan` and copy the **Subscription Key** (prefix `sk-cp-…`).
+3. In VS Code, run **Chat: Manage Language Models** → **MiniMax** group → **Update API Key** → paste the Subscription Key.
+
+That's it. The endpoint, model id, and `requestBody` stay exactly the same. VS Code's Copilot Chat will now route the same `MiniMax-M3` requests through the Token Plan quota instead of the PAYG balance.
+
+> When the Token Plan 5-hour or weekly quota is exhausted, the request fails with a Token Plan quota error (see [Troubleshooting](#troubleshooting)). At that point you can either (a) wait for the quota window to reset, (b) buy a Credits top-up at the same console (Credits use the same Subscription Key and cover eligible overflow), or (c) swap the key in **Chat: Manage Language Models** back to your Open Platform API Key to fall back to PAYG. The URL and `requestBody` do not change during the swap.
+
+### 4. Regional endpoints
 
 | Region        | Endpoint                                       |
 | ------------- | ---------------------------------------------- |
 | International | `https://api.minimax.io/v1/chat/completions`   |
 | China         | `https://api.minimaxi.com/v1/chat/completions` |
 
-> API keys are region-specific and cannot be used across regions.
+> API keys are region-specific and cannot be used across regions. The same PAYG-vs-Token-Plan distinction applies to the China region (`api.minimaxi.com`); Subscription Keys are issued at `platform.minimaxi.com/user-center/payment/token-plan`.
 
 ## Configuration Reference
 
@@ -130,13 +160,17 @@ MiniMax model IDs are **case-sensitive**. Use exactly:
 
 ## Troubleshooting
 
-| Symptom                        | Likely cause                                           | Fix                                                      |
-| ------------------------------ | ------------------------------------------------------ | -------------------------------------------------------- |
-| Model not in picker            | Config not reloaded, or wrong casing                   | Restart VS Code; verify model ID is exactly `MiniMax-M3` |
-| Reasoning leaks into `content` | Missing `reasoning_split`                              | Add `reasoning_split: true` to `requestBody`             |
-| 401 Unauthorized               | API key region mismatch                                | Use the endpoint that matches your key's region          |
-| 429 rate-limited               | Concurrent sessions exceeded 200 RPM / 10M TPM         | Reduce concurrent agent sessions                         |
-| Vision request returns 400     | Vision only supported on M3 (not the legacy M2.x line) | Use `MiniMax-M3`                                         |
+| Symptom                                      | Likely cause                                                                       | Fix                                                                                                                                                                        |
+| -------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Model not in picker                          | Config not reloaded, or wrong casing                                               | Restart VS Code; verify model ID is exactly `MiniMax-M3`                                                                                                                   |
+| Reasoning leaks into `content`               | Missing `reasoning_split`                                                          | Add `reasoning_split: true` to `requestBody`                                                                                                                               |
+| 401 Unauthorized                             | API key region mismatch                                                            | Use the endpoint that matches your key's region                                                                                                                            |
+| 401 `token is unusable` / 1004               | Wrong key type on the endpoint — PAYG key against a Token Plan quota or vice versa | The two keys are not interchangeable. Switch the secret in **Chat: Manage Language Models** to the correct key for the billing mode you intend to use.                     |
+| 402 / 429 after a burst of agent turns       | Token Plan 5-hour or weekly quota exhausted; not a PAYG balance issue              | Wait for the quota window to reset, buy a Credits top-up at `platform.minimax.io/user-center/payment/credits`, upgrade plan, or swap the secret to a PAYG key to continue. |
+| 429 rate-limited                             | Concurrent sessions exceeded 200 RPM / 10M TPM                                     | Reduce concurrent agent sessions                                                                                                                                           |
+| Vision request returns 400                   | Vision only supported on M3 (not the legacy M2.x line)                             | Use `MiniMax-M3`                                                                                                                                                           |
+| Token Plan key works in curl but not VS Code | VS Code is still resolving the old `${input:chat.lm.secret.<id>}` reference        | Re-open **Chat: Manage Language Models**, re-paste the Subscription Key, then restart VS Code                                                                              |
+| China account gets 401 on `api.minimax.io`   | Key region is China but the URL points to international (or vice versa)            | Switch the `url` to `https://api.minimaxi.com/v1/chat/completions` for China, and get the Subscription Key from `platform.minimaxi.com`                                    |
 
 ## Pricing
 
@@ -153,7 +187,19 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). MiniMax
 
 ### Token Plan (subscription)
 
-MiniMax also offers monthly subscription plans with quota that resets each month (Plus $20/mo, Max $50/mo, Ultra $120/mo). All plans provide access to all models. See the [MiniMax Token Plan page](https://platform.minimax.io/docs/guides/pricing-token-plan) for details.
+The Token Plan is a **monthly or annual** subscription with a shared multimodal usage bar (text + image + audio + video + music share one quota). It is the same family of plans the MiniMax integration guide for Cursor, Claude Code, Zed, Kilo Code, and other IDEs targets — and the _same_ `https://api.minimax.io/v1/chat/completions` endpoint with the _same_ `MiniMax-M3` model id is used. The only field that changes between PAYG and Token Plan is the API key in `${input:chat.lm.secret.<id>}`.
+
+| Tier  | Price     | Best for                                     | Quota window            | Typical agent capacity |
+| ----- | --------- | -------------------------------------------- | ----------------------- | ---------------------- |
+| Plus  | $20 / mo  | Personal projects, prototyping               | 5-hour rolling + weekly | 3–4 agents             |
+| Max   | $50 / mo  | Daily coding with agents and multimodal work | 5-hour rolling + weekly | 4–5 agents             |
+| Ultra | $120 / mo | Heavy agent workflows and extended sessions  | 5-hour rolling + weekly | 6–7 agents             |
+
+Annual billing is available; unused subscription quota does **not** roll over to the next cycle. Credits are sold separately (`$5` = 5,000 / `$25` = 25,000 / `$100` = 100,000; 365-day validity) and use the same Subscription Key — when the included Token Plan quota is exhausted, purchased Credits automatically cover eligible overflow within Token Plan resource coverage. Subscription quota is consumed first, Credits second.
+
+> The Token Plan is intended for **individual, interactive developer use**, not production. MiniMax recommends PAYG for production workloads. Peak-hour dynamic rate-limiting may apply (typically 15:00–17:30 weekdays, per the [Token Plan platform-traffic rules](https://platform.minimax.io/docs/token-plan/faq#token-plan-limit-rules)). For background, see the [Token Plan overview](https://platform.minimax.io/docs/token-plan/intro) and the [subscription pricing page](https://platform.minimax.io/docs/guides/pricing-token-plan).
+>
+> **Source for the same-config claim:** the Token Plan docs show `https://api.minimax.io/v1` + model id `MiniMax-M3` for the OpenAI-compatible path and `https://api.minimax.io/anthropic` for the Anthropic-compatible path, with the same request body fields the PAYG path uses — see [Other Tools › Configuration Reference](https://platform.minimax.io/docs/token-plan/other-tools#configuration-reference). The FAQ explicitly says: _"Can the Subscription Key and the standard Open Platform API Key be used interchangeably? No, they cannot."_ — the **keys are not swappable, but the endpoint, model id, and `requestBody` are.**
 
 ---
 
@@ -243,5 +289,9 @@ Asked the model to inspect a YouTube video (`https://www.youtube.com/watch?v=rAz
 - MiniMax Pricing: `https://platform.minimax.io/docs/pricing/overview`
 - MiniMax Pay as You Go: `https://platform.minimax.io/docs/guides/pricing-paygo`
 - MiniMax Token Plan: `https://platform.minimax.io/docs/guides/pricing-token-plan`
+- MiniMax Token Plan Overview: `https://platform.minimax.io/docs/token-plan/intro`
+- MiniMax Token Plan Quickstart: `https://platform.minimax.io/docs/token-plan/quickstart`
+- MiniMax Token Plan FAQ (key interchangeability, quota windows, platform limits): `https://platform.minimax.io/docs/token-plan/faq`
+- MiniMax Token Plan — Other Tools configuration reference (same endpoint + model id for PAYG and Token Plan): `https://platform.minimax.io/docs/token-plan/other-tools#configuration-reference`
 - MiniMax Rate Limits: `https://platform.minimax.io/docs/guides/rate-limits`
 - MiniMax M3 for AI Coding Tools: `https://platform.minimax.io/docs/guides/text-ai-coding-tools`
