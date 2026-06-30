@@ -7,6 +7,7 @@
 | Field                           | Value                                                                            |
 | ------------------------------- | -------------------------------------------------------------------------------- |
 | Mode                            | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
+| Billing                         | **Pay-as-You-Go only** — no subscription; 1M-token free quota for new users      |
 | Vision                          | ✅ Yes (`qwen3.7-plus`)                                                          |
 | Tool calling                    | ✅ Yes                                                                           |
 | Context                         | 1M                                                                               |
@@ -182,12 +183,14 @@ The proxy detects active tool use by examining the conversation state, not just 
 
 ### API key
 
+DashScope is **Pay-as-You-Go only** — there is no monthly subscription plan. However, Alibaba Cloud grants a **free quota** of **1M input + 1M output tokens per model** (valid 90 days) for new Model Studio users. Prepaid token resource packages are also available through the Alibaba Cloud console for discounted rates, but these are prepaid credits, not a subscription.
+
 1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Run **Chat: Manage Language Models**.
 3. Find the **Qwen** group → **Update API Key**.
 4. Paste your DashScope API key.
 
-> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. API keys are generated at `dashscope-intl.aliyuncs.com` (international) or `dashscope.aliyuncs.com` (China) and are region-specific.
 
 ## Configuration Reference
 

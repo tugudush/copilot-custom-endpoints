@@ -151,14 +151,19 @@ Config file location:
 
 ### 3. Token Plan (optional)
 
-Token Plan subscribers use different base URLs and `tp-` prefixed keys:
+Token Plan subscribers use different base URLs and `tp-` prefixed keys from the pay-as-you-go `sk-` keys. The **model id** (`mimo-v2.5-pro`, `mimo-v2.5`) and **`requestBody`** (thinking, temperature, top_p) are the **same** for both billing modes — only the URL and key prefix differ.
 
-| Protocol  | Base URL                                         |
+| Mode          | Key prefix | Base URL (OpenAI)                         |
+| ------------- | ---------- | ----------------------------------------- |
+| Pay-as-you-go | `sk-…`     | `https://api.xiaomimimo.com/v1`           |
+| Token Plan    | `tp-…`     | `https://token-plan-cn.xiaomimimo.com/v1` |
+
+| Protocol  | Base URL (Token Plan)                            |
 | --------- | ------------------------------------------------ |
 | OpenAI    | `https://token-plan-cn.xiaomimimo.com/v1`        |
 | Anthropic | `https://token-plan-cn.xiaomimimo.com/anthropic` |
 
-> Pay-as-you-go keys are `sk-…`; Token Plan keys are `tp-…`. The endpoint to use depends on which key you set.
+> The same `requestBody` block (thinking, temperature, top_p) is shared between both modes. If you switch from PAYG to Token Plan, update the `url` in `chatLanguageModels.json` and swap the key — the rest of the config stays as-is. Note that the Token Plan endpoint is `token-plan-cn.xiaomimimo.com` (China-hosted), which differs from the PAYG endpoint `api.xiaomimimo.com`.
 
 ### 4. Legacy id retirement schedule
 

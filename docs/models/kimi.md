@@ -7,6 +7,7 @@
 | Field             | Value                                         |
 | ----------------- | --------------------------------------------- |
 | Mode              | **Proxy required** (local on `:3457`)         |
+| Billing           | **Pay-as-You-Go only** — no subscription      |
 | Vision            | ✅ Yes                                        |
 | Tool calling      | ✅ Yes                                        |
 | Upstream endpoint | `https://api.moonshot.ai/v1/chat/completions` |
@@ -108,12 +109,14 @@ Config file location:
 
 ### 2. API key
 
+Kimi is **Pay-as-You-Go only** — there is no monthly subscription or Token Plan alternative. A single Open Platform API key covers all models. Recharge your balance at `platform.kimi.ai/console`.
+
 1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Run **Chat: Manage Language Models**.
 3. Find the **Kimi** group → **Update API Key**.
-4. Paste your Moonshot API key.
+4. Paste your Moonshot / Kimi Platform API key.
 
-> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
+> After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. The Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — the `api.moonshot.ai` upstream endpoint still resolves and the proxy targets it unchanged.
 
 ### 3. Local proxy
 
