@@ -1,41 +1,74 @@
-# Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
+# Xiaomi MiMo — VS Code Copilot Chat Setup Guide
 
-> **TL;DR:** MiMo works direct with static `thinking: { type: "disabled" }` in `requestBody`, or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression (reasoning visible in plain chat, suppressed in tool loops). Static suppression is simpler; the proxy lets you see reasoning in non-agent chats.
+> **TL;DR:** The **recommended** way to use MiMo with Copilot Chat is the [Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) VS Code extension — it supports thinking mode WITH tool calling, prompt caching feedback, reasoning visibility in agent mode, and token usage reporting, all with zero dependencies (no proxy server needed). Two alternative methods are documented below for users who prefer direct `chatLanguageModels.json` control: direct API with static `thinking: disabled`, or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression.
 >
 > **June 2026 provider notice:** Xiaomi says the legacy ids `mimo-v2-pro` and `mimo-v2-omni` have already been auto-switched to V2.5 replacements and billed at V2.5-series pricing. Xiaomi's same notice also retires an older legacy chat alias and the `mimo-v2-tts` alias. Requests that still use retired legacy aliases are scheduled to start failing after **2026-06-30 00:00 Beijing time**. This guide now documents only the current V2.5 chat ids.
 
 ## At a Glance
 
-| Field                  | Value                                                                                                          |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Mode                   | **Direct** (proxy optional)                                                                                    |
-| Vision                 | ✅ Yes (`mimo-v2.5` only)                                                                                      |
-| Tool calling           | ✅ Yes (with `thinking: disabled`)                                                                             |
-| Context                | 1M (V2.5 Pro / V2.5)                                                                                           |
-| Max output             | 131072 (V2.5 Pro) / 32768 (V2.5)                                                                               |
-| Required `requestBody` | Direct: `thinking: { type: "disabled" }`<br>Proxy: none (proxy handles it)                                     |
-| Endpoint               | Direct: `https://api.xiaomimimo.com/v1/chat/completions`<br>Proxy: `http://127.0.0.1:3459/v1/chat/completions` |
+| Field                  | Value                                                                                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Recommended method** | **[Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot)** VS Code extension |
+| Alternative methods    | Direct API (static `thinking: disabled`) or `proxy/mimo-proxy.mjs` (dynamic suppression)                                                     |
+| Vision                 | ✅ Yes (`mimo-v2.5` only)                                                                                                                    |
+| Tool calling           | ✅ Yes (with thinking disabled, OR thinking enabled via the extension's reasoning cache)                                                     |
+| Context                | 917K (extension) / 1M (custom endpoint)                                                                                                      |
+| Max output             | 131072 (UltraSpeed / V2.5 Pro) / 32768 (V2.5)                                                                                                |
+| Dependencies           | Extension: **none**. Proxy method: Node.js + `proxy/mimo-proxy.mjs`                                                                          |
 
 ### Models at a glance
 
-| Model           | Vision | Context | Role                                       |
-| --------------- | ------ | ------- | ------------------------------------------ |
-| `mimo-v2.5-pro` | ❌     | 1M      | Flagship text-only — best for agentic work |
-| `mimo-v2.5`     | ✅     | 1M      | Omnimodal — text + image + video + audio   |
+| Model                      | Vision | Context | Role                                                 |
+| -------------------------- | ------ | ------- | ---------------------------------------------------- |
+| `mimo-v2.5-pro-ultraspeed` | ❌     | 917K    | Fast Pro reasoning for latency-sensitive agent tasks |
+| `mimo-v2.5-pro`            | ❌     | 917K    | Flagship text-only — best for deep reasoning         |
+| `mimo-v2.5`                | ✅     | 917K    | Omnimodal — text + image + video + audio             |
 
+> **Note:** `mimo-v2.5-pro-ultraspeed` is only available through the VS Code extension. The custom-endpoint methods below only cover `mimo-v2.5-pro` and `mimo-v2.5`.
+>
 > Official June 2026 notice: legacy pre-V2.5 chat aliases now auto-route to V2.5 replacements and become invalid after **2026-06-30 00:00 Beijing time**. This guide intentionally omits retired alias names so new configs only show supported ids.
 
 ## Quick Start
 
-### Direct (no proxy)
+### Recommended: VS Code Extension
 
-1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) from [Setup](#setup) below.
+The [Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) extension is the easiest and most capable way to use MiMo with Copilot Chat:
+
+1. **Install** from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot).
+2. **Set your API key** — run **MiMo: Set API Key** from the Command Palette (`Ctrl+Shift+P`).
+3. **Pick a model** — open Copilot Chat, click the model picker, and choose **MiMo-V2.5-Pro-UltraSpeed**, **MiMo V2.5 Pro**, or **MiMo V2.5**.
+4. That's it — chat away.
+
+**Why the extension over custom endpoints:**
+
+| Capability                       | Extension                            | Custom Endpoint                        |
+| -------------------------------- | ------------------------------------ | -------------------------------------- |
+| Thinking + tool calling together | ✅ Yes (reasoning cache)             | ❌ Must disable thinking on tool turns |
+| Reasoning visible in agent mode  | ✅ Yes (`LanguageModelThinkingPart`) | ❌ Hidden (suppressed by proxy)        |
+| Prompt caching feedback loop     | ✅ 97–99% cache hit rates            | ❌ No cache awareness                  |
+| Token usage in context widget    | ✅ Yes                               | ❌ No                                  |
+| `mimo-v2.5-pro-ultraspeed` model | ✅ Yes                               | ❌ Not available                       |
+| Multi-region endpoint selector   | ✅ Built-in dropdown                 | ❌ Manual JSON edits                   |
+| Dependencies                     | ✅ Zero (VS Code + Node built-ins)   | ❌ Requires proxy server               |
+| API key validation               | ✅ `sk-` / `tp-` prefix check        | ❌ Generic secret input                |
+
+> **Prerequisites:** VS Code 1.116+, GitHub Copilot subscription (Free tier works), and a MiMo API key from [platform.xiaomimimo.com](https://platform.xiaomimimo.com/console/api-keys). The extension is MIT-licensed. Source: [Sdcb/xiaomimimo-for-copilot](https://github.com/Sdcb/xiaomimimo-for-copilot).
+
+The extension exposes models as a proper `LanguageModelChatProvider` (vendor `'mimo'`), so they appear directly in the Copilot Chat model picker alongside GPT-4o, Claude, and friends. Switch models mid-chat without losing history.
+
+For a detailed comparison of extension vs. custom-endpoint features, see [docs/research/mimo-improvements.md](../research/mimo-improvements.md).
+
+### Alternative: Direct API (static `thinking: disabled`)
+
+Simplest no-proxy approach — but thinking is always off, so you never see model reasoning.
+
+1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) from [Setup → Direct](#direct-static-thinking-disabled) below.
 2. **Set your `MIMO_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Restart VS Code** and pick "MiMo V2.5 Pro" or "MiMo V2.5".
 
-### With optional proxy (dynamic thinking)
+### Alternative: With optional proxy (dynamic thinking)
 
-The `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
+The `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. A middle ground — you see reasoning in chat but not during agent mode.
 
 - `npm run proxy:mimo` (from the repo root)
 - `npx copilot-custom-endpoint mimo` (standalone, no clone needed)
@@ -46,7 +79,24 @@ When using the proxy, update your model URLs to `http://127.0.0.1:3459/v1/chat/c
 
 ## Setup
 
-### 1. VS Code configuration
+### Recommended: VS Code Extension
+
+1. Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot).
+2. Run **MiMo: Set API Key** from the Command Palette.
+3. (Optional) Run **MiMo: Open Settings** to configure endpoint region, max tokens, or model ID overrides.
+
+**Extension settings:**
+
+| Setting                         | Default                         | Description                                              |
+| ------------------------------- | ------------------------------- | -------------------------------------------------------- |
+| `mimo-copilot.baseUrl`          | `https://api.xiaomimimo.com/v1` | API endpoint — select a preset or pick 'Custom Endpoint' |
+| `mimo-copilot.customBaseUrl`    | _(empty)_                       | Custom endpoint URL when baseUrl is 'Custom Endpoint'    |
+| `mimo-copilot.maxTokens`        | `0`                             | Max output tokens (`0` = API default, capped at 131072)  |
+| `mimo-copilot.modelIdOverrides` | `{}`                            | Override API model IDs for third-party proxies           |
+
+The extension stores your API key in VS Code's `SecretStorage` (OS keychain) — never in `settings.json`, never in Git history.
+
+### Alternative: Custom Endpoint (direct or proxy)
 
 Config file location:
 
@@ -140,7 +190,7 @@ Config file location:
 }
 ```
 
-### 2. API key
+### 1. API key (custom endpoint only)
 
 1. Open the Command Palette (`Ctrl+Shift+P`).
 2. Run **Chat: Manage Language Models**.
@@ -148,8 +198,10 @@ Config file location:
 4. Paste your MiMo API key.
 
 > After setting via the UI, VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
+>
+> The extension uses its own **MiMo: Set API Key** command instead — skip this step if using the extension.
 
-### 3. Token Plan (optional)
+### 2. Token Plan (optional, all methods)
 
 Token Plan subscribers use different base URLs and `tp-` prefixed keys from the pay-as-you-go `sk-` keys. The **model id** (`mimo-v2.5-pro`, `mimo-v2.5`) and **`requestBody`** (thinking, temperature, top_p) are the **same** for both billing modes — only the URL and key prefix differ.
 
@@ -163,9 +215,9 @@ Token Plan subscribers use different base URLs and `tp-` prefixed keys from the 
 | OpenAI    | `https://token-plan-cn.xiaomimimo.com/v1`        |
 | Anthropic | `https://token-plan-cn.xiaomimimo.com/anthropic` |
 
-> The same `requestBody` block (thinking, temperature, top_p) is shared between both modes. If you switch from PAYG to Token Plan, update the `url` in `chatLanguageModels.json` and swap the key — the rest of the config stays as-is. Note that the Token Plan endpoint is `token-plan-cn.xiaomimimo.com` (China-hosted), which differs from the PAYG endpoint `api.xiaomimimo.com`.
+> The extension has a built-in multi-region endpoint selector covering all Token Plan regions (China, Singapore, Amsterdam). With the custom endpoint method, update the `url` in `chatLanguageModels.json` and swap the key — the rest of the config stays as-is. Note that the Token Plan endpoint is `token-plan-cn.xiaomimimo.com` (China-hosted), which differs from the PAYG endpoint `api.xiaomimimo.com`.
 
-### 4. Legacy id retirement schedule
+### 3. Legacy id retirement schedule (all methods)
 
 From Xiaomi's June 2026 deprecation notice:
 
@@ -216,13 +268,13 @@ When thinking is enabled, responses include a `reasoning_content` field alongsid
 
 ## Troubleshooting
 
-| Symptom                                    | Likely cause                                             | Fix                                                                                            |
-| ------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Add `thinking: { type: "disabled" }` to `requestBody`, or use the proxy (`npm run proxy:mimo`) |
-| Vision request returns an error            | Used `mimo-v2.5-pro` (text-only)                         | Use `mimo-v2.5` for vision                                                                     |
-| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                |
-| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                              |
-| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                               |
+| Symptom                                    | Likely cause                                             | Fix                                                                                                                                                              |
+| ------------------------------------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | **Use the extension** (it caches reasoning per tool-call ID). Or: add `thinking: { type: "disabled" }` to `requestBody`, or use the proxy (`npm run proxy:mimo`) |
+| Vision request returns an error            | Used `mimo-v2.5-pro` (text-only)                         | Use `mimo-v2.5` for vision                                                                                                                                       |
+| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                                                                                  |
+| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                                                                                                |
+| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                                                                                                 |
 
 ## Pricing
 
@@ -249,9 +301,19 @@ This is the same class of problem as Qwen's `reasoning_content` issue, but **str
 
 **Implication for VS Code Copilot:** VS Code's agent mode is unlikely to preserve `reasoning_content` across multi-turn tool loops. Therefore:
 
-- **Thinking enabled + tool calling = broken** (400 errors after the first tool round-trip).
+- **Thinking enabled + tool calling = broken** (400 errors after the first tool round-trip) — _unless using the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot), which caches and re-injects `reasoning_content`._
 - **Thinking disabled + tool calling = works** (no `reasoning_content` to preserve).
 - **Thinking enabled + plain chat = works** (no tool calls in history).
+
+### Extension solves the `reasoning_content` problem natively
+
+The [Xiaomi MiMo for Copilot Chat](https://github.com/Sdcb/xiaomimimo-for-copilot) extension implements a reasoning-content cache that makes thinking mode work WITH tool calling. It:
+
+1. Caches `reasoning_content` keyed by `tool_call_id` as the model streams tool calls.
+2. Re-injects cached reasoning into prior assistant messages when reconstructing history for subsequent turns.
+3. Prunes stale entries at conversation start (messages ≤ 2) or via LRU eviction (max 200 entries).
+
+This is the single biggest architectural advantage of the extension over the proxy approach. See [docs/research/mimo-improvements.md](../research/mimo-improvements.md) for a full comparison.
 
 ### Proxy for dynamic thinking suppression
 
@@ -288,13 +350,13 @@ External API checks (curl):
 
 ### Known risks
 
-| Risk                                  | Detail                                                             | Mitigation                                                                 |
-| ------------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| `reasoning_content` 400 errors        | If thinking is accidentally enabled in tool loops, API returns 400 | Set `thinking.type: "disabled"` in `requestBody` (direct) or use the proxy |
-| `tool_choice` only supports `"auto"`  | Non-`auto` values are stripped                                     | Should not affect VS Code, which uses `auto`                               |
-| Auth header format                    | Both `api-key:` and `Authorization: Bearer` work                   | VS Code sends `Authorization: Bearer` — works directly                     |
-| `temperature` locked in thinking mode | V2.5 Pro / V2.5 force `temperature: 1.0` when thinking is on       | Not an issue when thinking is disabled                                     |
-| 1M context window                     | VS Code may not send enough tokens to benefit                      | Set conservatively; adjust after testing                                   |
+| Risk                                  | Detail                                                             | Mitigation                                                                                                               |
+| ------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `reasoning_content` 400 errors        | If thinking is accidentally enabled in tool loops, API returns 400 | **Use the extension** (solves natively). Or: set `thinking.type: "disabled"` in `requestBody` (direct), or use the proxy |
+| `tool_choice` only supports `"auto"`  | Non-`auto` values are stripped                                     | Should not affect VS Code, which uses `auto`                                                                             |
+| Auth header format                    | Both `api-key:` and `Authorization: Bearer` work                   | VS Code sends `Authorization: Bearer` — works directly                                                                   |
+| `temperature` locked in thinking mode | V2.5 Pro / V2.5 force `temperature: 1.0` when thinking is on       | Not an issue when thinking is disabled                                                                                   |
+| 1M context window                     | VS Code may not send enough tokens to benefit                      | Set conservatively; adjust after testing                                                                                 |
 
 ## References
 
