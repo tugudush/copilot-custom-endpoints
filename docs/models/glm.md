@@ -6,18 +6,18 @@
 
 ## At a Glance
 
-| Field                  | Value                                                   |
-| ---------------------- | ------------------------------------------------------- |
-| Mode                   | **Direct** (no proxy)                                   |
+| Field                  | Value                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Mode                   | **Direct** (no proxy)                                                                                              |
 | Billing                | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
-| Vision                 | ✅ Yes (`glm-5v-turbo` only)                            |
-| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)   |
-| Context (flagship)     | 1M (`glm-5.2` Solid Lossless Context)                   |
-| Max output (flagship)  | 131072                                                  |
-| Required `requestBody` | `thinking: { type: "enabled" }` (recommended)           |
-| Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`         |
-| Endpoint (China)       | `https://open.bigmodel.cn/api/paas/v4/chat/completions` |
-| Auth                   | `Authorization: Bearer $ZAI_API_KEY`                    |
+| Vision                 | ✅ Yes (`glm-5v-turbo` only)                                                                                       |
+| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)                                                              |
+| Context (flagship)     | 1M (`glm-5.2` Solid Lossless Context)                                                                              |
+| Max output (flagship)  | 131072                                                                                                             |
+| Required `requestBody` | `thinking: { type: "enabled" }` (recommended)                                                                      |
+| Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`                                                                    |
+| Endpoint (China)       | `https://open.bigmodel.cn/api/paas/v4/chat/completions`                                                            |
+| Auth                   | `Authorization: Bearer $ZAI_API_KEY`                                                                               |
 
 ### Models at a glance
 
