@@ -135,9 +135,7 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - Highest intelligence score (44.4) among affordable models
 > - Only ~$0.27/session with vision + 1M context
 > - No local proxy required — works direct
-> - **Use the [MiniMax Copilot extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) for the best experience** (Token Plan subscription required; for PAYG, use the [manual setup](docs/models/minimax.md))
->
-> **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
+>   **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >
 > For **plan mode / architecture & design thinking**, **GLM 5.2** is worth the premium:
 >
@@ -148,6 +146,7 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > Cheaper alternatives for simpler tasks:
 >
 > - **DeepSeek V4 Flash** — ~$0.10/session, 40.3 score (solid fallback)
+> - **MiMo V2.5** — ~$0.10/session, 40 score (solid fallback, vision-capable)
 
 ## Companion tools
 
