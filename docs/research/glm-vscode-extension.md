@@ -25,6 +25,10 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 - For **Pay-as-You-Go users** on `z.ai` or `bigmodel.cn`, our setup remains the simplest validated path — no extension install, no Coding Plan subscription needed, and the server-side `clear_thinking: true` default handles the missing-`reasoning_content` gap cleanly.
 - For **Coding Plan subscribers**, any of the three extensions is a better choice than our setup — they surface the Coding Plan endpoint natively, render reasoning in collapsible blocks, and add quality-of-life features (usage dashboards, vision proxy, per-model thinking toggles).
 - The two approaches are **complementary, not competing**. They target different billing SKUs and different VS Code integration depths.
+- **Preferred extensions for PayG users** (linked from [`README.md`](../../README.md)):
+  - ⭐ [`umbrella22/ikaros.glm-for-vscode-copilot`](#2-umbrella22glm-for-copilot-glm-for-copilot) — used for **GLM 5.2** and **GLM 5V Turbo**.
+  - ⭐ [`KiwiGaze/yijiazhen-qi.glm-for-github-copilot-chat`](#3-kiwigazeglm-for-copilot-glm-models-for-github-copilot-chat) — used for **GLM 5.1**.
+  - Both support **Standard Pay-as-You-Go** API keys. ⚠️ The `zelosleone` extension is **not applicable** for our use case since it is locked to a Coding Plan subscription.
 
 ---
 
@@ -58,7 +62,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ## Detailed Extension Profiles
 
-### 1. zelosleone/glm-chat-provider ("GLM Chat Provider")
+### 1. zelosleone/glm-chat-provider ("GLM Chat Provider") — ⚠️ Not applicable for our use case
 
 **Same author as `kimi-lm-copilot-provider`** — Denizhan Dakılır. Architecture mirrors the Kimi extension closely.
 
@@ -80,7 +84,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ---
 
-### 2. umbrella22/glm-for-copilot ("GLM for Copilot")
+### 2. umbrella22/glm-for-copilot ("GLM for Copilot") — ⭐ Preferred for PayG
 
 **The most feature-rich of the three.** Published on both VS Code Marketplace and Open VSX. References KiwiGaze and deepseek-v4-for-copilot as inspirations.
 
@@ -107,7 +111,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ---
 
-### 3. KiwiGaze/glm-for-copilot ("GLM Models for GitHub Copilot Chat")
+### 3. KiwiGaze/glm-for-copilot ("GLM Models for GitHub Copilot Chat") — ⭐ Preferred for PayG
 
 **The most mature in terms of marketplace presence** (v0.2.7, CI badge, changelog, contribution guide). Originally launched with GLM-4.6 and GLM-4.5 Air; now tracks GLM-5.2.
 

@@ -6,11 +6,11 @@
 >
 > **🆕 GLM VS Code extensions are available.** Three community extensions add reasoning visibility (collapsible thinking blocks), per-model thinking toggles, usage dashboards, and more — all impossible with custom endpoints. Two of them support **Standard API** keys. See the [full comparison](../research/glm-vscode-extension.md) for details:
 >
-> | Extension | Marketplace ID | Standard API | Coding Plan | Key feature |
-> |-----------|---------------|:---:|:---:|-------------|
-> | **GLM for Copilot** (umbrella22) | [`ikaros.glm-for-vscode-copilot`](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot) | ✅ | ✅ | Vision proxy, cost est., team mode |
-> | **GLM Models for Copilot** (KiwiGaze) | [`yijiazhen-qi.glm-for-github-copilot-chat`](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) | ✅ | ✅ | Quota dashboard, dual API |
-> | **GLM Chat Provider** (zelosleone) | _(pending)_ | ❌ | ✅ | 14 models, per-model thinking tiers |
+> | Extension                             | Marketplace ID                                                                                                                             | Standard API | Coding Plan | Key feature                         |
+> | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | :----------: | :---------: | ----------------------------------- |
+> | **GLM for Copilot** (umbrella22)      | [`ikaros.glm-for-vscode-copilot`](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot)                       |      ✅      |     ✅      | Vision proxy, cost est., team mode  |
+> | **GLM Models for Copilot** (KiwiGaze) | [`yijiazhen-qi.glm-for-github-copilot-chat`](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) |      ✅      |     ✅      | Quota dashboard, dual API           |
+> | **GLM Chat Provider** (zelosleone)    | _(pending)_                                                                                                                                |      ❌      |     ✅      | 14 models, per-model thinking tiers |
 
 ## At a Glance
 
