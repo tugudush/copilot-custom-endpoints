@@ -30,7 +30,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **GLM 5.2**                 | Z.ai      | No                     | ✅ via extension | [Extension](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot) ★ / [Manual setup](docs/models/glm.md)            |
 | **GLM 5.1**                 | Z.ai      | No                     | ✅ via extension | [Extension](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) ★ / [Manual setup](docs/models/glm.md) |
 | **GLM 5V Turbo**            | Z.ai      | No                     | ✅               | [Manual setup](docs/models/glm.md)                                                                                                               |
-| **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy     | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot)                                               |
+| **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot)                                                 |
 
 ## Setup
 
