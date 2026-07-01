@@ -60,7 +60,7 @@ Modify your configuration:
   "models": [
     {
       "id": "glm-5.2",
-      "name": "GLM 5.2 (1M Context)",
+      "name": "GLM 5.2 (text)",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",
       "toolCalling": true,
       "vision": false,
