@@ -4,6 +4,10 @@
 >
 > The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes. See [API key source](#3-api-key-source) below.
 
+> **🆕 Try the MiniMax Copilot extension first.** If you have a **Token Plan subscription** (`sk-cp-…` key), use the [**MiniMax Copilot** VS Code extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) instead — it gives you reasoning visibility, a usage dashboard, status-bar quota monitoring, one-click region switching, and M3 1M context toggling. Install → `MiniMax: Add API Key` → done. No JSON editing.
+>
+> **PAYG users:** the extension targets the Anthropic-compatible endpoint which requires a Token Plan subscription key. If you're on pay-as-you-go, use the manual setup below — it works with both PAYG and Token Plan keys on the OpenAI-compatible endpoint.
+
 ## At a Glance
 
 | Field                    | Value                                                                    |
