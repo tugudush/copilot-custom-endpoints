@@ -159,7 +159,7 @@ This is also why the extension's single model id is `kimi-for-coding` and not `k
 - **Our proxy:** _imperative_. `temperature: 1` and `top_p: 0.95` are force-injected because K2.5/K2.6 models reject other values with `invalid temperature: only 1 is allowed` and `invalid top_p: only 0.95 is allowed` (validated, see [kimi.md](../models/kimi.md)). For K2.7 Code (always-thinking), only `temperature: 1` / `top_p: 0.95` is locked; thinking stays on.
 - **Extension:** _delegated_. It never sends `temperature` and only sends `top_p` if the caller sets it. The author trusts the `kimi.com/coding` endpoint to pick sensible defaults.
 
-This works for the extension because it talks to a different SKU where the sampling constraints are softer (or the defaults already match what K2.6/K2.7 require). It would **not** work against `api.moonshot.ai/v1` — our `invalid temperature` 400s are documented in [kimi.md](../models/kimi.md#why-direct-integration-failed).
+This works for the extension because it talks to a different SKU where the sampling constraints are softer (or the defaults already match what K2.6/K2.7 require). It would **not** work against `api.moonshot.ai/v1` — direct VS Code → Moonshot is not viable, as noted in [kimi.md](../models/kimi.md#at-a-glance).
 
 ### 4. Thinking-mode policy
 
