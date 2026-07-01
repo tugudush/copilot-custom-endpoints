@@ -2,6 +2,8 @@
 
 > **TL;DR:** MiniMax-M3 works directly — no proxy needed. Use `thinking: { type: "adaptive" }` + `reasoning_split: true` in `requestBody` so the model can reason and the response arrives in a clean OpenAI format (`reasoning_details` field, separate from `content`). **Important:** `thinking: { type: "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless.
 >
+> Want faster responses and fewer admission failures during peak hours? Add `"service_tier": "priority"` to `requestBody` (or register a second `MiniMax-M3-Priority` picker entry) — same model, **1.5× cost** for **priority admission**. See [M3 Priority tier](#5-m3-priority-tier-optional) below.
+>
 > The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
 > **🆕 Try the MiniMax Copilot extension first.** If you have a **Token Plan subscription** (`sk-cp-…` key), the [**MiniMax Copilot** VS Code extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) gives you reasoning visibility, a usage dashboard, status-bar quota monitoring, one-click region switching, and M3 1M context toggling — no JSON editing.
@@ -110,6 +112,62 @@ When the Token Plan 5-hour or weekly quota is exhausted, the request fails with 
 
 > API keys are region-specific. The same PAYG-vs-Token-Plan distinction applies to the China region (`api.minimaxi.com`); Subscription Keys are issued at `platform.minimaxi.com/user-center/payment/token-plan`.
 
+### 5. M3 Priority tier (optional)
+
+MiniMax exposes M3 with a per-request **`service_tier`** switch that promotes the request into MiniMax's priority admission queue. Priority is **not** a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body, costing **1.5× Standard** in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard.
+
+To add a separate Priority entry to your picker, add a second model block to the same `MiniMax` group with a distinct `id` and `name`, and set `"service_tier": "priority"` in `requestBody`:
+
+```json
+{
+  "name": "MiniMax",
+  "vendor": "customendpoint",
+  "apiKey": "",
+  "apiType": "chat-completions",
+  "models": [
+    {
+      "id": "MiniMax-M3",
+      "name": "MiniMax M3 (Standard)",
+      "url": "https://api.minimax.io/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "adaptive" },
+        "reasoning_split": true,
+        "temperature": 1,
+        "top_p": 0.95
+      }
+    },
+    {
+      "id": "MiniMax-M3-Priority",
+      "name": "MiniMax M3 (Priority)",
+      "url": "https://api.minimax.io/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "adaptive" },
+        "reasoning_split": true,
+        "temperature": 1,
+        "top_p": 0.95,
+        "service_tier": "priority"
+      }
+    }
+  ]
+}
+```
+
+Or, if you only ever want Priority, add `"service_tier": "priority"` to the single `MiniMax-M3` entry from step 1.
+
+> The `id` field is purely a VS Code picker identifier — VS Code does not forward it to MiniMax. Both entries hit the same `MiniMax-M3` model; the suffix is a local label. The `service_tier` parameter is supported on **both** the OpenAI-compatible and Anthropic-compatible endpoints.
+
+For the full breakdown (effective pricing, session cost, when Priority is worth the 50% premium), see [docs/research/minimax-m3-priority.md](../research/minimax-m3-priority.md).
+
 ## Notes
 
 - **`thinking: adaptive` + `reasoning_split: true`** is the recommended pair: the model decides when to reason, and the server returns reasoning in a structured `reasoning_details` field that keeps `content` clean for VS Code. The model still reasons regardless of `thinking.type` — the setting only changes the response field layout.
@@ -133,16 +191,27 @@ When the Token Plan 5-hour or weekly quota is exhausted, the request fails with 
 
 ## Pricing
 
-For the cross-provider comparison, see [docs/pricing.md](../pricing.md). MiniMax-M3 pay-as-you-go rates:
+For the cross-provider comparison, see [docs/pricing.md](../pricing.md). MiniMax-M3 pay-as-you-go rates (effective — post-50%-off):
+
+### Standard tier
 
 | Token range           | Input (Cache Hit) | Input (Cache Miss) | Output     |
 | --------------------- | ----------------- | ------------------ | ---------- |
-| ≤ 512K input tokens   | $0.12 / 1M        | $0.60 / 1M         | $2.40 / 1M |
-| > 512K input tokens\* | $0.24 / 1M        | $1.20 / 1M         | $4.80 / 1M |
+| ≤ 512K input tokens   | $0.06 / 1M        | $0.30 / 1M         | $1.20 / 1M |
+| > 512K input tokens\* | $0.12 / 1M        | $0.60 / 1M         | $2.40 / 1M |
+
+### Priority tier (`"service_tier": "priority"`)
+
+Priority is the **same `MiniMax-M3` model** invoked with the `service_tier` admission preference. It costs **1.5× Standard** and earns priority admission during MiniMax peak hours.
+
+| Token range           | Input (Cache Hit) | Input (Cache Miss) | Output     |
+| --------------------- | ----------------- | ------------------ | ---------- |
+| ≤ 512K input tokens   | $0.09 / 1M        | $0.45 / 1M         | $1.80 / 1M |
+| > 512K input tokens\* | $0.18 / 1M        | $0.90 / 1M         | $3.60 / 1M |
 
 \* Input tokens above 512K are available in limited quantity for a limited time.
 
-> **Permanent 50% off:** A standing 50% discount applies to all MiniMax-M3 pay-as-you-go usage on both the Standard and Priority tiers (verified June 9, 2026). The effective rates are $0.30 / 1M input, $1.20 / 1M output, and $0.06 / 1M cached input (≤ 512K tier).
+> **Permanent 50% off:** A standing 50% discount applies to all MiniMax-M3 pay-as-you-go usage on both the Standard and Priority tiers (verified June 9, 2026). The effective rates above are post-discount. List prices (pre-discount) are 2× higher: Standard ≤512K is $0.12 / $0.60 / $2.40; Priority ≤512K is $0.18 / $0.90 / $3.60. See [docs/research/minimax-m3-priority.md](../research/minimax-m3-priority.md) for the full breakdown of when Priority is worth the 50% premium.
 
 ### Token Plan (subscription)
 
