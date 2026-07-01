@@ -6,9 +6,12 @@
 >
 > The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
-> **🆕 Try the MiniMax Copilot extension first.** If you have a **Token Plan subscription** (`sk-cp-…` key), the [**MiniMax Copilot** VS Code extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) gives you reasoning visibility, a usage dashboard, status-bar quota monitoring, one-click region switching, and M3 1M context toggling — no JSON editing.
+> **🆕 Try a MiniMax Copilot extension first** (no JSON editing):
 >
-> **PAYG users:** the extension targets the Anthropic-compatible endpoint which requires a Token Plan subscription key. If you're on pay-as-you-go, use the manual setup below — it works with both PAYG and Token Plan keys on the OpenAI-compatible endpoint.
+> - **Token Plan subscription** (`sk-cp-…`): the [**klarkxy/minimax-vscode**](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) extension is the most feature-rich — reasoning visibility, usage dashboard, status-bar quota monitoring, one-click region switching, and M3 1M context toggling. Subscription keys required.
+> - **Pay-as-You-Go** (Open Platform API Key): the [**tugudush/minimax-copilot**](https://github.com/tugudush/minimax-copilot) extension is a PAYG-native alternative — same Anthropic-compatible API surface, but designed for pay-as-you-go keys. Collapsible reasoning block, region auto-detection, walkthrough for first-time setup. See [docs/research/minimax-vscode-extension.md](../research/minimax-vscode-extension.md) for the full side-by-side comparison.
+>
+> If you'd rather not install an extension, the manual setup below works with both PAYG and Token Plan keys via the OpenAI-compatible endpoint.
 
 ## At a Glance
 
