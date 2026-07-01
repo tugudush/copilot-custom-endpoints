@@ -3,6 +3,14 @@
 > **TL;DR:** GLM works directly with VS Code's custom-endpoint provider — **no proxy needed**. The API is OpenAI Chat Completions compatible at `https://api.z.ai/api/paas/v4/chat/completions`, and Z.ai's default `thinking.clear_thinking: true` quietly strips `reasoning_content` from prior turns, which makes multi-turn tool loops stable even when VS Code doesn't preserve reasoning blocks.
 >
 > **Billing:** The PaaS API is **Pay-as-You-Go** (per-token). Z.ai also offers a **Coding Plan** subscription (Lite/Pro/Max, $18–$160/mo), but it uses a **different endpoint** (`/api/coding/paas/v4`) that is **locked to a curated list of coding tools** (Claude Code, Cursor, Cline, etc.) — it **cannot** be used from VS Code custom endpoints. See [Why the GLM Coding Plan is not an option](#why-the-glm-coding-plan-is-not-an-option-for-vs-code).
+>
+> **🆕 GLM VS Code extensions are available.** Three community extensions add reasoning visibility (collapsible thinking blocks), per-model thinking toggles, usage dashboards, and more — all impossible with custom endpoints. Two of them support **Standard API** keys. See the [full comparison](../research/glm-vscode-extension.md) for details:
+>
+> | Extension | Marketplace ID | Standard API | Coding Plan | Key feature |
+> |-----------|---------------|:---:|:---:|-------------|
+> | **GLM for Copilot** (umbrella22) | [`ikaros.glm-for-vscode-copilot`](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot) | ✅ | ✅ | Vision proxy, cost est., team mode |
+> | **GLM Models for Copilot** (KiwiGaze) | [`yijiazhen-qi.glm-for-github-copilot-chat`](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) | ✅ | ✅ | Quota dashboard, dual API |
+> | **GLM Chat Provider** (zelosleone) | _(pending)_ | ❌ | ✅ | 14 models, per-model thinking tiers |
 
 ## At a Glance
 
