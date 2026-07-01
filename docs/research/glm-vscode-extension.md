@@ -20,7 +20,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ## TL;DR
 
-- **All three extensions target the GLM Coding Plan** (`/api/coding/paas/v4`) as their primary (or only) endpoint. Our setup targets the **Standard Pay-as-You-Go** PaaS endpoint (`/api/paas/v4`) — the Coding Plan endpoint is [structurally incompatible](../models/glm.md#why-the-glm-coding-plan-is-not-an-option-for-vs-code) with VS Code custom endpoints.
+- **All three extensions target the GLM Coding Plan** (`/api/coding/paas/v4`) as their primary (or only) endpoint. Our setup targets the **Standard Pay-as-You-Go** PaaS endpoint (`/api/paas/v4`) — the Coding Plan endpoint is [not usable from VS Code custom endpoints](../models/glm.md#quick-start).
 - The extensions use VS Code's **native Language Model Provider API** (`vscode.lm.registerLanguageModelChatProvider`), which gives them first-class integration: reasoning blocks as collapsible `LanguageModelThinkingPart`, per-model `configurationSchema` dropdowns in the picker, token counting, and usage metadata reporting. Our custom-endpoint setup uses the simpler `chatLanguageModels.json` mechanism, which **discards reasoning content** and has no per-model UI controls.
 - For **Pay-as-You-Go users** on `z.ai` or `bigmodel.cn`, our setup remains the simplest validated path — no extension install, no Coding Plan subscription needed, and the server-side `clear_thinking: true` default handles the missing-`reasoning_content` gap cleanly.
 - For **Coding Plan subscribers**, any of the three extensions is a better choice than our setup — they surface the Coding Plan endpoint natively, render reasoning in collapsible blocks, and add quality-of-life features (usage dashboards, vision proxy, per-model thinking toggles).
@@ -149,7 +149,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 - **zelosleone/glm-chat-provider:** Hardcoded to Coding Plan endpoint (`/api/coding/paas/v4`). Standard API keys will not work.
 - **umbrella22/glm-for-copilot:** Defaults to domestic Coding Plan but supports all 6 presets including Standard.
 - **KiwiGaze/glm-for-copilot:** Dual API — explicitly supports both Coding Plan and Standard.
-- **Our setup:** Standard PaaS only (`/api/paas/v4`). Coding Plan endpoint is [documented as incompatible](../models/glm.md#why-the-glm-coding-plan-is-not-an-option-for-vs-code) — it is locked to a curated list of officially supported tools.
+- **Our setup:** Standard PaaS only (`/api/paas/v4`). Coding Plan endpoint is [not usable from VS Code custom endpoints](../models/glm.md#quick-start) — it is locked to a curated list of officially supported tools.
 
 ### 3. Reasoning visibility — the biggest UX gap
 
