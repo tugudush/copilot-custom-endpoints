@@ -19,18 +19,18 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                       | Provider  | Needs proxy?           | Vision       | Setup guide                                                                                        |
-| --------------------------- | --------- | ---------------------- | ------------ | -------------------------------------------------------------------------------------------------- |
-| **MiMo V2.5**               | Xiaomi    | Optional (recommended) | ✅           | [Setup](docs/models/mimo.md)                                                                       |
-| **MiMo V2.5 Pro**           | Xiaomi    | Optional (recommended) | ❌           | [Setup](docs/models/mimo.md)                                                                       |
-| **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Setup](docs/models/kimi.md)                                                                       |
-| **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                       |
-| **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                       |
-| **MiniMax M3**              | MiniMax   | No                     | ✅           | [Setup](docs/models/minimax.md)                                                                    |
-| **GLM 5.2**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
-| **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Setup](docs/models/glm.md)                                                                        |
-| **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Setup](docs/models/glm.md)                                                                        |
-| **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
+| Model                       | Provider  | Needs proxy?           | Vision       | Setup guide                                                                                                                               |
+| --------------------------- | --------- | ---------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **MiMo V2.5**               | Xiaomi    | Optional (recommended) | ✅           | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Setup](docs/models/mimo.md)      |
+| **MiMo V2.5 Pro**           | Xiaomi    | Optional (recommended) | ❌           | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Setup](docs/models/mimo.md)      |
+| **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅           | [Extension](https://marketplace.visualstudio.com/items?itemName=DenizhanDaklr.kimi-lm-provider) ★ / [Setup](docs/models/kimi.md)          |
+| **Qwen 3.7 Plus**           | DashScope | Optional (recommended) | ✅           | [Setup](docs/models/qwen.md)                                                                                                              |
+| **Qwen 3.7 Max**            | DashScope | Optional (recommended) | ❌           | [Setup](docs/models/qwen.md)                                                                                                              |
+| **MiniMax M3**              | MiniMax   | No                     | ✅           | [Extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) ★ / [Setup](docs/models/minimax.md)       |
+| **GLM 5.2**                 | Z.ai      | No                     | ❌           | [Extension](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot) ★ / [Setup](docs/models/glm.md)            |
+| **GLM 5.1**                 | Z.ai      | No                     | ❌           | [Extension](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) ★ / [Setup](docs/models/glm.md) |
+| **GLM 5V Turbo**            | Z.ai      | No                     | ✅           | [Extension](https://marketplace.visualstudio.com/items?itemName=ikaros.glm-for-vscode-copilot) ★ / [Setup](docs/models/glm.md)            |
+| **DeepSeek V4 Pro / Flash** | DeepSeek  | No (uses an extension) | ✅ via proxy | [Marketplace](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot)                                        |
 
 ## Setup
 
@@ -135,6 +135,7 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - Highest intelligence score (44.4) among affordable models
 > - Only ~$0.27/session with vision + 1M context
 > - No local proxy required — works direct
+> - **Use the [MiniMax Copilot extension](https://marketplace.visualstudio.com/items?itemName=klarkxy.minimax-vscode-copilot) for the best experience** (Token Plan subscription required; for PAYG, use the [manual setup](docs/models/minimax.md))
 >
 > **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >

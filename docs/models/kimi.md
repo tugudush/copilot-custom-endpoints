@@ -1,6 +1,8 @@
 # Kimi — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** Kimi models require the local proxy. The K2 family locks `temperature: 1` and `top_p: 0.95`. K2.6 requires `thinking: { type: "disabled" }` on tool turns; **K2.7 Code is always-thinking and rejects `thinking: disabled`**, so the proxy detects `kimi-k2.7*` and skips that rewrite while keeping sampling enforcement. Direct VS Code → Moonshot integration is not viable in this environment.
+>
+> **🆕 Alternative: Kimi VS Code extension.** If you're on the **Kimi Coding tier** (`kimi.com/code/console`), try the [**Moonshot LM Provider**](https://marketplace.visualstudio.com/items?itemName=DenizhanDaklr.kimi-lm-provider) extension — it offers zero-proxy setup, reasoning visibility via `LanguageModelThinkingPart`, prompt caching, and a simpler install. **Not compatible with Pay-as-You-Go** keys from `platform.kimi.ai`. See the [full comparison](../research/kimi-vscode-extension.md).
 
 ## At a Glance
 

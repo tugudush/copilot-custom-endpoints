@@ -1,6 +1,6 @@
 # Full example config
 
-Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**. Copy what you need, leave the rest out.
+Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
