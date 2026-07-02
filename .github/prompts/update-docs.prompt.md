@@ -9,8 +9,8 @@ You are updating the documentation in this repository to be accurate and complet
 
 Read these files in parallel before touching any documentation:
 
-1. `${env:APPDATA}/Code/User/chatLanguageModels.json` — the live VS Code model registry. Every provider entry and every model entry in this file must be reflected in the docs.
-2. `proxy/kimi-proxy.mjs` — the Kimi proxy source. Extract all env-var names, default values, rewrite logic (temperature, top_p, thinking), health-check route, and log path.
+1. `${env:APPDATA}/Code/User/chatLanguageModels.json` — the live VS Code model registry. Use this file as a reference to verify the models **already documented** in this repo. Only models that have documentation under `docs/models/` or an entry in the README quick-start table need to be checked. Undocumented entries in the config are out of scope — do not add docs for them unless explicitly asked.
+2. All proxy source files under `proxy/` — discover the current set with `file_search` for `proxy/*.mjs`. For each proxy, extract all env-var names, default values, rewrite logic (temperature, top_p, thinking), health-check route, and log path.
 
 ## Step 2 — Read all existing documentation
 
@@ -32,21 +32,23 @@ For each provider in `chatLanguageModels.json`, verify the following in the docs
 - [ ] `toolCalling`, `vision`, `streaming` flags match.
 - [ ] `requestBody` overrides (e.g. `enable_thinking`, `temperature`) match.
 - [ ] `maxInputTokens` / `maxOutputTokens` are documented if present in the config, and absent if not.
-- [ ] The proxy URL (`http://127.0.0.1:3457/v1/chat/completions`) is used for Kimi and a direct DashScope URL for Qwen.
+- [ ] The proxy URL (e.g. `http://127.0.0.1:3457/v1/chat/completions` for Kimi, `http://127.0.0.1:3458/v1/chat/completions` for Qwen, `http://127.0.0.1:3459/v1/chat/completions` for MiMo) is used for proxy-based models, and a direct API URL for models that don't need a proxy.
 
-### Proxy checks (kimi-proxy.mjs)
+### Proxy checks (all proxies under `proxy/`)
+
+For each proxy discovered under `proxy/`, verify:
 
 - [ ] Default port matches the URL shown in the docs.
 - [ ] Default `temperature` values (plain-chat and non-thinking) match what the docs describe.
 - [ ] Default `top_p` matches.
-- [ ] `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS` behavior is accurately described.
+- [ ] Thinking-disable/tool-detection behavior is accurately described.
 - [ ] All env-var names listed in `--help` output match what the docs say.
 - [ ] Health-check endpoint (`/healthz`) and its response shape are documented.
-- [ ] Log file path (`debug_log/kimi-proxy.ndjson`) matches the docs.
+- [ ] Log file path matches the docs.
 
 ### README.md quick-start table
 
-- [ ] Every model in `chatLanguageModels.json` that is a `customendpoint` appears in the table.
+- [ ] Every model in the README quick-start table has a matching entry in `chatLanguageModels.json` with consistent flags.
 - [ ] "Needs proxy?" column matches reality.
 - [ ] "Vision" and "Tool calling" columns match `vision` and `toolCalling` flags.
 
@@ -67,20 +69,17 @@ For each provider in `chatLanguageModels.json`, verify the following in the docs
 
 - [ ] "Final Working Configuration" snippets match the live config.
 - [ ] Proxy behavior bullets (temperature, top_p, thinking rewrite) match the proxy source.
-- [ ] Any model that exists in chatLanguageModels.json but lacks a model doc gets a note added to README.md and AGENTS.md describing its status.
 
 ## Step 4 — Apply updates
 
 For every discrepancy found in Step 3, update the relevant file. Use the minimum change required — do not reformat or restructure sections that are already accurate.
-
-If a provider exists in `chatLanguageModels.json` but has no model doc under `docs/models/`, add a brief entry to README.md and AGENTS.md noting it as present in the config but not yet fully validated.
 
 ## Step 5 — Verify
 
 After all edits, re-read each modified file and confirm:
 
 - No JSON snippet in the docs contradicts the live `chatLanguageModels.json`.
-- No proxy env-var, default value, or behavior description in the docs contradicts `proxy/kimi-proxy.mjs`.
+- No proxy env-var, default value, or behavior description in the docs contradicts any proxy source under `proxy/`.
 - The README quick-start table is consistent with both the live config and the model docs.
 
 Report a one-line summary of each file changed and what was corrected.

@@ -1,4 +1,4 @@
-# Kimi — VS Code Custom Endpoint Setup Guide
+# Kimi (Moonshot) — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** Kimi models require the local proxy. The K2 family locks `temperature: 1` and `top_p: 0.95`. K2.6 needs `thinking: { type: "disabled" }` on tool turns; **K2.7 Code is always-thinking and rejects `thinking: disabled`**, so the proxy detects `kimi-k2.7*` and skips that rewrite while keeping sampling enforcement. Direct VS Code → Moonshot is not viable.
 >
@@ -6,21 +6,24 @@
 
 ## At a Glance
 
-| Field             | Value                                         |
-| ----------------- | --------------------------------------------- |
-| Mode              | **Proxy required** (local on `:3457`)         |
-| Billing           | **Pay-as-You-Go only** — no subscription      |
-| Vision            | ✅ Yes                                        |
-| Tool calling      | ✅ Yes                                        |
-| Upstream endpoint | `https://api.moonshot.ai/v1/chat/completions` |
-| Proxy endpoint    | `http://127.0.0.1:3457/v1/chat/completions`   |
+| Field          | Value                                         |
+| -------------- | --------------------------------------------- |
+| Mode           | **Proxy required** (local on `:3457`)         |
+| Billing        | **Pay-as-You-Go only** — no subscription      |
+| Vision         | ✅ Yes                                        |
+| Tool calling   | ✅ Yes                                        |
+| Context        | _see Models table_                            |
+| Max output     | _see Models table_                            |
+| Endpoint       | `https://api.moonshot.ai/v1/chat/completions` |
+| Proxy endpoint | `http://127.0.0.1:3457/v1/chat/completions`   |
+| Auth           | `Authorization: Bearer $KIMI_API_KEY`         |
 
 ### Models
 
-| Model id         | Context | Max output | Notes                                                                             |
-| ---------------- | ------- | ---------- | --------------------------------------------------------------------------------- |
-| `kimi-k2.6`      | 262K    | 32768      | Proxy forces `thinking: { type: "disabled" }` on tool turns                       |
-| `kimi-k2.7-code` | 262K    | 4096       | Always-thinking; rejects `thinking: disabled`. Keep `maxOutputTokens` low (4096). |
+| Model            | Vision | Context | Max output | Notes                                                                             |
+| ---------------- | ------ | ------- | ---------- | --------------------------------------------------------------------------------- |
+| `kimi-k2.6`      | ✅ Yes | 262K    | 32768      | Proxy forces `thinking: { type: "disabled" }` on tool turns                       |
+| `kimi-k2.7-code` | ✅ Yes | 262K    | 4096       | Always-thinking; rejects `thinking: disabled`. Keep `maxOutputTokens` low (4096). |
 
 > Deprecated K2 ids (`kimi-k2-0905-preview`, `kimi-k2-turbo-preview`, `kimi-k2-thinking`, etc.) were discontinued May 25, 2026 — use K2.6 or K2.7.
 
@@ -87,7 +90,9 @@ Kimi is **Pay-as-You-Go only** — no subscription. A single Open Platform API k
 
 > VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — `api.moonshot.ai` still resolves and the proxy targets it unchanged.
 
-### 3. Local proxy
+## Local Proxy
+
+The `proxy/kimi-proxy.mjs` is **required** for Kimi — K2-family sampling constraints and tool-turn thinking behaviour cannot be satisfied by VS Code's direct path. See [Quick Start](#quick-start) for the launch command.
 
 | Setting      | Value                                                 |
 | ------------ | ----------------------------------------------------- |
@@ -97,7 +102,7 @@ Kimi is **Pay-as-You-Go only** — no subscription. A single Open Platform API k
 | Start        | `npm run proxy:kimi` (or `node proxy/kimi-proxy.mjs`) |
 | Help         | `node proxy/kimi-proxy.mjs --help`                    |
 
-#### Environment variables
+### Environment variables
 
 Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically).
 
@@ -111,7 +116,7 @@ Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically
 | `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS`    | `1`                                           | Force `thinking={"type":"disabled"}` when tools present |
 | `KIMI_PROXY_LOG`                            | `debug_log/kimi-proxy.ndjson`                 | Redacted NDJSON log path                                |
 
-#### What the proxy does
+### What the proxy does
 
 - Forwards your `Authorization` header upstream.
 - Rewrites plain-chat requests to `temperature: 1`, `top_p: 0.95`.
@@ -119,6 +124,12 @@ Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically
 - For **K2.7 Code**: keeps thinking enabled (K2.7 rejects `thinking: disabled` with HTTP 400); rewrites to `temperature: 1`, `top_p: 0.95`.
 - Preserves streaming responses (SSE).
 - Writes redacted request summaries to `debug_log/kimi-proxy.ndjson`.
+
+## Notes
+
+- **K2.7 Code** is always-thinking. `max_tokens` and `maxOutputTokens` are intentionally conservative at **4096** — reasoning tokens inflate response size and values above 24K triggered VS Code's "Response too long" error in agent mode.
+- **K2 platform rebranding:** the Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — `api.moonshot.ai` still resolves and the proxy targets it unchanged.
+- **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 
 ## Troubleshooting
 

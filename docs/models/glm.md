@@ -20,8 +20,8 @@
 | Billing                | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
 | Vision                 | ✅ Yes (`glm-5v-turbo` only)                                                                                       |
 | Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)                                                              |
-| Context (flagship)     | 1M (`glm-5.2` Solid Lossless Context)                                                                              |
-| Max output (flagship)  | 131072                                                                                                             |
+| Context                | 1M (`glm-5.2` Solid Lossless Context)                                                                              |
+| Max output             | 131072                                                                                                             |
 | Required `requestBody` | `thinking: { type: "enabled" }` (recommended)                                                                      |
 | Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`                                                                    |
 | Endpoint (China)       | `https://open.bigmodel.cn/api/paas/v4/chat/completions`                                                            |
@@ -29,11 +29,11 @@
 
 ### Models
 
-| Model          | Vision | Context | Max output | Thinking  | Cost (in / out per 1M) | Role                                                                                     |
-| -------------- | ------ | ------- | ---------- | --------- | ---------------------- | ---------------------------------------------------------------------------------------- |
-| `glm-5.2`      | ❌     | 1M      | 131072     | `enabled` | $1.40 / $4.40          | New Flagship — "Opus-level" long-context engineering, agentic coding, and deep reasoning |
-| `glm-5.1`      | ❌     | 200K    | 131072     | `enabled` | $1.40 / $4.40          | Previous flagship — long-horizon / 8h autonomous work                                    |
-| `glm-5v-turbo` | ✅     | 200K    | 131072     | `enabled` | $1.20 / $4.00          | Multimodal **coding** model — vision-based agentic coding                                |
+| Model          | Vision | Context | Max output | Notes                                                                                                            |
+| -------------- | ------ | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| `glm-5.2`      | ❌     | 1M      | 131072     | New Flagship — "Opus-level" long-context engineering & agentic coding; thinking `enabled` ($1.40 / $4.40 per 1M) |
+| `glm-5.1`      | ❌     | 200K    | 131072     | Previous flagship — long-horizon / 8h autonomous work; thinking `enabled` ($1.40 / $4.40 per 1M)                 |
+| `glm-5v-turbo` | ✅     | 200K    | 131072     | Multimodal **coding** model — vision-based agentic coding; thinking `enabled` ($1.20 / $4.00 per 1M)             |
 
 > Other GLM models (`glm-5`, `glm-5-turbo`, `glm-4.5-air`, etc.) are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
