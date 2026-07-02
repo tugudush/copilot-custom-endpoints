@@ -2,7 +2,7 @@
 
 > **TL;DR:** MiniMax-M3 works directly — no proxy needed. Use `thinking: { type: "adaptive" }` + `reasoning_split: true` in `requestBody` so the model can reason and the response arrives in a clean OpenAI format (`reasoning_details` field, separate from `content`). **Important:** `thinking: { type: "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless.
 >
-> Want faster responses and fewer admission failures during peak hours? Add `"service_tier": "priority"` to `requestBody` (or register a second `MiniMax-M3-Priority` picker entry) — same model, **1.5× cost** for **priority admission**. See [M3 Priority tier](#4-m3-priority-tier-optional) below.
+> Want faster responses and fewer admission failures during peak hours? Add `"service_tier": "priority"` to the single `MiniMax-M3` entry's `requestBody` — same model, **1.5× cost** for **priority admission**. (You can only toggle `service_tier` on the existing entry; registering a second picker entry with a different `id` is not valid on the custom-endpoint path because VS Code forwards the `id` as the upstream `model` parameter.) See [M3 Priority tier](#4-m3-priority-tier-optional) below.
 >
 > The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
@@ -124,55 +124,33 @@ When the Token Plan 5-hour or weekly quota is exhausted, the request fails with 
 
 MiniMax exposes M3 with a per-request **`service_tier`** switch that promotes the request into MiniMax's priority admission queue. Priority is **not** a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body, costing **1.5× Standard** in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard.
 
-To add a separate Priority entry to your picker, add a second model block to the same `MiniMax` group with a distinct `id` and `name`, and set `"service_tier": "priority"` in `requestBody`:
+**You can only toggle `service_tier` by editing the single `MiniMax-M3` entry.** VS Code's built-in custom-endpoint handler forwards the model block's `id` field as the upstream `model` parameter, and `MiniMax-M3` is the only valid MiniMax M3 model id on the upstream API. Adding a second model block with a different `id` (such as `MiniMax-M3-Priority`) is **not valid** — the upstream API will reject the unknown model. Duplicating the `MiniMax-M3` id twice is also invalid and causes VS Code picker bugs.
+
+To switch the existing entry from Standard to Priority, add one line to `requestBody`:
 
 ```json
 {
-  "name": "MiniMax",
-  "vendor": "customendpoint",
-  "apiKey": "",
-  "apiType": "chat-completions",
-  "models": [
-    {
-      "id": "MiniMax-M3",
-      "name": "MiniMax M3 (Standard)",
-      "url": "https://api.minimax.io/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "maxInputTokens": 1048576,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "adaptive" },
-        "reasoning_split": true,
-        "temperature": 1,
-        "top_p": 0.95
-      }
-    },
-    {
-      "id": "MiniMax-M3-Priority",
-      "name": "MiniMax M3 (Priority)",
-      "url": "https://api.minimax.io/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "maxInputTokens": 1048576,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "adaptive" },
-        "reasoning_split": true,
-        "temperature": 1,
-        "top_p": 0.95,
-        "service_tier": "priority"
-      }
-    }
-  ]
+  "id": "MiniMax-M3",
+  "name": "MiniMax M3 (Priority)",
+  "url": "https://api.minimax.io/v1/chat/completions",
+  "toolCalling": true,
+  "vision": true,
+  "streaming": true,
+  "maxInputTokens": 1048576,
+  "maxOutputTokens": 131072,
+  "requestBody": {
+    "thinking": { "type": "adaptive" },
+    "reasoning_split": true,
+    "temperature": 1,
+    "top_p": 0.95,
+    "service_tier": "priority"
+  }
 }
 ```
 
-Or, if you only ever want Priority, add `"service_tier": "priority"` to the single `MiniMax-M3` entry from step 1.
+To go back to Standard, remove the `"service_tier": "priority"` line (the API default is `standard`). The `name` field is a local VS Code picker label, so it can be changed freely to reflect the current tier.
 
-> The `id` field is purely a VS Code picker identifier — VS Code does not forward it to MiniMax. Both entries hit the same `MiniMax-M3` model; the suffix is a local label. The `service_tier` parameter is supported on **both** the OpenAI-compatible and Anthropic-compatible endpoints.
+> The `service_tier` parameter is supported on **both** the OpenAI-compatible and Anthropic-compatible endpoints. The third-party `klarkxy/minimax-vscode` extension surfaces the Standard/Priority toggle as a separate picker entry because it is a native `LanguageModelChatProvider` that hard-codes the upstream model id internally and rewrites the picker id — that override mechanism is not available to the built-in custom-endpoint path.
 
 For the full breakdown (effective pricing, session cost, when Priority is worth the 50% premium), see [docs/research/minimax-m3-priority.md](../research/minimax-m3-priority.md).
 

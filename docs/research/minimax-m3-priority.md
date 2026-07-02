@@ -9,7 +9,7 @@
 > - [OpenAI SDK integration](https://platform.minimax.io/docs/api-reference/text-openai-api)
 > - [Rate limits](https://platform.minimax.io/docs/guides/rate-limits)
 >
-> **Why this matters:** Our `chatLanguageModels.json` registers only `MiniMax-M3` at the Standard service tier. The third-party `klarkxy/minimax-vscode` extension surfaces a **separate picker entry** called `MiniMax-M3-Priority` (see [minimax-vscode-extension.md](minimax-vscode-extension.md)) which hits the same model with `service_tier: "priority"`. This doc explains what Priority actually is, what it costs, and whether it should be added to our recommended config.
+> **Why this matters:** Our `chatLanguageModels.json` registers only `MiniMax-M3` at the Standard service tier. The third-party `klarkxy/minimax-vscode` extension surfaces a **separate picker entry** called `MiniMax-M3-Priority` (see [minimax-vscode-extension.md](minimax-vscode-extension.md)) which hits the same model with `service_tier: "priority"`. The custom-endpoint path cannot replicate that two-entry picker UX — see [§3](#3-how-to-enable-priority-in-our-chatlanguagemodelsjson) for why. This doc explains what Priority actually is, what it costs, and how to toggle it on the single `MiniMax-M3` entry.
 
 ---
 
@@ -53,7 +53,9 @@ The Anthropic Messages API documents the identical enum. **Priority only exists 
 
 ### How the extension surfaces this
 
-The `klarkxy/minimax-vscode` extension registers two separate model entries in the Copilot picker — `MiniMax-M3` (Standard) and `MiniMax-M3-Priority` (Priority). Internally both send `model: "MiniMax-M3"`, but the Priority entry adds `service_tier: "priority"` to the Anthropic-side request body. The picker UX is just a convenience — the model itself is unchanged.
+The `klarkxy/minimax-vscode` extension registers two separate model entries in the Copilot picker — `MiniMax-M3` (Standard) and `MiniMax-M3-Priority` (Priority). Internally both send `model: "MiniMax-M3"` to the upstream API, but the Priority entry adds `service_tier: "priority"` to the Anthropic-side request body. The picker UX is just a convenience — the model itself is unchanged.
+
+This is only possible because `klarkxy/minimax-vscode` is a native `LanguageModelChatProvider` that hard-codes the upstream model id internally and can rewrite the picker id per request. VS Code's built-in custom-endpoint handler does **not** give the same override — see [§3](#3-how-to-enable-priority-in-our-chatlanguagemodelsjson) below.
 
 ---
 
@@ -97,7 +99,7 @@ Priority slips from "top-3 cheapest" to "mid-pack" on a cost-per-intelligence ba
 
 ## 3. How to enable Priority in our `chatLanguageModels.json`
 
-The current `MiniMax-M3` block in [`docs/models/minimax.md`](../../models/minimax.md) does not set `service_tier`, which means it inherits the API default (`standard`). To switch a model entry to Priority, add one line to `requestBody`:
+The current `MiniMax-M3` block in [`docs/models/minimax.md`](../../models/minimax.md) does not set `service_tier`, which means it inherits the API default (`standard`). To switch to Priority, add one line to `requestBody` of the existing single entry:
 
 ```json
 {
@@ -119,59 +121,24 @@ The current `MiniMax-M3` block in [`docs/models/minimax.md`](../../models/minima
 }
 ```
 
-A cleaner approach — **keep Standard as the default and register a second entry for Priority**, so users can pick from the model picker:
+To switch back to Standard, remove the `"service_tier": "priority"` line (the API default is `standard`). You can also change the `name` field to relabel the picker entry (e.g. `MiniMax M3 (Priority)` vs `MiniMax M3 (Standard)`), but the `id` must remain exactly `MiniMax-M3`.
 
-```json
-{
-  "name": "MiniMax",
-  "vendor": "customendpoint",
-  "apiKey": "",
-  "apiType": "chat-completions",
-  "models": [
-    {
-      "id": "MiniMax-M3",
-      "name": "MiniMax M3 (Standard)",
-      "url": "https://api.minimax.io/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "maxInputTokens": 1048576,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "adaptive" },
-        "reasoning_split": true,
-        "temperature": 1,
-        "top_p": 0.95
-      }
-    },
-    {
-      "id": "MiniMax-M3-Priority",
-      "name": "MiniMax M3 (Priority)",
-      "url": "https://api.minimax.io/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "maxInputTokens": 1048576,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "adaptive" },
-        "reasoning_split": true,
-        "temperature": 1,
-        "top_p": 0.95,
-        "service_tier": "priority"
-      }
-    }
-  ]
-}
-```
+### Why we cannot register a second Priority picker entry
 
-> **Note:** the `id` in the model block is purely a VS Code picker identifier — VS Code does not forward it to the upstream API. The actual model name sent to MiniMax is hard-coded by the extension author; with custom endpoints it is whatever the upstream accepts (in this case `MiniMax-M3`). So **the second entry is just a separate picker slot with a different `requestBody`**. Both entries hit the same `MiniMax-M3` model. The "Priority" suffix is a local label.
+VS Code's built-in custom-endpoint handler **forwards the model block's `id` field as the upstream `model` parameter** on every request. The valid MiniMax M3 model id on the upstream API is exactly `MiniMax-M3` (case-sensitive). There is no `MiniMax-M3-Priority` model id on MiniMax's side — it is a picker label that exists only inside native `LanguageModelChatProvider` extensions like `klarkxy/minimax-vscode`, which intercept the request and rewrite the upstream model id internally before forwarding.
+
+So on the custom-endpoint path:
+
+- ❌ Adding a second model block with `id: "MiniMax-M3-Priority"` is **invalid** — the upstream API rejects the unknown model id, breaking every request through that block.
+- ❌ Duplicating the `MiniMax-M3` id on a second block is **invalid** — VS Code's model-picker layer assumes unique `id`s within a provider group and the duplicate causes picker bugs and routing errors.
+- ✅ The only working approach is to edit the single `MiniMax-M3` entry: toggle `"service_tier": "priority"` in or out of `requestBody`, and optionally relabel the `name` field.
 
 ### Caveats specific to our custom endpoint path
 
 - VS Code forwards `requestBody` as-is on every request — no merge logic — so `service_tier` rides on every turn.
 - VS Code's generic custom-endpoint handler does not surface MiniMax's `service_tier` response field; there is no visual confirmation that a request actually used Priority admission. (The Anthropic-compatible endpoint echoes `service_tier` in the SSE `message_start` event, but our config uses the OpenAI-compatible endpoint and that protocol does not echo it.)
-- Both entries share the same `${input:chat.lm.secret.<id>}` reference — a single API key covers both Standard and Priority. There is no "Priority API key"; priority is purely a per-request admission preference.
+- There is no "Priority API key"; priority is purely a per-request admission preference, so the same `${input:chat.lm.secret.<id>}` reference works whether `service_tier` is `standard` or `priority`.
+- Users who need to flip between Standard and Priority **per session** should install `klarkxy/minimax-vscode` or `tugudush/minimax-copilot` (both native providers that expose the toggle as a real picker entry).
 
 ---
 
@@ -222,8 +189,8 @@ A cleaner approach — **keep Standard as the default and register a second entr
 ## 6. Recommendation
 
 1. **Keep the current `MiniMax-M3` block at Standard.** Standard remains the right default for the repo's recommended config — cheapest, same model, no admission issue for the vast majority of Copilot Chat workloads.
-2. **Add a second `MiniMax-M3-Priority` entry** to the example config for users who want Priority admission without installing the third-party extension. It costs 50% more but stays competitive on cost-per-intelligence and is significantly cheaper than Kimi/GLM/Claude/GPT-5.x.
-3. **Update both pricing tables** (`README.md` and `docs/pricing.md`) to add a Priority row alongside Standard M3, with effective rates (post-50%-off) and the 1.5× multiplier noted.
-4. **Document the `service_tier` parameter** briefly in `docs/models/minimax.md` so users know how to flip the switch on the existing entry without adding a second model block.
+2. **Document the `service_tier` toggle** in [`docs/models/minimax.md`](../../models/minimax.md) so users know they can flip the single `MiniMax-M3` entry to Priority by adding one line to `requestBody` (and back to Standard by removing it). The docs must explicitly warn against the second-picker-entry pattern, which is invalid on the built-in custom-endpoint path because VS Code forwards the `id` field as the upstream `model` parameter.
+3. **Point users who need per-session Priority switching** to the `klarkxy/minimax-vscode` or `tugudush/minimax-copilot` extensions. Both are native `LanguageModelChatProvider` implementations that can register separate picker entries for Standard and Priority by hard-coding the upstream model id internally.
+4. **Update both pricing tables** (`README.md` and `docs/pricing.md`) to add a Priority row alongside Standard M3, with effective rates (post-50%-off) and the 1.5× multiplier noted. The pricing tables are valid as-is; only the actionable guidance about _how_ to enable Priority needs to point at the single-entry toggle.
 
 Open question (not blocking this PR): the OpenAI-compatible endpoint does not document a response field for `service_tier`, so it is not possible to confirm from a Copilot Chat response whether a request actually used the priority admission path. If verification matters, users should switch to the Anthropic-compatible endpoint (which surfaces `service_tier` in the `message_start` SSE event) or rely on empirical latency / 429-rate comparison.
