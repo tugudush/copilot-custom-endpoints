@@ -4,35 +4,39 @@
 
 ## At a Glance
 
-| Field                           | Value                                                                            |
-| ------------------------------- | -------------------------------------------------------------------------------- |
-| Mode                            | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
-| Billing                         | **Pay-as-You-Go only** — 1M-token free quota for new users                       |
-| Vision                          | ✅ Yes (`qwen3.7-plus`)                                                          |
-| Tool calling                    | ✅ Yes                                                                           |
-| Context                         | 1M                                                                               |
-| Required `requestBody` (direct) | `enable_thinking: false`                                                         |
-| Required `requestBody` (proxy)  | none — proxy injects based on tool activity                                      |
-| Endpoint                        | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
-| Proxy endpoint                  | `http://127.0.0.1:3458/v1/chat/completions`                                      |
+| Field                  | Value                                                                            |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
+| Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                       |
+| Vision                 | ✅ Yes (`qwen3.7-plus`)                                                          |
+| Tool calling           | ✅ Yes                                                                           |
+| Context                | 1M                                                                               |
+| Max output             | _see Models table_                                                               |
+| Endpoint               | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
+| Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                      |
+| Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                       |
+| `requestBody` (direct) | `enable_thinking: false`                                                         |
+| `requestBody` (proxy)  | _none — proxy injects based on tool activity_                                    |
 
 ### Models
 
-| Model          | Vision | Role                                   |
-| -------------- | ------ | -------------------------------------- |
-| `qwen3.7-plus` | ✅ Yes | Primary model with image understanding |
-| `qwen3.7-max`  | ❌ No  | Larger text-only model                 |
+| Model          | Vision | Context | Max output      | Notes                                  |
+| -------------- | ------ | ------- | --------------- | -------------------------------------- |
+| `qwen3.7-plus` | ✅ Yes | 1M      | _(unspecified)_ | Primary model with image understanding |
+| `qwen3.7-max`  | ❌ No  | 1M      | _(unspecified)_ | Larger text-only model                 |
 
 > The live `chatLanguageModels.json` points Qwen at the local proxy by default; the direct DashScope URL is shown below for users who prefer a static `enable_thinking: false` setup.
 
-## Quick Start — With Proxy (recommended)
+## Quick Start
+
+### With Proxy (recommended)
 
 1. **Start the proxy:** `npm run proxy:qwen` (or `npx copilot-custom-endpoint qwen`).
 2. **Use the proxy-path JSON snippet** below.
 3. **Set your DashScope API key** via Command Palette → **Chat: Manage Language Models**.
 4. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
 
-## Quick Start — Direct (no proxy)
+### Direct (no proxy)
 
 1. **Use the direct-path JSON snippet** below.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
@@ -134,27 +138,7 @@ DashScope is region-specific — your API key only works on the endpoint it was 
 }
 ```
 
-> **Keep the proxy terminal open** while using Qwen via proxy.
-
-#### Proxy environment variables
-
-Set in `.env` at the repo root.
-
-| Variable                                 | Default                                                                   | Purpose                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
-| `QWEN_PROXY_PORT`                        | `3458`                                                                    | Local listen port                                  |
-| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
-| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson`                                             | Redacted NDJSON log path                           |
-| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
-
-#### What the proxy does
-
-The proxy detects active tool use by examining the conversation state (a `"tool"`-role message in history or a non-default `tool_choice`), not just the presence of a `tools` array. This correctly handles tool-enabled conversations even when the client sends `tools` in an earlier request but omits it from subsequent turns.
-
-| Condition                                                     | Action                                |
-| ------------------------------------------------------------- | ------------------------------------- |
-| Tool-role message in history **or** non-default `tool_choice` | Inject `enable_thinking: false`       |
-| Plain chat (no tool activity)                                 | Delete `enable_thinking` (default ON) |
+> **Keep the proxy terminal open** while using Qwen via proxy. Configuration knobs are documented in [Local Proxy](#local-proxy) below.
 
 ### 2. API key
 
@@ -166,6 +150,46 @@ DashScope is **Pay-as-You-Go only** — but new Model Studio users get **1M inpu
 4. Paste your DashScope API key.
 
 > VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Keys are region-specific.
+
+## Local Proxy
+
+The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression on top of the direct integration. Reasoning stays ON in plain chat and turns OFF automatically only when tools are invoked. If you don't need reasoning visibility, the direct path (`### Direct (no proxy)` above) is simpler.
+
+| Setting      | Value                                                 |
+| ------------ | ----------------------------------------------------- |
+| Script       | `proxy/qwen-proxy.mjs`                                |
+| Listen URL   | `http://127.0.0.1:3458/v1/chat/completions`           |
+| Health check | `curl http://127.0.0.1:3458/healthz`                  |
+| Start        | `npm run proxy:qwen` (or `node proxy/qwen-proxy.mjs`) |
+| Help         | `node proxy/qwen-proxy.mjs --help`                    |
+
+### Environment variables
+
+Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically).
+
+| Variable                                 | Default                                                                   | Purpose                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
+| `QWEN_PROXY_PORT`                        | `3458`                                                                    | Local listen port                                  |
+| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
+| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson`                                             | Redacted NDJSON log path                           |
+| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
+
+### What the proxy does
+
+The proxy detects active tool use by examining the conversation state (a `"tool"`-role message in history or a non-default `tool_choice`), not just the presence of a `tools` array. This correctly handles tool-enabled conversations even when the client sends `tools` in an earlier request but omits it from subsequent turns.
+
+| Condition                                                     | Action                                |
+| ------------------------------------------------------------- | ------------------------------------- |
+| Tool-role message in history **or** non-default `tool_choice` | Inject `enable_thinking: false`       |
+| Plain chat (no tool activity)                                 | Delete `enable_thinking` (default ON) |
+
+### Forwards header & streaming
+
+- Forwards your `Authorization` header upstream unchanged.
+- Preserves streaming responses (SSE).
+- Writes redacted request summaries to `debug_log/qwen-proxy.ndjson`.
+
+> **Keep the proxy terminal open** while using Qwen via proxy.
 
 ## Notes
 

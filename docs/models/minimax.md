@@ -2,7 +2,7 @@
 
 > **TL;DR:** MiniMax-M3 works directly — no proxy needed. Use `thinking: { type: "adaptive" }` + `reasoning_split: true` in `requestBody` so the model can reason and the response arrives in a clean OpenAI format (`reasoning_details` field, separate from `content`). **Important:** `thinking: { type: "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless.
 >
-> Want faster responses and fewer admission failures during peak hours? Add `"service_tier": "priority"` to `requestBody` (or register a second `MiniMax-M3-Priority` picker entry) — same model, **1.5× cost** for **priority admission**. See [M3 Priority tier](#5-m3-priority-tier-optional) below.
+> Want faster responses and fewer admission failures during peak hours? Add `"service_tier": "priority"` to `requestBody` (or register a second `MiniMax-M3-Priority` picker entry) — same model, **1.5× cost** for **priority admission**. See [M3 Priority tier](#4-m3-priority-tier-optional) below.
 >
 > The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
@@ -15,19 +15,24 @@
 
 ## At a Glance
 
-| Field                    | Value                                                                    |
-| ------------------------ | ------------------------------------------------------------------------ |
-| Mode                     | **Direct** (no proxy)                                                    |
-| Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)         |
-| Vision                   | ✅ Yes (image + video)                                                   |
-| Tool calling             | ✅ Yes                                                                   |
-| Context                  | 1M (guaranteed 512K)                                                     |
-| Max output               | 131072                                                                   |
-| Required `requestBody`   | `thinking: { type: "adaptive" }, reasoning_split: true`                  |
-| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`                             |
-| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                           |
-| API key (PAYG)           | Open Platform API Key from `user-center/basic-information/interface-key` |
-| API key (Token Plan)     | **Subscription Key** (`sk-cp-…`) from `user-center/payment/token-plan`   |
+| Field                    | Value                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| Mode                     | **Direct** (no proxy)                                                               |
+| Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)                    |
+| Vision                   | ✅ Yes (image + video)                                                              |
+| Tool calling             | ✅ Yes                                                                              |
+| Context                  | 1M (guaranteed 512K)                                                                |
+| Max output               | 131072                                                                              |
+| Required `requestBody`   | `thinking: { type: "adaptive" }, reasoning_split: true`                             |
+| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`                                        |
+| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                                      |
+| Auth                     | `Authorization: Bearer $MINIMAX_API_KEY` (or Subscription Key, see [Setup](#setup)) |
+
+### Models
+
+| Model        | Vision | Context | Max output | Notes                                                                                  |
+| ------------ | ------ | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| `MiniMax-M3` | ✅ Yes | 1M      | 131072     | Multimodal frontier coding model; adaptive reasoning; PAYG and Token Plan share config |
 
 ## Quick Start
 
@@ -36,6 +41,15 @@
 3. **Restart VS Code** and pick "MiniMax M3" in the chat picker.
 
 ## Setup
+
+### Regional endpoints
+
+> API keys are region-specific. The same PAYG-vs-Token-Plan distinction applies to the China region (`api.minimaxi.com`); Subscription Keys are issued at `platform.minimaxi.com/user-center/payment/token-plan`.
+
+| Region        | Endpoint                                       |
+| ------------- | ---------------------------------------------- |
+| International | `https://api.minimax.io/v1/chat/completions`   |
+| China         | `https://api.minimaxi.com/v1/chat/completions` |
 
 ### 1. VS Code configuration
 
@@ -106,16 +120,7 @@ The same `chatLanguageModels.json` block above is reused unchanged. Only the sec
 
 When the Token Plan 5-hour or weekly quota is exhausted, the request fails with a Token Plan quota error (see [Troubleshooting](#troubleshooting)). At that point you can either wait for the quota window to reset, buy a Credits top-up at the same console (Credits use the same Subscription Key), or swap the key back to your Open Platform API Key to fall back to PAYG. The URL and `requestBody` do not change during the swap.
 
-### 4. Regional endpoints
-
-| Region        | Endpoint                                       |
-| ------------- | ---------------------------------------------- |
-| International | `https://api.minimax.io/v1/chat/completions`   |
-| China         | `https://api.minimaxi.com/v1/chat/completions` |
-
-> API keys are region-specific. The same PAYG-vs-Token-Plan distinction applies to the China region (`api.minimaxi.com`); Subscription Keys are issued at `platform.minimaxi.com/user-center/payment/token-plan`.
-
-### 5. M3 Priority tier (optional)
+### 4. M3 Priority tier (optional)
 
 MiniMax exposes M3 with a per-request **`service_tier`** switch that promotes the request into MiniMax's priority admission queue. Priority is **not** a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body, costing **1.5× Standard** in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard.
 

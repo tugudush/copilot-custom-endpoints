@@ -1,4 +1,4 @@
-# Xiaomi MiMo — VS Code Copilot Chat Setup Guide
+# Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
 
 > **TL;DR:** The recommended path is the [Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) VS Code extension — it supports thinking mode WITH tool calling, prompt caching feedback, reasoning visibility in agent mode, and token usage reporting, with zero dependencies. Two alternative methods are documented below for users who prefer direct `chatLanguageModels.json` control.
 
@@ -8,19 +8,23 @@
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Recommended method** | **[Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot)** VS Code extension |
 | Alternative methods    | Direct API (static `thinking: disabled`) or `proxy/mimo-proxy.mjs` (dynamic suppression)                                                     |
+| Mode (custom endpoint) | **Direct** (static `thinking: disabled`) **or** **Proxy** (dynamic, local on `:3459`)                                                        |
+| Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (shared `requestBody`)                                                                    |
 | Vision                 | ✅ Yes (`mimo-v2.5` only)                                                                                                                    |
 | Tool calling           | ✅ Yes (with thinking disabled, OR thinking enabled via the extension's reasoning cache)                                                     |
 | Context                | 917K (extension) / 1M (custom endpoint)                                                                                                      |
 | Max output             | 131072 (V2.5 Pro) / 32768 (V2.5)                                                                                                             |
-| Dependencies           | Extension: **none**. Proxy method: Node.js + `proxy/mimo-proxy.mjs`                                                                          |
+| Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`                                                                                             |
+| Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                                                  |
+| Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                                                        |
 
 ### Models
 
-| Model                      | Vision | Context | Role                                                                  |
-| -------------------------- | ------ | ------- | --------------------------------------------------------------------- |
-| `mimo-v2.5-pro-ultraspeed` | ❌     | 917K    | Fast Pro reasoning for latency-sensitive agent tasks (extension only) |
-| `mimo-v2.5-pro`            | ❌     | 917K    | Flagship text-only — best for deep reasoning                          |
-| `mimo-v2.5`                | ✅     | 917K    | Omnimodal — text + image + video + audio                              |
+| Model                      | Vision | Context | Max output      | Notes                                                                 |
+| -------------------------- | ------ | ------- | --------------- | --------------------------------------------------------------------- |
+| `mimo-v2.5-pro-ultraspeed` | ❌     | 917K    | _(unspecified)_ | Fast Pro reasoning for latency-sensitive agent tasks (extension only) |
+| `mimo-v2.5-pro`            | ❌     | 917K    | 131072          | Flagship text-only — best for deep reasoning                          |
+| `mimo-v2.5`                | ✅     | 917K    | 32768           | Omnimodal — text + image + video + audio                              |
 
 > `mimo-v2.5-pro-ultraspeed` is only available through the VS Code extension. Custom-endpoint methods below cover `mimo-v2.5-pro` and `mimo-v2.5`.
 
@@ -188,6 +192,20 @@ Token Plan subscribers use different base URLs and `tp-` prefixed keys from pay-
 | Token Plan    | `tp-…`     | `https://token-plan-cn.xiaomimimo.com/v1` |
 
 The extension has a built-in multi-region endpoint selector covering all Token Plan regions (China, Singapore, Amsterdam). With the custom endpoint method, update the `url` in `chatLanguageModels.json` and swap the key.
+
+## Local Proxy
+
+The `proxy/mimo-proxy.mjs` (optional) provides dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. If you don't mind thinking being off on every turn, the direct path is simpler. If you want the agent reasoning cache, use the extension (recommended above).
+
+| Setting      | Value                                                 |
+| ------------ | ----------------------------------------------------- |
+| Script       | `proxy/mimo-proxy.mjs`                                |
+| Listen URL   | `http://127.0.0.1:3459/v1/chat/completions`           |
+| Health check | `curl http://127.0.0.1:3459/healthz`                  |
+| Start        | `npm run proxy:mimo` (or `node proxy/mimo-proxy.mjs`) |
+| Help         | `node proxy/mimo-proxy.mjs --help`                    |
+
+When using the proxy, point model `url`s to `http://127.0.0.1:3459/v1/chat/completions` and **remove** `thinking` from `requestBody`. The proxy handles it dynamically.
 
 ## Notes
 
