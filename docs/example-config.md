@@ -124,23 +124,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
           "temperature": 1,
           "top_p": 0.95
         }
-      },
-      {
-        "id": "MiniMax-M3-Priority",
-        "name": "MiniMax M3 (Priority)",
-        "url": "https://api.minimax.io/v1/chat/completions",
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 1048576,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "adaptive" },
-          "reasoning_split": true,
-          "temperature": 1,
-          "top_p": 0.95,
-          "service_tier": "priority"
-        }
       }
     ]
   },
