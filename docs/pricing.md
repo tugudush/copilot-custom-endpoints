@@ -41,6 +41,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
 | **GPT-5.3-Codex**        | OpenAI    | **~$0.052**           | **44.0** ³         | $1.75                         | $0.175                        | $14.00                        | ~$2.28       | 400K           |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
+| **Claude Sonnet 5** ⁶    | Anthropic | **~$0.057**           | **53.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
@@ -59,6 +60,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁵ **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads (list prices shown above; effective rates after the standing 50% off are $0.45/$1.80/$0.09 ≤512K and $0.90/$3.60/$0.18 >512K), in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. To enable it on a custom-endpoint entry, add `"service_tier": "priority"` to `requestBody`. See [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
 
+⁶ **Claude Sonnet 5** has introductory pricing of **$2.00 / $0.20 / $10.00** (input / cached / output) through **August 31, 2026**, after which the standard pricing of $3.00 / $0.30 / $15.00 shown above takes effect. See [Anthropic's pricing page](https://claude.com/pricing) for the latest.
+
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
 > **Notes:**
@@ -66,7 +69,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.5 Pro ($0.0036/M, ~120× cheaper) and V2.5 ($0.0028/M, ~50× cheaper). A Xiaomi price cut took effect on 2026-05-27.
 > - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
-> - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+ use a new tokenizer that may use up to 35% more tokens for the same text.
+> - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+, Sonnet 5, and Fable 5 use a new tokenizer that produces approximately 30% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi** official tables list **Cache Hit before Cache Miss** (opposite order to our table). The rows below transpose them so "Input" = cache miss and "Cached input" = cache hit.
@@ -82,7 +85,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: June 27, 2026. Always check the official pages for the latest rates:
+> Prices last verified: July 2, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
