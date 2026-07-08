@@ -2,6 +2,8 @@
 
 Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
+> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
+>
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
 > The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat).

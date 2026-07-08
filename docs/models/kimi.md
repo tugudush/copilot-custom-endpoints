@@ -32,7 +32,8 @@
 1. **Start the proxy** — `npm run proxy:kimi` (or `npx copilot-custom-endpoint kimi` standalone).
 2. **Edit `chatLanguageModels.json`** — add the Kimi block below.
 3. **Set your Moonshot API key** via Command Palette → **Chat: Manage Language Models**.
-4. **Restart VS Code** and pick "Kimi K2.6" or "Kimi K2.7 Code".
+4. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+5. **Restart VS Code** and pick "Kimi K2.6" or "Kimi K2.7 Code".
 
 ## Setup
 

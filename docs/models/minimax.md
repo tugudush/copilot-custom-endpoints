@@ -38,7 +38,8 @@
 
 1. **Edit `chatLanguageModels.json`** — add the MiniMax block below.
 2. **Set your `MINIMAX_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Restart VS Code** and pick "MiniMax M3" in the chat picker.
+3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+4. **Restart VS Code** and pick "MiniMax M3" in the chat picker.
 
 ## Setup
 

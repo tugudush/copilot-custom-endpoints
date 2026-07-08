@@ -8,12 +8,13 @@ VS Code lets you add your own language-model endpoint via a small JSON config fi
 
 If [OpenRouter](https://openrouter.ai) is blocked by your network or too generic for your model's quirks, this is the workaround.
 
-## How it works (4 steps)
+## How it works (5 steps)
 
 1. **Pick a model** from the table below.
 2. **Add it to your VS Code config** — copy the snippet from the model's doc.
 3. **Set the API key** through VS Code's UI (it goes to your OS keychain, not the file).
-4. **Open chat** and pick the model from the model picker.
+4. **Configure the Utility Small Model** — VS Code now requires a fast fallback model for built-in utility flows. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest custom-endpoint model (or "Default" if you have native Copilot models available). Without this, chat may not function correctly.
+5. **Open chat** and pick the model from the model picker.
 
 That's it. No code, no servers to manage (unless the model specifically needs the local proxy — the table tells you).
 
@@ -58,7 +59,21 @@ Open the setup guide for the model you picked (links in the table above) and cop
 3. Find your provider in the list, right-click the group name → **Update API Key**.
 4. Paste your key. It's stored in your OS keychain.
 
-### 4. Chat
+### 4. Configure the Utility Small Model
+
+> **⚠️ Required for BYOK/custom-endpoint users.** VS Code's latest update mandates that you explicitly set which model handles built-in small/fast utility flows. Without this, custom-endpoint models may not function correctly in chat or agent mode.
+
+1. Open VS Code Settings (`Ctrl+,` / `Cmd+,`).
+2. Search for **"Chat: Utility Small Model"** (setting ID: `chat.lm.utilitySmallModel`).
+3. Pick the **fastest, cheapest model** available to you from the dropdown. Good choices:
+   - **DeepSeek V4 Flash** — if you have the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension installed (fastest, ~$0.10/session).
+   - **MiMo V2.5** — if you already have Xiaomi MiMo configured (cheapest custom-endpoint option, ~$0.10/session).
+   - **Default** — if you still have native Copilot model access, this lets VS Code use its built-in fast model.
+4. The setting takes effect immediately — no restart needed.
+
+> **Why this matters:** VS Code uses a small utility model for quick background tasks (token counting, prompt truncation, lightweight completions). When you switch to custom-endpoint models, the framework still needs a fast model for these utility flows. If left unset, some features may silently degrade or fail.
+
+### 5. Chat
 
 - Open Copilot chat (`Ctrl+Alt+I` / `Cmd+Ctrl+I`).
 - Click the model picker (top-right).
