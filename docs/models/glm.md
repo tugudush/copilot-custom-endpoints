@@ -43,7 +43,8 @@
 2. **Generate an API key** on the API Keys page of the platform.
 3. **Edit `chatLanguageModels.json`** — add the GLM block below.
 4. **Set the API key** via Command Palette → **Chat: Manage Language Models** → right-click **GLM** → **Update API Key**.
-5. **Restart VS Code** and select a GLM model from the picker.
+5. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+6. **Restart VS Code** and select a GLM model from the picker.
 
 ## Setup
 

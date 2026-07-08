@@ -13,6 +13,8 @@ This repository keeps durable validation records for custom language-model endpo
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 - **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **51.0**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
 
+**⚠️ VS Code now requires `chat.lm.utilitySmallModel` to be set for BYOK/custom-endpoint users.** Open Settings → search "Chat: Utility Small Model" → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without it, utility flows like token counting and prompt truncation may silently fail. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
+
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
 
 ## Project Map

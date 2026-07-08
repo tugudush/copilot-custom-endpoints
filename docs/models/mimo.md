@@ -57,7 +57,8 @@ Simplest no-proxy approach — but thinking is always off, so you never see mode
 
 1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) below.
 2. **Set your `MIMO_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Restart VS Code** and pick "MiMo V2.5 Pro" or "MiMo V2.5".
+3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+4. **Restart VS Code** and pick "MiMo V2.5 Pro" or "MiMo V2.5".
 
 ### Alternative: With optional proxy (dynamic thinking)
 
