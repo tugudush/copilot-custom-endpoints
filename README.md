@@ -121,17 +121,20 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
+| **GPT-5.6 Luna**         | OpenAI    | **~$0.021**           | **51.2**           | ~$1.10       | ✅     | 1M             |
 | **GLM 5.2**              | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
+| **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | ~$2.75       | ✅     | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
 | **Claude Sonnet 5** ⁵    | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
 | **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
+| **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | ~$5.50       | ✅     | 1M             |
 | **GPT-5.5**              | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
 | **Raptor mini**          | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
 | **MAI-Code-1-Flash** ²   | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
@@ -147,6 +150,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 ⁴ **MiniMax M3 Priority** is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body — **not a separate model**. Costs **1.5× Standard** (effective post-50%-off rates: $0.45 / $1.80 / $0.09 per 1M for input/output/cached ≤512K) in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours). Capabilities, context window, vision, tools, rate limits, and thinking modes are identical to Standard. See [docs/research/minimax-m3-priority.md](docs/research/minimax-m3-priority.md).
 
 ⁵ **Claude Sonnet 5** has introductory pricing of **$2.00 / $10.00** per MTok (input/output) through **August 31, 2026**. Standard pricing of $3.00 / $15.00 shown above takes effect September 1, 2026. Released June 30, 2026 — Arena rankings pending. AA Intelligence Index score of **53.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5).
+
+⁶ **GPT-5.6** launched July 9, 2026. Sol, Terra, and Luna cost $5/$30, $2.50/$15, and $1/$6 per 1M input/output tokens respectively; all support image input and 1M context. Benchmark details and cache-write pricing are maintained in [docs/pricing.md](docs/pricing.md).
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
