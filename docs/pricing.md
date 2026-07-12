@@ -1,5 +1,7 @@
 # Pricing
 
+> **Updated:** July 12, 2026 — GPT-5.6 Sol, Terra, and Luna pricing and benchmark scores added from OpenAI's July 9 release announcement and Artificial Analysis model pages.
+
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
 > Before this change, Copilot used **premium request-based billing** — each model had its own multiplier (e.g., GPT-5.5 = 7.5×, Claude Sonnet 4.6 = 1×, Haiku 4.5 = 0.33×), and every request consumed `multiplier × 1` from your monthly premium-request allowance. Now **every interaction burns AI credits** based on actual token consumption. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
@@ -33,6 +35,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
+| **GPT-5.6 Luna**         | OpenAI    | **~$0.021**           | **51.2**           | $1.00                         | $0.10                         | $6.00                         | ~$1.10       | 1M             |
 | **GLM 5.2** ⁴            | Z.ai      | **~$0.022**           | **51.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
@@ -40,11 +43,13 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
 | **GPT-5.3-Codex**        | OpenAI    | **~$0.052**           | **44.0** ³         | $1.75                         | $0.175                        | $14.00                        | ~$2.28       | 400K           |
+| **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
 | **Claude Sonnet 5** ⁶    | Anthropic | **~$0.057**           | **53.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
+| **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
 | **GPT-5.5**              | OpenAI    | **~$0.10**            | **54.8**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
 | **Raptor mini**          | GitHub    | —                     | —                  | $0.25                         | $0.025                        | $2.00                         | ~$0.33       | 264K           |
 | **MAI-Code-1-Flash** ²   | Microsoft | —                     | —                  | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | —              |
@@ -61,6 +66,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 ⁵ **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads (list prices shown above; effective rates after the standing 50% off are $0.45/$1.80/$0.09 ≤512K and $0.90/$3.60/$0.18 >512K), in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. To enable it on the custom-endpoint entry, add `"service_tier": "priority"` to the `requestBody` of the single `MiniMax-M3` block (and remove it to go back to Standard). See [docs/models/minimax.md](models/minimax.md#4-m3-priority-tier-optional) and [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
 
 ⁶ **Claude Sonnet 5** has introductory pricing of **$2.00 / $0.20 / $10.00** (input / cached / output) through **August 31, 2026**, after which the standard pricing of $3.00 / $0.30 / $15.00 shown above takes effect. See [Anthropic's pricing page](https://claude.com/pricing) for the latest.
+
+⁷ **GPT-5.6** pricing is **$1.00 / $0.10 / $6.00** for Luna, **$2.50 / $0.25 / $15.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Artificial Analysis model pages](https://artificialanalysis.ai/models/gpt-5-6-sol).
 
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
@@ -84,11 +91,12 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: July 2, 2026. Always check the official pages for the latest rates:
+> Prices last verified: July 12, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
+> - [OpenAI GPT-5.6 announcement](https://openai.com/index/gpt-5-6/)
 > - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
