@@ -9,7 +9,7 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | #   | Model                 | Provider  | Source          | AA Intelligence Index | Text Arena | Agent Arena | Code Arena | Arena Overall |
 | --- | --------------------- | --------- | --------------- | --------------------- | ---------- | ----------- | ---------- | ------------- |
 | 1   | **Claude Fable 5**    | Anthropic | N/A             | **59.9**              | #1         | #1          | #1         | #1            |
-| 2   | **GPT-5.6 Sol**       | OpenAI    | Copilot native  | **58.9**              | #8 (xhigh) | —           | #2 (xhigh)  | #8 (xhigh)   |
+| 2   | **GPT-5.6 Sol**       | OpenAI    | Copilot native  | **58.9**              | #8 (xhigh) | —           | #2 (xhigh) | #8 (xhigh)    |
 | 3   | **Claude Opus 4.8**   | Anthropic | Copilot native  | **55.7**              | #12 (#9)   | #11 (#2)    | #7 (#4)    | #12 (#9)      |
 | 4   | **GPT-5.6 Terra**     | OpenAI    | Copilot native  | **55.0**              | —          | —           | —          | —             |
 | 5   | **GPT-5.5**           | OpenAI    | Copilot native  | **54.8** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
