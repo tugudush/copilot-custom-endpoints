@@ -4,6 +4,7 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
+- **Kimi K3** (Moonshot) — newly validated (July 17, 2026). Requires the local proxy shim `proxy/kimi-proxy.mjs`. K3 is always-thinking and uses `reasoning_effort` (not `thinking`); the proxy detects K3, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. 2.8T params, 1M context, AA Intelligence Index **57.0** (#3 overall).
 - **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
@@ -96,9 +97,10 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 
 ## Provider-specific constraints
 
-### Kimi K2
+### Kimi K2 / K3
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
+- **K3** (July 2026) is always-thinking and uses `reasoning_effort` (currently only `max`) — NOT the K2.x `thinking` parameter. The proxy detects `kimi-k3` slugs and skips the thinking-disable rewrite, **deletes any stray `thinking` block**, and keeps temperature/top_p enforcement. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072. Fixed sampling: `temperature=1`, `top_p=0.95`. 1M context, 2.8T params (open-source weights by July 27, 2026). AA Intelligence Index **57.0**.
 - **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.

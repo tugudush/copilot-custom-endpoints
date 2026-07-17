@@ -41,6 +41,20 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "kimi-k3",
+        "name": "Kimi K3 (vision)",
+        "url": "http://127.0.0.1:3457/v1/chat/completions",
+        "requestBody": {
+          "temperature": 1,
+          "max_tokens": 8192
+        },
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1000000,
+        "maxOutputTokens": 131072
+      },
+      {
         "id": "kimi-k2.6",
         "name": "Kimi K2.6 (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
@@ -189,7 +203,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 If you only need one provider, jump straight to its setup guide:
 
-- [Kimi K2.6 / K2.7 Code](kimi.md)
+- [Kimi K3 / K2.6 / K2.7 Code](kimi.md)
 - [Qwen 3.7 Plus / 3.7 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro)](mimo.md)
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)

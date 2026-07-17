@@ -12,10 +12,15 @@ import { createProxy } from '../lib/create-proxy.mjs'
  *   always-thinking and rejects `thinking: { type: 'disabled' }`. The proxy
  *   detects K2.7 and skips the thinking-disable rewrite while keeping
  *   temperature/top_p enforcement.
+ * - Validated in this repo with `kimi-k3` (July 17, 2026). K3 is always-thinking
+ *   and uses `reasoning_effort` (NOT the K2.x `thinking` parameter). The proxy
+ *   detects K3 and skips the thinking-disable rewrite while keeping
+ *   temperature/top_p enforcement. It does NOT inject a `thinking` block —
+ *   K3 rejects it.
  * - Not intended for `moonshot-v1` models or non-Kimi providers, because this
- *   proxy rewrites requests to K2-family-specific values:
+ *   proxy rewrites requests to K2/K3-family-specific values:
  *   - thinking mode temperature = 1.0
- *   - non-thinking mode temperature = 0.6
+ *   - non-thinking mode temperature = 0.6 (K2.5/K2.6 only)
  *   - top_p = 0.95
  *   - tool-enabled requests force `thinking: { type: 'disabled' }` (K2.5/K2.6 only)
  */
@@ -108,12 +113,16 @@ function rewriteKimi(payload) {
   const incomingTemperature = payload.temperature
   const incomingTopP = payload.top_p
   const incomingThinkingType = payload?.thinking?.type
+  const incomingReasoningEffort = payload?.reasoning_effort
   const model = payload.model ?? ''
 
-  // K2.7 is always-thinking and rejects thinking: disabled.
-  // Detect K2.7 variants (e.g. kimi-k2.7-code) and skip the thinking-disable
-  // rewrite while keeping temperature/top_p enforcement.
+  // K2.7 and K3 are always-thinking and reject thinking: disabled.
+  // K2.7 uses `thinking` parameter; K3 uses `reasoning_effort` instead.
+  // Detect K2.7 variants (e.g. kimi-k2.7-code) and K3 variants (e.g. kimi-k3)
+  // and skip the thinking-disable rewrite while keeping temperature/top_p enforcement.
   const isK27 = model.startsWith('kimi-k2.7')
+  const isK3 = model.startsWith('kimi-k3')
+  const isAlwaysThinking = isK27 || isK3
 
   // Determine if a tool is actually being invoked:
   // - tool_choice is set and not "none"
@@ -126,13 +135,15 @@ function rewriteKimi(payload) {
     (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
   const hasTools = hasActiveToolCall
 
-  const useNonThinkingMode = !isK27 && disableThinkingWithTools && hasTools
+  const useNonThinkingMode =
+    !isAlwaysThinking && disableThinkingWithTools && hasTools
   const rewrittenTemperature = useNonThinkingMode
     ? forcedNonThinkingTemperature
     : forcedTemperature
 
   // Capture incoming state before mutation
   payload.__incomingThinkingType = incomingThinkingType
+  payload.__incomingReasoningEffort = incomingReasoningEffort
 
   // Apply rewrites
   payload.temperature = rewrittenTemperature
@@ -142,26 +153,35 @@ function rewriteKimi(payload) {
     payload.thinking = { type: 'disabled' }
   }
 
+  // K3 does not accept `thinking` — delete it if present so it doesn't cause a 400
+  if (isK3 && payload.thinking) {
+    delete payload.thinking
+  }
+
   const rewrittenThinkingType = payload.thinking?.type
   const rewriteInfo = {
     model,
     isK27,
+    isK3,
     incomingTemperature,
     rewrittenTemperature,
     incomingTopP,
     rewrittenTopP: forcedTopP,
     incomingThinkingType,
-    rewrittenThinkingType
+    rewrittenThinkingType,
+    incomingReasoningEffort
   }
 
   const summary = summarizePayload(payload, hasTools, rewriteInfo)
 
   const modeTag = hasTools ? '[tools]' : '[chat]'
   const k27Tag = isK27 ? '[k2.7]' : ''
-  const consoleMsg = `${k27Tag}${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}`
+  const k3Tag = isK3 ? '[k3]' : ''
+  const consoleMsg = `${k27Tag}${k3Tag}${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}, reasoning_effort ${String(incomingReasoningEffort)}`
 
-  // Clean up internal key before forwarding
+  // Clean up internal keys before forwarding
   delete payload.__incomingThinkingType
+  delete payload.__incomingReasoningEffort
 
   return { summary, consoleMsg }
 }

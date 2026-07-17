@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** July 12, 2026 — GPT-5.6 Sol, Terra, and Luna pricing and benchmark scores added from OpenAI's July 9 release announcement and Artificial Analysis model pages.
+> **Updated:** July 17, 2026 — Kimi K3 added (released July 16, 2026). AA Intelligence Index **57.0**, pricing $3.00 / $15.00 per MTok input/output.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -31,7 +31,6 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **MiMo V2.5 Pro**        | Xiaomi    | **~$0.0072**          | **42.2**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
 | **Qwen 3.7 Plus**        | DashScope | **~$0.0092**          | **39.0**           | $0.40 (≤256K) / $1.20 (>256K) | —                             | $1.60 (≤256K) / $4.80 (>256K) | ~$0.36       | 1M             |
 | **MiniMax M3 Priority**⁵ | MiniMax   | **~$0.0092**          | **44.4**           | $0.90 (≤512K) / $1.80 (>512K) | $0.18 (≤512K) / $0.36 (>512K) | $3.60 (≤512K) / $7.20 (>512K) | ~$0.41       | 1M             |
-| **Gemini 3 Flash**       | Google    | **~$0.020**           | **27.0** ³         | $0.50                         | $0.05                         | $3.00                         | ~$0.55       | 173K           |
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
@@ -42,8 +41,9 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
-| **GPT-5.3-Codex**        | OpenAI    | **~$0.052**           | **44.0** ³         | $1.75                         | $0.175                        | $14.00                        | ~$2.28       | 400K           |
 | **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
+| **GPT-5.3-Codex**        | OpenAI    | **~$0.052**           | **44.0** ³         | $1.75                         | $0.175                        | $14.00                        | ~$2.28       | 400K           |
+| **Kimi K3** ⁷            | Moonshot  | **~$0.053**           | **57.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
 | **Claude Sonnet 5** ⁶    | Anthropic | **~$0.057**           | **53.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
@@ -67,7 +67,9 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁶ **Claude Sonnet 5** has introductory pricing of **$2.00 / $0.20 / $10.00** (input / cached / output) through **August 31, 2026**, after which the standard pricing of $3.00 / $0.30 / $15.00 shown above takes effect. See [Anthropic's pricing page](https://claude.com/pricing) for the latest.
 
-⁷ **GPT-5.6** pricing is **$1.00 / $0.10 / $6.00** for Luna, **$2.50 / $0.25 / $15.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Artificial Analysis model pages](https://artificialanalysis.ai/models/gpt-5-6-sol).
+⁷ **Kimi K3** was released on **July 16, 2026**. 2.8T parameters (open-source, weights by July 27, 2026). 1M context window. Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). Fixed sampling: `temperature=1`, `top_p=0.95`. Pricing is flat (no tiering by context length). See [Kimi K3 pricing](https://platform.kimi.ai/docs/pricing/chat-k3) and the [Artificial Analysis model page](https://artificialanalysis.ai/models/kimi-k3).
+
+⁸ **GPT-5.6** pricing is **$1.00 / $0.10 / $6.00** for Luna, **$2.50 / $0.25 / $15.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Artificial Analysis model pages](https://artificialanalysis.ai/models/gpt-5-6-sol).
 
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
@@ -75,7 +77,6 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 >
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.5 Pro ($0.0036/M, ~120× cheaper) and V2.5 ($0.0028/M, ~50× cheaper). A Xiaomi price cut took effect on 2026-05-27.
-> - **Gemini 3 Flash** is priced at $0.50/MTok input (text/image/video) and $1.00/MTok input for audio.
 > - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+, Sonnet 5, and Fable 5 use a new tokenizer that produces approximately 30% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
@@ -91,7 +92,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: July 12, 2026. Always check the official pages for the latest rates:
+> Prices last verified: July 17, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
