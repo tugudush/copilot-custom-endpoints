@@ -22,6 +22,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 | Model                       | Provider  | Needs proxy?           | Vision           | Setup guide                                                                                                                                      |
 | --------------------------- | --------- | ---------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Kimi K3**                 | Moonshot  | **Yes**                | ✅               | [Manual setup](docs/models/kimi.md)                                                                                                              |
 | **MiMo V2.5**               | Xiaomi    | Optional (recommended) | ✅               | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md)      |
 | **MiMo V2.5 Pro**           | Xiaomi    | Optional (recommended) | ❌               | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md)      |
 | **Kimi K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅               | [Manual setup](docs/models/kimi.md)                                                                                                              |
@@ -117,7 +118,6 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **MiMo V2.5 Pro**        | Xiaomi    | **~$0.0072**          | **42.2**           | ~$0.30       | ❌     | 1M             |
 | **Qwen 3.7 Plus**        | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
 | **MiniMax M3 Priority**⁴ | MiniMax   | **~$0.0092**          | **44.4**           | ~$0.41       | ✅     | 1M             |
-| **Gemini 3 Flash**       | Google    | **~$0.020**           | **27.0** ³         | ~$0.55       | ✅     | 173K           |
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
@@ -129,6 +129,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
 | **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | ~$2.75       | ✅     | 1M             |
+| **Kimi K3** ⁶            | Moonshot  | **~$0.053**           | **57.0**           | ~$3.00       | ✅     | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
 | **Claude Sonnet 5** ⁵    | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
@@ -153,6 +154,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ⁶ **GPT-5.6** launched July 9, 2026. Sol, Terra, and Luna cost $5/$30, $2.50/$15, and $1/$6 per 1M input/output tokens respectively; all support image input and 1M context. Benchmark details and cache-write pricing are maintained in [docs/pricing.md](docs/pricing.md).
 
+⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **57.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
+
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
@@ -164,11 +167,10 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - No local proxy required — works direct
 >   **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >
-> For **plan mode / architecture & design thinking**, **GLM 5.2** is worth the premium:
+> For **plan mode / architecture & design thinking**, **Kimi K3** and **GLM 5.2** are worth the premium:
 >
-> - Highest intelligence score in the table (**51.0**) — best for reasoning-heavy planning
-> - 1M lossless context, ideal for whole-codebase planning and large spec review
-> - ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
+> - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**57.0**, #3 overall). Best for complex reasoning, long-horizon planning, and architecture decisions. 1M context with vision. ~$3.00/session is ~11× MiniMax M3, so **not a daily driver** — reserve it for hard problems.
+> - **GLM 5.2** — scores **51.0**, reasoning-heavy planning at a lower price. 1M lossless context, ideal for whole-codebase planning and large spec review. ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 >
 > Cheaper alternatives for simpler tasks:
 >
