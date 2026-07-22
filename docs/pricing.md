@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** July 17, 2026 — Kimi K3 added (released July 16, 2026). AA Intelligence Index **57.0**, pricing $3.00 / $15.00 per MTok input/output.
+> **Updated:** July 22, 2026 — Gemini 3.6 Flash added (released July 21, 2026). AA Intelligence Index **50.0**, pricing $1.50 / $7.50 per MTok input/output.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -38,6 +38,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **GLM 5.2** ⁴            | Z.ai      | **~$0.022**           | **51.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
+| **Gemini 3.6 Flash** ⁹   | Google    | **~$0.030**           | **50.0**           | $1.50                         | $0.15                         | $7.50                         | ~$1.50       | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
@@ -71,6 +72,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁸ **GPT-5.6** pricing is **$1.00 / $0.10 / $6.00** for Luna, **$2.50 / $0.25 / $15.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Artificial Analysis model pages](https://artificialanalysis.ai/models/gpt-5-6-sol).
 
+⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Pricing is $1.50 input / $0.15 cached / $7.50 output per MTok.
+
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
 > **Notes:**
@@ -92,7 +95,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: July 17, 2026. Always check the official pages for the latest rates:
+> Prices last verified: July 22, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
