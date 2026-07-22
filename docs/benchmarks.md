@@ -1,6 +1,6 @@
 # Benchmark Scores
 
-> **Updated:** July 12, 2026 — scores sourced from official model announcements, the [Arena (Chatbot Arena) leaderboard](https://arena.ai/leaderboard/text), and the [Artificial Analysis Intelligence Index](https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index).
+> **Updated:** July 22, 2026 — Gemini 3.6 Flash added (released July 21, 2026). AA Intelligence Index **50.0**.
 
 A comparison of the **Arena top 10** alongside models available through **GitHub Copilot** (native) and the **custom-endpoint models** this repo supports. Rows are ordered by **AA Intelligence Index** score (highest first). Models without an AA score are listed after scored ones, sorted by Arena rank. Cells with `—` have no verified public score available. Footnotes explain missing or approximate ranks.
 
@@ -20,25 +20,26 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 10  | **GPT-5.6 Luna**      | OpenAI    | Copilot native  | **51.2**              | —          | —           | —          | —             |
 | 11  | **GLM 5.2**           | Z.ai      | Custom endpoint | **51.0**              | #33        | —           | #3 ¹¹      | #33           |
 | 12  | **Gemini 3.5 Flash**  | Google    | Copilot native  | **50.2**              | #13        | #15         | #15        | #13           |
-| 13  | **Claude Sonnet 4.6** | Anthropic | Copilot native  | **47.2**              | #24        | #12         | #11        | #24           |
-| 14  | **Gemini 3.1 Pro**    | Google    | Copilot native  | **46.5**              | #7         | #17         | #27        | #7            |
-| 15  | **Qwen 3.7 Max**      | DashScope | Custom endpoint | **46.0**              | #17        | —           | #10        | #17           |
-| 16  | **MiniMax M3**        | MiniMax   | Custom endpoint | **44.4**              | #49        | #19         | #13        | #42           |
-| 17  | **DeepSeek V4 Pro**   | DeepSeek  | Custom endpoint | **44.3**              | #38 (#36)  | #14         | — ¹⁰       | #36           |
-| 18  | **GPT-5.3-Codex**     | OpenAI    | Copilot native  | **44.0** ²            | #47 ³,⁴    | —           | #37        | #49 ³,⁴       |
-| 19  | **Kimi K2.6**         | Moonshot  | Custom endpoint | **42.8**              | #34        | #16         | #12        | #31           |
-| 20  | **MiMo V2.5 Pro**     | Xiaomi    | Custom endpoint | **42.2**              | #29        | —           | #21        | #28           |
-| 21  | **Kimi K2.7 Code**    | Moonshot  | Custom endpoint | **42.0**              | — ⁷        | —           | #20        | — ⁷           |
-| 22  | **DeepSeek V4 Flash** | DeepSeek  | Custom endpoint | **40.3**              | #67 (#63)  | #18         | —          | #66           |
-| 23  | **GLM 5.1**           | Z.ai      | Custom endpoint | **40.2**              | #15        | #13         | #9         | #15           |
-| 24  | **GPT-5.4 mini**      | OpenAI    | Copilot native  | **40.0**              | #50        | —           | #39        | #48           |
-| 25  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | **40** ²              | #69        | —           | #33        | #68           |
-| 26  | **Qwen 3.6 Plus**     | DashScope | Custom endpoint | **39.6**              | #55        | #20         | #23        | #55           |
-| 27  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
-| 28  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
-| 29  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
-| 30  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
-| 31  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
+| 13  | **Gemini 3.6 Flash**  | Google    | Copilot native  | **50.0**              | — ¹⁵       | — ¹⁵        | — ¹⁵       | — ¹⁵          |
+| 14  | **Claude Sonnet 4.6** | Anthropic | Copilot native  | **47.2**              | #24        | #12         | #11        | #24           |
+| 15  | **Gemini 3.1 Pro**    | Google    | Copilot native  | **46.5**              | #7         | #17         | #27        | #7            |
+| 16  | **Qwen 3.7 Max**      | DashScope | Custom endpoint | **46.0**              | #17        | —           | #10        | #17           |
+| 17  | **MiniMax M3**        | MiniMax   | Custom endpoint | **44.4**              | #49        | #19         | #13        | #42           |
+| 18  | **DeepSeek V4 Pro**   | DeepSeek  | Custom endpoint | **44.3**              | #38 (#36)  | #14         | — ¹⁰       | #36           |
+| 19  | **GPT-5.3-Codex**     | OpenAI    | Copilot native  | **44.0** ²            | #47 ³,⁴    | —           | #37        | #49 ³,⁴       |
+| 20  | **Kimi K2.6**         | Moonshot  | Custom endpoint | **42.8**              | #34        | #16         | #12        | #31           |
+| 21  | **MiMo V2.5 Pro**     | Xiaomi    | Custom endpoint | **42.2**              | #29        | —           | #21        | #28           |
+| 22  | **Kimi K2.7 Code**    | Moonshot  | Custom endpoint | **42.0**              | — ⁷        | —           | #20        | — ⁷           |
+| 23  | **DeepSeek V4 Flash** | DeepSeek  | Custom endpoint | **40.3**              | #67 (#63)  | #18         | —          | #66           |
+| 24  | **GLM 5.1**           | Z.ai      | Custom endpoint | **40.2**              | #15        | #13         | #9         | #15           |
+| 25  | **GPT-5.4 mini**      | OpenAI    | Copilot native  | **40.0**              | #50        | —           | #39        | #48           |
+| 26  | **MiMo V2.5**         | Xiaomi    | Custom endpoint | **40** ²              | #69        | —           | #33        | #68           |
+| 27  | **Qwen 3.6 Plus**     | DashScope | Custom endpoint | **39.6**              | #55        | #20         | #23        | #55           |
+| 28  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
+| 29  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
+| 30  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
+| 31  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
+| 32  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
 
 ¹ GPT-5.5 (54.8) and GPT-5.4 (51.4) AA scores are from the **xhigh** preset; their high presets score lower.
 
@@ -67,6 +68,8 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 ¹³ **GPT-5.6** was released on **July 9, 2026**. Artificial Analysis reports Intelligence Index scores of **58.9** for Sol, **55.0** for Terra, and **51.2** for Luna; all support text + image input and a 1M-token context window. Arena's July 10 snapshot lists `gpt-5.6-sol-xhigh` at **#8 in Text Arena** and `gpt-5.6-sol-xhigh (codex-harness)` at **#2 in Code/WebDev Arena**; the exact `max` variants and Terra/Luna are not listed. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Sol](https://artificialanalysis.ai/models/gpt-5-6-sol), [Terra](https://artificialanalysis.ai/models/gpt-5-6-terra), and [Luna](https://artificialanalysis.ai/models/gpt-5-6-luna) model pages.
 
 ¹⁴ **Kimi K3** was released on **July 16, 2026**. AA Intelligence Index score (**57.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Too new for Arena rankings. 2.8T parameters (open-source, weights by July 27, 2026). 1M context window, text + image + video input, always-thinking reasoning model. Uses `reasoning_effort` (not the K2.x `thinking` parameter). See [Kimi K3 quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) and the [technical blog](https://www.kimi.com/blog/kimi-k3).
+
+¹⁵ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Too new for Arena rankings. 1M context window, text + image + video input, reasoning model. Priced at $1.50 / $7.50 per MTok input/output.
 
 ## Column key: what each benchmark measures
 

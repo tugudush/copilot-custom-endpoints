@@ -125,6 +125,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **GLM 5.2**              | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
+| **Gemini 3.6 Flash** ⁸   | Google    | **~$0.030**           | **50.0**           | ~$1.50       | ✅     | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
@@ -156,6 +157,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **57.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
 
+⁸ **Gemini 3.6 Flash** launched July 21, 2026. Priced at $1.50 / $7.50 per MTok input/output ($0.15 cached). AA Intelligence Index score of **50.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
+
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
@@ -167,9 +170,10 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 > - No local proxy required — works direct
 >   **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
 >
-> For **plan mode / architecture & design thinking**, **Kimi K3** and **GLM 5.2** are worth the premium:
+> For **plan mode / architecture & design thinking**, **Kimi K3**, **GPT-5.6 Luna**, and **GLM 5.2** are worth the premium:
 >
 > - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**57.0**, #3 overall). Best for complex reasoning, long-horizon planning, and architecture decisions. 1M context with vision. ~$3.00/session is ~11× MiniMax M3, so **not a daily driver** — reserve it for hard problems.
+> - **GPT-5.6 Luna** (Copilot native) — scores **51.2** at ~$1.10/session ($1/$6 per 1M tokens), making it the cheapest model with a 50+ intelligence score. Ideal if you have native Copilot access and want 50+ intelligence on a budget.
 > - **GLM 5.2** — scores **51.0**, reasoning-heavy planning at a lower price. 1M lossless context, ideal for whole-codebase planning and large spec review. ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 >
 > Cheaper alternatives for simpler tasks:
