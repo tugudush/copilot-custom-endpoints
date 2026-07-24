@@ -8,6 +8,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
+- **Qwen 3.8 Max (Preview)** (DashScope / Token Plan) — 🚧 **Watching, not yet validated.** Announced July 19, 2026. 2.4T params, `qwen3.8-max-preview` model ID. Currently **Token Plan ONLY** (subscription) — not available via standard DashScope pay-as-you-go. Preview status with daily updates; stable release + open weights promised "soon." No AA Intelligence Index score or per-token pricing yet. See [docs/models/qwen.md](docs/models/qwen.md#qwen-38-preview---watching).
 - **DeepSeek V4 Pro / V4 Flash** — uses the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed.
 - **Xiaomi MiMo V2.5 / V2.5 Pro** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points both models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
@@ -111,6 +112,7 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 - The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
 - When using the proxy, keep `enable_thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `false` on tool turns.
 - `qwen3.7-plus` supports vision; `qwen3.7-max` does not.
+- **Qwen 3.8 (`qwen3.8-max-preview`)** is 🚧 watching only — Token Plan subscription required (not standard DashScope PAYG), preview status, no AA score yet. Do not add to `chatLanguageModels.json` until these blockers clear. See [docs/models/qwen.md](docs/models/qwen.md#qwen-38-preview---watching).
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 
 ### Xiaomi MiMo

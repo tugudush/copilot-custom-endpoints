@@ -210,6 +210,53 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 | 401 Unauthorized                                | API key region mismatch                      | Match your key to the regional endpoint                                                                      |
 | Want to switch back to direct                   | Proxy mode active                            | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
 
+## Qwen 3.8 (Preview — 🚧 Watching)
+
+> **Last checked:** July 24, 2026. Qwen 3.8 is **not yet validated** for VS Code custom endpoints. This section tracks what we know; do not add it to `chatLanguageModels.json` until the blockers below are resolved.
+
+### What we know
+
+| Field                 | Value                                                                          |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Model ID              | `qwen3.8-max-preview`                                                          |
+| Status                | **Preview** — updated daily; stable release + open weights promised "soon"     |
+| Parameters            | **2.4T**                                                                       |
+| Billing               | **Token Plan ONLY** — not available via standard DashScope pay-as-you-go       |
+| Vision                | Likely ❌ (text-only — follows the Qwen "max" = text, "plus" = vision pattern) |
+| Tool calling          | ✅ (assumed — all Qwen3 flagship models support it)                            |
+| Thinking              | ✅ (assumed — `enable_thinking` parameter, same as Qwen 3.7)                   |
+| Context               | Unknown (~1M likely, unconfirmed)                                              |
+| Max output            | Unknown                                                                        |
+| AA Intelligence Index | Not yet scored                                                                 |
+| API endpoint          | Token Plan gateway (not the standard `dashscope-intl.aliyuncs.com` endpoint)   |
+
+### Blockers to full integration
+
+1. **Token Plan restriction** — `qwen3.8-max-preview` is exclusively available via Alibaba Cloud's Token Plan subscription (Lite ~$6/mo, Standard ~$18/mo, Pro ~$60/mo). It cannot be reached via the standard DashScope pay-as-you-go API that the existing Qwen 3.7 configs use. The Token Plan uses a different API gateway, and it's unconfirmed whether the existing `proxy/qwen-proxy.mjs` works with it.
+
+2. **Preview instability** — The model is being "updated daily" during preview. Behavior, API surface, and model ID may change before the stable release.
+
+3. **No independent benchmarks** — Artificial Analysis has not yet published an Intelligence Index score for Qwen 3.8. Without it, the cost-per-intelligence comparison in [docs/pricing.md](../pricing.md) cannot include it.
+
+4. **Missing pricing data** — Alibaba Cloud has not published per-token rates for Qwen 3.8. The model detail page in the console shows a loading spinner where pricing would be.
+
+5. **No vision variant** — Only `qwen3.8-max-preview` exists. A `qwen3.8-plus` (with vision) would be the more relevant variant for VS Code Copilot.
+
+### What to watch for
+
+- The model exiting preview and becoming available on **standard DashScope pay-as-you-go** billing
+- Announcement of `qwen3.8-plus` (vision) or `qwen3.8-flash` (cheaper) variants
+- Artificial Analysis publishing an **AA Intelligence Index** score
+- Confirmation of **context window size** and **max output tokens**
+- The **open-weight release** promised by the Qwen team — this may coincide with the stable launch
+- Whether the existing `proxy/qwen-proxy.mjs` works with the Token Plan API gateway (or if a separate proxy is needed)
+
+### Sources
+
+- Alibaba Cloud Model Studio [models page](https://www.alibabacloud.com/help/en/model-studio/models) — lists `qwen3.8-max-preview` as "Token Plan only"
+- [Qwen official X/Twitter](https://x.com/Alibaba_Qwen/status/2078759124914098291) — announcement thread (July 19, 2026)
+- [Qwen Cloud Token Plan](https://www.qwencloud.com/pricing/token-plan) — subscription pricing
+
 ## Pricing
 
 For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashScope (international) rates for **non-thinking** mode:
