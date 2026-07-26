@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** July 22, 2026 — Gemini 3.6 Flash added (released July 21, 2026). AA Intelligence Index **50.0**, pricing $1.50 / $7.50 per MTok input/output.
+> **Updated:** July 26, 2026 — Claude Opus 5 added (released July 24, 2026). AA Intelligence Index **61.0** (#1 overall), pricing $5.00 / $25.00 per MTok input/output.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -48,6 +48,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
 | **Claude Sonnet 5** ⁶    | Anthropic | **~$0.057**           | **53.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
+| **Claude Opus 5** ¹⁰     | Anthropic | **~$0.082**           | **61.0**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
@@ -74,13 +75,15 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Pricing is $1.50 input / $0.15 cached / $7.50 output per MTok.
 
+¹⁰ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**61.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Pricing is $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). 1M context window, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output) and Batch ($2.50/$12.50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
+
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
 > **Notes:**
 >
 > - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.5 Pro ($0.0036/M, ~120× cheaper) and V2.5 ($0.0028/M, ~50× cheaper). A Xiaomi price cut took effect on 2026-05-27.
-> - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+, Sonnet 5, and Fable 5 use a new tokenizer that produces approximately 30% more tokens for the same text.
+> - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+, Opus 5, Sonnet 5, and Fable 5 use a new tokenizer that produces approximately 30% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi** official tables list **Cache Hit before Cache Miss** (opposite order to our table). The rows below transpose them so "Input" = cache miss and "Cached input" = cache hit.
@@ -95,7 +98,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: July 22, 2026. Always check the official pages for the latest rates:
+> Prices last verified: July 26, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
