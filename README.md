@@ -131,6 +131,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
 | **Claude Sonnet 5** ⁵    | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
 | **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
+| **Claude Opus 5** ⁹      | Anthropic | **~$0.082**           | **61.0**           | ~$5.00       | ✅     | 1M             |
 | **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
 | **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | ~$5.50       | ✅     | 1M             |
@@ -155,6 +156,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 ⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **57.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
 
 ⁸ **Gemini 3.6 Flash** launched July 21, 2026. Priced at $1.50 / $7.50 per MTok input/output ($0.15 cached). AA Intelligence Index score of **50.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
+
+⁹ **Claude Opus 5** launched July 24, 2026. AA Intelligence Index score of **61.0** (#1 overall) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Priced at $5.00 / $25.00 per MTok input/output (same as Opus 4.8). 1M context, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
