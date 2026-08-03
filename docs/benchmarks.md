@@ -27,7 +27,6 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 17  | **Qwen 3.7 Max**      | DashScope | Custom endpoint | **46.0**              | #17        | —           | #10        | #17           |
 | 18  | **MiniMax M3**        | MiniMax   | Custom endpoint | **44.4**              | #49        | #19         | #13        | #42           |
 | 19  | **DeepSeek V4 Pro**   | DeepSeek  | Custom endpoint | **44.3**              | #38 (#36)  | #14         | — ¹⁰       | #36           |
-| 20  | **GPT-5.3-Codex**     | OpenAI    | Copilot native  | **44.0** ²            | #47 ³,⁴    | —           | #37        | #49 ³,⁴       |
 | 21  | **Kimi K2.6**         | Moonshot  | Custom endpoint | **42.8**              | #34        | #16         | #12        | #31           |
 | 22  | **MiMo V2.5 Pro**     | Xiaomi    | Custom endpoint | **42.2**              | #29        | —           | #21        | #28           |
 | 23  | **Kimi K2.7 Code**    | Moonshot  | Custom endpoint | **42.0**              | — ⁷        | —           | #20        | — ⁷           |
@@ -38,9 +37,6 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 28  | **Qwen 3.6 Plus**     | DashScope | Custom endpoint | **39.6**              | #55        | #20         | #23        | #55           |
 | 29  | **Qwen 3.7 Plus**     | DashScope | Custom endpoint | **39.0**              | —          | —           | —          | —             |
 | 30  | **GLM 5V Turbo**      | Z.ai      | Custom endpoint | **34.0** ²            | — ⁸        | —           | —          | — ⁸           |
-| 31  | **Claude Haiku 4.5**  | Anthropic | Copilot native  | —                     | #106       | —           | #68        | #105          |
-| 32  | **Raptor mini**       | GitHub    | Copilot native  | —                     | — ⁵        | —           | —          | — ⁵           |
-| 33  | **MAI-Code-1-Flash**  | Microsoft | Copilot native  | —                     | — ⁶        | —           | —          | — ⁶           |
 
 ¹ GPT-5.5 (54.8) and GPT-5.4 (51.4) AA scores are from the **xhigh** preset; their high presets score lower.
 
@@ -48,31 +44,25 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 
 ³ Parenthesized ranks indicate the **thinking** variant (Claude) or **-high** preset (GPT-5.5, GPT-5.4) of the same underlying model within each arena. Arena treats these as separate entries because extended reasoning changes response quality in blind votes.
 
-⁴ Arena text leaderboard lists `gpt-5.3-chat-latest` at #47; the exact `GPT-5.3-Codex` model name may differ.
+⁴ `kimi-k2.7-code` is not listed on the Arena text leaderboard but ranks **#20 on the Code WebDev arena** (1478 Elo). Kimi K2.6 (#34) is the closest match on the text leaderboard.
 
-⁵ Raptor mini does not appear on any Arena leaderboard under that name.
+⁵ `glm-5v-turbo` is a multimodal variant; the Arena text leaderboard only lists `glm-5.1` (#15) in the GLM 5-series.
 
-⁶ `mai-1-preview` appears on the Arena text leaderboard but has insufficient votes for a rank.
+⁶ GPT-5.4 (base) is not listed on the Agent Arena; the high preset (GPT-5.4 High) ranks #9.
 
-⁷ `kimi-k2.7-code` is not listed on the Arena text leaderboard but ranks **#20 on the Code WebDev arena** (1478 Elo). Kimi K2.6 (#34) is the closest match on the text leaderboard.
+⁷ DeepSeek V4 Pro (base) is not listed on the Code Arena; the thinking variant (DeepSeek V4 Pro Thinking) ranks #24.
 
-⁸ `glm-5v-turbo` is a multimodal variant; the Arena text leaderboard only lists `glm-5.1` (#15) in the GLM 5-series.
+⁸ `glm-5.2` ranks **#25 on the Text/Overall arenas**, **#11 on General Coding**, and **#3 on the Code WebDev / Front-end specific Arena** (as shown in [arena.ai/leaderboard](https://arena.ai/leaderboard/)).
 
-⁹ GPT-5.4 (base) is not listed on the Agent Arena; the high preset (GPT-5.4 High) ranks #9.
+⁹ **Claude Sonnet 5** was released on **June 30, 2026** — too recent for Arena rankings (insufficient votes). AA Intelligence Index score (**53.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5). Anthropic's official pricing confirms $3.00 / $15.00 per MTok input/output (standard, from Sep 1, 2026) with introductory pricing of $2.00 / $10.00 through August 31, 2026. Supports text + image input, 1M context window, and adaptive reasoning. Uses a newer tokenizer (~30% more tokens than Sonnet 4.6 and earlier).
 
-¹⁰ DeepSeek V4 Pro (base) is not listed on the Code Arena; the thinking variant (DeepSeek V4 Pro Thinking) ranks #24.
+¹⁰ **GPT-5.6** was released on **July 9, 2026**. Artificial Analysis reports Intelligence Index scores of **58.9** for Sol, **55.0** for Terra, and **51.2** for Luna; all support text + image input and a 1M-token context window. Arena's July 10 snapshot lists `gpt-5.6-sol-xhigh` at **#8 in Text Arena** and `gpt-5.6-sol-xhigh (codex-harness)` at **#2 in Code/WebDev Arena**; the exact `max` variants and Terra/Luna are not listed. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Sol](https://artificialanalysis.ai/models/gpt-5-6-sol), [Terra](https://artificialanalysis.ai/models/gpt-5-6-terra), and [Luna](https://artificialanalysis.ai/models/gpt-5-6-luna) model pages.
 
-¹¹ `glm-5.2` ranks **#25 on the Text/Overall arenas**, **#11 on General Coding**, and **#3 on the Code WebDev / Front-end specific Arena** (as shown in [arena.ai/leaderboard](https://arena.ai/leaderboard/)).
+¹¹ **Kimi K3** was released on **July 16, 2026**. AA Intelligence Index score (**57.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Too new for Arena rankings. 2.8T parameters (open-source, weights by July 27, 2026). 1M context window, text + image + video input, always-thinking reasoning model. Uses `reasoning_effort` (not the K2.x `thinking` parameter). See [Kimi K3 quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) and the [technical blog](https://www.kimi.com/blog/kimi-k3).
 
-¹² **Claude Sonnet 5** was released on **June 30, 2026** — too recent for Arena rankings (insufficient votes). AA Intelligence Index score (**53.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5). Anthropic's official pricing confirms $3.00 / $15.00 per MTok input/output (standard, from Sep 1, 2026) with introductory pricing of $2.00 / $10.00 through August 31, 2026. Supports text + image input, 1M context window, and adaptive reasoning. Uses a newer tokenizer (~30% more tokens than Sonnet 4.6 and earlier).
+¹² **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Too new for Arena rankings. 1M context window, text + image + video input, reasoning model. Priced at $1.50 / $7.50 per MTok input/output.
 
-¹³ **GPT-5.6** was released on **July 9, 2026**. Artificial Analysis reports Intelligence Index scores of **58.9** for Sol, **55.0** for Terra, and **51.2** for Luna; all support text + image input and a 1M-token context window. Arena's July 10 snapshot lists `gpt-5.6-sol-xhigh` at **#8 in Text Arena** and `gpt-5.6-sol-xhigh (codex-harness)` at **#2 in Code/WebDev Arena**; the exact `max` variants and Terra/Luna are not listed. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Sol](https://artificialanalysis.ai/models/gpt-5-6-sol), [Terra](https://artificialanalysis.ai/models/gpt-5-6-terra), and [Luna](https://artificialanalysis.ai/models/gpt-5-6-luna) model pages.
-
-¹⁴ **Kimi K3** was released on **July 16, 2026**. AA Intelligence Index score (**57.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Too new for Arena rankings. 2.8T parameters (open-source, weights by July 27, 2026). 1M context window, text + image + video input, always-thinking reasoning model. Uses `reasoning_effort` (not the K2.x `thinking` parameter). See [Kimi K3 quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-quickstart) and the [technical blog](https://www.kimi.com/blog/kimi-k3).
-
-¹⁵ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Too new for Arena rankings. 1M context window, text + image + video input, reasoning model. Priced at $1.50 / $7.50 per MTok input/output.
-
-¹⁶ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**61.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Too new for Arena rankings (2 days old). 1M context window, text + image input, adaptive reasoning model. Priced at $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Also available in Fast mode ($10/$50 per MTok input/output). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5) and the [AA model page](https://artificialanalysis.ai/models/claude-opus-5).
+¹³ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**61.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Too new for Arena rankings (2 days old). 1M context window, text + image input, adaptive reasoning model. Priced at $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Also available in Fast mode ($10/$50 per MTok input/output). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5) and the [AA model page](https://artificialanalysis.ai/models/claude-opus-5).
 
 ## Column key: what each benchmark measures
 

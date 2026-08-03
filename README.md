@@ -110,6 +110,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | ------------------------ | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
 | **DeepSeek V4 Flash**    | DeepSeek  | **~$0.0025**          | **40.3**           | ~$0.10       | ✅     | 1M             |
 | **MiMo V2.5**            | Xiaomi    | **~$0.0025**          | **40** ³           | ~$0.10       | ✅     | 1M             |
+| **GPT-5.6 Luna**         | OpenAI    | **~$0.0043**          | **51.2**           | ~$0.22       | ✅     | 1M             |
 | **MiniMax M3**           | MiniMax   | **~$0.0061**          | **44.4**           | ~$0.27       | ✅     | 1M             |
 | **DeepSeek V4 Pro**      | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
 | **MiMo V2.5 Pro**        | Xiaomi    | **~$0.0072**          | **42.2**           | ~$0.30       | ❌     | 1M             |
@@ -118,15 +119,14 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
-| **GPT-5.6 Luna**         | OpenAI    | **~$0.021**           | **51.2**           | ~$1.10       | ✅     | 1M             |
 | **GLM 5.2**              | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.6 Flash** ⁸   | Google    | **~$0.030**           | **50.0**           | ~$1.50       | ✅     | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
+| **GPT-5.6 Terra**        | OpenAI    | **~$0.040**           | **55.0**           | ~$2.20       | ✅     | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
-| **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | ~$2.75       | ✅     | 1M             |
 | **Kimi K3** ⁶            | Moonshot  | **~$0.053**           | **57.0**           | ~$3.00       | ✅     | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
 | **Claude Sonnet 5** ⁵    | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
@@ -136,14 +136,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
 | **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | ~$5.50       | ✅     | 1M             |
 | **GPT-5.5**              | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
-| **Raptor mini**          | GitHub    | —                     | —                  | ~$0.33       | ❌     | 264K           |
-| **MAI-Code-1-Flash** ²   | Microsoft | —                     | —                  | ~$0.83       | ❌     | —              |
-| **Claude Haiku 4.5**     | Anthropic | —                     | —                  | ~$1.00       | ❌     | 160K           |
-| **GPT-5.3-Codex**        | OpenAI    | —                     | —                  | ~$2.28       | ❌     | 400K           |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
-
-² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 
 ³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite.
 
@@ -151,7 +145,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ⁵ **Claude Sonnet 5** has introductory pricing of **$2.00 / $10.00** per MTok (input/output) through **August 31, 2026**. Standard pricing of $3.00 / $15.00 shown above takes effect September 1, 2026. Released June 30, 2026 — Arena rankings pending. AA Intelligence Index score of **53.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5).
 
-⁶ **GPT-5.6** launched July 9, 2026. Sol, Terra, and Luna cost $5/$30, $2.50/$15, and $1/$6 per 1M input/output tokens respectively; all support image input and 1M context. Benchmark details and cache-write pricing are maintained in [docs/pricing.md](docs/pricing.md).
+⁶ **GPT-5.6** launched July 9, 2026. On July 30, OpenAI reduced Luna pricing by 80% to $0.20/$1.20 and Terra pricing by 20% to $2/$12 per 1M input/output tokens; Sol remains $5/$30. All support image input and 1M context. The Batch API offers an additional 50% discount for asynchronous jobs. Benchmark details and cache-write pricing are maintained in [docs/pricing.md](docs/pricing.md).
 
 ⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **57.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
 
@@ -163,17 +157,18 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 
 > **👤 Personal picks** —
 >
-> For serious coding work, **MiniMax M3** is my top recommendation:
+> For serious coding work, **GPT-5.6 Luna** is now my top value recommendation:
 >
-> - Highest intelligence score (44.4) among affordable models
-> - Only ~$0.27/session with vision + 1M context
-> - No local proxy required — works direct
->   **DeepSeek V4 Pro** is a strong backup — nearly identical intelligence (44.3 vs 44.4) and cost (~$0.0068 vs ~$0.0061 per intelligence point), but noticeably faster in practice.
+> - Higher intelligence score (**51.2**) than MiniMax M3 (44.4)
+> - Lower modeled cost: ~$0.22/session versus MiniMax M3's ~$0.27
+> - Available natively in Copilot, with reduced AI-credit consumption after OpenAI's July price cut
+>
+> **MiniMax M3** remains the best direct non-OpenAI custom-endpoint option — no local proxy, vision, 1M context, and strong coding performance at ~$0.27/session.
 >
 > For **plan mode / architecture & design thinking**, **Kimi K3**, **GPT-5.6 Luna**, and **GLM 5.2** are worth the premium:
 >
 > - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**57.0**, #3 overall). Best for complex reasoning, long-horizon planning, and architecture decisions. 1M context with vision. ~$3.00/session is ~11× MiniMax M3, so **not a daily driver** — reserve it for hard problems.
-> - **GPT-5.6 Luna** (Copilot native) — scores **51.2** at ~$1.10/session ($1/$6 per 1M tokens), making it the cheapest model with a 50+ intelligence score. Ideal if you have native Copilot access and want 50+ intelligence on a budget.
+> - **GPT-5.6 Luna** (Copilot native) — scores **51.2** and is now the cheapest 50+ model. OpenAI cut its API price to $0.20/$1.20 per 1M input/output tokens; in Copilot, the equivalent benefit is lower AI-credit consumption, while your subscription price and monthly allowance stay unchanged. Ideal for high-quality planning on a budget.
 > - **GLM 5.2** — scores **51.0**, reasoning-heavy planning at a lower price. 1M lossless context, ideal for whole-codebase planning and large spec review. ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 >
 > Cheaper alternatives for simpler tasks:

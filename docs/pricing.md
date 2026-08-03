@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** July 26, 2026 — Claude Opus 5 added (released July 24, 2026). AA Intelligence Index **61.0** (#1 overall), pricing $5.00 / $25.00 per MTok input/output.
+> **Updated:** August 3, 2026 — GPT-5.6 Luna and Terra price reductions verified against OpenAI's July 30 announcement. Luna is 80% cheaper and Terra is 20% cheaper; Sol pricing is unchanged.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -26,6 +26,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | ------------------------ | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
 | **DeepSeek V4 Flash**    | DeepSeek  | **~$0.0025**          | **40.3**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
 | **MiMo V2.5**            | Xiaomi    | **~$0.0025**          | **40** ³           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
+| **GPT-5.6 Luna**         | OpenAI    | **~$0.0043**          | **51.2**           | $0.20                         | $0.02                         | $1.20                         | ~$0.22       | 1M             |
 | **MiniMax M3**           | MiniMax   | **~$0.0061**          | **44.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |
 | **DeepSeek V4 Pro**      | DeepSeek  | **~$0.0068**          | **44.3**           | $0.435                        | $0.003625                     | $0.87                         | ~$0.30       | 1M             |
 | **MiMo V2.5 Pro**        | Xiaomi    | **~$0.0072**          | **42.2**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
@@ -34,16 +35,14 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
 | **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
-| **GPT-5.6 Luna**         | OpenAI    | **~$0.021**           | **51.2**           | $1.00                         | $0.10                         | $6.00                         | ~$1.10       | 1M             |
 | **GLM 5.2** ⁴            | Z.ai      | **~$0.022**           | **51.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
 | **Gemini 3.6 Flash** ⁹   | Google    | **~$0.030**           | **50.0**           | $1.50                         | $0.15                         | $7.50                         | ~$1.50       | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
+| **GPT-5.6 Terra**        | OpenAI    | **~$0.040**           | **55.0**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
 | **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
-| **GPT-5.6 Terra**        | OpenAI    | **~$0.050**           | **55.0**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
-| **GPT-5.3-Codex**        | OpenAI    | **~$0.052**           | **44.0** ³         | $1.75                         | $0.175                        | $14.00                        | ~$2.28       | 400K           |
 | **Kimi K3** ⁷            | Moonshot  | **~$0.053**           | **57.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
 | **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
 | **Claude Sonnet 5** ⁶    | Anthropic | **~$0.057**           | **53.0**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
@@ -53,13 +52,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
 | **GPT-5.5**              | OpenAI    | **~$0.10**            | **54.8**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
-| **Raptor mini**          | GitHub    | —                     | —                  | $0.25                         | $0.025                        | $2.00                         | ~$0.33       | 264K           |
-| **MAI-Code-1-Flash** ²   | Microsoft | —                     | —                  | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | —              |
-| **Claude Haiku 4.5**     | Anthropic | —                     | —                  | $1.00                         | $0.10                         | $5.00                         | ~$1.00       | 160K           |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
-
-² MAI-Code-1-Flash is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 
 ³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite.
 
@@ -71,7 +65,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁷ **Kimi K3** was released on **July 16, 2026**. 2.8T parameters (open-source, weights by July 27, 2026). 1M context window. Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). Fixed sampling: `temperature=1`, `top_p=0.95`. Pricing is flat (no tiering by context length). See [Kimi K3 pricing](https://platform.kimi.ai/docs/pricing/chat-k3) and the [Artificial Analysis model page](https://artificialanalysis.ai/models/kimi-k3).
 
-⁸ **GPT-5.6** pricing is **$1.00 / $0.10 / $6.00** for Luna, **$2.50 / $0.25 / $15.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Artificial Analysis model pages](https://artificialanalysis.ai/models/gpt-5-6-sol).
+⁸ **GPT-5.6** pricing is **$0.20 / $0.02 / $1.20** for Luna, **$2.00 / $0.20 / $12.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI reduced Luna by 80% and Terra by 20% on July 30, 2026; Sol is unchanged. OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. The Batch API provides an additional 50% discount for asynchronous jobs. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 price update](https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/) and [GPT-5.6 announcement](https://openai.com/index/gpt-5-6/).
 
 ⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Pricing is $1.50 input / $0.15 cached / $7.50 output per MTok.
 
@@ -93,17 +87,16 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads, in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. See [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
 > - **GLM** models support prompt caching — cache hits are priced at $0.24/M for 5V Turbo and $0.26/M for 5.1.
 > - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
-> - **MAI-Code-1-Flash** is a continuously improving model — performance and behavior may evolve over time as new checkpoints are released.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
-> **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions**, **23 Opus sessions**, or **212 Raptor mini sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
+> **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions** or **23 Opus sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: July 26, 2026. Always check the official pages for the latest rates:
+> Prices last verified: August 3, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
-> - [Microsoft MAI-Code-1-Flash model card](https://docs.github.com/en/copilot/reference/ai-models/model-comparison#task-general-purpose-coding-and-writing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
 > - [OpenAI GPT-5.6 announcement](https://openai.com/index/gpt-5-6/)
+> - [OpenAI GPT-5.6 price update](https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/)
 > - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
