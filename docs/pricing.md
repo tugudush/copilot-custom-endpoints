@@ -24,7 +24,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 | Model                    | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
 | ------------------------ | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
-| **DeepSeek V4 Flash**    | DeepSeek  | **~$0.0025**          | **40.3**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
+| **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0020**          | **49.9**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
 | **MiMo V2.5**            | Xiaomi    | **~$0.0025**          | **40** ³           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
 | **GPT-5.6 Luna**         | OpenAI    | **~$0.0043**          | **51.2**           | $0.20                         | $0.02                         | $1.20                         | ~$0.22       | 1M             |
 | **MiniMax M3**           | MiniMax   | **~$0.0061**          | **44.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |

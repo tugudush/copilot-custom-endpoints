@@ -20,18 +20,18 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                          | Provider  | Needs proxy?           | Vision                 | Setup guide                                                                                                                                 |
-| ------------------------------ | --------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3 / K2.7 Code / K2.6** | Moonshot  | **Yes**                | ✅                     | [Manual setup](docs/models/kimi.md)                                                                                                         |
-| **MiMo V2.5**                  | Xiaomi    | Optional (recommended) | ✅                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.5 Pro**              | Xiaomi    | Optional (recommended) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **Qwen 3.7 Plus**              | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.7 Max**               | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.8 Max**               | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **MiniMax M3**                 | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
-| **GLM 5.2 / 5.1**              | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **GLM 5V Turbo**               | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **DeepSeek V4 Pro / Flash**    | DeepSeek  | No (uses an extension) | ✅ via extension proxy | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot)                                            |
+| Model                            | Provider  | Needs proxy?           | Vision                 | Setup guide                                                                                                                                 |
+| -------------------------------- | --------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kimi K3 / K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅                     | [Manual setup](docs/models/kimi.md)                                                                                                         |
+| **MiMo V2.5**                    | Xiaomi    | Optional (recommended) | ✅                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **MiMo V2.5 Pro**                | Xiaomi    | Optional (recommended) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **Qwen 3.7 Plus**                | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **Qwen 3.7 Max**                 | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **Qwen 3.8 Max**                 | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **MiniMax M3**                   | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
+| **GLM 5.2 / 5.1**                | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **GLM 5V Turbo**                 | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **DeepSeek V4 Pro / Flash 0731** | DeepSeek  | No (uses an extension) | ❌ (0731)              | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
 
 ## Setup
 
@@ -107,37 +107,37 @@ npx copilot-custom-endpoint clean    # Remove debug_log/
 
 All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
-| Model                    | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
-| ------------------------ | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
-| **DeepSeek V4 Flash**    | DeepSeek  | **~$0.0025**          | **40.3**           | ~$0.10       | ✅     | 1M             |
-| **MiMo V2.5**            | Xiaomi    | **~$0.0025**          | **40** ³           | ~$0.10       | ✅     | 1M             |
-| **GPT-5.6 Luna**         | OpenAI    | **~$0.0043**          | **51.2**           | ~$0.22       | ✅     | 1M             |
-| **MiniMax M3**           | MiniMax   | **~$0.0061**          | **44.4**           | ~$0.27       | ✅     | 1M             |
-| **DeepSeek V4 Pro**      | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
-| **MiMo V2.5 Pro**        | Xiaomi    | **~$0.0072**          | **42.2**           | ~$0.30       | ❌     | 1M             |
-| **Qwen 3.7 Plus**        | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
-| **MiniMax M3 Priority**⁴ | MiniMax   | **~$0.0092**          | **44.4**           | ~$0.41       | ✅     | 1M             |
-| **Kimi K2.6**            | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
-| **Kimi K2.7 Code**       | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
-| **GPT-5.4 mini**         | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
-| **GLM 5.2**              | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
-| **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
-| **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
-| **Gemini 3.6 Flash** ⁸   | Google    | **~$0.030**           | **50.0**           | ~$1.50       | ✅     | 1M             |
-| **Qwen 3.8 Max** ¹⁰      | DashScope | **~$0.030**           | **53.4**           | ~$1.60       | ✅     | 1M             |
-| **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
-| **GPT-5.6 Terra**        | OpenAI    | **~$0.040**           | **55.0**           | ~$2.20       | ✅     | 1M             |
-| **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
-| **Gemini 3.1 Pro**       | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
-| **Kimi K3** ⁶            | Moonshot  | **~$0.053**           | **57.0**           | ~$3.00       | ✅     | 1M             |
-| **GPT-5.4**              | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
-| **Claude Sonnet 5** ⁵    | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
-| **Claude Sonnet 4.6**    | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
-| **Claude Opus 5** ⁹      | Anthropic | **~$0.082**           | **61.0**           | ~$5.00       | ✅     | 1M             |
-| **Claude Opus 4.8**      | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
-| **Claude Opus 4.7**      | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
-| **GPT-5.6 Sol**          | OpenAI    | **~$0.093**           | **58.9**           | ~$5.50       | ✅     | 1M             |
-| **GPT-5.5**              | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
+| Model                      | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
+| -------------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
+| **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0020**          | **49.9**           | ~$0.10       | ❌     | 1M             |
+| **MiMo V2.5**              | Xiaomi    | **~$0.0025**          | **40** ³           | ~$0.10       | ✅     | 1M             |
+| **GPT-5.6 Luna**           | OpenAI    | **~$0.0043**          | **51.2**           | ~$0.22       | ✅     | 1M             |
+| **MiniMax M3**             | MiniMax   | **~$0.0061**          | **44.4**           | ~$0.27       | ✅     | 1M             |
+| **DeepSeek V4 Pro**        | DeepSeek  | **~$0.0068**          | **44.3**           | ~$0.30       | ✅     | 1M             |
+| **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0072**          | **42.2**           | ~$0.30       | ❌     | 1M             |
+| **Qwen 3.7 Plus**          | DashScope | **~$0.0092**          | **39.0**           | ~$0.36       | ✅     | 1M             |
+| **MiniMax M3 Priority**⁴   | MiniMax   | **~$0.0092**          | **44.4**           | ~$0.41       | ✅     | 1M             |
+| **Kimi K2.6**              | Moonshot  | **~$0.021**           | **42.8**           | ~$0.88       | ✅     | 262K           |
+| **Kimi K2.7 Code**         | Moonshot  | **~$0.021**           | **42.0**           | ~$0.88       | ✅     | 262K           |
+| **GPT-5.4 mini**           | OpenAI    | **~$0.021**           | **40.0**           | ~$0.83       | ❌     | 400K           |
+| **GLM 5.2**                | Z.ai      | **~$0.022**           | **51.0**           | ~$1.14       | ❌     | 1M             |
+| **GLM 5.1**                | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
+| **GLM 5V Turbo**           | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
+| **Gemini 3.6 Flash** ⁸     | Google    | **~$0.030**           | **50.0**           | ~$1.50       | ✅     | 1M             |
+| **Qwen 3.8 Max** ¹⁰        | DashScope | **~$0.030**           | **53.4**           | ~$1.60       | ✅     | 1M             |
+| **Gemini 3.5 Flash**       | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
+| **GPT-5.6 Terra**          | OpenAI    | **~$0.040**           | **55.0**           | ~$2.20       | ✅     | 1M             |
+| **Qwen 3.7 Max**           | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
+| **Gemini 3.1 Pro**         | Google    | **~$0.047**           | **46.5**           | ~$2.20       | ✅     | 1M             |
+| **Kimi K3** ⁶              | Moonshot  | **~$0.053**           | **57.0**           | ~$3.00       | ✅     | 1M             |
+| **GPT-5.4**                | OpenAI    | **~$0.054**           | **51.4**           | ~$2.75       | ✅     | 1M             |
+| **Claude Sonnet 5** ⁵      | Anthropic | **~$0.057**           | **53.0**           | ~$3.00       | ✅     | 1M             |
+| **Claude Sonnet 4.6**      | Anthropic | **~$0.064**           | **47.2**           | ~$3.00       | ✅     | 1M             |
+| **Claude Opus 5** ⁹        | Anthropic | **~$0.082**           | **61.0**           | ~$5.00       | ✅     | 1M             |
+| **Claude Opus 4.8**        | Anthropic | **~$0.090**           | **55.7**           | ~$5.00       | ✅     | 1M             |
+| **Claude Opus 4.7**        | Anthropic | **~$0.093**           | **53.5**           | ~$5.00       | ✅     | 1M             |
+| **GPT-5.6 Sol**            | OpenAI    | **~$0.093**           | **58.9**           | ~$5.50       | ✅     | 1M             |
+| **GPT-5.5**                | OpenAI    | **~$0.10**            | **54.8**           | ~$5.50       | ✅     | 1M             |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 
@@ -177,7 +177,7 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 >
 > Cheaper alternatives for simpler tasks:
 >
-> - **DeepSeek V4 Flash** — ~$0.10/session, 40.3 score (solid fallback)
+> - **DeepSeek V4 Flash 0731** — ~$0.10/session, 49.9 score (solid fallback)
 > - **MiMo V2.5** — ~$0.10/session, 40 score (solid fallback, vision-capable)
 
 ## Companion tools

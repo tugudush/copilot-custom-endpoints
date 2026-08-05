@@ -27,6 +27,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
 - [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **51.0**).
+- [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4 extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
 - [proxy/mimo-proxy.mjs](proxy/mimo-proxy.mjs) is an optional proxy for MiMo V2.5 models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
