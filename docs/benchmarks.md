@@ -16,7 +16,7 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 6   | **GPT-5.6 Terra**     | OpenAI    | Copilot native  | **55.0**              | —          | —           | —          | —             |
 | 7   | **GPT-5.5**           | OpenAI    | Copilot native  | **54.8** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
 | 8   | **Claude Opus 4.7**   | Anthropic | Copilot native  | **53.5**              | #5 (#3)    | #4 (#5)     | #5 (#3)    | #5 (#3)       |
-| —   | **Qwen 3.8 Max**      | DashScope | Custom endpoint | **53.4** ¹⁵           | #5 ¹⁶     | —           | #4 ¹⁶     | —             |
+| —   | **Qwen 3.8 Max**      | DashScope | Custom endpoint | **53.4** ¹⁵           | #5 ¹⁶      | —           | #4 ¹⁶      | —             |
 | 9   | **Claude Sonnet 5**   | Anthropic | Copilot native  | **53.0**              | — ¹²       | — ¹²        | — ¹²       | — ¹²          |
 | 10  | **GPT-5.4**           | OpenAI    | Copilot native  | **51.4** ¹            | #34 (#13)  | #8 ⁹        | #49 (#28)  | #34 (#13)     |
 | 11  | **GPT-5.6 Luna**      | OpenAI    | Copilot native  | **51.2**              | —          | —           | —          | —             |
@@ -73,16 +73,16 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 
 ## Qwen 3.8 evidence matrix
 
-| Evaluation                 | Qwen-reported score | Evidence type |
-| -------------------------- | ------------------- | ------------- |
-| Terminal-Bench 2.1         | **86.6**            | Vendor result |
-| SWE-bench Pro              | **67.7**            | Vendor result |
-| Toolathlon Verified        | **72.5**            | Vendor result |
-| Humanity's Last Exam       | **43.6**            | Vendor result |
-| PaperBench                 | **93.0**            | Vendor result |
-| OmniDocBench 1.5           | **92.1**            | Vendor result |
-| IFBench                    | **82.8**            | Vendor result |
-| Parametric CAD Bench       | **91.5**            | Vendor result |
+| Evaluation           | Qwen-reported score | Evidence type |
+| -------------------- | ------------------- | ------------- |
+| Terminal-Bench 2.1   | **86.6**            | Vendor result |
+| SWE-bench Pro        | **67.7**            | Vendor result |
+| Toolathlon Verified  | **72.5**            | Vendor result |
+| Humanity's Last Exam | **43.6**            | Vendor result |
+| PaperBench           | **93.0**            | Vendor result |
+| OmniDocBench 1.5     | **92.1**            | Vendor result |
+| IFBench              | **82.8**            | Vendor result |
+| Parametric CAD Bench | **91.5**            | Vendor result |
 
 These scores describe the published Qwen evaluation package and should not be collapsed into a synthetic overall score. Independent replication with the same model build, reasoning effort, tools, and harness is still pending.
 
