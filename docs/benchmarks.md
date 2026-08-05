@@ -16,6 +16,7 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 6   | **GPT-5.6 Terra**     | OpenAI    | Copilot native  | **55.0**              | —          | —           | —          | —             |
 | 7   | **GPT-5.5**           | OpenAI    | Copilot native  | **54.8** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
 | 8   | **Claude Opus 4.7**   | Anthropic | Copilot native  | **53.5**              | #5 (#3)    | #4 (#5)     | #5 (#3)    | #5 (#3)       |
+| —   | **Qwen 3.8 Max**      | DashScope | Custom endpoint | **53.4** ¹⁵           | #5 ¹⁶     | —           | #4 ¹⁶     | —             |
 | 9   | **Claude Sonnet 5**   | Anthropic | Copilot native  | **53.0**              | — ¹²       | — ¹²        | — ¹²       | — ¹²          |
 | 10  | **GPT-5.4**           | OpenAI    | Copilot native  | **51.4** ¹            | #34 (#13)  | #8 ⁹        | #49 (#28)  | #34 (#13)     |
 | 11  | **GPT-5.6 Luna**      | OpenAI    | Copilot native  | **51.2**              | —          | —           | —          | —             |
@@ -63,6 +64,27 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 ¹² **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Too new for Arena rankings. 1M context window, text + image + video input, reasoning model. Priced at $1.50 / $7.50 per MTok input/output.
 
 ¹³ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**61.0**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Too new for Arena rankings (2 days old). 1M context window, text + image input, adaptive reasoning model. Priced at $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Also available in Fast mode ($10/$50 per MTok input/output). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5) and the [AA model page](https://artificialanalysis.ai/models/claude-opus-5).
+
+¹⁴ **Qwen 3.8 Max** (`qwen3.8-max`) launched on **August 3, 2026**. Qwen's [official release post](https://qwen.ai/blog?id=qwen3.8) reports **86.6** on Terminal-Bench 2.1, **67.7** on SWE-bench Pro, **72.5** on Toolathlon Verified, **43.6** on Humanity's Last Exam, **93.0** on PaperBench, **92.1** on OmniDocBench 1.5, **82.8** on IFBench, and **91.5** on Parametric CAD Bench. These are vendor-reported results, not independent replications.
+
+¹⁵ OpenRouter's current model metadata reports an Artificial Analysis **Intelligence Index of 53.4**, **Coding Index of 68.9**, and **Agentic Index of 44.9** for `qwen/qwen3.8-max`. These are OpenRouter metadata values, not independently re-run results.
+
+¹⁶ Arena snapshots: **Text #5, 1496 ±10** (August 1, 2026), **Vision #2, 1305 ±9** (August 1, 2026), and **Code/WebDev #4, 1668 ±18** (August 2, 2026). Qwen 3.8 Max is not listed in the August 4 Agent Arena table. See [Text Arena](https://arena.ai/leaderboard/text), [Vision Arena](https://arena.ai/leaderboard/vision), [Code Arena](https://arena.ai/leaderboard/code/webdev), and [Agent Arena](https://arena.ai/leaderboard/agent).
+
+## Qwen 3.8 evidence matrix
+
+| Evaluation                 | Qwen-reported score | Evidence type |
+| -------------------------- | ------------------- | ------------- |
+| Terminal-Bench 2.1         | **86.6**            | Vendor result |
+| SWE-bench Pro              | **67.7**            | Vendor result |
+| Toolathlon Verified        | **72.5**            | Vendor result |
+| Humanity's Last Exam       | **43.6**            | Vendor result |
+| PaperBench                 | **93.0**            | Vendor result |
+| OmniDocBench 1.5           | **92.1**            | Vendor result |
+| IFBench                    | **82.8**            | Vendor result |
+| Parametric CAD Bench       | **91.5**            | Vendor result |
+
+These scores describe the published Qwen evaluation package and should not be collapsed into a synthetic overall score. Independent replication with the same model build, reasoning effort, tools, and harness is still pending.
 
 ## Column key: what each benchmark measures
 

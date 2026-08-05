@@ -27,6 +27,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiMo V2.5 Pro**              | Xiaomi    | Optional (recommended) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
 | **Qwen 3.7 Plus**              | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
 | **Qwen 3.7 Max**               | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **Qwen 3.8 Max**               | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
 | **MiniMax M3**                 | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
 | **GLM 5.2 / 5.1**              | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **GLM 5V Turbo**               | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
@@ -123,6 +124,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Gemini 3.6 Flash** ⁸   | Google    | **~$0.030**           | **50.0**           | ~$1.50       | ✅     | 1M             |
+| **Qwen 3.8 Max** ¹⁰      | DashScope | **~$0.030**           | **53.4**           | ~$1.60       | ✅     | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | ~$1.65       | ✅     | 1M             |
 | **GPT-5.6 Terra**        | OpenAI    | **~$0.040**           | **55.0**           | ~$2.20       | ✅     | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | ~$2.00       | ❌     | 1M             |
@@ -152,6 +154,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 ⁸ **Gemini 3.6 Flash** launched July 21, 2026. Priced at $1.50 / $7.50 per MTok input/output ($0.15 cached). AA Intelligence Index score of **50.0** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
 
 ⁹ **Claude Opus 5** launched July 24, 2026. AA Intelligence Index score of **61.0** (#1 overall) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Priced at $5.00 / $25.00 per MTok input/output (same as Opus 4.8). 1M context, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
+
+¹⁰ **Qwen 3.8 Max** (`qwen3.8-max`) has an OpenRouter-reported Artificial Analysis Intelligence Index of **53.4** (Coding **68.9**, Agentic **44.9**). Arena snapshots place it **#5 in Text**, **#2 in Vision**, and **#4 in Code/WebDev**; it is not listed in Agent Arena. See [OpenRouter](https://openrouter.ai/qwen/qwen3.8-max) and [Arena](https://arena.ai/leaderboard).
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 

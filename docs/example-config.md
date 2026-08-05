@@ -17,12 +17,24 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "qwen3.8-max",
+        "name": "Qwen 3.8 Max (vision)",
+        "url": "http://127.0.0.1:3458/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 991000,
+        "maxOutputTokens": 131072
+      },
+      {
         "id": "qwen3.7-max",
         "name": "Qwen 3.7 Max (text)",
         "url": "http://127.0.0.1:3458/v1/chat/completions",
         "toolCalling": true,
         "vision": false,
-        "streaming": true
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072
       },
       {
         "id": "qwen3.7-plus",
@@ -30,7 +42,9 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "url": "http://127.0.0.1:3458/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
-        "streaming": true
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072
       }
     ]
   },
@@ -127,7 +141,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "models": [
       {
         "id": "MiniMax-M3",
-        "name": "MiniMax M3 (Standard)",
+        "name": "MiniMax M3 (vision)",
         "url": "https://api.minimax.io/v1/chat/completions",
         "toolCalling": true,
         "vision": true,

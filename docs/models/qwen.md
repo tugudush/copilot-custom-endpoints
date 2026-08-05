@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.7-plus` (vision) and `qwen3.7-max` (text) work both direct and via the local proxy. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
+> **TL;DR:** `qwen3.8-max` (vision), `qwen3.7-plus` (vision), and `qwen3.7-max` (text) work both direct and via the local proxy. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
 
 ## At a Glance
 
@@ -8,10 +8,10 @@
 | ---------------------- | -------------------------------------------------------------------------------- |
 | Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
 | Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                       |
-| Vision                 | ✅ Yes (`qwen3.7-plus`)                                                          |
+| Vision                 | ✅ Yes (`qwen3.8-max`, `qwen3.7-plus`)                                           |
 | Tool calling           | ✅ Yes                                                                           |
 | Context                | 1M                                                                               |
-| Max output             | _see Models table_                                                               |
+| Max output             | 131K (`qwen3.8-max`); see Models table for other models                          |
 | Endpoint               | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
 | Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                      |
 | Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                       |
@@ -20,10 +20,11 @@
 
 ### Models
 
-| Model          | Vision | Context | Max output      | Notes                                  |
-| -------------- | ------ | ------- | --------------- | -------------------------------------- |
-| `qwen3.7-plus` | ✅ Yes | 1M      | _(unspecified)_ | Primary model with image understanding |
-| `qwen3.7-max`  | ❌ No  | 1M      | _(unspecified)_ | Larger text-only model                 |
+| Model          | Vision | Context | Max output      | Notes                                                   |
+| -------------- | ------ | ------- | --------------- | ------------------------------------------------------- |
+| `qwen3.8-max`  | ✅ Yes | 1M      | 131K            | Frontier multimodal model; reasoning enabled by default |
+| `qwen3.7-plus` | ✅ Yes | 1M      | _(unspecified)_ | Primary model with image understanding                  |
+| `qwen3.7-max`  | ❌ No  | 1M      | _(unspecified)_ | Larger text-only model                                  |
 
 > The live `chatLanguageModels.json` points Qwen at the local proxy by default; the direct DashScope URL is shown below for users who prefer a static `enable_thinking: false` setup.
 
@@ -42,7 +43,7 @@
 1. **Use the direct-path JSON snippet** below.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
-4. **Restart VS Code** and pick "Qwen 3.7 Plus" or "Qwen 3.7 Max".
+4. **Restart VS Code** and pick "Qwen 3.8 Max", "Qwen 3.7 Plus", or "Qwen 3.7 Max".
 
 ## Setup
 
@@ -73,6 +74,17 @@ DashScope is region-specific — your API key only works on the endpoint it was 
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
+    {
+      "id": "qwen3.8-max",
+      "name": "Qwen 3.8 Max (vision)",
+      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 991000,
+      "maxOutputTokens": 131072,
+      "requestBody": { "enable_thinking": false }
+    },
     {
       "id": "qwen3.7-max",
       "name": "Qwen 3.7 Max (text)",
@@ -120,6 +132,16 @@ DashScope is region-specific — your API key only works on the endpoint it was 
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
+    {
+      "id": "qwen3.8-max",
+      "name": "Qwen 3.8 Max (vision)",
+      "url": "http://127.0.0.1:3458/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 991000,
+      "maxOutputTokens": 131072
+    },
     {
       "id": "qwen3.7-max",
       "name": "Qwen 3.7 Max (text)",
@@ -195,7 +217,8 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 ## Notes
 
-- **Vision (`qwen3.7-plus`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
+- **Vision (`qwen3.8-max`, `qwen3.7-plus`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
+- **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected.
 - **Thinking trade-off:** Direct = thinking always off (loops stable, no reasoning visible). Proxy = thinking on in plain chat, off in tool turns.
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 
@@ -216,6 +239,7 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashSco
 
 | Model          | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
 | -------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
+| `qwen3.8-max`  | $2.00                 | —                     | $6.00                  | —                      |
 | `qwen3.7-plus` | $0.40 / 1M            | $1.20 / 1M            | $1.60 / 1M             | $4.80 / 1M             |
 | `qwen3.7-max`  | $2.50 / 1M (≤ 1M)     | —                     | $7.50 / 1M (≤ 1M)      | —                      |
 
