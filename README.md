@@ -31,7 +31,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiniMax M3**                   | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
 | **GLM 5.2 / 5.1**                | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **GLM 5V Turbo**                 | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **DeepSeek V4 Pro / Flash 0731** | DeepSeek  | No (uses an extension) | ❌ (0731)              | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
+| **DeepSeek V4 Pro / Flash 0731** | DeepSeek  | No (uses an extension) | ❌ (0731)              | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 
 ## Setup
 

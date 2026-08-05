@@ -39,7 +39,7 @@ Recommendation: leave it `true` if you use **agent mode or MCP tools** with Deep
 3. Reload VS Code after changing the setting (`Developer: Reload Window`).
 4. Verify the extension's `deepseek-copilot.baseUrl` points at the compatible provider or proxy. An override changes only the model ID; it does not change the endpoint, authentication, request format, or model capabilities.
 5. For HTTP 400 errors during agent mode or MCP/tool use, enable the extension's tool-list compatibility option:
-  `deepseek-copilot.experimental.stabilizeToolList: true` (see [Tool-list stabilization](#tool-list-stabilizationexperimentalstabilizetoollist)). This does **not** help plain-chat 400s — those are usually an invalid `model` ID (see the override warning above).
+   `deepseek-copilot.experimental.stabilizeToolList: true` (see [Tool-list stabilization](#tool-list-stabilizationexperimentalstabilizetoollist)). This does **not** help plain-chat 400s — those are usually an invalid `model` ID (see the override warning above).
 6. Enable the extension's diagnostic mode (`deepseek-copilot.debugMode: "verbose"`) or inspect its request dump to confirm the outbound request's `model` field. If the override is removed, it should read `"model":"deepseek-v4-flash"`. If a 400 persists with a valid model ID, the remaining cause is request-shape compatibility or authorization — capture the full request body via the dump and compare against the [Chat Completions schema](https://api-docs.deepseek.com/api/create-chat-completion).
 
 The extension's published settings documentation is authoritative for this setting. Its default model-ID map may change between releases, so do not copy an old default blindly.
