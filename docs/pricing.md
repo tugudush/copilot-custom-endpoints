@@ -39,6 +39,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **GLM 5.1**              | Z.ai      | **~$0.028**           | **40.2**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**         | Z.ai      | **~$0.029**           | **34.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
 | **Gemini 3.6 Flash** ⁹   | Google    | **~$0.030**           | **50.0**           | $1.50                         | $0.15                         | $7.50                         | ~$1.50       | 1M             |
+| **Qwen 3.8 Max** ¹¹     | DashScope | **~$0.030**           | **53.4**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
 | **Gemini 3.5 Flash**     | Google    | **~$0.033**           | **50.2**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
 | **GPT-5.6 Terra**        | OpenAI    | **~$0.040**           | **55.0**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
 | **Qwen 3.7 Max**         | DashScope | **~$0.043**           | **46.0**           | $2.50 (≤1M)                   | —                             | $7.50 (≤1M)                   | ~$2.00       | 1M             |
@@ -70,6 +71,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 ⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**50.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Pricing is $1.50 input / $0.15 cached / $7.50 output per MTok.
 
 ¹⁰ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**61.0**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Pricing is $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). 1M context window, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output) and Batch ($2.50/$12.50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
+
+¹¹ **Qwen 3.8 Max** (`qwen3.8-max`) launched on **August 3, 2026**. Qwen Cloud lists $2.00 input / $6.00 output per 1M tokens, $0.25 implicit-cache input, $2.50 explicit-cache creation, and $0.17 explicit-cache reads. The modeled session cost is ~$1.60 using 10K input + 2K output tokens per turn across 50 turns. It has a 1M context window, 131K maximum output, and text/image/video input. OpenRouter currently reports an Artificial Analysis Intelligence Index of **53.4** for this model. See the [Qwen Cloud model page](https://www.qwencloud.com/models/qwen3.8-max) and [OpenRouter model page](https://openrouter.ai/qwen/qwen3.8-max).
 
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
