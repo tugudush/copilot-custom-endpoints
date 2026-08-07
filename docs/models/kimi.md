@@ -2,7 +2,7 @@
 
 > **TL;DR:** Kimi models require the local proxy. The K2/K3 family locks `temperature: 1` and `top_p: 0.95`. K2.6 needs `thinking: { type: "disabled" }` on tool turns; **K2.7 Code is always-thinking and rejects `thinking: disabled`**. **K3 is always-thinking and uses `reasoning_effort` (not the `thinking` parameter)** — the proxy detects `kimi-k3` and skips the thinking-disable rewrite while keeping sampling enforcement. Direct VS Code → Moonshot is not viable.
 >
-> **🆕 Kimi K3** (released July 16, 2026) is Kimi's flagship — 2.8T parameters, 1M context, AA Intelligence Index **57.0** (#3 overall, between GPT-5.6 Sol and Claude Opus 4.8). Open-source weights coming by July 27, 2026.
+> **🆕 Kimi K3** (released July 16, 2026) is Kimi's flagship — 2.8T parameters, 1M context, AA Intelligence Index **59.7** (#4 overall, between GPT-5.6 Sol and Qwen 3.8 Max). Open-source weights coming by July 27, 2026.
 >
 > **🆕 Alternative:** On the **Kimi Coding tier** (`kimi.com/code/console`), the [**Moonshot LM Provider**](https://marketplace.visualstudio.com/items?itemName=DenizhanDaklr.kimi-lm-provider) extension offers zero-proxy setup with reasoning visibility. **Not compatible with Pay-as-You-Go** keys from `platform.kimi.ai`. See [the extension comparison](../research/kimi-vscode-extension.md).
 
@@ -24,7 +24,7 @@
 
 | Model            | Vision | Context | Max output | Notes                                                                                                    |
 | ---------------- | ------ | ------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `kimi-k3`        | ✅ Yes | 1M      | 131072     | **Flagship.** Always-thinking, uses `reasoning_effort` (not `thinking`). 2.8T params. AA Index **57.0**. |
+| `kimi-k3`        | ✅ Yes | 1M      | 131072     | **Flagship.** Always-thinking, uses `reasoning_effort` (not `thinking`). 2.8T params. AA Index **59.7**. |
 | `kimi-k2.6`      | ✅ Yes | 262K    | 32768      | Proxy forces `thinking: { type: "disabled" }` on tool turns                                              |
 | `kimi-k2.7-code` | ✅ Yes | 262K    | 4096       | Always-thinking; rejects `thinking: disabled`. Keep `maxOutputTokens` low (4096).                        |
 

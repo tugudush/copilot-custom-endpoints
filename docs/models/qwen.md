@@ -240,7 +240,9 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashSco
 | Model          | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
 | -------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
 | `qwen3.8-max`  | $2.00                 | —                     | $6.00                  | —                      |
-| `qwen3.7-plus` | $0.40 / 1M            | $1.20 / 1M            | $1.60 / 1M             | $4.80 / 1M             |
-| `qwen3.7-max`  | $2.50 / 1M (≤ 1M)     | —                     | $7.50 / 1M (≤ 1M)      | —                      |
+| `qwen3.7-plus` | $0.32 / 1M            | $0.40 / 1M            | $1.28 / 1M             | $1.60 / 1M             |
+| `qwen3.7-max`  | $1.475 / 1M (≤ 1M)    | —                     | $4.425 / 1M (≤ 1M)     | —                      |
+
+> **Qwen 3.7 price cuts** (verified August 7, 2026): `qwen3.7-max` dropped from $2.50 / $7.50 to **$1.475 / $4.425** per 1M (cached $0.295; >256K input tier $1.844); `qwen3.7-plus` dropped from $0.40 / $1.60 to **$0.32 / $1.28** per 1M (cached $0.064).
 
 > Free quota: 1M input + 1M output tokens per model, valid 90 days after activating Model Studio.

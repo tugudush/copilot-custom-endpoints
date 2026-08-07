@@ -4,7 +4,7 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
-- **Kimi K3** (Moonshot) — newly validated (July 17, 2026). Requires the local proxy shim `proxy/kimi-proxy.mjs`. K3 is always-thinking and uses `reasoning_effort` (not `thinking`); the proxy detects K3, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. 2.8T params, 1M context, AA Intelligence Index **57.0** (#3 overall).
+- **Kimi K3** (Moonshot) — newly validated (July 17, 2026). Requires the local proxy shim `proxy/kimi-proxy.mjs`. K3 is always-thinking and uses `reasoning_effort` (not `thinking`); the proxy detects K3, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. 2.8T params, 1M context, AA Intelligence Index **59.7** (#4 overall).
 - **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
@@ -12,7 +12,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Xiaomi MiMo V2.5 / V2.5 Pro** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points both models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
-- **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **51.0**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
+- **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **52.6**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
 
 **⚠️ VS Code now requires `chat.lm.utilitySmallModel` to be set for BYOK/custom-endpoint users.** Open Settings → search "Chat: Utility Small Model" → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without it, utility flows like token counting and prompt truncation may silently fail. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
 
@@ -26,7 +26,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal) and V2.5 Pro (text, largest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
-- [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **51.0**).
+- [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **52.6**).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4 extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
@@ -101,7 +101,7 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 ### Kimi K2 / K3
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
-- **K3** (July 2026) is always-thinking and uses `reasoning_effort` (currently only `max`) — NOT the K2.x `thinking` parameter. The proxy detects `kimi-k3` slugs and skips the thinking-disable rewrite, **deletes any stray `thinking` block**, and keeps temperature/top_p enforcement. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072. Fixed sampling: `temperature=1`, `top_p=0.95`. 1M context, 2.8T params (open-source weights by July 27, 2026). AA Intelligence Index **57.0**.
+- **K3** (July 2026) is always-thinking and uses `reasoning_effort` (currently only `max`) — NOT the K2.x `thinking` parameter. The proxy detects `kimi-k3` slugs and skips the thinking-disable rewrite, **deletes any stray `thinking` block**, and keeps temperature/top_p enforcement. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072. Fixed sampling: `temperature=1`, `top_p=0.95`. 1M context, 2.8T params (open-source weights by July 27, 2026). AA Intelligence Index **59.7**.
 - **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.

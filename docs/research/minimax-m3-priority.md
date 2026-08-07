@@ -88,7 +88,7 @@ Using the standard session assumption (~10K input + ~2K output tokens/turn, 50 t
 
 If your workload reuses cached prefixes heavily (a realistic Copilot Chat scenario with multi-turn agent sessions and the `klarkxy` extension's preflight stabilization), cache reads dominate and the gap narrows somewhat, but Priority is still roughly 50% more expensive on a fully-cached session.
 
-### Cost-per-intelligence (Intelligence Index = 44.4)
+### Cost-per-intelligence (Intelligence Index = 45.4)
 
 - Standard: $0.27 / 44.4 ≈ **$0.0061**
 - Priority: $0.41 / 44.4 ≈ **$0.0092**
@@ -153,7 +153,7 @@ So on the custom-endpoint path:
 
 ### Things Priority does NOT change
 
-- **Model identity** — same `MiniMax-M3` weights, same intelligence score (44.4), same capabilities.
+- **Model identity** — same `MiniMax-M3` weights, same intelligence score (45.4), same capabilities.
 - **Context window** — still 1M (guaranteed 512K).
 - **Vision** — image + video unchanged.
 - **Tool calling** — unchanged.
