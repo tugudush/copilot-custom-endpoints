@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** August 7, 2026 — All AA Intelligence Index scores refreshed to **Index v4.1.1** (most models gained ~1–2.5 pts). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). **Grok 4.5 added** for comparison. OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
+> **Updated:** August 14, 2026 — **Grok 4.6** and **Gemini 3.7 Flash** added (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -32,16 +32,18 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0070**          | **42.9**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
 | **Qwen 3.7 Plus** ¹³       | DashScope | **~$0.0074**          | **39.4**           | $0.32 (≤256K) / $0.40 (>256K) | $0.064                        | $1.28 (≤256K) / $1.60 (>256K) | ~$0.29       | 1M             |
 | **MiniMax M3 Priority**⁵   | MiniMax   | **~$0.0090**          | **45.4**           | $0.90 (≤512K) / $1.80 (>512K) | $0.18 (≤512K) / $0.36 (>512K) | $3.60 (≤512K) / $7.20 (>512K) | ~$0.41       | 1M             |
+| **Gemini 3.7 Flash** ¹⁵    | Google    | **~$0.013**           | **56**             | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
+| **Gemini 3.6 Flash** ⁹     | Google    | **~$0.015**           | **51.6**           | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
 | **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
 | **GLM 5.2** ⁴              | Z.ai      | **~$0.022**           | **52.6**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **Qwen 3.7 Max** ¹³        | DashScope | **~$0.025**           | **46.7**           | $1.475 (≤1M)                  | $0.295                        | $4.425 (≤1M)                  | ~$1.18       | 1M             |
+| **Grok 4.6** ¹⁴            | xAI       | **~$0.026**           | **61**             | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
 | **Qwen 3.8 Max** ¹¹        | DashScope | **~$0.028**           | **58.1**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
 | **GLM 5.1**                | Z.ai      | **~$0.028**           | **41.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
 | **GLM 5V Turbo**           | Z.ai      | **~$0.029**           | **35.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
-| **Grok 4.5** ¹²            | xAI       | **~$0.029**           | **55.8**           | $2.00                         | $0.30                         | $6.00                         | ~$1.60       | 500K           |
-| **Gemini 3.6 Flash** ⁹     | Google    | **~$0.029**           | **51.6**           | $1.50                         | $0.15                         | $7.50                         | ~$1.50       | 1M             |
+| **Grok 4.5** ¹²            | xAI       | **~$0.029**           | **55.8**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
 | **Gemini 3.5 Flash**       | Google    | **~$0.032**           | **52.0**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
 | **GPT-5.6 Terra**          | OpenAI    | **~$0.039**           | **56.6**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
 | **Gemini 3.1 Pro**         | Google    | **~$0.046**           | **47.7**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
@@ -69,15 +71,19 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ⁸ **GPT-5.6** pricing is **$0.20 / $0.02 / $1.20** for Luna, **$2.00 / $0.20 / $12.00** for Terra, and **$5.00 / $0.50 / $30.00** for Sol (input / cached input / output per 1M tokens). OpenAI reduced Luna by 80% and Terra by 20% on July 30, 2026; Sol is unchanged. OpenAI bills cache writes at 1.25x the uncached input rate for GPT-5.6 and later. The Batch API provides an additional 50% discount for asynchronous jobs. All three tiers have a 1M-token context window and support text + image input. See [OpenAI's GPT-5.6 price update](https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/) and [GPT-5.6 announcement](https://openai.com/index/gpt-5-6/). **As of August 7, 2026, OpenRouter is running a limited-time 50% promotional discount on Terra and Luna** (effective **$0.10 / $0.60** per 1M for Luna and **$1.00 / $6.00** per 1M for Terra, input/output) on top of the list prices above — this is a temporary third-party promo, not an OpenAI list-price change.
 
-⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**51.6**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). Pricing is $1.50 input / $0.15 cached / $7.50 output per MTok.
+⁹ **Gemini 3.6 Flash** was released on **July 21, 2026**. AA Intelligence Index score (**51.6**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). **Promotional pricing** of $0.75 input / $0.075 cached / $3.75 output per MTok applies through **December 31, 2026** (in both Copilot and the Gemini API); from **January 1, 2027** the standard $1.50 / $0.15 / $7.50 rates apply. See [Google's pricing page](https://ai.google.dev/pricing).
 
 ¹⁰ **Claude Opus 5** was released on **July 24, 2026**. AA Intelligence Index score (**63.1**) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Pricing is $5.00 / $0.50 / $25.00 per MTok input/cached/output (same as Opus 4.8). 1M context window, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output) and Batch ($2.50/$12.50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
 
 ¹¹ **Qwen 3.8 Max** (`qwen3.8-max`) launched on **August 3, 2026**. Qwen Cloud lists $2.00 input / $6.00 output per 1M tokens, $0.25 implicit-cache input, $2.50 explicit-cache creation, and $0.17 explicit-cache reads. The modeled session cost is ~$1.60 using 10K input + 2K output tokens per turn across 50 turns. It has a 1M context window, 131K maximum output, and text/image/video input. Artificial Analysis has published an Intelligence Index of **58.1** for this model (**#9/185**; listed as a rounded **58** on its [model page](https://artificialanalysis.ai/models/qwen3-8-max)); OpenRouter metadata also reports Coding **71.8** and Agentic **58.4**. Pricing is unchanged as of August 7, 2026. See the [Qwen Cloud model page](https://www.qwencloud.com/models/qwen3.8-max), [AA model page](https://artificialanalysis.ai/models/qwen3-8-max), and [OpenRouter model page](https://openrouter.ai/qwen/qwen3.8-max).
 
-¹² **Grok 4.5** (xAI, released **July 8, 2026**) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context window, text + image input. Priced at $2.00 / $0.30 / $6.00 per 1M input/cached/output.
+¹² **Grok 4.5** (xAI, released **July 8, 2026**) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context window, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount).
 
 ¹³ **Qwen 3.7 price cuts** (verified August 7, 2026): `qwen3.7-max` dropped from $2.50 / $7.50 to **$1.475 / $4.425** per 1M input/output (cached $0.295; >256K input tier $1.844), and `qwen3.7-plus` dropped from $0.40 / $1.60 to **$0.32 / $1.28** per 1M (cached $0.064; >256K tier $0.40 / $1.60).
+
+¹⁴ **Grok 4.6** (xAI/SpaceXAI, released **August 12, 2026**) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **61** (high reasoning preset, #6/188). 500K context window, text + image input, text output. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount). See the [AA model page](https://artificialanalysis.ai/models/grok-4-6) and the [xAI announcement](https://x.ai/news/grok-4-6).
+
+¹⁵ **Gemini 3.7 Flash** (Google, released **August 13, 2026**) — GitHub Copilot native (GA, Versatile) at the same promotional rates as 3.6 Flash. AA Intelligence Index **56** (high reasoning preset, #17/188). **Promotional pricing** of $0.75 / $0.075 / $3.75 per 1M input/cached/output through **December 31, 2026**, then $1.50 / $0.15 / $7.50 from January 1, 2027. 1M context window, text + image + speech + video input, and the fastest model on AA's leaderboard (340 t/s). See the [AA model page](https://artificialanalysis.ai/models/gemini-3-7-flash), [Google's Gemini page](https://deepmind.google/models/gemini/), and [GitHub Copilot pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
 
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
@@ -99,7 +105,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions** or **23 Opus sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: August 7, 2026. Always check the official pages for the latest rates:
+> Prices last verified: August 14, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)

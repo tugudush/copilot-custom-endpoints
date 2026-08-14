@@ -117,16 +117,18 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0070**          | **42.9**           | ~$0.30       | ❌     | 1M             |
 | **Qwen 3.7 Plus** ¹²       | DashScope | **~$0.0074**          | **39.4**           | ~$0.29       | ✅     | 1M             |
 | **MiniMax M3 Priority**⁴   | MiniMax   | **~$0.0090**          | **45.4**           | ~$0.41       | ✅     | 1M             |
+| **Gemini 3.7 Flash** ¹³    | Google    | **~$0.013**           | **56**             | ~$0.75       | ✅     | 1M             |
+| **Gemini 3.6 Flash** ⁸     | Google    | **~$0.015**           | **51.6**           | ~$0.75       | ✅     | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | ~$0.83       | ❌     | 400K           |
 | **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | ~$0.88       | ✅     | 262K           |
 | **GLM 5.2**                | Z.ai      | **~$0.022**           | **52.6**           | ~$1.14       | ❌     | 1M             |
 | **Qwen 3.7 Max** ¹²        | DashScope | **~$0.025**           | **46.7**           | ~$1.18       | ❌     | 1M             |
+| **Grok 4.6** ¹⁴            | xAI       | **~$0.026**           | **61**             | ~$1.60       | ✅     | 500K           |
 | **Qwen 3.8 Max** ¹⁰        | DashScope | **~$0.028**           | **58.1**           | ~$1.60       | ✅     | 1M             |
 | **GLM 5.1**                | Z.ai      | **~$0.028**           | **41.0**           | ~$1.14       | ❌     | 200K           |
 | **GLM 5V Turbo**           | Z.ai      | **~$0.029**           | **35.0** ³         | ~$1.00       | ✅     | 200K           |
 | **Grok 4.5** ¹¹            | xAI       | **~$0.029**           | **55.8**           | ~$1.60       | ✅     | 500K           |
-| **Gemini 3.6 Flash** ⁸     | Google    | **~$0.029**           | **51.6**           | ~$1.50       | ✅     | 1M             |
 | **Gemini 3.5 Flash**       | Google    | **~$0.032**           | **52.0**           | ~$1.65       | ✅     | 1M             |
 | **GPT-5.6 Terra**          | OpenAI    | **~$0.039**           | **56.6**           | ~$2.20       | ✅     | 1M             |
 | **Gemini 3.1 Pro**         | Google    | **~$0.046**           | **47.7**           | ~$2.20       | ✅     | 1M             |
@@ -152,15 +154,19 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **59.7** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
 
-⁸ **Gemini 3.6 Flash** launched July 21, 2026. Priced at $1.50 / $7.50 per MTok input/output ($0.15 cached). AA Intelligence Index score of **51.6** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
+⁸ **Gemini 3.6 Flash** launched July 21, 2026. **Promotional pricing** of $0.75 / $3.75 per MTok input/output ($0.075 cached) through **December 31, 2026**; $1.50 / $7.50 from January 1, 2027. AA Intelligence Index score of **51.6** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
 
 ⁹ **Claude Opus 5** launched July 24, 2026. AA Intelligence Index score of **63.1** (#1 overall) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Priced at $5.00 / $25.00 per MTok input/output (same as Opus 4.8). 1M context, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
 
 ¹⁰ **Qwen 3.8 Max** (`qwen3.8-max`) has a confirmed Artificial Analysis Intelligence Index of **58.1** (Coding **71.8**, Agentic **58.4**) — see [AA](https://artificialanalysis.ai/models/qwen3-8-max) and [OpenRouter](https://openrouter.ai/qwen/qwen3.8-max). Arena snapshots place it **#5 in Text**, **#2 in Vision**, and **#4 in Code/WebDev**; it is not listed in Agent Arena. See [Arena](https://arena.ai/leaderboard).
 
-¹¹ **Grok 4.5** (xAI, released July 8, 2026) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context, text + image input. Priced at $2.00 / $0.30 / $6.00 per 1M input/cached/output.
+¹¹ **Grok 4.5** (xAI, released July 8, 2026) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount).
 
 ¹² **Qwen 3.7 price cuts** (verified August 7, 2026): `qwen3.7-max` dropped from $2.50 / $7.50 to **$1.475 / $4.425** per 1M input/output (cached $0.295), and `qwen3.7-plus` dropped from $0.40 / $1.60 to **$0.32 / $1.28** per 1M (cached $0.064).
+
+¹³ **Gemini 3.7 Flash** (Google, released August 13, 2026) is GitHub Copilot native (GA, Versatile). AA Intelligence Index **56** (high preset) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-7-flash). **Promotional pricing** of $0.75 / $3.75 per MTok input/output ($0.075 cached) through December 31, 2026, then $1.50 / $7.50. 1M context, text + image + speech + video input, and the fastest model on AA's leaderboard (340 t/s).
+
+¹⁴ **Grok 4.6** (xAI, released August 12, 2026) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **61** (high preset, #6/188). 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6) and the [xAI announcement](https://x.ai/news/grok-4-6).
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
@@ -170,6 +176,7 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 >
 > - **GPT-5.6 Luna** (Copilot native) — scores **52.3**, ~$0.22/session, vision-capable. Higher intelligence than MiniMax M3 (45.4) at a lower modeled cost, with reduced AI-credit consumption after OpenAI's July price cut.
 > - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** after the AA v4.1.1 benchmark refresh, ~$0.10/session — the best intelligence-per-dollar in the lineup. Text-only, so pair it with a vision model when you need images.
+> - **Gemini 3.7 Flash** (Copilot native, new August 13) — scores **56** at ~$0.75/session under promotional pricing. The best-value Google model in Copilot: it beats Gemini 3.5 Flash (52.0) and Grok 4.5 (55.8) on intelligence at roughly half the session cost, with 1M context, full multimodal input, and AA's fastest output speed. A strong upgrade pick if you use Google models.
 >
 > **MiniMax M3** (45.4, ~$0.27/session) is still the best **direct** custom-endpoint option — no proxy or extension, vision, 1M context, strong coding — but it no longer leads on value now that DeepSeek V4 Flash scores higher at a third of the cost. Pick M3 when you want a plug-and-play custom endpoint with vision.
 >
