@@ -1,6 +1,6 @@
 # Benchmark Scores
 
-> **Updated:** August 14, 2026 — All AA Intelligence Index scores refreshed to **Index v4.1.1** (most models gained ~1–2.5 pts versus the previous values). **Grok 4.6 (61)** and **Gemini 3.7 Flash (56)** added. Claude Opus 5 leads at **63.1**.
+> **Updated:** August 15, 2026 — **Claude Fable 5** footnote added (²¹) with release/pricing details; **Qwen 3.6 Plus** marked deprecated (²²); **Grok 4.5 / Grok 4.6 / Claude Fable 5** now **GitHub Copilot native** (Source column + footnotes updated). Previously (August 14): all AA Intelligence Index scores refreshed to **Index v4.1.1** (most models gained ~1–2.5 pts versus the previous values), **Grok 4.6 (61)** and **Gemini 3.7 Flash (56)** added. Claude Opus 5 leads at **63.1**.
 
 A comparison of the **Arena top 10** alongside models available through **GitHub Copilot** (native) and the **custom-endpoint models** this repo supports. Rows are ordered by **AA Intelligence Index** score (highest first). Models without an AA score are listed after scored ones, sorted by Arena rank. Cells with `—` have no verified public score available. Footnotes explain missing or approximate ranks. Scores were re-verified on August 7, 2026 against the current Artificial Analysis Intelligence Index (methodology v4.1.1); nearly all models moved up ~1–2.5 points versus the previously recorded values.
 
@@ -9,8 +9,8 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | #   | Model                      | Provider  | Source          | AA Intelligence Index | Text Arena | Agent Arena | Code Arena | Arena Overall |
 | --- | -------------------------- | --------- | --------------- | --------------------- | ---------- | ----------- | ---------- | ------------- |
 | 1   | **Claude Opus 5**          | Anthropic | Copilot native  | **63.1**              | —          | —           | —          | —             |
-| 2   | **Claude Fable 5**         | Anthropic | N/A             | **62.1**              | #1         | #1          | #1         | #1            |
-| 3   | **Grok 4.6**               | xAI       | N/A             | **61.0** ¹⁹           | —          | —           | —          | —             |
+| 2   | **Claude Fable 5** ²¹      | Anthropic | Copilot native  | **62.1**              | #1         | #1          | #1         | #1            |
+| 3   | **Grok 4.6**               | xAI       | Copilot native  | **61.0** ¹⁹           | —          | —           | —          | —             |
 | 4   | **GPT-5.6 Sol**            | OpenAI    | Copilot native  | **60.9**              | #8 (xhigh) | —           | #2 (xhigh) | #8 (xhigh)    |
 | 5   | **Kimi K3**                | Moonshot  | Custom endpoint | **59.7**              | — ¹⁴       | —           | —          | — ¹⁴          |
 | 6   | **Qwen 3.8 Max**           | DashScope | Custom endpoint | **58.1** ¹⁵           | #5 ¹⁶      | —           | #4 ¹⁶      | —             |
@@ -18,7 +18,7 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 8   | **GPT-5.6 Terra**          | OpenAI    | Copilot native  | **56.6**              | —          | —           | —          | —             |
 | 9   | **GPT-5.5**                | OpenAI    | Copilot native  | **56.3** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
 | 10  | **Gemini 3.7 Flash**       | Google    | Copilot native  | **56.0** ²⁰           | —          | —           | —          | —             |
-| 11  | **Grok 4.5**               | xAI       | N/A             | **55.8** ¹⁷           | —          | —           | —          | —             |
+| 11  | **Grok 4.5**               | xAI       | Copilot native  | **55.8** ¹⁷           | —          | —           | —          | —             |
 | 12  | **Claude Sonnet 5**        | Anthropic | Copilot native  | **55.3**              | — ¹²       | — ¹²        | — ¹²       | — ¹²          |
 | 13  | **Claude Opus 4.7**        | Anthropic | Copilot native  | **55.0**              | #5 (#3)    | #4 (#5)     | #5 (#3)    | #5 (#3)       |
 | 14  | **GPT-5.4**                | OpenAI    | Copilot native  | **53.1** ¹            | #34 (#13)  | #8 ⁹        | #49 (#28)  | #34 (#13)     |
@@ -37,7 +37,7 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 27  | **MiMo V2.5 Pro**          | Xiaomi    | Custom endpoint | **42.9**              | #29        | —           | #21        | #28           |
 | 28  | **GLM 5.1**                | Z.ai      | Custom endpoint | **41.0**              | #15        | #13         | #9         | #15           |
 | 29  | **GPT-5.4 mini**           | OpenAI    | Copilot native  | **40.9**              | #50        | —           | #39        | #48           |
-| 30  | **Qwen 3.6 Plus**          | DashScope | Custom endpoint | **40.0**              | #55        | #20         | #23        | #55           |
+| 30  | **Qwen 3.6 Plus** ²²       | DashScope | Custom endpoint | **40.0**              | #55        | #20         | #23        | #55           |
 | 31  | **Qwen 3.7 Plus**          | DashScope | Custom endpoint | **39.4**              | —          | —           | —          | —             |
 | 32  | **MiMo V2.5**              | Xiaomi    | Custom endpoint | **38.0**              | #69        | —           | #33        | #68           |
 | 33  | **GLM 5V Turbo**           | Z.ai      | Custom endpoint | **35.0** ²            | — ⁸        | —           | —          | — ⁸           |
@@ -74,13 +74,17 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 
 ¹⁶ Arena snapshots: **Text #5, 1496 ±10** (August 1, 2026), **Vision #2, 1305 ±9** (August 1, 2026), and **Code/WebDev #4, 1668 ±18** (August 2, 2026). Qwen 3.8 Max is not listed in the August 4 Agent Arena table. See [Text Arena](https://arena.ai/leaderboard/text), [Vision Arena](https://arena.ai/leaderboard/vision), [Code Arena](https://arena.ai/leaderboard/code/webdev), and [Agent Arena](https://arena.ai/leaderboard/agent).
 
-¹⁷ **Grok 4.5** (xAI, released **July 8, 2026**) is included for comparison — it is neither a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high preset), Coding **72.4**, Agentic **48.9**. 500K context window, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount). Arena rankings not verified.
+¹⁷ **Grok 4.5** (xAI, released **July 8, 2026**) is now a **GitHub Copilot native** model (GA, Versatile). AA Intelligence Index **55.8** (high preset), Coding **72.4**, Agentic **48.9**. 500K context window, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount; Copilot long-context >200K tier $4.00 / $1.00 / $12.00). Arena rankings not verified. See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
 
 ¹⁸ **DeepSeek V4 Flash 0731** — AA Intelligence Index **51.8** ("Reasoning, Max Effort" variant, per OpenRouter/AA). This resolves the repo's earlier inconsistency (README 49.9 vs this table 40.3); the current published value is 51.8.
 
-¹⁹ **Grok 4.6** (xAI/SpaceXAI, released **August 12, 2026**) is included for comparison — it is neither a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **61** (high reasoning preset, **#6/188**). 500K context window, text + image input, text output. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount). Released too recently for Arena rankings. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6) and the [xAI announcement](https://x.ai/news/grok-4-6).
+¹⁹ **Grok 4.6** (xAI/SpaceXAI, released **August 12, 2026**) is now a **GitHub Copilot native** model (GA). AA Intelligence Index **61** (high reasoning preset, **#6/188**). 500K context window, text + image input, text output. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount). Released too recently for Arena rankings. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6), the [xAI announcement](https://x.ai/news/grok-4-6), and the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
 
 ²⁰ **Gemini 3.7 Flash** (Google, released **August 13, 2026**) is a GitHub Copilot native model (GA, Versatile). AA Intelligence Index **56** (high reasoning preset, **#17/188**), confirmed on both [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-7-flash) and [Google's Gemini page](https://deepmind.google/models/gemini/). 1M context window, text + image + speech + video input, and the fastest model on AA's leaderboard (340 t/s). Released too recently for Arena rankings. Promotional pricing of $0.75 / $3.75 per MTok input/output through December 31, 2026, then $1.50 / $7.50. See also [GitHub Copilot pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
+
+²¹ **Claude Fable 5** (Anthropic, released **June 9, 2026**) is now a **GitHub Copilot native** model (GA, Powerful). AA Intelligence Index **62.1** (**#3/188**; AA page lists a rounded **62** on its [model page](https://artificialanalysis.ai/models/claude-fable-5)). Currently **#1 in Text, Agent, Code/WebDev, and Overall Arena**. 1M context window, text + image input, adaptive reasoning. Priced at **$10.00 / $1.00 / $50.00** per 1M input/cached/output (90% cache discount; cache write $12.50). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
+
+²² **Qwen 3.6 Plus** (DashScope, released **April 2, 2026**) — AA Intelligence Index **40.0**. Priced at **$0.50 / $0.05 / $3.00** per 1M input/cached/output. 1M context window, text + image + video input. **Deprecated** — superseded by Qwen 3.7 Plus; AA marks it deprecated and no longer refreshes performance benchmarks beyond the default workload. See the [AA model page](https://artificialanalysis.ai/models/qwen3-6-plus).
 
 ## Qwen 3.8 evidence matrix
 

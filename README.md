@@ -118,6 +118,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Qwen 3.7 Plus** ¹²       | DashScope | **~$0.0074**          | **39.4**           | ~$0.29       | ✅     | 1M             |
 | **MiniMax M3 Priority**⁴   | MiniMax   | **~$0.0090**          | **45.4**           | ~$0.41       | ✅     | 1M             |
 | **Gemini 3.7 Flash** ¹³    | Google    | **~$0.013**           | **56**             | ~$0.75       | ✅     | 1M             |
+| **Qwen 3.6 Plus** ¹⁶       | DashScope | **~$0.014**           | **40.0**           | ~$0.55       | ✅     | 1M             |
 | **Gemini 3.6 Flash** ⁸     | Google    | **~$0.015**           | **51.6**           | ~$0.75       | ✅     | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | ~$0.83       | ❌     | 400K           |
@@ -141,6 +142,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **GPT-5.6 Sol**            | OpenAI    | **~$0.090**           | **60.9**           | ~$5.50       | ✅     | 1M             |
 | **Claude Opus 4.7**        | Anthropic | **~$0.091**           | **55.0**           | ~$5.00       | ✅     | 1M             |
 | **GPT-5.5**                | OpenAI    | **~$0.098**           | **56.3**           | ~$5.50       | ✅     | 1M             |
+| **Claude Fable 5** ¹⁵      | Anthropic | **~$0.161**           | **62.1**           | ~$10.00      | ✅     | 1M             |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 
@@ -160,13 +162,17 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ¹⁰ **Qwen 3.8 Max** (`qwen3.8-max`) has a confirmed Artificial Analysis Intelligence Index of **58.1** (Coding **71.8**, Agentic **58.4**) — see [AA](https://artificialanalysis.ai/models/qwen3-8-max) and [OpenRouter](https://openrouter.ai/qwen/qwen3.8-max). Arena snapshots place it **#5 in Text**, **#2 in Vision**, and **#4 in Code/WebDev**; it is not listed in Agent Arena. See [Arena](https://arena.ai/leaderboard).
 
-¹¹ **Grok 4.5** (xAI, released July 8, 2026) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount).
+¹¹ **Grok 4.5** (xAI, released July 8, 2026) is now a **GitHub Copilot native** model (GA, Versatile). AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount; Copilot long-context >200K tier $4.00 / $1.00 / $12.00). See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
 
 ¹² **Qwen 3.7 price cuts** (verified August 7, 2026): `qwen3.7-max` dropped from $2.50 / $7.50 to **$1.475 / $4.425** per 1M input/output (cached $0.295), and `qwen3.7-plus` dropped from $0.40 / $1.60 to **$0.32 / $1.28** per 1M (cached $0.064).
 
 ¹³ **Gemini 3.7 Flash** (Google, released August 13, 2026) is GitHub Copilot native (GA, Versatile). AA Intelligence Index **56** (high preset) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-7-flash). **Promotional pricing** of $0.75 / $3.75 per MTok input/output ($0.075 cached) through December 31, 2026, then $1.50 / $7.50. 1M context, text + image + speech + video input, and the fastest model on AA's leaderboard (340 t/s).
 
-¹⁴ **Grok 4.6** (xAI, released August 12, 2026) is included for comparison — it is not a GitHub Copilot native model nor a custom-endpoint model in this repo. AA Intelligence Index **61** (high preset, #6/188). 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6) and the [xAI announcement](https://x.ai/news/grok-4-6).
+¹⁴ **Grok 4.6** (xAI, released August 12, 2026) is now a **GitHub Copilot native** model (GA). AA Intelligence Index **61** (high preset, #6/188). 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6), the [xAI announcement](https://x.ai/news/grok-4-6), and the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
+
+¹⁵ **Claude Fable 5** (Anthropic, released June 9, 2026) is now a **GitHub Copilot native** model (GA, Powerful). AA Intelligence Index **62.1** (#3/188) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-fable-5). **#1 in all four Arena leaderboards** (Text, Agent, Code, Overall). 1M context, text + image input, adaptive reasoning. Priced at $10.00 / $50.00 per MTok input/output ($1.00 cached, 90% cache discount). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
+
+¹⁶ **Qwen 3.6 Plus** (DashScope, released April 2, 2026) — AA Intelligence Index **40.0**. Priced at $0.50 / $3.00 per MTok input/output ($0.05 cached). 1M context, text + image + video input. **Deprecated** in favor of Qwen 3.7 Plus.
 
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
