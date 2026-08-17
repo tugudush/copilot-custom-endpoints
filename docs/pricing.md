@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** August 15, 2026 — **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
+> **Updated:** August 17, 2026 — **GLM 5.2** OpenRouter promo refreshed (footnote ⁴): NovitaAI cut to 48% off; Open Sail Research now cheapest at $0.50 / $3.15. August 15: **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -63,7 +63,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite. As of August 7, 2026, **GLM 5V Turbo (35.0)** is the only remaining estimate in this table — MiMo V2.5 is now a measured 38.0.
 
-⁴ GLM 5.2 is Z.ai's newly released flagship model (Opus-level intelligence / 1M Solid context). AA Intelligence Index score (**52.6**) and pricing of **$1.40** (input), **$0.26** (cached), and **$4.40** (output) per 1M tokens confirmed on its [model page](https://artificialanalysis.ai/models/glm-5-2). Session cost is identical to GLM 5.1 (~$1.14). OpenRouter's cheapest provider (NovitaAI) is currently running a temporary 52%-off promo at $0.679 / $2.134 per 1M.
+⁴ GLM 5.2 is Z.ai's newly released flagship model (Opus-level intelligence / 1M Solid context). AA Intelligence Index score (**52.6**) and pricing of **$1.40** (input), **$0.26** (cached), and **$4.40** (output) per 1M tokens confirmed on its [model page](https://artificialanalysis.ai/models/glm-5-2). Session cost is identical to GLM 5.1 (~$1.14). As of August 17, 2026, OpenRouter's cheapest provider is **Open Sail Research** at **$0.50 / $3.15** per 1M (listed price, no promo); NovitaAI's temporary promo has been reduced from 52% to **48% off** (effective **$0.7238 / $2.275** per 1M, cache reads $0.1344).
 
 ⁵ **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads (list prices shown above; effective rates after the standing 50% off are $0.45/$1.80/$0.09 ≤512K and $0.90/$3.60/$0.18 >512K), in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. To enable it on the custom-endpoint entry, add `"service_tier": "priority"` to the `requestBody` of the single `MiniMax-M3` block (and remove it to go back to Standard). See [docs/models/minimax.md](models/minimax.md#4-m3-priority-tier-optional) and [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
 
@@ -111,7 +111,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions** or **23 Opus sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: August 15, 2026. Always check the official pages for the latest rates:
+> Prices last verified: August 17, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
