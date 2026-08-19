@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** August 17, 2026 — **GLM 5.2** OpenRouter promo refreshed (footnote ⁴): NovitaAI cut to 48% off; Open Sail Research now cheapest at $0.50 / $3.15. August 15: **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
+> **Updated:** August 19, 2026 — **GLM 5.3** added (footnote ¹⁸): Z.ai's new flagship (August 18, 2026), AA Intelligence Index **59.5**, priced identically to GLM 5.2 ($1.40 / $0.26 / $4.40). August 17: **GLM 5.2** OpenRouter promo refreshed (footnote ⁴): NovitaAI cut to 48% off; Open Sail Research now cheapest at $0.50 / $3.15. August 15: **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -35,6 +35,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Gemini 3.7 Flash** ¹⁵    | Google    | **~$0.013**           | **56**             | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
 | **Qwen 3.6 Plus** ¹⁷       | DashScope | **~$0.014**           | **40.0**           | $0.50                         | $0.05                         | $3.00                         | ~$0.55       | 1M             |
 | **Gemini 3.6 Flash** ⁹     | Google    | **~$0.015**           | **51.6**           | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
+| **GLM 5.3** ¹⁸             | Z.ai      | **~$0.019**           | **59.5**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
 | **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
@@ -63,7 +64,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite. As of August 7, 2026, **GLM 5V Turbo (35.0)** is the only remaining estimate in this table — MiMo V2.5 is now a measured 38.0.
 
-⁴ GLM 5.2 is Z.ai's newly released flagship model (Opus-level intelligence / 1M Solid context). AA Intelligence Index score (**52.6**) and pricing of **$1.40** (input), **$0.26** (cached), and **$4.40** (output) per 1M tokens confirmed on its [model page](https://artificialanalysis.ai/models/glm-5-2). Session cost is identical to GLM 5.1 (~$1.14). As of August 17, 2026, OpenRouter's cheapest provider is **Open Sail Research** at **$0.50 / $3.15** per 1M (listed price, no promo); NovitaAI's temporary promo has been reduced from 52% to **48% off** (effective **$0.7238 / $2.275** per 1M, cache reads $0.1344).
+⁴ GLM 5.2 was Z.ai's previous flagship (superseded by **GLM 5.3** on August 18, 2026 — see footnote ¹⁸). AA Intelligence Index score (**52.6**) and pricing of **$1.40** (input), **$0.26** (cached), and **$4.40** (output) per 1M tokens confirmed on its [model page](https://artificialanalysis.ai/models/glm-5-2). Session cost is identical to GLM 5.1 (~$1.14). As of August 17, 2026, OpenRouter's cheapest provider is **Open Sail Research** at **$0.50 / $3.15** per 1M (listed price, no promo); NovitaAI's temporary promo has been reduced from 52% to **48% off** (effective **$0.7238 / $2.275** per 1M, cache reads $0.1344).
 
 ⁵ **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads (list prices shown above; effective rates after the standing 50% off are $0.45/$1.80/$0.09 ≤512K and $0.90/$3.60/$0.18 >512K), in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. To enable it on the custom-endpoint entry, add `"service_tier": "priority"` to the `requestBody` of the single `MiniMax-M3` block (and remove it to go back to Standard). See [docs/models/minimax.md](models/minimax.md#4-m3-priority-tier-optional) and [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
 
@@ -91,6 +92,8 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ¹⁷ **Qwen 3.6 Plus** (DashScope, released **April 2, 2026**) — AA Intelligence Index **40.0**. Priced at **$0.50 / $0.05 / $3.00** per 1M input/cached/output (≤256K input tier; explicit cache read $0.05). 1M context window, text + image + video input, reasoning model. **Deprecated** — superseded by Qwen 3.7 Plus; AA marks it deprecated and no longer refreshes performance benchmarks beyond the default workload. See the [AA model page](https://artificialanalysis.ai/models/qwen3-6-plus).
 
+¹⁸ **GLM 5.3** is Z.ai's newest flagship (released **August 18, 2026**) — same base model as GLM 5.2 with post-training improvements (~50% coding gain over 5.2 on Z.ai Code Bench). AA Intelligence Index **59.5** (OpenRouter's AA-sourced benchmark; AA's [model page](https://artificialanalysis.ai/models/glm-5-3) lists a rounded **60**, **#8/182**), Coding **74.8**, Agentic **59.1**. Pricing is identical to GLM 5.2: **$1.40** input, **$0.26** cached, **$4.40** output per 1M tokens (so the modeled session cost is the same, ~$1.14). 1M context window, 753B params, text-only. Always-thinking: `thinking.type` only supports `enabled` and `reasoning_effort` accepts `low` / `high` / `max` (default `max`). See the [Z.ai model page](https://docs.z.ai/guides/llm/glm-5.3).
+
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
 > **Notes:**
@@ -105,13 +108,13 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
 > - **MiniMax M3** uses **tiered pricing** — input price doubles above 512K input tokens. Cache hits are priced at 20% of the input rate ($0.12/M ≤512K, $0.24/M >512K). A **permanent 50% off** discount applies to all MiniMax-M3 pay-as-you-go usage (Standard and Priority tiers), making the effective rates half the list prices above.
 > - **MiniMax M3 Priority** is not a separate model — it is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body. Priority costs **1.5× Standard** across input, output, and cache reads, in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours — typically 15:00–17:30 weekdays). Capabilities, context window (1M, guaranteed 512K), vision, tool calling, rate limits (200 RPM / 10M TPM), and thinking modes are identical to Standard. See [docs/research/minimax-m3-priority.md](research/minimax-m3-priority.md) for the full breakdown.
-> - **GLM** models support prompt caching — cache hits are priced at $0.24/M for 5V Turbo and $0.26/M for 5.1.
+> - **GLM** models support prompt caching — cache hits are priced at $0.26/M for 5.3, 5.2, and 5.1; $0.24/M for 5V Turbo.
 > - **MiMo** offers a **Token Plan** subscription model with discounted rates and a free cache-writing promotion.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions** or **23 Opus sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: August 17, 2026. Always check the official pages for the latest rates:
+> Prices last verified: August 19, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)

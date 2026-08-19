@@ -29,7 +29,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **Qwen 3.7 Max**                 | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
 | **Qwen 3.8 Max**                 | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
 | **MiniMax M3**                   | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
-| **GLM 5.2 / 5.1**                | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **GLM 5.3 / 5.2 / 5.1**          | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **GLM 5V Turbo**                 | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **DeepSeek V4 Pro / Flash 0731** | DeepSeek  | No (uses an extension) | ❌ (0731)              | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 
@@ -120,6 +120,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Gemini 3.7 Flash** ¹³    | Google    | **~$0.013**           | **56**             | ~$0.75       | ✅     | 1M             |
 | **Qwen 3.6 Plus** ¹⁶       | DashScope | **~$0.014**           | **40.0**           | ~$0.55       | ✅     | 1M             |
 | **Gemini 3.6 Flash** ⁸     | Google    | **~$0.015**           | **51.6**           | ~$0.75       | ✅     | 1M             |
+| **GLM 5.3** ¹⁷             | Z.ai      | **~$0.019**           | **59.5**           | ~$1.14       | ❌     | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | ~$0.88       | ✅     | 262K           |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | ~$0.83       | ❌     | 400K           |
 | **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | ~$0.88       | ✅     | 262K           |
@@ -174,6 +175,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ¹⁶ **Qwen 3.6 Plus** (DashScope, released April 2, 2026) — AA Intelligence Index **40.0**. Priced at $0.50 / $3.00 per MTok input/output ($0.05 cached). 1M context, text + image + video input. **Deprecated** in favor of Qwen 3.7 Plus.
 
+¹⁷ **GLM 5.3** (Z.ai, released August 18, 2026) — new flagship. AA Intelligence Index **59.5** (OpenRouter AA-sourced; AA page lists rounded **60**, #8/182). Priced identically to GLM 5.2: $1.40 / $0.26 / $4.40 per 1M input/cached/output. 1M context, text-only, always-thinking with `reasoning_effort` (low/high/max, default max). Released too recently for Arena rankings. See the [AA model page](https://artificialanalysis.ai/models/glm-5-3) and [Z.ai docs](https://docs.z.ai/guides/llm/glm-5.3).
+
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
@@ -186,11 +189,11 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 >
 > **MiniMax M3** (45.4, ~$0.27/session) is still the best **direct** custom-endpoint option — no proxy or extension, vision, 1M context, strong coding — but it no longer leads on value now that DeepSeek V4 Flash scores higher at a third of the cost. Pick M3 when you want a plug-and-play custom endpoint with vision.
 >
-> For **plan mode / architecture & design thinking**, **Qwen 3.8 Max**, **Kimi K3**, **GLM 5.2**, **GPT-5.6 Luna**, and **DeepSeek V4 Flash 0731** are worth considering:
+> For **plan mode / architecture & design thinking**, **Qwen 3.8 Max**, **Kimi K3**, **GLM 5.3**, **GPT-5.6 Luna**, and **DeepSeek V4 Flash 0731** are worth considering:
 >
 > - **Qwen 3.8 Max** — scores **58.1** (#5 overall, the #2 custom-endpoint model) — the default planning pick. Near-flagship intelligence at ~$1.60/session (roughly half Kimi K3's cost), with 1M context and vision. Strong for whole-codebase planning, architecture, and large spec review.
 > - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**59.7**, #4 overall). Best for complex reasoning, long-horizon planning, and architecture decisions when you want the absolute best — but at ~$3.00/session it's ~2× Qwen 3.8 Max for +1.6 points, so **reserve it for hard problems**.
-> - **GLM 5.2** — scores **52.6**, reasoning-heavy planning at a lower price. 1M lossless context, ideal for whole-codebase planning and large spec review. ~$1.14/session is ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
+> - **GLM 5.3** — new flagship, scores **59.5** (now the #2 custom-endpoint model, just behind Kimi K3's 59.7) at the same ~$1.14/session as GLM 5.2. 1M context, text-only, always-thinking. Best-in-class agentic coding per Z.ai (50% gain over 5.2 on their Code Bench) — ideal for whole-codebase planning and large spec review. ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 > - **GPT-5.6 Luna** (Copilot native) — scores **52.3** and is now the cheapest 50+ model. OpenAI cut its API price to $0.20/$1.20 per 1M input/output tokens; in Copilot, the equivalent benefit is lower AI-credit consumption, while your subscription price and monthly allowance stay unchanged. Ideal for high-quality planning on a budget.
 > - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** at ~$0.10/session — the budget planning pick. Text-only, so pair it with a vision model for design review, but for reasoning-heavy planning it delivers near-premium scores at a fraction of the cost.
 >
