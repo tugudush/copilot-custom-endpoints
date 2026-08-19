@@ -20,20 +20,21 @@
 | Billing                | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
 | Vision                 | ✅ Yes (`glm-5v-turbo` only)                                                                                       |
 | Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)                                                              |
-| Context                | 1M (`glm-5.2` Solid Lossless Context)                                                                              |
+| Context                | 1M (`glm-5.3` / `glm-5.2` Solid Lossless Context)                                                                  |
 | Max output             | 131072                                                                                                             |
-| Required `requestBody` | `thinking: { type: "enabled" }` (recommended)                                                                      |
+| Required `requestBody` | `thinking: { type: "enabled" }` + `reasoning_effort: "max"` (recommended)                                          |
 | Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`                                                                    |
 | Endpoint (China)       | `https://open.bigmodel.cn/api/paas/v4/chat/completions`                                                            |
 | Auth                   | `Authorization: Bearer $ZAI_API_KEY`                                                                               |
 
 ### Models
 
-| Model          | Vision | Context | Max output | Notes                                                                                                            |
-| -------------- | ------ | ------- | ---------- | ---------------------------------------------------------------------------------------------------------------- |
-| `glm-5.2`      | ❌     | 1M      | 131072     | New Flagship — "Opus-level" long-context engineering & agentic coding; thinking `enabled` ($1.40 / $4.40 per 1M) |
-| `glm-5.1`      | ❌     | 200K    | 131072     | Previous flagship — long-horizon / 8h autonomous work; thinking `enabled` ($1.40 / $4.40 per 1M)                 |
-| `glm-5v-turbo` | ✅     | 200K    | 131072     | Multimodal **coding** model — vision-based agentic coding; thinking `enabled` ($1.20 / $4.00 per 1M)             |
+| Model          | Vision | Context | Max output | Notes                                                                                                                                                          |
+| -------------- | ------ | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `glm-5.3`      | ❌     | 1M      | 131072     | **New flagship** — ~50% coding gain over 5.2 on Z.ai Code Bench; always-thinking, `reasoning_effort` `low`/`high`/`max` (default `max`) ($1.40 / $4.40 per 1M) |
+| `glm-5.2`      | ❌     | 1M      | 131072     | Previous flagship — "Opus-level" long-context engineering & agentic coding; thinking `enabled` ($1.40 / $4.40 per 1M)                                          |
+| `glm-5.1`      | ❌     | 200K    | 131072     | Previous flagship — long-horizon / 8h autonomous work; thinking `enabled` ($1.40 / $4.40 per 1M)                                                               |
+| `glm-5v-turbo` | ✅     | 200K    | 131072     | Multimodal **coding** model — vision-based agentic coding; thinking `enabled` ($1.20 / $4.00 per 1M)                                                           |
 
 > Other GLM models (`glm-5`, `glm-5-turbo`, `glm-4.5-air`, etc.) are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
@@ -63,6 +64,22 @@
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
+    {
+      "id": "glm-5.3",
+      "name": "GLM 5.3 (text)",
+      "url": "https://api.z.ai/api/paas/v4/chat/completions",
+      "toolCalling": true,
+      "vision": false,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "enabled" },
+        "reasoning_effort": "max",
+        "temperature": 1.0,
+        "top_p": 0.95
+      }
+    },
     {
       "id": "glm-5.2",
       "name": "GLM 5.2 (text)",
@@ -134,25 +151,27 @@
 - **Sampling:** recommended `temperature: 1`, `top_p: 0.95`. Z.ai's `temperature` is **hard-capped at `1.0` server-side** — sending `> 1.0` will reject with a 400. Don't set `do_sample: false` from `requestBody` (it would make `temperature`/`top_p` be ignored).
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 - **`clear_thinking` defaults to `true` server-side**, which strips historical `reasoning_content` from prior turns before sending to the model. This is what makes multi-turn tool loops stable. **Do not** set `clear_thinking: false` from `requestBody` — VS Code can't forward `reasoning_content` and the request will fail.
-- **Vision** is supported only on `glm-5v-turbo` (OpenAI `image_url` content-part format — external URLs and base64 data URIs both work). `glm-5.2` and `glm-5.1` are text-only. For turnkey VS Code video understanding via `glm-5v-turbo`, see [**Video Context MCP**](https://www.videocontextmcp.com/).
+- **GLM 5.3 is always-thinking** — `thinking.type` only supports `enabled`; disabling reasoning is **not supported**. `reasoning_effort` accepts `low`, `high`, or `max` (default `max`; `max` recommended for coding). If you previously sent `thinking.type: "disabled"` for other GLM models, switch it to `enabled` with `reasoning_effort: "low"` when moving to `glm-5.3`.
+- **Vision** is supported only on `glm-5v-turbo` (OpenAI `image_url` content-part format — external URLs and base64 data URIs both work). `glm-5.3`, `glm-5.2` and `glm-5.1` are text-only. For turnkey VS Code video understanding via `glm-5v-turbo`, see [**Video Context MCP**](https://www.videocontextmcp.com/).
 - **Context caching** is automatic — `usage.prompt_tokens_details.cached_tokens` reports cache hits; cache writes are currently free.
 
 ## Troubleshooting
 
-| Symptom                                                  | Likely cause                                                          | Fix                                                                  |
-| -------------------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Model not in picker                                      | Config not reloaded, or JSON syntax error                             | Restart VS Code; validate JSON                                       |
-| HTTP 400 on the first turn                               | `requestBody` removed `do_sample` semantics or invalid `temperature`  | Ensure `temperature ≤ 1.0` and `top_p ∈ [0.01, 1.0]`                 |
-| `invalid temperature: only values ≤ 1.0 are allowed`     | Set `temperature > 1.0`                                               | Lower it to `1.0` or below                                           |
-| Tool call succeeds but follow-up turn degrades           | `clear_thinking: false` set in `requestBody`                          | Remove the `clear_thinking` key and let the server default to `true` |
-| `tool_choice: required` rejected                         | GLM only supports `auto`                                              | Don't override `tool_choice` (VS Code's default is `auto`)           |
-| `Failed to download multimodal content` on a vision call | Z.ai's servers couldn't reach the image URL                           | Use a base64 `data:image/...` URI instead                            |
-| 401 Unauthorized                                         | Region mismatch (international key used on China URL, or vice versa)  | Match your key to the regional endpoint                              |
-| Upstream complains about `reasoning_content is missing`  | You set `clear_thinking: false` from a client that doesn't forward it | Drop `clear_thinking` from `requestBody`                             |
-| 429 / "concurrency limit exceeded"                       | Too many in-flight requests                                           | Reduce concurrent agent sessions, or upgrade your Z.ai plan          |
+| Symptom                                                  | Likely cause                                                          | Fix                                                                           |
+| -------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Model not in picker                                      | Config not reloaded, or JSON syntax error                             | Restart VS Code; validate JSON                                                |
+| HTTP 400 on the first turn                               | `requestBody` removed `do_sample` semantics or invalid `temperature`  | Ensure `temperature ≤ 1.0` and `top_p ∈ [0.01, 1.0]`                          |
+| `invalid temperature: only values ≤ 1.0 are allowed`     | Set `temperature > 1.0`                                               | Lower it to `1.0` or below                                                    |
+| Tool call succeeds but follow-up turn degrades           | `clear_thinking: false` set in `requestBody`                          | Remove the `clear_thinking` key and let the server default to `true`          |
+| `tool_choice: required` rejected                         | GLM only supports `auto`                                              | Don't override `tool_choice` (VS Code's default is `auto`)                    |
+| `thinking.type: disabled` rejected on `glm-5.3`          | GLM 5.3 only supports enabled thinking; reasoning cannot be disabled  | Use `thinking: { "type": "enabled" }` + `reasoning_effort: "low"` (or higher) |
+| `Failed to download multimodal content` on a vision call | Z.ai's servers couldn't reach the image URL                           | Use a base64 `data:image/...` URI instead                                     |
+| 401 Unauthorized                                         | Region mismatch (international key used on China URL, or vice versa)  | Match your key to the regional endpoint                                       |
+| Upstream complains about `reasoning_content is missing`  | You set `clear_thinking: false` from a client that doesn't forward it | Drop `clear_thinking` from `requestBody`                                      |
+| 429 / "concurrency limit exceeded"                       | Too many in-flight requests                                           | Reduce concurrent agent sessions, or upgrade your Z.ai plan                   |
 
 ## Pricing
 
 All prices are **USD per 1M tokens** (cache miss) on the Z.ai international platform. Per-model input/output rates are listed in the `Cost` column of the [Models](#models) table above.
 
-> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18% of the input price (e.g. `$1.40` input → `$0.25` cached for `glm-5.1` / `glm-5.2`). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).
+> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18% of the input price (e.g. `$1.40` input → `$0.26` cached for `glm-5.3` / `glm-5.2` / `glm-5.1`). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).

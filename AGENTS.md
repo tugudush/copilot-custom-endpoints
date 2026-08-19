@@ -13,6 +13,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
 - **GLM 5.1 / GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 - **GLM 5.2** (Z.ai / Zhipu AI) — newly validated (June 21, 2026). Same direct integration pattern as GLM 5.1. Features 1M Solid lossless context and a published AA Intelligence Index score of **52.6**. No proxy needed. See [docs/models/glm.md](docs/models/glm.md).
+- **GLM 5.3** (Z.ai / Zhipu AI) — released **August 18, 2026**. Same direct integration pattern as GLM 5.2, no proxy needed. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). 1M context, text-only, 753B params. AA Intelligence Index **59.5** (OpenRouter AA-sourced; AA page rounds to 60, #8/182). Priced identically to GLM 5.2 ($1.40 / $0.26 / $4.40). See [docs/models/glm.md](docs/models/glm.md).
 
 **⚠️ VS Code now requires `chat.lm.utilitySmallModel` to be set for BYOK/custom-endpoint users.** Open Settings → search "Chat: Utility Small Model" → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without it, utility flows like token counting and prompt truncation may silently fail. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
 
@@ -26,7 +27,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal) and V2.5 Pro (text, largest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.1 and GLM 5V Turbo (Z.ai / Zhipu AI).
-- [docs/models/glm.md](docs/models/glm.md) — GLM 5.2 (new flagship, 1M context, AA Intelligence Index **52.6**).
+- [docs/models/glm.md](docs/models/glm.md) — GLM 5.3 (new flagship, 1M context, AA Intelligence Index **59.5**) and GLM 5.2 (previous flagship, **52.6**).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4 extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
@@ -140,11 +141,12 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 
 ### GLM (Z.ai / Zhipu AI)
 
-- Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.1` and `glm-5v-turbo`.
+- Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.3`, `glm-5.2`, `glm-5.1`, and `glm-5v-turbo`.
 - Recommended `requestBody`: `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95`. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
+- **GLM 5.3 is always-thinking** — `thinking.type` only supports `enabled` (disabling reasoning is not supported) and `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Migration: if you previously sent `thinking.type: "disabled"`, switch to `enabled` + `reasoning_effort: "low"` before pointing at `glm-5.3`.
 - `tool_choice` only supports `auto`; VS Code's default is `auto` so no override needed.
 - `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. Do **not** set `clear_thinking: false` from `requestBody`.
-- Vision is supported only on `glm-5v-turbo`. `glm-5.1` is text-only.
+- Vision is supported only on `glm-5v-turbo`. `glm-5.3`, `glm-5.2`, and `glm-5.1` are text-only.
 - Endpoint (international): `https://api.z.ai/api/paas/v4/chat/completions`. China: `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 - Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).
 - The **GLM Coding Plan** endpoint is **not** usable from VS Code custom endpoints — it is locked to a curated list of officially supported tools. Use the general PaaS endpoint above.
