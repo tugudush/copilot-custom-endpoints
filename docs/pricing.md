@@ -1,6 +1,6 @@
 # Pricing
 
-> **Updated:** August 19, 2026 — **GLM 5.3** added (footnote ¹⁸): Z.ai's new flagship (August 18, 2026), AA Intelligence Index **59.5**, priced identically to GLM 5.2 ($1.40 / $0.26 / $4.40). August 17: **GLM 5.2** OpenRouter promo refreshed (footnote ⁴): NovitaAI cut to 48% off; Open Sail Research now cheapest at $0.50 / $3.15. August 15: **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
+> **Updated:** August 20, 2026 — **DeepSeek V4 Flash 0731** and **DeepSeek V4 Pro 0813** refreshed (footnote ¹⁹): current builds, AA Intelligence Index **51.8** / **53.2**, and peak/off-peak API pricing effective August 16. Pro's official GA agent benchmark update is documented in [docs/models/deepseek.md](models/deepseek.md). August 19: **GLM 5.3** added (footnote ¹⁸): Z.ai's new flagship (August 18, 2026), AA Intelligence Index **59.5**, priced identically to GLM 5.2 ($1.40 / $0.26 / $4.40). August 17: **GLM 5.2** OpenRouter promo refreshed (footnote ⁴): NovitaAI cut to 48% off; Open Sail Research now cheapest at $0.50 / $3.15. August 15: **Claude Fable 5** and **Qwen 3.6 Plus** added (footnotes ¹⁶–¹⁷); **Grok 4.5 / 4.6** and **Claude Fable 5** are now **GitHub Copilot native** (footnotes ¹², ¹⁴, ¹⁶). **Grok 4.6** and **Gemini 3.7 Flash** added August 14 (footnotes ¹⁴–¹⁵). **Gemini 3.6 Flash promotional price cut** to $0.75 / $3.75 (footnote ⁹). **Qwen 3.7 Max / 3.7 Plus price cuts** (see footnote ¹³). OpenRouter is running limited-time promos on GPT-5.6 Terra/Luna (⁸), GLM 5.2 (⁴), GLM 5.1, MiMo V2.5/V2.5 Pro, and MiniMax M3.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -18,47 +18,47 @@
 >
 > Code completions remain unlimited and **not** billed. Auto model selection gets a 10% discount.
 
-All prices below are in **USD per 1M tokens** (non-cached). To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M).
+All prices below are in **USD per 1M tokens** (non-cached). To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). DeepSeek V4 rows use peak rates for the comparison; its official off-peak rates are half.
 
 All models are listed together below, sorted by Cost per intelligence ascending (lower is better). Models without a Cost per intelligence are ordered by estimated session cost ascending. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
-| Model                      | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
-| -------------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
-| **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0019**          | **51.8**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
-| **MiMo V2.5**              | Xiaomi    | **~$0.0026**          | **38.0**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
-| **GPT-5.6 Luna**           | OpenAI    | **~$0.0042**          | **52.3**           | $0.20                         | $0.02                         | $1.20                         | ~$0.22       | 1M             |
-| **MiniMax M3**             | MiniMax   | **~$0.0060**          | **45.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |
-| **DeepSeek V4 Pro**        | DeepSeek  | **~$0.0066**          | **45.3**           | $0.435                        | $0.003625                     | $0.87                         | ~$0.30       | 1M             |
-| **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0070**          | **42.9**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
-| **Qwen 3.7 Plus** ¹³       | DashScope | **~$0.0074**          | **39.4**           | $0.32 (≤256K) / $0.40 (>256K) | $0.064                        | $1.28 (≤256K) / $1.60 (>256K) | ~$0.29       | 1M             |
-| **MiniMax M3 Priority**⁵   | MiniMax   | **~$0.0090**          | **45.4**           | $0.90 (≤512K) / $1.80 (>512K) | $0.18 (≤512K) / $0.36 (>512K) | $3.60 (≤512K) / $7.20 (>512K) | ~$0.41       | 1M             |
-| **Gemini 3.7 Flash** ¹⁵    | Google    | **~$0.013**           | **56**             | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
-| **Qwen 3.6 Plus** ¹⁷       | DashScope | **~$0.014**           | **40.0**           | $0.50                         | $0.05                         | $3.00                         | ~$0.55       | 1M             |
-| **Gemini 3.6 Flash** ⁹     | Google    | **~$0.015**           | **51.6**           | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
-| **GLM 5.3** ¹⁸             | Z.ai      | **~$0.019**           | **59.5**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
-| **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
-| **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
-| **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
-| **GLM 5.2** ⁴              | Z.ai      | **~$0.022**           | **52.6**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
-| **Qwen 3.7 Max** ¹³        | DashScope | **~$0.025**           | **46.7**           | $1.475 (≤1M)                  | $0.295                        | $4.425 (≤1M)                  | ~$1.18       | 1M             |
-| **Grok 4.6** ¹⁴            | xAI       | **~$0.026**           | **61**             | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
-| **Qwen 3.8 Max** ¹¹        | DashScope | **~$0.028**           | **58.1**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
-| **GLM 5.1**                | Z.ai      | **~$0.028**           | **41.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
-| **GLM 5V Turbo**           | Z.ai      | **~$0.029**           | **35.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
-| **Grok 4.5** ¹²            | xAI       | **~$0.029**           | **55.8**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
-| **Gemini 3.5 Flash**       | Google    | **~$0.032**           | **52.0**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
-| **GPT-5.6 Terra**          | OpenAI    | **~$0.039**           | **56.6**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
-| **Gemini 3.1 Pro**         | Google    | **~$0.046**           | **47.7**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
-| **Kimi K3** ⁷              | Moonshot  | **~$0.050**           | **59.7**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
-| **GPT-5.4**                | OpenAI    | **~$0.052**           | **53.1**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
-| **Claude Sonnet 5** ⁶      | Anthropic | **~$0.054**           | **55.3**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
-| **Claude Sonnet 4.6**      | Anthropic | **~$0.062**           | **48.4**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
-| **Claude Opus 5** ¹⁰       | Anthropic | **~$0.079**           | **63.1**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
-| **Claude Opus 4.8**        | Anthropic | **~$0.087**           | **57.3**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
-| **GPT-5.6 Sol**            | OpenAI    | **~$0.090**           | **60.9**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
-| **Claude Opus 4.7**        | Anthropic | **~$0.091**           | **55.0**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
-| **GPT-5.5**                | OpenAI    | **~$0.098**           | **56.3**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
-| **Claude Fable 5** ¹⁶      | Anthropic | **~$0.161**           | **62.1**           | $10.00                        | $1.00                         | $50.00                        | ~$10.00      | 1M             |
+| Model                         | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
+| ----------------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
+| **MiMo V2.5**                 | Xiaomi    | **~$0.0026**          | **38.0**           | $0.14                         | $0.0028                       | $0.28                         | ~$0.10       | 1M             |
+| **GPT-5.6 Luna**              | OpenAI    | **~$0.0042**          | **52.3**           | $0.20                         | $0.02                         | $1.20                         | ~$0.22       | 1M             |
+| **MiniMax M3**                | MiniMax   | **~$0.0060**          | **45.4**           | $0.60 (≤512K) / $1.20 (>512K) | $0.12 (≤512K) / $0.24 (>512K) | $2.40 (≤512K) / $4.80 (>512K) | ~$0.27       | 1M             |
+| **DeepSeek V4 Flash 0731** ¹⁹ | DeepSeek  | **~$0.0068**          | **51.8**           | $0.44                         | $0.014                        | $1.32                         | ~$0.35       | 1M             |
+| **MiMo V2.5 Pro**             | Xiaomi    | **~$0.0070**          | **42.9**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
+| **Qwen 3.7 Plus** ¹³          | DashScope | **~$0.0074**          | **39.4**           | $0.32 (≤256K) / $0.40 (>256K) | $0.064                        | $1.28 (≤256K) / $1.60 (>256K) | ~$0.29       | 1M             |
+| **MiniMax M3 Priority**⁵      | MiniMax   | **~$0.0090**          | **45.4**           | $0.90 (≤512K) / $1.80 (>512K) | $0.18 (≤512K) / $0.36 (>512K) | $3.60 (≤512K) / $7.20 (>512K) | ~$0.41       | 1M             |
+| **Gemini 3.7 Flash** ¹⁵       | Google    | **~$0.013**           | **56**             | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
+| **Qwen 3.6 Plus** ¹⁷          | DashScope | **~$0.014**           | **40.0**           | $0.50                         | $0.05                         | $3.00                         | ~$0.55       | 1M             |
+| **Gemini 3.6 Flash** ⁹        | Google    | **~$0.015**           | **51.6**           | $0.75                         | $0.075                        | $3.75                         | ~$0.75       | 1M             |
+| **GLM 5.3** ¹⁸                | Z.ai      | **~$0.019**           | **59.5**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
+| **Kimi K2.6**                 | Moonshot  | **~$0.020**           | **45.0**           | $0.95                         | $0.16                         | $4.00                         | ~$0.88       | 256K           |
+| **DeepSeek V4 Pro 0813** ¹⁹   | DeepSeek  | **~$0.020**           | **53.2**           | $1.32                         | $0.044                        | $3.96                         | ~$1.06       | 1M             |
+| **GPT-5.4 mini**              | OpenAI    | **~$0.020**           | **40.9**           | $0.75                         | $0.075                        | $4.50                         | ~$0.83       | 400K           |
+| **Kimi K2.7 Code**            | Moonshot  | **~$0.020**           | **43.0**           | $0.95                         | $0.19                         | $4.00                         | ~$0.88       | 262K           |
+| **GLM 5.2** ⁴                 | Z.ai      | **~$0.022**           | **52.6**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
+| **Qwen 3.7 Max** ¹³           | DashScope | **~$0.025**           | **46.7**           | $1.475 (≤1M)                  | $0.295                        | $4.425 (≤1M)                  | ~$1.18       | 1M             |
+| **Grok 4.6** ¹⁴               | xAI       | **~$0.026**           | **61**             | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
+| **Qwen 3.8 Max** ¹¹           | DashScope | **~$0.028**           | **58.1**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
+| **GLM 5.1**                   | Z.ai      | **~$0.028**           | **41.0**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 200K           |
+| **GLM 5V Turbo**              | Z.ai      | **~$0.029**           | **35.0** ³         | $1.20                         | $0.24                         | $4.00                         | ~$1.00       | 200K           |
+| **Grok 4.5** ¹²               | xAI       | **~$0.029**           | **55.8**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
+| **Gemini 3.5 Flash**          | Google    | **~$0.032**           | **52.0**           | $1.50                         | $0.15                         | $9.00                         | ~$1.65       | 1M             |
+| **GPT-5.6 Terra**             | OpenAI    | **~$0.039**           | **56.6**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
+| **Gemini 3.1 Pro**            | Google    | **~$0.046**           | **47.7**           | $2.00¹                        | $0.20                         | $12.00¹                       | ~$2.20       | 1M             |
+| **Kimi K3** ⁷                 | Moonshot  | **~$0.050**           | **59.7**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
+| **GPT-5.4**                   | OpenAI    | **~$0.052**           | **53.1**           | $2.50                         | $0.25                         | $15.00                        | ~$2.75       | 1M             |
+| **Claude Sonnet 5** ⁶         | Anthropic | **~$0.054**           | **55.3**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
+| **Claude Sonnet 4.6**         | Anthropic | **~$0.062**           | **48.4**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
+| **Claude Opus 5** ¹⁰          | Anthropic | **~$0.079**           | **63.1**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
+| **Claude Opus 4.8**           | Anthropic | **~$0.087**           | **57.3**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
+| **GPT-5.6 Sol**               | OpenAI    | **~$0.090**           | **60.9**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
+| **Claude Opus 4.7**           | Anthropic | **~$0.091**           | **55.0**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
+| **GPT-5.5**                   | OpenAI    | **~$0.098**           | **56.3**           | $5.00                         | $0.50                         | $30.00                        | ~$5.50       | 1M             |
+| **Claude Fable 5** ¹⁶         | Anthropic | **~$0.161**           | **62.1**           | $10.00                        | $1.00                         | $50.00                        | ~$10.00      | 1M             |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
 
@@ -94,11 +94,13 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 ¹⁸ **GLM 5.3** is Z.ai's newest flagship (released **August 18, 2026**) — same base model as GLM 5.2 with post-training improvements (~50% coding gain over 5.2 on Z.ai Code Bench). AA Intelligence Index **59.5** (OpenRouter's AA-sourced benchmark; AA's [model page](https://artificialanalysis.ai/models/glm-5-3) lists a rounded **60**, **#8/182**), Coding **74.8**, Agentic **59.1**. Pricing is identical to GLM 5.2: **$1.40** input, **$0.26** cached, **$4.40** output per 1M tokens (so the modeled session cost is the same, ~$1.14). 1M context window, 753B params, text-only. Always-thinking: `thinking.type` only supports `enabled` and `reasoning_effort` accepts `low` / `high` / `max` (default `max`). See the [Z.ai model page](https://docs.z.ai/guides/llm/glm-5.3).
 
+¹⁹ **DeepSeek V4 Flash 0731** and **DeepSeek V4 Pro 0813** are the current API builds. Flash's AA Intelligence Index is **51.8** and Pro's is **53.2** (current OpenRouter/Artificial Analysis snapshots). Both are text-only with 1M context; Flash has 284B total / 13B active parameters and Pro has 1.6T total / 49B active. DeepSeek's official V4 pricing changed on August 16, 2026 to peak/off-peak rates: Flash is **$0.44 / $0.014 / $1.32** and Pro is **$1.32 / $0.044 / $3.96** per 1M input/cache-hit/output at peak, with off-peak rates at half those values. See the [DeepSeek pricing page](https://api-docs.deepseek.com/quick_start/pricing), [update log](https://api-docs.deepseek.com/updates/), and [canonical model record](models/deepseek.md).
+
 Cost per intelligence = estimated session cost ÷ Intelligence Index score. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
 > **Notes:**
 >
-> - **DeepSeek V4** input pricing shown is the **cache miss** price. Cache hits are significantly cheaper ($0.0028/M for Flash, $0.003625/M for Pro).
+> - **DeepSeek V4** input pricing shown is the **peak cache miss** price. Peak cache hits are $0.014/M for Flash and $0.044/M for Pro; off-peak rates are half. See footnote ¹⁹ for the full schedule.
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.5 Pro ($0.0036/M, ~120× cheaper) and V2.5 ($0.0028/M, ~50× cheaper). A Xiaomi price cut took effect on 2026-05-27.
 > - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 4.7+, Opus 5, Sonnet 5, and Fable 5 use a new tokenizer that produces approximately 30% more tokens for the same text.
 > - **OpenAI** models support cached input at 0.1× base input rate.
@@ -114,7 +116,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions could afford roughly **13 GPT-5.5 sessions** or **23 Opus sessions** per month — or mix and match. (Multiply session cost by 100 to convert to AI credits.)
 
-> Prices last verified: August 19, 2026. Always check the official pages for the latest rates:
+> Prices last verified: August 20, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)

@@ -239,4 +239,4 @@ If you only need one provider, jump straight to its setup guide:
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
 - [GLM (5.3 / 5.2 / 5.1 / 5V Turbo)](glm.md)
 
-> **DeepSeek V4 Pro / V4 Flash** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.
+> **DeepSeek V4 Pro 0813 / V4 Flash 0731** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.

@@ -42,7 +42,7 @@ Many providers offer substantial trial credits or token pools when you first sig
 ### DeepSeek
 
 - **Free Quota:** While not displaying permanently free tiers for its frontier models, DeepSeek provides new developer registrations with a substantial starter balance (typically **10 Million free tokens**).
-- **General Rates:** Once the trial is exhausted, base pay-as-you-go rates are remarkably low (e.g., `deepseek-v4-flash` at $0.14 input / $0.28 output per million tokens).
+- **General Rates:** Once the trial is exhausted, base pay-as-you-go rates are remarkably low (e.g., `deepseek-v4-flash` at $0.44 peak / $0.22 off-peak input and $1.32 peak / $0.66 off-peak output per million tokens).
 
 ### Moonshot AI (Kimi)
 

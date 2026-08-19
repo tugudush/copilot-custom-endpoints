@@ -20,18 +20,19 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                            | Provider  | Needs proxy?           | Vision                 | Setup guide                                                                                                                                 |
-| -------------------------------- | --------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3 / K2.7 Code / K2.6**   | Moonshot  | **Yes**                | ✅                     | [Manual setup](docs/models/kimi.md)                                                                                                         |
-| **MiMo V2.5**                    | Xiaomi    | Optional (recommended) | ✅                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.5 Pro**                | Xiaomi    | Optional (recommended) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **Qwen 3.7 Plus**                | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.7 Max**                 | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.8 Max**                 | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **MiniMax M3**                   | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
-| **GLM 5.3 / 5.2 / 5.1**          | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **GLM 5V Turbo**                 | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **DeepSeek V4 Pro / Flash 0731** | DeepSeek  | No (uses an extension) | ❌ (0731)              | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
+| Model                          | Provider  | Needs proxy?           | Vision                 | Setup guide                                                                                                                                 |
+| ------------------------------ | --------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kimi K3 / K2.7 Code / K2.6** | Moonshot  | **Yes**                | ✅                     | [Manual setup](docs/models/kimi.md)                                                                                                         |
+| **MiMo V2.5**                  | Xiaomi    | Optional (recommended) | ✅                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **MiMo V2.5 Pro**              | Xiaomi    | Optional (recommended) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **Qwen 3.7 Plus**              | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **Qwen 3.7 Max**               | DashScope | Optional (recommended) | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **Qwen 3.8 Max**               | DashScope | Optional (recommended) | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **MiniMax M3**                 | MiniMax   | No                     | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
+| **GLM 5.3 / 5.2 / 5.1**        | Z.ai      | No                     | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **GLM 5V Turbo**               | Z.ai      | No                     | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **DeepSeek V4 Flash 0731**     | DeepSeek  | No (uses an extension) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
+| **DeepSeek V4 Pro 0813**       | DeepSeek  | No (uses an extension) | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 
 ## Setup
 
@@ -65,7 +66,7 @@ Open the setup guide for the model you picked (links in the table above) and cop
 1. Open VS Code Settings (`Ctrl+,` / `Cmd+,`).
 2. Search for **"Chat: Utility Small Model"** (setting ID: `chat.lm.utilitySmallModel`).
 3. Pick the **fastest, cheapest model** available to you from the dropdown. Good choices:
-   - **DeepSeek V4 Flash** — if you have the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension installed (fastest, ~$0.10/session).
+   - **DeepSeek V4 Flash** — if you have the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension installed (fastest, ~$0.35/session at peak rates).
    - **MiMo V2.5** — if you already have Xiaomi MiMo configured (cheapest custom-endpoint option, ~$0.10/session).
    - **Default** — if you still have native Copilot model access, this lets VS Code use its built-in fast model.
 4. The setting takes effect immediately — no restart needed.
@@ -105,15 +106,14 @@ npx copilot-custom-endpoint clean    # Remove debug_log/
 
 ## Pricing snapshot
 
-All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
+All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns. DeepSeek V4 estimates use peak rates; official off-peak rates are half.
 
 | Model                      | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | -------------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
-| **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0019**          | **51.8**           | ~$0.10       | ❌     | 1M             |
 | **MiMo V2.5**              | Xiaomi    | **~$0.0026**          | **38.0**           | ~$0.10       | ✅     | 1M             |
 | **GPT-5.6 Luna**           | OpenAI    | **~$0.0042**          | **52.3**           | ~$0.22       | ✅     | 1M             |
 | **MiniMax M3**             | MiniMax   | **~$0.0060**          | **45.4**           | ~$0.27       | ✅     | 1M             |
-| **DeepSeek V4 Pro**        | DeepSeek  | **~$0.0066**          | **45.3**           | ~$0.30       | ✅     | 1M             |
+| **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0068**          | **51.8**           | ~$0.35       | ❌     | 1M             |
 | **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0070**          | **42.9**           | ~$0.30       | ❌     | 1M             |
 | **Qwen 3.7 Plus** ¹²       | DashScope | **~$0.0074**          | **39.4**           | ~$0.29       | ✅     | 1M             |
 | **MiniMax M3 Priority**⁴   | MiniMax   | **~$0.0090**          | **45.4**           | ~$0.41       | ✅     | 1M             |
@@ -122,6 +122,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Gemini 3.6 Flash** ⁸     | Google    | **~$0.015**           | **51.6**           | ~$0.75       | ✅     | 1M             |
 | **GLM 5.3** ¹⁷             | Z.ai      | **~$0.019**           | **59.5**           | ~$1.14       | ❌     | 1M             |
 | **Kimi K2.6**              | Moonshot  | **~$0.020**           | **45.0**           | ~$0.88       | ✅     | 262K           |
+| **DeepSeek V4 Pro 0813**   | DeepSeek  | **~$0.020**           | **53.2**           | ~$1.06       | ❌     | 1M             |
 | **GPT-5.4 mini**           | OpenAI    | **~$0.020**           | **40.9**           | ~$0.83       | ❌     | 400K           |
 | **Kimi K2.7 Code**         | Moonshot  | **~$0.020**           | **43.0**           | ~$0.88       | ✅     | 262K           |
 | **GLM 5.2**                | Z.ai      | **~$0.022**           | **52.6**           | ~$1.14       | ❌     | 1M             |
@@ -181,26 +182,26 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 
 > **👤 Personal picks** —
 >
-> For serious coding work, **GPT-5.6 Luna** and **DeepSeek V4 Flash 0731** are now the top value picks:
+> For serious coding work, **GPT-5.6 Luna** is the cheapest 50+ vision model, while **DeepSeek V4 Flash 0731** is the low-cost text-only pick:
 >
-> - **GPT-5.6 Luna** (Copilot native) — scores **52.3**, ~$0.22/session, vision-capable. Higher intelligence than MiniMax M3 (45.4) at a lower modeled cost, with reduced AI-credit consumption after OpenAI's July price cut.
-> - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** after the AA v4.1.1 benchmark refresh, ~$0.10/session — the best intelligence-per-dollar in the lineup. Text-only, so pair it with a vision model when you need images.
+> - **GPT-5.6 Luna** (Copilot native) — scores **52.3**, ~$0.22/session, vision-capable. It is cheaper than MiniMax M3 (45.4) and consumes fewer AI credits after OpenAI's July price cut.
+> - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** after the AA v4.1.1 benchmark refresh, ~$0.35/session at peak rates (~$0.18 off-peak). It is the lowest-cost text-only model above 50 in this table; pair it with a vision model when you need images.
 > - **Gemini 3.7 Flash** (Copilot native, new August 13) — scores **56** at ~$0.75/session under promotional pricing. The best-value Google model in Copilot: it beats Gemini 3.5 Flash (52.0) and Grok 4.5 (55.8) on intelligence at roughly half the session cost, with 1M context, full multimodal input, and AA's fastest output speed. A strong upgrade pick if you use Google models.
 >
-> **MiniMax M3** (45.4, ~$0.27/session) is still the best **direct** custom-endpoint option — no proxy or extension, vision, 1M context, strong coding — but it no longer leads on value now that DeepSeek V4 Flash scores higher at a third of the cost. Pick M3 when you want a plug-and-play custom endpoint with vision.
+> **MiniMax M3** (45.4, ~$0.27/session) is still the best **direct** custom-endpoint option — no proxy or extension, vision, 1M context, strong coding. Pick M3 when you want a plug-and-play custom endpoint with vision.
 >
 > For **plan mode / architecture & design thinking**, **Qwen 3.8 Max**, **Kimi K3**, **GLM 5.3**, **GPT-5.6 Luna**, and **DeepSeek V4 Flash 0731** are worth considering:
 >
-> - **Qwen 3.8 Max** — scores **58.1** (#5 overall, the #2 custom-endpoint model) — the default planning pick. Near-flagship intelligence at ~$1.60/session (roughly half Kimi K3's cost), with 1M context and vision. Strong for whole-codebase planning, architecture, and large spec review.
+> - **Qwen 3.8 Max** — scores **58.1** (#5 overall, the #2 custom-endpoint model) — the default **multimodal** planning pick. Near-flagship intelligence at ~$1.60/session, with 1M context and vision. Strong for whole-codebase planning, architecture, and large spec review.
 > - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**59.7**, #4 overall). Best for complex reasoning, long-horizon planning, and architecture decisions when you want the absolute best — but at ~$3.00/session it's ~2× Qwen 3.8 Max for +1.6 points, so **reserve it for hard problems**.
-> - **GLM 5.3** — new flagship, scores **59.5** (now the #2 custom-endpoint model, just behind Kimi K3's 59.7) at the same ~$1.14/session as GLM 5.2. 1M context, text-only, always-thinking. Best-in-class agentic coding per Z.ai (50% gain over 5.2 on their Code Bench) — ideal for whole-codebase planning and large spec review. ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
+> - **GLM 5.3** — new flagship, scores **59.5** (now the #2 custom-endpoint model, just behind Kimi K3's 59.7) at ~$1.14/session. 1M context, text-only, always-thinking. It is the strongest text-only planning value above 59 and offers best-in-class agentic coding per Z.ai (50% gain over 5.2 on their Code Bench) — ideal for whole-codebase planning and large spec review. ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 > - **GPT-5.6 Luna** (Copilot native) — scores **52.3** and is now the cheapest 50+ model. OpenAI cut its API price to $0.20/$1.20 per 1M input/output tokens; in Copilot, the equivalent benefit is lower AI-credit consumption, while your subscription price and monthly allowance stay unchanged. Ideal for high-quality planning on a budget.
-> - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** at ~$0.10/session — the budget planning pick. Text-only, so pair it with a vision model for design review, but for reasoning-heavy planning it delivers near-premium scores at a fraction of the cost.
+> - **DeepSeek V4 Flash 0731** (extension) — scores **51.8** at ~$0.35/session at peak rates (~$0.18 off-peak) — the lower-cost planning pick. Text-only, so pair it with a vision model for design review, but it remains strong for reasoning-heavy planning.
 >
 > Cheaper alternatives for simpler tasks:
 >
-> - **Qwen 3.7 Plus** — ~$0.29/session after the August 7 price cut, 39.4 score, vision-capable — the best cost-per-intelligence value in the custom-endpoint lineup
-> - **MiMo V2.5** — ~$0.10/session, 38.0 score (solid fallback, vision-capable)
+> - **Qwen 3.7 Plus** — ~$0.29/session after the August 7 price cut, 39.4 score, vision-capable — the budget option among the Qwen entries
+> - **MiMo V2.5** — ~$0.10/session, 38.0 score, vision-capable — the lowest modeled cost-per-intelligence option in the table
 
 ## Companion tools
 
