@@ -1,6 +1,6 @@
 # Full example config
 
-Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.3`, `glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
+Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
 > **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
 >
@@ -164,6 +164,22 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "glm-5.3-flash",
+        "name": "GLM 5.3 Flash (multimodal)",
+        "url": "https://api.z.ai/api/paas/v4/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "thinking": { "type": "enabled" },
+          "reasoning_effort": "max",
+          "temperature": 1.0,
+          "top_p": 0.95
+        }
+      },
+      {
         "id": "glm-5.3",
         "name": "GLM 5.3 (text)",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
@@ -237,6 +253,6 @@ If you only need one provider, jump straight to its setup guide:
 - [Qwen 3.7 Plus / 3.7 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro)](mimo.md)
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
-- [GLM (5.3 / 5.2 / 5.1 / 5V Turbo)](glm.md)
+- [GLM (5.3 Flash / 5.3 / 5.2 / 5.1 / 5V Turbo)](glm.md)
 
 > **DeepSeek V4 Pro 0813 / V4 Flash 0731** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.
