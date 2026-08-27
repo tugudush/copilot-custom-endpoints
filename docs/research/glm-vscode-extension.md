@@ -2,7 +2,7 @@
 
 > Research record comparing the setup in this repo (`copilot-custom-endpoint` — direct, no proxy) against three third-party VS Code extensions that integrate GLM models as native language-model providers.
 >
-> **Current date:** July 1, 2026.
+> **Current date:** July 1, 2026. **Updated August 28, 2026** for the GLM 5.3 / 5.3 Flash era: umbrella22 now ships GLM-5.3 and GLM-5.3-Flash (natively multimodal, `native` image mode by default), and its automatic Vision Proxy describes images with **GLM-5.3-Flash on Coding Plan connections** (GLM-4.6V-Flash remains the describer on Standard API connections). KiwiGaze reached **v0.4.1** (Aug 27, 2026) with GLM-5.3 as the Coding Plan default, native GLM-5.3-Flash image input, automatic image analysis for text-only models, and usage/balance tracking for all region × API combinations. Our custom-endpoint setup now also has native vision via `glm-5.3-flash` — see [docs/models/glm.md](../models/glm.md).
 
 ---
 
@@ -26,7 +26,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 - For **Coding Plan subscribers**, any of the three extensions is a better choice than our setup — they surface the Coding Plan endpoint natively, render reasoning in collapsible blocks, and add quality-of-life features (usage dashboards, vision proxy, per-model thinking toggles).
 - The two approaches are **complementary, not competing**. They target different billing SKUs and different VS Code integration depths.
 - **Preferred extensions for PayG users** (linked from [`README.md`](../../README.md)):
-  - ⭐ [`umbrella22/ikaros.glm-for-vscode-copilot`](#2-umbrella22glm-for-copilot-glm-for-copilot) — used for **GLM 5.2** and **GLM 5V Turbo**.
+  - ⭐ [`umbrella22/ikaros.glm-for-vscode-copilot`](#2-umbrella22glm-for-copilot-glm-for-copilot) — used for **GLM 5.3 / 5.3 Flash** (both also work on our custom-endpoint setup).
   - ⭐ [`KiwiGaze/yijiazhen-qi.glm-for-github-copilot-chat`](#3-kiwigazeglm-for-copilot-glm-models-for-github-copilot-chat) — used for **GLM 5.1**.
   - Both support **Standard Pay-as-You-Go** API keys. ⚠️ The `zelosleone` extension is **not applicable** for our use case since it is locked to a Coding Plan subscription.
 
@@ -34,29 +34,29 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ## Side-by-Side At-a-Glance
 
-| Dimension                | This repo (`copilot-custom-endpoint`)                                                | zelosleone `glm-chat-provider`                                                                                | umbrella22 `glm-for-copilot`                                                                                    | KiwiGaze `glm-for-copilot`                                                                         |
-| ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Integration API**      | Custom Endpoints (`chatLanguageModels.json`, `vendor: "customendpoint"`)             | `vscode.lm.registerLanguageModelChatProvider("zai", …)`                                                       | `vscode.lm.registerLanguageModelChatProvider("glm", …)`                                                         | `vscode.lm.registerLanguageModelChatProvider("glm", …)`                                            |
-| **Local processes**      | **No** — direct HTTPS                                                                | **No** — pure extension                                                                                       | **No** — pure extension                                                                                         | **No** — pure extension                                                                            |
-| **Primary upstream**     | `https://api.z.ai/api/paas/v4` (Standard PaaS)                                       | `https://api.z.ai/api/coding/paas/v4` (Coding Plan)                                                           | `https://open.bigmodel.cn/api/coding/paas/v4` (Coding Plan, default)                                            | Both Coding Plan and Standard, selectable                                                          |
-| **Auth**                 | Bearer token via `Chat: Manage Language Models` UI                                   | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                         | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                           | Bearer token via `GLM: Set API Key` → `SecretStorage`                                              |
-| **Available models**     | 3: `glm-5.2`, `glm-5.1`, `glm-5v-turbo`                                              | 14: GLM-5.2 through GLM-4.5, plus vision models                                                               | 3 default: GLM-5.2, GLM-4.6V-Flash, GLM-5-Turbo; +custom                                                        | 5: GLM-5.2, 5.1, 5, 4.7, 4.5 Air; +custom                                                          |
-| **Vision**               | ✅ Native on `glm-5v-turbo` (image + video)                                          | ✅ Native on vision models (GLM-5V-Turbo, 4.6V, 4.5V)                                                         | ✅ **Transparent Vision Proxy**: routes images to GLM-4.6V-Flash → text description → target model              | ❌ No vision handling (text-only models)                                                           |
-| **Tool calling**         | ✅                                                                                   | ✅                                                                                                            | ✅ (128-tool cap, experimental tool-list stabilization)                                                         | ✅ (128-tool cap)                                                                                  |
-| **Streaming**            | ✅ VS Code built-in                                                                  | ✅ SSE via OpenAI SDK                                                                                         | ✅ SSE via custom client                                                                                        | ✅ SSE via custom client                                                                           |
-| **Thinking handling**    | `thinking: { type: "enabled" }` in `requestBody`; reasoning **discarded** by VS Code | Per-model `thinkingMode` dropdown in picker; `reasoning_content` → `LanguageModelThinkingPart` (proposed API) | Per-model **Thinking Effort** dropdown (`None`/`High`/`Max`); `reasoning_content` → `LanguageModelThinkingPart` | Per-model **Thinking Effort** dropdown (`None`/`High`/`Max`) for GLM-5.2; binary toggle for others |
-| **Reasoning visibility** | ❌ Discarded                                                                         | ✅ Collapsible blocks (Insiders) or gracefully absent (Stable)                                                | ✅ Collapsible blocks                                                                                           | ✅ Collapsible blocks                                                                              |
-| **`clear_thinking`**     | Server default `true` — auto-strips historical reasoning (perfect match for VS Code) | Not sent — relies on `reasoning_content` round-trip via proposed API                                          | Not needed — reasoning handled by provider API                                                                  | Not needed — reasoning handled by provider API                                                     |
-| **Temperature**          | Static `temperature: 1.0` in `requestBody`                                           | Per-model preset dropdown (Balanced/Precise/Creative/Max/Custom)                                              | Per-model preset; `reasoningEffort` also sent for GLM-5.2                                                       | Per-model preset via `reasoning_effort` for GLM-5.2; binary `thinking` toggle for others           |
-| **`top_p`**              | Static `0.95`                                                                        | Not sent by default                                                                                           | Not sent by default                                                                                             | Not sent by default                                                                                |
-| **Region switching**     | Manual `url` edit in JSON                                                            | Single endpoint (Coding Plan international)                                                                   | Settings UI: `region` + `apiMode` + `endpoint` preset dropdown (6 presets)                                      | Settings UI: `region` + `apiMode`                                                                  |
-| **Custom models**        | Manual JSON config                                                                   | ❌                                                                                                            | ✅ `glm-copilot.customModels` setting + `modelIdOverrides`                                                      | ✅ `glm-copilot.customModels` setting + `modelIdOverrides`                                         |
-| **Usage tracking**       | None                                                                                 | Status bar request counter                                                                                    | Cost estimation per turn + status bar                                                                           | **Coding Plan quota dashboard**: session/weekly/web-search bars, reset countdowns, refresh         |
-| **i18n**                 | English only                                                                         | English only                                                                                                  | **Full en/zh-cn** (README, settings, commands, errors, walkthrough)                                             | en/zh-cn for model descriptions and UI strings                                                     |
-| **VS Code requirement**  | Any with Copilot Chat                                                                | `^1.120.0` + proposed `languageModelThinkingPart` API                                                         | 1.116+                                                                                                          | 1.116+                                                                                             |
-| **Install effort**       | Edit JSON, set key via Command Palette                                               | Install from source/VSIX, run `GLM: Set API Key`                                                              | One-click from Marketplace                                                                                      | One-click from Marketplace                                                                         |
-| **Tests**                | None (GLM has no proxy)                                                              | No test suite                                                                                                 | ✅ Vitest unit tests (config, models, request prep, vision)                                                     | ✅ Vitest unit tests (usage bar, usage panel, config, commands)                                    |
-| **License**              | MIT (this repo)                                                                      | MIT                                                                                                           | MIT                                                                                                             | MIT                                                                                                |
+| Dimension                | This repo (`copilot-custom-endpoint`)                                                | zelosleone `glm-chat-provider`                                                                                | umbrella22 `glm-for-copilot`                                                                                                                              | KiwiGaze `glm-for-copilot`                                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Integration API**      | Custom Endpoints (`chatLanguageModels.json`, `vendor: "customendpoint"`)             | `vscode.lm.registerLanguageModelChatProvider("zai", …)`                                                       | `vscode.lm.registerLanguageModelChatProvider("glm", …)`                                                                                                   | `vscode.lm.registerLanguageModelChatProvider("glm", …)`                                                                                     |
+| **Local processes**      | **No** — direct HTTPS                                                                | **No** — pure extension                                                                                       | **No** — pure extension                                                                                                                                   | **No** — pure extension                                                                                                                     |
+| **Primary upstream**     | `https://api.z.ai/api/paas/v4` (Standard PaaS)                                       | `https://api.z.ai/api/coding/paas/v4` (Coding Plan)                                                           | `https://open.bigmodel.cn/api/coding/paas/v4` (Coding Plan, default)                                                                                      | Both Coding Plan and Standard, selectable                                                                                                   |
+| **Auth**                 | Bearer token via `Chat: Manage Language Models` UI                                   | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                         | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                                                                     | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                                                       |
+| **Available models**     | 5: `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`, `glm-5v-turbo`                  | 14: GLM-5.2 through GLM-4.5, plus vision models                                                               | 3 default: GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash; +custom                                                                                                | GLM-5.3 (Coding Plan default), GLM-5.3-Flash, GLM-5.2, 5.1, 5, 4.7, 4.5 Air; +custom                                                        |
+| **Vision**               | ✅ Native on `glm-5.3-flash` / `glm-5v-turbo`                                        | ✅ Native on vision models (GLM-5V-Turbo, 4.6V, 4.5V)                                                         | ✅ Native on GLM-5.3-Flash / GLM-4.6V-Flash; **Transparent Vision Proxy** for text-only models (GLM-5.3-Flash on Coding Plan, GLM-4.6V-Flash on Standard) | ✅ Native on GLM-5.3-Flash (PNG/JPEG); automatic GLM-5.3-Flash image analysis for text-only models                                          |
+| **Tool calling**         | ✅                                                                                   | ✅                                                                                                            | ✅ (128-tool cap, experimental tool-list stabilization)                                                                                                   | ✅ (128-tool cap)                                                                                                                           |
+| **Streaming**            | ✅ VS Code built-in                                                                  | ✅ SSE via OpenAI SDK                                                                                         | ✅ SSE via custom client                                                                                                                                  | ✅ SSE via custom client                                                                                                                    |
+| **Thinking handling**    | `thinking: { type: "enabled" }` in `requestBody`; reasoning **discarded** by VS Code | Per-model `thinkingMode` dropdown in picker; `reasoning_content` → `LanguageModelThinkingPart` (proposed API) | Per-model **Thinking Effort** dropdown (`None`/`High`/`Max`); `reasoning_content` → `LanguageModelThinkingPart`                                           | Per-model **Thinking Effort** (`Low`/`High`/`Max`, mandatory, Max default) for GLM-5.3; None/High/Max for GLM-5.2; binary toggle for others |
+| **Reasoning visibility** | ❌ Discarded                                                                         | ✅ Collapsible blocks (Insiders) or gracefully absent (Stable)                                                | ✅ Collapsible blocks                                                                                                                                     | ✅ Collapsible blocks                                                                                                                       |
+| **`clear_thinking`**     | Server default `true` — auto-strips historical reasoning (perfect match for VS Code) | Not sent — relies on `reasoning_content` round-trip via proposed API                                          | Not needed — reasoning handled by provider API                                                                                                            | Not needed — reasoning handled by provider API                                                                                              |
+| **Temperature**          | Static `temperature: 1.0` in `requestBody`                                           | Per-model preset dropdown (Balanced/Precise/Creative/Max/Custom)                                              | Per-model preset; `reasoningEffort` also sent for GLM-5.2                                                                                                 | Per-model preset via `reasoning_effort` for GLM-5.2; binary `thinking` toggle for others                                                    |
+| **`top_p`**              | Static `0.95`                                                                        | Not sent by default                                                                                           | Not sent by default                                                                                                                                       | Not sent by default                                                                                                                         |
+| **Region switching**     | Manual `url` edit in JSON                                                            | Single endpoint (Coding Plan international)                                                                   | Settings UI: `region` + `apiMode` + `endpoint` preset dropdown (6 presets)                                                                                | Settings UI: `region` + `apiMode`                                                                                                           |
+| **Custom models**        | Manual JSON config                                                                   | ❌                                                                                                            | ✅ `glm-copilot.customModels` setting + `modelIdOverrides`                                                                                                | ✅ `glm-copilot.customModels` setting + `modelIdOverrides`                                                                                  |
+| **Usage tracking**       | None                                                                                 | Status bar request counter                                                                                    | Cost estimation per turn + status bar                                                                                                                     | **Full usage matrix**: Coding Plan quota (Intl + China) and Standard API balance (Intl + China)                                             |
+| **i18n**                 | English only                                                                         | English only                                                                                                  | **Full en/zh-cn** (README, settings, commands, errors, walkthrough)                                                                                       | en/zh-cn for model descriptions and UI strings                                                                                              |
+| **VS Code requirement**  | Any with Copilot Chat                                                                | `^1.120.0` + proposed `languageModelThinkingPart` API                                                         | 1.116+                                                                                                                                                    | 1.116+                                                                                                                                      |
+| **Install effort**       | Edit JSON, set key via Command Palette                                               | Install from source/VSIX, run `GLM: Set API Key`                                                              | One-click from Marketplace                                                                                                                                | One-click from Marketplace                                                                                                                  |
+| **Tests**                | None (GLM has no proxy)                                                              | No test suite                                                                                                 | ✅ Vitest unit tests (config, models, request prep, vision)                                                                                               | ✅ Vitest unit tests (usage bar, usage panel, config, commands)                                                                             |
+| **License**              | MIT (this repo)                                                                      | MIT                                                                                                           | MIT                                                                                                                                                       | MIT                                                                                                                                         |
 
 ---
 
@@ -86,19 +86,23 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 
 ### 2. umbrella22/glm-for-copilot ("GLM for Copilot") — ⭐ Preferred for PayG
 
-**The most feature-rich of the three.** Published on both VS Code Marketplace and Open VSX. References KiwiGaze and deepseek-v4-for-copilot as inspirations.
+**The most feature-rich of the three.** Published on both VS Code Marketplace and Open VSX (v0.13.0 as of August 27, 2026). References KiwiGaze and deepseek-v4-for-copilot as inspirations.
 
 **Key characteristics:**
 
 - **Default endpoint is domestic Coding Plan** (`open.bigmodel.cn/api/coding/paas/v4`), but supports all 6 preset combinations via a single `endpoint` dropdown: `china-coding`, `china-standard`, `china-anthropic`, `international-coding`, `international-standard`, `international-anthropic`.
-- **Three default models:** GLM-5.2, GLM-4.6V-Flash, GLM-5-Turbo. Custom models via `glm-copilot.customModels`.
+- **Three default models:** GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash (updated August 2026 from the earlier GLM-5.2 / GLM-4.6V-Flash / GLM-5-Turbo trio). Custom models via `glm-copilot.customModels`.
 - **Transparent Vision Proxy** — the standout feature:
-  - When an image is attached, the extension routes it to GLM-4.6V-Flash (or a configurable alternative) for description.
-  - The text description is injected into the prompt for the target model (e.g., GLM-5.2).
-  - Fallback chain: GLM-4.6V-Flash → VS Code/Copilot vision model → custom API endpoint.
-  - Configurable via `GLM: Configure Vision Proxy` (webview panel with source selection, endpoint URL, model ID, API key).
-  - This keeps GLM-5.2 focused on coding/reasoning while offloading multimodal extraction.
-- **Thinking Effort control** per-model in the picker dropdown: None / High / Max (for GLM-5.2).
+  - Per-model **image modes**: `native` (resized base64 sent directly), `proxy` (image described by a vision model first), or `mcp` (image persisted to disk for an image-capable MCP tool).
+  - GLM-5.3-Flash and GLM-4.6V-Flash default to `native` — they receive images directly. Text-only models (GLM-5.3, custom models) default to `proxy`.
+  - In `proxy` mode, the automatic describer is **GLM-5.3-Flash on Coding Plan connections** (a one-time notification points out the switch) and **GLM-4.6V-Flash on Standard API connections**.
+  - Fallback chain: built-in GLM vision model → VS Code/Copilot vision model → custom API endpoint.
+  - Configurable via the Model Manager (`GLM: Manage Models and Connections` → Vision Proxy view; the older `GLM: Configure Vision Proxy` command still works).
+  - This keeps GLM-5.3 focused on coding/reasoning while offloading multimodal extraction.
+- **Thinking Effort control** per-model in the picker dropdown: low / high / max for GLM-5.3 and GLM-5.3-Flash (both always-thinking; a `none` choice is clamped to `low`). GLM-4.6V-Flash keeps none/high/max.
+- **GLM usage/quota status (v0.11+):** GLM API pattern recognition with usage status updates in the status bar; enhanced usage tracking and reporting with quota metrics.
+- **BYOK utility model settings (v0.10+):** configures which model handles VS Code's utility flows when the main agent model is BYOK — the same `chat.utilityModel` / `chat.utilitySmallModel` concern this repo's README §4 documents, surfaced in the extension's Model Manager.
+- **MCP vision mode (v0.7–0.8):** besides `native` and `proxy`, an `mcp` image mode persists images to disk and leaves a path prompt for an image-capable MCP tool; image-capable MCP tools are stripped from the request in non-mcp vision modes to avoid interference.
 - **Team Mode (planned/in-progress):** A `.glm/team.md` file with YAML frontmatter for director/executor model routing. Phase 1 (prompt-only injection) documented; Phases 2–5 planned.
 - **Cost visibility:** Estimates per-turn cost from official list prices (CNY for domestic, USD for international). Status bar shows latest turn and session total.
 - **Debug modes:** `minimal` (token usage only), `metadata` (privacy-safe logs), `verbose` (full request dumps to disk).
@@ -107,25 +111,25 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 - **Walkthrough:** Multi-step guided setup.
 - **Tests:** Vitest unit tests for config, models, request preparation, and vision service.
 
-**Verdict:** The most polished and feature-complete extension. The vision proxy is genuinely innovative — it solves the "text-only flagship + vision needed" problem that every GLM-5.2 user faces. Best for Coding Plan users (especially domestic/China) who want the richest feature set. The Team Mode roadmap suggests ambition beyond a simple model provider.
+**Verdict:** The most polished and feature-complete extension. The vision proxy is genuinely innovative — it solves the "text-only flagship + vision needed" problem for GLM-5.3 users, and since August 2026 the describer itself is GLM-5.3-Flash on Coding Plan connections. With GLM-5.3-Flash now natively multimodal (`native` mode), the extension also offers direct vision without any proxy. Best for Coding Plan users (especially domestic/China) who want the richest feature set. The Team Mode roadmap suggests ambition beyond a simple model provider.
 
 ---
 
 ### 3. KiwiGaze/glm-for-copilot ("GLM Models for GitHub Copilot Chat") — ⭐ Preferred for PayG
 
-**The most mature in terms of marketplace presence** (v0.2.7, CI badge, changelog, contribution guide). Originally launched with GLM-4.6 and GLM-4.5 Air; now tracks GLM-5.2.
+**The most mature in terms of marketplace presence** (v0.4.1 as of August 27, 2026, CI badge, changelog, contribution guide). Originally launched with GLM-4.6 and GLM-4.5 Air; now tracks GLM-5.3 / GLM-5.3-Flash.
 
 **Key characteristics:**
 
 - **Dual API support** as a first-class feature: Coding Plan and Standard API, each with International and China regions. The picker filters models by what your plan can serve.
-- **Five built-in models:** GLM-5.2 (flagship, both plans), GLM-5.1 (Standard only), GLM-5 (Standard only), GLM-4.7 (both plans), GLM-4.5 Air (both plans).
-- **Thinking Effort** for GLM-5.2: `none` → `thinking: { type: "disabled" }`, `high` → `{ type: "enabled" }` + `reasoning_effort: "high"`, `max` → `{ type: "enabled" }` + `reasoning_effort: "max"`. Binary toggle for other models.
-- **Live Coding Plan usage tracking** — the standout feature:
-  - Status bar shows session (5h rolling) quota percentage.
-  - `GLM: Show Usage Details` opens a webview panel with session/weekly/web-search quota bars, reset countdowns, plan name, and renewal date.
-  - Polls reverse-engineered z.ai usage endpoints (`/api/biz`, `/api/monitor`).
-  - Auto-refreshes at configurable interval (default 15 min). Can be hidden.
-  - International region only (China usage endpoints unverified).
+- **Model lineup (v0.4.x):** GLM-5.3 (Coding Plan default — 1M context, 128K max output, mandatory Low/High/Max thinking effort, Max default), GLM-5.3-Flash (multimodal), GLM-5.2, GLM-5.1, GLM-5, GLM-4.7, GLM-4.5 Air. Note: Z.ai's Standard API catalog does not include GLM-5.3, so Standard mode keeps GLM-5.2 as its flagship. Minimum VS Code version is now 1.127.
+- **GLM-5.3-Flash image input (v0.4.1):** native PNG/JPEG input on the 1M-context multimodal model. Text-only models automatically use GLM-5.3-Flash to produce "untrusted visual context" on the same endpoint and API key — image analysis is validated (type allowlist, size cap), cancellable, cached in memory, and configurable via **GLM: Edit Flash Image Analysis Prompt**. The older Vision MCP server (v0.3.0's local `@z_ai/mcp-server` install with separate key and tool-approval flow) was **removed** in v0.4.1 in favor of this built-in analysis.
+- **Thinking Effort** for GLM-5.2: `none` → `thinking: { type: "disabled" }`, `high` → `{ type: "enabled" }` + `reasoning_effort: "high"`, `max` → `{ type: "enabled" }` + `reasoning_effort: "max"`. GLM-5.3 makes effort mandatory (Low/High/Max, Max default). Binary toggle for other models.
+- **Live usage tracking — now the full matrix (v0.2.9/v0.2.10):**
+  - Coding Plan × International and × China: session (5h) / weekly token limits + monthly web searches.
+  - Standard API × International and × China: cash balance (available/recharged/gifted/spent/frozen) + token resource packages; status bar turns red at zero balance.
+  - `GLM: Show Usage Details` opens a webview panel with quota/balance bars, reset countdowns, plan name, and renewal date. Polls z.ai/bigmodel.cn usage endpoints (not part of the public API; failures degrade gracefully).
+- **Retry with backoff (v0.2.7/v0.2.8):** transient 429/5xx failures retry with exponential backoff + jitter (configurable via `glm-copilot.maxRetries`, default 3 retries), honoring `Retry-After`. Sends `User-Agent: glm-copilot/<version>` — the z.ai Coding Plan gateway throttles unidentified clients more aggressively.
 - **Zero runtime dependencies.** Pure VS Code API + Node.js built-ins. Uses `fetch` (Node 20+) for HTTP.
 - **Custom models + `modelIdOverrides`** for proxy/regional endpoint scenarios.
 - **Settings fallback for API key** (`glm-copilot.apiKey` in `settings.json`) — documented for CI/automation but discouraged for regular use.
@@ -133,7 +137,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 - **pnpm** monorepo with Vitest unit tests, CI pipeline, release audit skill.
 - **i18n:** en/zh-cn for model descriptions, error messages, and usage panel.
 
-**Verdict:** The most "production-grade" of the three — good docs, CI, tests, marketplace distribution. The Coding Plan usage dashboard is genuinely useful for quota management. Best for users who want a well-maintained, dual-API extension with quota visibility. The Standard API support makes this the only extension that overlaps with our use case.
+**Verdict:** The most "production-grade" of the three — good docs, CI, tests, marketplace distribution, and the fastest to ship GLM-5.3 support (v0.4.0 landed August 14, four days before Z.ai's own docs settled). The usage dashboard now covers all four region × API combinations, including Standard API balance tracking that no other extension offers. Best for users who want a well-maintained, dual-API extension with quota/balance visibility. The Standard API support makes this the extension that most overlaps with our use case.
 
 ---
 
@@ -171,33 +175,33 @@ This is **not a fixable gap** on our side — it's a fundamental limitation of t
 
 ### 5. Model catalog
 
-- **Our setup:** 3 models (GLM-5.2, GLM-5.1, GLM-5V-Turbo). You can add more by editing JSON.
+- **Our setup:** 5 models (GLM-5.3-Flash, GLM-5.3, GLM-5.2, GLM-5.1, GLM-5V-Turbo). You can add more by editing JSON.
 - **zelosleone:** 14 models covering the full GLM lineup including legacy and vision models.
-- **umbrella22:** 3 default (GLM-5.2, GLM-4.6V-Flash, GLM-5-Turbo) + unlimited custom.
-- **KiwiGaze:** 5 models (GLM-5.2, 5.1, 5, 4.7, 4.5 Air) + unlimited custom. Filters by API mode.
+- **umbrella22:** 3 default (GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash) + unlimited custom.
+- **KiwiGaze:** GLM-5.3 (Coding Plan default), GLM-5.3-Flash, GLM-5.2, 5.1, 5, 4.7, 4.5 Air + unlimited custom. Filters by API mode.
 
 ### 6. Vision strategy
 
-- **Our setup:** Native vision on `glm-5v-turbo` — the only model configured with `vision: true`. Images go directly to the multimodal model. GLM-5.2 and GLM-5.1 are text-only and will error on image input.
-- **umbrella22:** Vision Proxy — images are described by GLM-4.6V-Flash first, then the description is sent to the text-only target model. This lets you use GLM-5.2 with images without switching models.
+- **Our setup:** Native vision on `glm-5.3-flash` and `glm-5v-turbo` — the two models configured with `vision: true`. Images go directly to the multimodal model (validated August 28, 2026 on both chat attachments and the `view_image` tool path). GLM-5.3, GLM-5.2 and GLM-5.1 are text-only and will error on image input.
+- **umbrella22:** Per-model image modes. GLM-5.3-Flash and GLM-4.6V-Flash use `native` mode (direct base64 input — same as our setup). Text-only models use the Vision Proxy: images are described first (GLM-5.3-Flash on Coding Plan connections, GLM-4.6V-Flash on Standard API), then the description is sent to the target model. This lets you use GLM-5.3 with images without switching models.
 - **zelosleone:** Native vision on GLM-5V-Turbo, GLM-4.6V, GLM-4.5V — no proxy needed.
-- **KiwiGaze:** No vision handling — all models are text-only.
+- **KiwiGaze:** Native vision on GLM-5.3-Flash (PNG/JPEG, v0.4.1). Text-only models get automatic image analysis via GLM-5.3-Flash — the analysis is injected as text before the request, on the same endpoint and key (no separate Vision key or MCP server since v0.4.1 removed the Vision MCP).
 
-The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who occasionally need image understanding.
+For GLM-5.3-Flash itself the two approaches are now equivalent (direct native vision either way). The umbrella22 vision proxy remains the pragmatic answer for GLM-5.3 users who occasionally need image understanding without switching models.
 
 ---
 
 ## What Our Setup Has That the Extensions Don't
 
-| Feature                              | Detail                                                                                                                                                                                |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **No extension install**             | Pure `chatLanguageModels.json` config. Works on locked-down VS Code installs, air-gapped environments, or any VS Code variant that supports custom endpoints.                         |
-| **No Coding Plan dependency**        | Works with any Z.ai Standard API key. The extensions either require Coding Plan (zelosleone) or default to it (umbrella22).                                                           |
-| **`glm-5v-turbo` native vision**     | Our setup is the only one that configures `glm-5v-turbo` with `vision: true` for native multimodal — no proxy/description round-trip needed.                                          |
-| **Full `requestBody` control**       | We can tweak `temperature`, `top_p`, `thinking`, and any other parameter without waiting for an extension update. Extensions have opinionated defaults.                               |
-| **`clear_thinking: true` awareness** | Our docs explicitly document why the server default is a perfect match for VS Code's missing-`reasoning_content` behavior. Extensions work around this with the proposed API instead. |
-| **Existing comprehensive docs**      | `docs/models/glm.md` is a full setup guide, configuration reference, troubleshooting table, and validation record maintained in-repo.                                                 |
-| **Shared infrastructure pattern**    | GLM follows the same `chatLanguageModels.json` pattern as Qwen, MiMo, MiniMax, and DeepSeek — one mental model for all providers.                                                     |
+| Feature                              | Detail                                                                                                                                                                                                                           |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **No extension install**             | Pure `chatLanguageModels.json` config. Works on locked-down VS Code installs, air-gapped environments, or any VS Code variant that supports custom endpoints.                                                                    |
+| **No Coding Plan dependency**        | Works with any Z.ai Standard API key. The extensions either require Coding Plan (zelosleone) or default to it (umbrella22).                                                                                                      |
+| **`glm-5.3-flash` native vision**    | Our setup configures `glm-5.3-flash` (and `glm-5v-turbo`) with `vision: true` for native multimodal — no proxy/description round-trip needed. Validated August 28, 2026 on both chat attachments and the `view_image` tool path. |
+| **Full `requestBody` control**       | We can tweak `temperature`, `top_p`, `thinking`, and any other parameter without waiting for an extension update. Extensions have opinionated defaults.                                                                          |
+| **`clear_thinking: true` awareness** | Our docs explicitly document why the server default is a perfect match for VS Code's missing-`reasoning_content` behavior. Extensions work around this with the proposed API instead.                                            |
+| **Existing comprehensive docs**      | `docs/models/glm.md` is a full setup guide, configuration reference, troubleshooting table, and validation record maintained in-repo.                                                                                            |
+| **Shared infrastructure pattern**    | GLM follows the same `chatLanguageModels.json` pattern as Qwen, MiMo, MiniMax, and DeepSeek — one mental model for all providers.                                                                                                |
 
 ---
 
@@ -214,28 +218,31 @@ The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who
 
 ### From umbrella22/glm-for-copilot
 
-| Feature                                  | Description                                                                                                                      |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| **Transparent Vision Proxy**             | Routes images through GLM-4.6V-Flash → description → target model. Configurable with fallback chain                              |
-| **6 endpoint presets**                   | `china-coding`, `china-standard`, `china-anthropic`, `international-coding`, `international-standard`, `international-anthropic` |
-| **Anthropic protocol support**           | Can target `/anthropic` endpoints in addition to OpenAI-compatible                                                               |
-| **Team Mode (planned)**                  | `.glm/team.md` with YAML frontmatter for director/executor model routing                                                         |
-| **Per-turn cost visibility**             | Status bar estimates based on official list prices in correct currency                                                           |
-| **Experimental tool-list stabilization** | Pre-activates VS Code tools to keep `tools` array stable for cache-hit optimization                                              |
-| **Debug modes**                          | `minimal`, `metadata`, `verbose` with full request dumps                                                                         |
-| **Full i18n**                            | English and Simplified Chinese throughout                                                                                        |
-| **Open VSX publishing**                  | Available for VS Code forks (VSCodium, etc.)                                                                                     |
+| Feature                                  | Description                                                                                                                                                                                                                       |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Transparent Vision Proxy**             | Per-model image modes (`native`/`proxy`/`mcp`). In `proxy` mode, images are described by GLM-5.3-Flash on Coding Plan connections (GLM-4.6V-Flash on Standard API) → description → target model. Configurable with fallback chain |
+| **GLM usage/quota status**               | GLM API pattern recognition + usage status bar with quota metrics (v0.11+)                                                                                                                                                        |
+| **BYOK utility model settings**          | Chooses the model for VS Code utility flows when the main agent is BYOK (mirrors this repo's Utility Small Model guidance)                                                                                                        |
+| **6 endpoint presets**                   | `china-coding`, `china-standard`, `china-anthropic`, `international-coding`, `international-standard`, `international-anthropic`                                                                                                  |
+| **Anthropic protocol support**           | Can target `/anthropic` endpoints in addition to OpenAI-compatible                                                                                                                                                                |
+| **Team Mode (planned)**                  | `.glm/team.md` with YAML frontmatter for director/executor model routing                                                                                                                                                          |
+| **Per-turn cost visibility**             | Status bar estimates based on official list prices in correct currency                                                                                                                                                            |
+| **Experimental tool-list stabilization** | Pre-activates VS Code tools to keep `tools` array stable for cache-hit optimization                                                                                                                                               |
+| **Debug modes**                          | `minimal`, `metadata`, `verbose` with full request dumps                                                                                                                                                                          |
+| **Full i18n**                            | English and Simplified Chinese throughout                                                                                                                                                                                         |
+| **Open VSX publishing**                  | Available for VS Code forks (VSCodium, etc.)                                                                                                                                                                                      |
 
 ### From KiwiGaze/glm-for-copilot
 
-| Feature                             | Description                                                                             |
-| ----------------------------------- | --------------------------------------------------------------------------------------- |
-| **Coding Plan usage dashboard**     | Webview panel with session/weekly/web-search quota bars, reset countdowns, plan details |
-| **Dual API as first-class feature** | Coding Plan and Standard API both fully supported; picker filters models by plan        |
-| **`reasoning_effort` for GLM-5.2**  | Sends `reasoning_effort: "high"` or `"max"` alongside `thinking: { type: "enabled" }`   |
-| **Production-grade CI/CD**          | GitHub Actions CI, Vitest test suite, changelog, release audit skill                    |
-| **Well-documented**                 | `docs/glm-api.md`, `CONTRIBUTING.md`, `SUPPORT.md`, `SECURITY.md`, `llms.txt`           |
-| **Settings fallback for API key**   | `glm-copilot.apiKey` in `settings.json` for CI/automation (with appropriate warnings)   |
+| Feature                             | Description                                                                                                         |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| **Full usage matrix**               | Coding Plan quota (Intl + China) and Standard API cash balance + token packages (Intl + China)                      |
+| **GLM-5.3-Flash image analysis**    | Native PNG/JPEG input on 5.3-Flash; automatic GLM-5.3-Flash analysis injected as text for text-only models (v0.4.1) |
+| **Dual API as first-class feature** | Coding Plan and Standard API both fully supported; picker filters models by plan                                    |
+| **Retry with backoff**              | Exponential backoff + jitter for 429/5xx, `Retry-After` aware, configurable retry cap, product User-Agent           |
+| **Production-grade CI/CD**          | GitHub Actions CI, Vitest test suite, changelog, release audit skill                                                |
+| **Well-documented**                 | `docs/glm-api.md`, `CONTRIBUTING.md`, `SUPPORT.md`, `SECURITY.md`, `llms.txt`                                       |
+| **Settings fallback for API key**   | `glm-copilot.apiKey` in `settings.json` for CI/automation (with appropriate warnings)                               |
 
 ---
 
@@ -245,7 +252,7 @@ The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who
 
 - Have a **Z.ai Standard API key** (Pay-as-You-Go) and don't want a Coding Plan subscription.
 - Want the **simplest possible setup** — no extension install, just JSON config.
-- Need **`glm-5v-turbo` with native vision** (the only setup that configures it).
+- Need **native vision on `glm-5.3-flash` or `glm-5v-turbo`** — both configured with `vision: true` (validated August 28, 2026).
 - Prefer **one mental model** for all providers (Kimi, Qwen, MiMo, MiniMax, DeepSeek, GLM — all via `chatLanguageModels.json`).
 - Don't need to see the model's reasoning/thinking in chat.
 - Are on a **locked-down VS Code install** where extensions can't be installed.
@@ -259,8 +266,9 @@ The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who
 
 ### Use umbrella22/glm-for-copilot if you…
 
-- Have a **GLM Coding Plan** subscription (domestic China or international).
-- Want the **Transparent Vision Proxy** — use GLM-5.2 with images without switching models.
+- Have a **GLM Coding Plan** subscription (domestic China or international) — GLM-5.3-Flash has 3× quota there.
+- Want the **Transparent Vision Proxy** — use GLM-5.3 with images without switching models (or native vision on GLM-5.3-Flash).
+- Want **reasoning visibility** — collapsible thinking blocks for the always-thinking GLM-5.3 / 5.3-Flash (impossible on the custom-endpoint path).
 - Need **Chinese (Simplified) UI** throughout.
 - Want **cost visibility** per turn in the status bar.
 - Are interested in the **Team Mode** roadmap (director/executor model routing).
@@ -269,9 +277,9 @@ The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who
 ### Use KiwiGaze/glm-for-copilot if you…
 
 - Want **both Coding Plan and Standard API** support in one extension.
-- Need **Coding Plan quota tracking** — the usage dashboard is the killer feature.
+- Need **usage/balance tracking** — the full matrix (Coding Plan quota and Standard API balance, both regions) is the killer feature.
+- Want **GLM-5.3 / GLM-5.3-Flash on a native provider** with mandatory thinking-effort control and native image input.
 - Prefer the **most mature, well-documented** extension with CI and marketplace distribution.
-- Want `reasoning_effort` control for GLM-5.2 (None/High/Max) in the picker.
 - Need custom models and model ID overrides for proxy scenarios.
 
 ---
@@ -299,7 +307,7 @@ The umbrella22 vision proxy is the most pragmatic approach for GLM-5.2 users who
 
 ### Not worth adopting
 
-- **Vision Proxy pattern.** Our setup uses `glm-5v-turbo` for native vision. Adding a vision proxy would require a local service (or extension), undermining the zero-proxy simplicity.
+- **Vision Proxy pattern.** Our setup uses `glm-5.3-flash` / `glm-5v-turbo` for native vision. Adding a vision proxy would require a local service (or extension), undermining the zero-proxy simplicity.
 - **Coding Plan endpoint support.** Structurally impossible from `chatLanguageModels.json` — the Coding Plan endpoint is tool-gated. This is a fundamental limitation, not a missing feature.
 - **`LanguageModelThinkingPart` reasoning rendering.** Requires the native provider API — not available to custom endpoints. This is the one irreparable gap.
 

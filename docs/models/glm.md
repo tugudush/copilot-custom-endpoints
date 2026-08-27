@@ -18,9 +18,9 @@
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Mode                   | **Direct** (no proxy)                                                                                              |
 | Billing                | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
-| Vision                 | ✅ Yes (`glm-5v-turbo` only)                                                                                       |
-| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5v-turbo`)                                                              |
-| Context                | 1M (`glm-5.3` / `glm-5.2` Solid Lossless Context)                                                                  |
+| Vision                 | ✅ Yes (`glm-5.3-flash` / `glm-5v-turbo`)                                                                          |
+| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5.3-flash` / `glm-5v-turbo`)                                            |
+| Context                | 1M (`glm-5.3-flash` / `glm-5.3` / `glm-5.2` Solid Lossless Context)                                                |
 | Max output             | 131072                                                                                                             |
 | Required `requestBody` | `thinking: { type: "enabled" }` + `reasoning_effort: "max"` (recommended)                                          |
 | Endpoint (intl)        | `https://api.z.ai/api/paas/v4/chat/completions`                                                                    |
@@ -29,12 +29,13 @@
 
 ### Models
 
-| Model          | Vision | Context | Max output | Notes                                                                                                                                                          |
-| -------------- | ------ | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `glm-5.3`      | ❌     | 1M      | 131072     | **New flagship** — ~50% coding gain over 5.2 on Z.ai Code Bench; always-thinking, `reasoning_effort` `low`/`high`/`max` (default `max`) ($1.40 / $4.40 per 1M) |
-| `glm-5.2`      | ❌     | 1M      | 131072     | Previous flagship — "Opus-level" long-context engineering & agentic coding; thinking `enabled` ($1.40 / $4.40 per 1M)                                          |
-| `glm-5.1`      | ❌     | 200K    | 131072     | Previous flagship — long-horizon / 8h autonomous work; thinking `enabled` ($1.40 / $4.40 per 1M)                                                               |
-| `glm-5v-turbo` | ✅     | 200K    | 131072     | Multimodal **coding** model — vision-based agentic coding; thinking `enabled` ($1.20 / $4.00 per 1M)                                                           |
+| Model           | Vision | Context | Max output | Notes                                                                                                                                                                                   |
+| --------------- | ------ | ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `glm-5.3-flash` | ✅     | 1M      | 131072     | **New multimodal Flash** (Aug 26) — 320B/18B hybrid sparse+linear attention; AA **57.5**; always-thinking, `reasoning_effort` `low`/`high`/`max` (default `max`) ($0.15 / $0.50 per 1M) |
+| `glm-5.3`       | ❌     | 1M      | 131072     | **New flagship** — ~50% coding gain over 5.2 on Z.ai Code Bench; always-thinking, `reasoning_effort` `low`/`high`/`max` (default `max`) ($1.40 / $4.40 per 1M)                          |
+| `glm-5.2`       | ❌     | 1M      | 131072     | Previous flagship — "Opus-level" long-context engineering & agentic coding; thinking `enabled` ($1.40 / $4.40 per 1M)                                                                   |
+| `glm-5.1`       | ❌     | 200K    | 131072     | Previous flagship — long-horizon / 8h autonomous work; thinking `enabled` ($1.40 / $4.40 per 1M)                                                                                        |
+| `glm-5v-turbo`  | ✅     | 200K    | 131072     | Multimodal **coding** model — vision-based agentic coding; thinking `enabled` ($1.20 / $4.00 per 1M)                                                                                    |
 
 > Other GLM models (`glm-5`, `glm-5-turbo`, `glm-4.5-air`, etc.) are callable on the same endpoint but are intentionally **not** added to the default `chatLanguageModels.json` block below. Add them in the same shape if you need them. Note: `glm-4.6v-flashx` was previously in the default block but has been **removed** because live testing showed it is not reliable for tool calling.
 
@@ -64,6 +65,22 @@
   "apiKey": "",
   "apiType": "chat-completions",
   "models": [
+    {
+      "id": "glm-5.3-flash",
+      "name": "GLM 5.3 Flash (multimodal)",
+      "url": "https://api.z.ai/api/paas/v4/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1048576,
+      "maxOutputTokens": 131072,
+      "requestBody": {
+        "thinking": { "type": "enabled" },
+        "reasoning_effort": "max",
+        "temperature": 1.0,
+        "top_p": 0.95
+      }
+    },
     {
       "id": "glm-5.3",
       "name": "GLM 5.3 (text)",
@@ -150,10 +167,10 @@
 
 - **Sampling:** recommended `temperature: 1`, `top_p: 0.95`. Z.ai's `temperature` is **hard-capped at `1.0` server-side** — sending `> 1.0` will reject with a 400. Don't set `do_sample: false` from `requestBody` (it would make `temperature`/`top_p` be ignored).
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
-- **`clear_thinking` defaults to `true` server-side**, which strips historical `reasoning_content` from prior turns before sending to the model. This is what makes multi-turn tool loops stable. **Do not** set `clear_thinking: false` from `requestBody` — VS Code can't forward `reasoning_content` and the request will fail.
-- **GLM 5.3 is always-thinking** — `thinking.type` only supports `enabled`; disabling reasoning is **not supported**. `reasoning_effort` accepts `low`, `high`, or `max` (default `max`; `max` recommended for coding). If you previously sent `thinking.type: "disabled"` for other GLM models, switch it to `enabled` with `reasoning_effort: "low"` when moving to `glm-5.3`.
-- **Vision** is supported only on `glm-5v-turbo` (OpenAI `image_url` content-part format — external URLs and base64 data URIs both work). `glm-5.3`, `glm-5.2` and `glm-5.1` are text-only. For turnkey VS Code video understanding via `glm-5v-turbo`, see [**Video Context MCP**](https://www.videocontextmcp.com/).
-- **Context caching** is automatic — `usage.prompt_tokens_details.cached_tokens` reports cache hits; cache writes are currently free.
+- **`clear_thinking` defaults to `true` server-side**, which strips historical `reasoning_content` from prior turns before sending to the model. This is what makes multi-turn tool loops stable. **Do not** set `clear_thinking: false` from `requestBody` — VS Code can't forward `reasoning_content` and the request will fail. (Note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that **do** preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
+- **GLM 5.3 and GLM 5.3 Flash are always-thinking** — `thinking.type` only supports `enabled`; disabling reasoning is **not supported**. `reasoning_effort` accepts `low`, `high`, or `max` (default `max`; `max` recommended for coding). If you previously sent `thinking.type: "disabled"` for other GLM models, switch it to `enabled` with `reasoning_effort: "low"` when moving to `glm-5.3` / `glm-5.3-flash`.
+- **Vision** is supported on `glm-5.3-flash` (native multimodal — the first in the GLM-5 series; text + image input, text output) and `glm-5v-turbo` (OpenAI `image_url` content-part format — external URLs and base64 data URIs both work). `glm-5.3`, `glm-5.2` and `glm-5.1` are text-only. For turnkey VS Code video understanding via `glm-5v-turbo`, see [**Video Context MCP**](https://www.videocontextmcp.com/). **Validated 2026-08-28 on `glm-5.3-flash`:** both vision surfaces work through the custom endpoint — chat image attachments (base64 `image_url`) and the `view_image` tool on workspace files. Fine-grained text, layout, and image content were read correctly in both tests.
+- **Context caching** is automatic — `usage.prompt_tokens_details.cached_tokens` reports cache hits; cache writes are currently free. Cache reads for `glm-5.3-flash` are $0.03/M (list; $0.015/M during the launch promo).
 
 ## Troubleshooting
 
@@ -174,4 +191,6 @@
 
 All prices are **USD per 1M tokens** (cache miss) on the Z.ai international platform. Per-model input/output rates are listed in the `Cost` column of the [Models](#models) table above.
 
-> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18% of the input price (e.g. `$1.40` input → `$0.26` cached for `glm-5.3` / `glm-5.2` / `glm-5.1`). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).
+> **Cache writes** are currently **Limited-time Free** for all models. Cached-input pricing is roughly 18–20% of the input price (e.g. `$1.40` input → `$0.26` cached for `glm-5.3` / `glm-5.2` / `glm-5.1`; `$0.15` → `$0.03` for `glm-5.3-flash`).
+>
+> **GLM 5.3 Flash** launched **August 26, 2026** at **$0.15 / $0.03 / $0.50** per 1M (input / cached / output) — currently **50% off** (effective **$0.075 / $0.015 / $0.25**) through **September 9, 2026** (24:00 UTC+8). China platform (`bigmodel.cn`) prices in CNY; see the [China pricing page](https://bigmodel.cn/pricing). For the cross-provider comparison, see [docs/pricing.md](../pricing.md).
