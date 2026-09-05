@@ -1,8 +1,8 @@
 # Benchmark Scores
 
-> **Updated:** September 3, 2026 — **Claude Fable 5.1** added (²⁸): Anthropic's new flagship (September 1, 2026), AA Intelligence Index **65.7** — the new #1, above Claude Opus 5. **Gemini 3.8 Flash** added (²⁶): Google's most intelligent Flash model (released September 2, 2026), AA Intelligence Index **58.7**, inserted between GLM 5.3 and Qwen 3.8 Max. **Gemini 3.8 Flash Cyber** added (²⁷): the cybersecurity-specialized sibling, restricted to Google's Fairwind Program — no AA score, listed last. August 28: **GLM 5.3 Flash** added (²⁵): Z.ai's first native multimodal GLM-5 model (August 26, 2026), AA Intelligence Index **57.5**, inserted above Claude Opus 4.8. August 20: **DeepSeek V4 Pro 0813** added (²⁴): the August 13 GA build, AA Intelligence Index **53.2**, and significantly improved official agent benchmarks. **DeepSeek V4 Flash 0731**'s July 31 agent benchmark update is also documented (¹⁸). **GLM 5.3** was added August 19 (²³); Claude Fable 5.1 (²⁸) now leads at **65.7**, ahead of Claude Opus 5 (**63.1**).
+> **Updated:** September 5, 2026 — **GPT-6 Astra** added (²⁹): OpenAI's frontier model (September 3, 2026), AA Intelligence Index **61.2**, now #4 between Claude Fable 5 and Grok 4.6. **Claude Fable 5.1** added (²⁸): Anthropic's new flagship (September 1, 2026), AA Intelligence Index **65.7** — the new #1, above Claude Opus 5. **Gemini 3.8 Flash** added (²⁶): Google's most intelligent Flash model (released September 2, 2026), AA Intelligence Index **58.7**, inserted between GLM 5.3 and Qwen 3.8 Max. **Gemini 3.8 Flash Cyber** added (²⁷): the cybersecurity-specialized sibling, restricted to Google's Fairwind Program — no AA score, listed last. August 28: **GLM 5.3 Flash** added (²⁵): Z.ai's first native multimodal GLM-5 model (August 26, 2026), AA Intelligence Index **57.5**, inserted above Claude Opus 4.8. August 20: **DeepSeek V4 Pro 0813** added (²⁴): the August 13 GA build, AA Intelligence Index **53.2**, and significantly improved official agent benchmarks. **DeepSeek V4 Flash 0731**'s July 31 agent benchmark update is also documented (¹⁸). **GLM 5.3** was added August 19 (²³); Claude Fable 5.1 (²⁸) remains the leader at **65.7**, ahead of Claude Opus 5 (**63.1**).
 
-A comparison of the **Arena top 10** alongside models available through **GitHub Copilot** (native) and the models this repo documents. Rows are ordered by **AA Intelligence Index** score (highest first). Models without an AA score are listed after scored ones, sorted by Arena rank. Cells with `—` have no verified public score available. Footnotes explain missing or approximate ranks. Scores were re-verified on August 7, 2026 against the current Artificial Analysis Intelligence Index (methodology v4.1.1); DeepSeek V4 build scores were refreshed on August 20; the Gemini 3.8 Flash models and Claude Fable 5.1 were added on September 3, 2026.
+A comparison of the **Arena top 10** alongside models available through **GitHub Copilot** (native) and the models this repo documents. Rows are ordered by **AA Intelligence Index** score (highest first). Models without an AA score are listed after scored ones, sorted by Arena rank. Cells with `—` have no verified public score available. Footnotes explain missing or approximate ranks. Scores were re-verified on August 7, 2026 against the current Artificial Analysis Intelligence Index (methodology v4.1.1); DeepSeek V4 build scores were refreshed on August 20; GPT-6 Astra, the Gemini 3.8 Flash models, and Claude Fable 5.1 were added or refreshed on September 5, 2026.
 
 ## Main table
 
@@ -11,41 +11,42 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 | 1   | **Claude Fable 5.1** ²⁸       | Anthropic | Copilot native    | **65.7**              | —          | —           | —          | —             |
 | 2   | **Claude Opus 5**             | Anthropic | Copilot native    | **63.1**              | —          | —           | —          | —             |
 | 3   | **Claude Fable 5** ²¹         | Anthropic | Copilot native    | **62.1**              | #1         | #1          | #1         | #1            |
-| 4   | **Grok 4.6**                  | xAI       | Copilot native    | **61.0** ¹⁹           | —          | —           | —          | —             |
-| 5   | **GPT-5.6 Sol**               | OpenAI    | Copilot native    | **60.9**              | #8 (xhigh) | —           | #2 (xhigh) | #8 (xhigh)    |
-| 6   | **Kimi K3**                   | Moonshot  | Custom endpoint   | **59.7**              | — ¹⁴       | —           | —          | — ¹⁴          |
-| 7   | **GLM 5.3** ²³                | Z.ai      | Custom endpoint   | **59.5**              | —          | —           | —          | —             |
-| 8   | **Gemini 3.8 Flash** ²⁶       | Google    | N/A (Gemini API)  | **58.7**              | —          | —           | —          | —             |
-| 9   | **Qwen 3.8 Max**              | DashScope | Custom endpoint   | **58.1** ¹⁵           | #5 ¹⁶      | —           | #4 ¹⁶      | —             |
-| 10  | **GLM 5.3 Flash** ²⁵          | Z.ai      | Custom endpoint   | **57.5**              | —          | —           | —          | —             |
-| 11  | **Claude Opus 4.8**           | Anthropic | Copilot native    | **57.3**              | #12 (#9)   | #11 (#2)    | #7 (#4)    | #12 (#9)      |
-| 12  | **GPT-5.6 Terra**             | OpenAI    | Copilot native    | **56.6**              | —          | —           | —          | —             |
-| 13  | **GPT-5.5**                   | OpenAI    | Copilot native    | **56.3** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
-| 14  | **Gemini 3.7 Flash**          | Google    | Copilot native    | **56.0** ²⁰           | —          | —           | —          | —             |
-| 15  | **Grok 4.5**                  | xAI       | Copilot native    | **55.8** ¹⁷           | —          | —           | —          | —             |
-| 16  | **Claude Sonnet 5**           | Anthropic | Copilot native    | **55.3**              | — ¹²       | — ¹²        | — ¹²       | — ¹²          |
-| 17  | **Claude Opus 4.7**           | Anthropic | Copilot native    | **55.0**              | #5 (#3)    | #4 (#5)     | #5 (#3)    | #5 (#3)       |
-| 18  | **DeepSeek V4 Pro 0813** ²⁴   | DeepSeek  | Copilot extension | **53.2**              | —          | —           | —          | —             |
-| 19  | **GPT-5.4**                   | OpenAI    | Copilot native    | **53.1** ¹            | #34 (#13)  | #8 ⁹        | #49 (#28)  | #34 (#13)     |
-| 20  | **GLM 5.2**                   | Z.ai      | Custom endpoint   | **52.6**              | #33        | —           | #3 ¹¹      | #33           |
-| 21  | **GPT-5.6 Luna**              | OpenAI    | Copilot native    | **52.3**              | —          | —           | —          | —             |
-| 22  | **Gemini 3.5 Flash**          | Google    | Copilot native    | **52.0**              | #13        | #15         | #15        | #13           |
-| 23  | **DeepSeek V4 Flash 0731** ¹⁸ | DeepSeek  | Copilot extension | **51.8**              | #67 (#63)  | #18         | —          | #66           |
-| 24  | **Gemini 3.6 Flash**          | Google    | Copilot native    | **51.6**              | — ¹³       | — ¹³        | — ¹³       | — ¹³          |
-| 25  | **Claude Sonnet 4.6**         | Anthropic | Copilot native    | **48.4**              | #24        | #12         | #11        | #24           |
-| 26  | **Gemini 3.1 Pro**            | Google    | Copilot native    | **47.7**              | #7         | #17         | #27        | #7            |
-| 27  | **Qwen 3.7 Max**              | DashScope | Custom endpoint   | **46.7**              | #17        | —           | #10        | #17           |
-| 28  | **MiniMax M3**                | MiniMax   | Custom endpoint   | **45.4**              | #49        | #19         | #13        | #42           |
-| 29  | **Kimi K2.6**                 | Moonshot  | Custom endpoint   | **45.0**              | #34        | #16         | #12        | #31           |
-| 30  | **Kimi K2.7 Code**            | Moonshot  | Custom endpoint   | **43.0**              | — ⁷        | —           | #20        | — ⁷           |
-| 31  | **MiMo V2.5 Pro**             | Xiaomi    | Custom endpoint   | **42.9**              | #29        | —           | #21        | #28           |
-| 32  | **GLM 5.1**                   | Z.ai      | Custom endpoint   | **41.0**              | #15        | #13         | #9         | #15           |
-| 33  | **GPT-5.4 mini**              | OpenAI    | Copilot native    | **40.9**              | #50        | —           | #39        | #48           |
-| 34  | **Qwen 3.6 Plus** ²²          | DashScope | Custom endpoint   | **40.0**              | #55        | #20         | #23        | #55           |
-| 35  | **Qwen 3.7 Plus**             | DashScope | Custom endpoint   | **39.4**              | —          | —           | —          | —             |
-| 36  | **MiMo V2.5**                 | Xiaomi    | Custom endpoint   | **38.0**              | #69        | —           | #33        | #68           |
-| 37  | **GLM 5V Turbo**              | Z.ai      | Custom endpoint   | **35.0** ²            | — ⁸        | —           | —          | — ⁸           |
-| 38  | **Gemini 3.8 Flash Cyber** ²⁷ | Google    | N/A (Fairwind)    | —                     | —          | —           | —          | —             |
+| 4   | **GPT-6 Astra** ²⁹            | OpenAI    | Copilot native    | **61.2**              | —          | —           | —          | —             |
+| 5   | **Grok 4.6**                  | xAI       | Copilot native    | **61.0** ¹⁹           | —          | —           | —          | —             |
+| 6   | **GPT-5.6 Sol**               | OpenAI    | Copilot native    | **60.9**              | #8 (xhigh) | —           | #2 (xhigh) | #8 (xhigh)    |
+| 7   | **Kimi K3**                   | Moonshot  | Custom endpoint   | **59.7**              | — ¹⁴       | —           | —          | — ¹⁴          |
+| 8   | **GLM 5.3** ²³                | Z.ai      | Custom endpoint   | **59.5**              | —          | —           | —          | —             |
+| 9   | **Gemini 3.8 Flash** ²⁶       | Google    | N/A (Gemini API)  | **58.7**              | —          | —           | —          | —             |
+| 10  | **Qwen 3.8 Max**              | DashScope | Custom endpoint   | **58.1** ¹⁵           | #5 ¹⁶      | —           | #4 ¹⁶      | —             |
+| 11  | **GLM 5.3 Flash** ²⁵          | Z.ai      | Custom endpoint   | **57.5**              | —          | —           | —          | —             |
+| 12  | **Claude Opus 4.8**           | Anthropic | Copilot native    | **57.3**              | #12 (#9)   | #11 (#2)    | #7 (#4)    | #12 (#9)      |
+| 13  | **GPT-5.6 Terra**             | OpenAI    | Copilot native    | **56.6**              | —          | —           | —          | —             |
+| 14  | **GPT-5.5**                   | OpenAI    | Copilot native    | **56.3** ¹            | #20 (#12)  | #9 (#3)     | #18 (#17)  | #20 (#12)     |
+| 15  | **Gemini 3.7 Flash**          | Google    | Copilot native    | **56.0** ²⁰           | —          | —           | —          | —             |
+| 16  | **Grok 4.5**                  | xAI       | Copilot native    | **55.8** ¹⁷           | —          | —           | —          | —             |
+| 17  | **Claude Sonnet 5**           | Anthropic | Copilot native    | **55.3**              | — ¹²       | — ¹²        | — ¹²       | — ¹²          |
+| 18  | **Claude Opus 4.7**           | Anthropic | Copilot native    | **55.0**              | #5 (#3)    | #4 (#5)     | #5 (#3)    | #5 (#3)       |
+| 19  | **DeepSeek V4 Pro 0813** ²⁴   | DeepSeek  | Copilot extension | **53.2**              | —          | —           | —          | —             |
+| 20  | **GPT-5.4**                   | OpenAI    | Copilot native    | **53.1** ¹            | #34 (#13)  | #8 ⁹        | #49 (#28)  | #34 (#13)     |
+| 21  | **GLM 5.2**                   | Z.ai      | Custom endpoint   | **52.6**              | #33        | —           | #3 ¹¹      | #33           |
+| 22  | **GPT-5.6 Luna**              | OpenAI    | Copilot native    | **52.3**              | —          | —           | —          | —             |
+| 23  | **Gemini 3.5 Flash**          | Google    | Copilot native    | **52.0**              | #13        | #15         | #15        | #13           |
+| 24  | **DeepSeek V4 Flash 0731** ¹⁸ | DeepSeek  | Copilot extension | **51.8**              | #67 (#63)  | #18         | —          | #66           |
+| 25  | **Gemini 3.6 Flash**          | Google    | Copilot native    | **51.6**              | — ¹³       | — ¹³        | — ¹³       | — ¹³          |
+| 26  | **Claude Sonnet 4.6**         | Anthropic | Copilot native    | **48.4**              | #24        | #12         | #11        | #24           |
+| 27  | **Gemini 3.1 Pro**            | Google    | Copilot native    | **47.7**              | #7         | #17         | #27        | #7            |
+| 28  | **Qwen 3.7 Max**              | DashScope | Custom endpoint   | **46.7**              | #17        | —           | #10        | #17           |
+| 29  | **MiniMax M3**                | MiniMax   | Custom endpoint   | **45.4**              | #49        | #19         | #13        | #42           |
+| 30  | **Kimi K2.6**                 | Moonshot  | Custom endpoint   | **45.0**              | #34        | #16         | #12        | #31           |
+| 31  | **Kimi K2.7 Code**            | Moonshot  | Custom endpoint   | **43.0**              | — ⁷        | —           | #20        | — ⁷           |
+| 32  | **MiMo V2.5 Pro**             | Xiaomi    | Custom endpoint   | **42.9**              | #29        | —           | #21        | #28           |
+| 33  | **GLM 5.1**                   | Z.ai      | Custom endpoint   | **41.0**              | #15        | #13         | #9         | #15           |
+| 34  | **GPT-5.4 mini**              | OpenAI    | Copilot native    | **40.9**              | #50        | —           | #39        | #48           |
+| 35  | **Qwen 3.6 Plus** ²²          | DashScope | Custom endpoint   | **40.0**              | #55        | #20         | #23        | #55           |
+| 36  | **Qwen 3.7 Plus**             | DashScope | Custom endpoint   | **39.4**              | —          | —           | —          | —             |
+| 37  | **MiMo V2.5**                 | Xiaomi    | Custom endpoint   | **38.0**              | #69        | —           | #33        | #68           |
+| 38  | **GLM 5V Turbo**              | Z.ai      | Custom endpoint   | **35.0** ²            | — ⁸        | —           | —          | — ⁸           |
+| 39  | **Gemini 3.8 Flash Cyber** ²⁷ | Google    | N/A (Fairwind)    | —                     | —          | —           | —          | —             |
 
 ¹ GPT-5.5 (56.3) and GPT-5.4 (53.1) AA scores are from the **xhigh** preset; their high presets score lower.
 
@@ -102,6 +103,8 @@ A comparison of the **Arena top 10** alongside models available through **GitHub
 ²⁷ **Gemini 3.8 Flash Cyber** (Google, released **September 2, 2026**) — cybersecurity-specialized variant of the same foundational intelligence as Gemini 3.8 Flash, focused on autonomous vulnerability discovery and automated patching (defensive capabilities prioritized over offensive ones). **Restricted access** — available only to trusted defenders (government authorities, critical-infrastructure operators, software maintainers) via Google's [Fairwind Program](https://deepmind.google/fairwind-program/); no public API pricing and no Artificial Analysis Intelligence Index run, hence the `—` cells and its position after all scored rows. Vendor-reported results: CyberGym Pass@1 **86.2** (vs GPT-5.5-Cyber 85.6, Mythos 5 83.8, GPT-5.6 Sol 83.6, and Gemini 3.5 Flash Cyber 77.5), >70% success on Google's internal 20-language vulnerability-discovery benchmark (71.0 vs Gemini 3.7 Flash 58.9), CWE-Bench Pass@1 **47.2** (on the Pareto frontier vs Fable 5's 47.8 at significantly lower cost per rollout), and a **6.0** attack-success rate on the Gray Swan IPI prompt-injection benchmark (lower is better). Real-world reports: 2.6× more correct Chrome patches than larger commercial models; +7.5–9.7% pentest recall at 2.3–5.2× lower cost per Wiz. These are vendor-reported results, not independent replications. See the [Google announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/) and the [model page](https://deepmind.google/models/gemini/cyber/).
 
 ²⁸ **Claude Fable 5.1** (Anthropic, released **September 1, 2026**) — Anthropic's new flagship and the **new #1 on the Artificial Analysis Intelligence Index: 65.7** (OpenRouter's AA-sourced benchmark; AA's [model page](https://artificialanalysis.ai/models/claude-fable-5-1) rounds to **66**), with Coding **81.6** and Agentic **61.3**. GitHub Copilot native (GA, Powerful). 1M context window, text + image input, text output, adaptive reasoning. Released too recently for Arena rankings (Fable 5 currently holds #1 in Text, Agent, Code/WebDev, and Overall). Very verbose and slow at max effort (140M output tokens on the Intelligence Index vs a 71M median; 66.2 t/s; TTFT 283.83 s). Priced at **$10.00 / $0.25 / $50.00** per 1M input/cached/output (cache write $12.50; cached input cut from Fable 5's $1.00 to **$0.25** — a 97.5% cache discount). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Like Fable 5, Anthropic retains request data by default (ZDR available through the end of 2026 under a time-bound exemption). See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
+
+²⁹ **GPT-6 Astra** (OpenAI, released **September 3, 2026**) — OpenAI's launch comparison reports an Artificial Analysis Intelligence Index **61.2** (methodology v4.1.1), Coding Agent Index **67.0**, Terminal-Bench 4.0 **57.9%**, and DeepSWE v1.1 **74.1%**. It supports reasoning, text + image input, text output, and a 1.05M-token context window. It was released too recently for Arena rankings and is a **GitHub Copilot native** model (GA, Powerful). Artificial Analysis's current v4.2 model page reports **55** after a methodology refresh; that score is not mixed into this v4.1.1 comparison table. See the [GPT-6 Astra announcement](https://openai.com/index/gpt-6-astra/) and [OpenAI's model documentation](https://developers.openai.com/api/docs/models/gpt-6-astra).
 
 ## Qwen 3.8 evidence matrix
 

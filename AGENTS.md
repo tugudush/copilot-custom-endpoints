@@ -5,6 +5,7 @@
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
 - **Kimi K3** (Moonshot) — newly validated (July 17, 2026). Requires the local proxy shim `proxy/kimi-proxy.mjs`. K3 is always-thinking and uses `reasoning_effort` (not `thinking`); the proxy detects K3, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. 2.8T params, 1M context, AA Intelligence Index **59.7** (#4 overall).
+- **GPT-6 Astra** (OpenAI) — released September 3, 2026; available natively in GitHub Copilot and through the API as `gpt-6-astra`. It supports reasoning, text + image input, a 1.05M context window, and standard pricing of $10 / $1 / $50 per 1M input/cached/output tokens. The launch comparison reports AA Intelligence Index **61.2** using methodology v4.1.1; no custom-endpoint setup is maintained in this repo.
 - **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
