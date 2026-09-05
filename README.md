@@ -149,6 +149,7 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **GPT-5.5**                   | OpenAI    | **~$0.098**           | **56.3**           | ~$5.50       | ✅     | 1M             |
 | **Claude Fable 5.1** ²¹       | Anthropic | **~$0.15**            | **65.7**           | ~$10.00      | ✅     | 1M             |
 | **Claude Fable 5** ¹⁵         | Anthropic | **~$0.161**           | **62.1**           | ~$10.00      | ✅     | 1M             |
+| **GPT-6 Astra** ²²            | OpenAI    | **~$0.163**           | **61.2**           | ~$10.00      | ✅     | 1M             |
 | **Gemini 3.8 Flash Cyber** ²⁰ | Google    | —                     | —                  | —            | —      | —              |
 
 ¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
@@ -191,6 +192,8 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 
 ²¹ **Claude Fable 5.1** (released September 1, 2026) — Anthropic's new flagship; AA Intelligence Index **65.7** (OpenRouter AA-sourced; AA page rounds to **66**, #1/196), Coding **81.6**, Agentic **61.3** — now the top-scoring model in this table. GitHub Copilot native (GA, Powerful). 1M context, text + image input, adaptive reasoning. Priced at $10.00 / $50.00 per MTok input/output ($0.25 cached — down from Fable 5's $1.00; 97.5% cache discount; $12.50 cache write). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Too new for Arena rankings. See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) and the [AA model page](https://artificialanalysis.ai/models/claude-fable-5-1).
 
+²² **GPT-6 Astra** (released September 3, 2026) — OpenAI's frontier model, available as `gpt-6-astra` through the API and as a GitHub Copilot native model (GA, Powerful). AA Intelligence Index **61.2** (launch comparison, methodology v4.1.1); 1M context, text + image input, text output, and reasoning. Standard pricing is $10.00 / $1.00 / $50.00 per 1M input/cached/output tokens, for a modeled ~$10.00 session and ~$0.163 CPI. It is too new for Arena rankings. See the [GPT-6 Astra announcement](https://openai.com/index/gpt-6-astra/), [OpenAI API pricing](https://developers.openai.com/api/docs/pricing), and [OpenAI model documentation](https://developers.openai.com/api/docs/models/gpt-6-astra).
+
 For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
@@ -204,9 +207,10 @@ For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free
 >
 > **MiniMax M3** (45.4, ~$0.27/session) is still the best **direct** custom-endpoint option — no proxy or extension, vision, 1M context, strong coding. Pick M3 when you want a plug-and-play custom endpoint with vision.
 >
-> For **plan mode / architecture & design thinking**, **Qwen 3.8 Max**, **Kimi K3**, **GLM 5.3**, **GLM 5.3 Flash**, **GPT-5.6 Luna**, and **DeepSeek V4 Flash 0731** are worth considering:
+> For **plan mode / architecture & design thinking**, **GPT-6 Astra**, **Qwen 3.8 Max**, **Kimi K3**, **GLM 5.3**, **GLM 5.3 Flash**, **GPT-5.6 Luna**, and **DeepSeek V4 Flash 0731** are worth considering:
 >
-> - **Qwen 3.8 Max** — scores **58.1** (#5 overall, the #2 custom-endpoint model) — the default **multimodal** planning pick. Near-flagship intelligence at ~$1.60/session, with 1M context and vision. Strong for whole-codebase planning, architecture, and large spec review.
+> - **GPT-6 Astra** — new OpenAI frontier model, scores **61.2** (#4 in this comparison), ~$10.00/session, with 1M context and vision. It is the strongest OpenAI option in the table, but its high token price makes it a reserve choice for the hardest planning and research tasks.
+> - **Qwen 3.8 Max** — scores **58.1** (#5 Arena Text, the #2 custom-endpoint model) — the default **multimodal** planning pick. Near-flagship intelligence at ~$1.60/session, with 1M context and vision. Strong for whole-codebase planning, architecture, and large spec review.
 > - **Kimi K3** — new flagship. Highest intelligence score among custom-endpoint models (**59.7**, #4 overall). Best for complex reasoning, long-horizon planning, and architecture decisions when you want the absolute best — but at ~$3.00/session it's ~2× Qwen 3.8 Max for +1.6 points, so **reserve it for hard problems**.
 > - **GLM 5.3** — new flagship, scores **59.5** (now the #2 custom-endpoint model, just behind Kimi K3's 59.7) at ~$1.14/session. 1M context, text-only, always-thinking. It is the strongest text-only planning value above 59 and offers best-in-class agentic coding per Z.ai (50% gain over 5.2 on their Code Bench) — ideal for whole-codebase planning and large spec review. ~4× MiniMax M3, so **not a daily driver for agent mode** — reserve it for planning, then hand implementation off to a cheaper model.
 > - **GLM 5.3 Flash** — new (Aug 26): scores **57.5** at just ~$0.13/session (list) — the **cheapest 57+ model** in the table and the first native multimodal GLM-5. Near-GLM-5.3 agentic coding (Z.ai: DeepSWE v1.1 63.4 vs 46.2) at ~9× less cost, with vision. A strong daily-driver planning + image-review pick until the 50% promo ends.
