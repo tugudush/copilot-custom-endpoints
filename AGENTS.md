@@ -9,6 +9,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Kimi K2.7 Code / K2.6** (Moonshot) — requires the local proxy shim `proxy/kimi-proxy.mjs`. K2.7 is always-thinking and rejects `thinking: disabled`; the proxy detects K2.7 and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.
 - **Qwen 3.7 Plus** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
 - **Qwen 3.7 Max** (DashScope) — works via `proxy/qwen-proxy.mjs` for dynamic thinking suppression; can also work direct with static `enable_thinking: false`.
+- **Qwen 3.8 Max** (DashScope/OpenRouter) — OpenRouter exposes two separate snapshots: unversioned `qwen/qwen3.8-max` (0803, AA **53.4**) and `qwen/qwen3.8-max-0902` (0902, AA **46.9**). The validated DashScope setup uses provider ID `qwen3.8-max`; `proxy/qwen-proxy.mjs` forwards model IDs unchanged and dynamically suppresses thinking during tool activity.
 - **DeepSeek V4 Pro 0813 / V4 Flash 0731** — current builds (August 2026) use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed. The API keeps the plain model IDs `deepseek-v4-pro` and `deepseek-v4-flash` while pricing uses peak/off-peak rates.
 - **Xiaomi MiMo V2.5 / V2.5 Pro** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points both models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
@@ -111,6 +112,8 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 
 ### Qwen 3.x (DashScope)
 
+- OpenRouter currently lists `qwen/qwen3.8-max` as the older 0803 snapshot and `qwen/qwen3.8-max-0902` as a separate 0902 snapshot. Keep those scores and slugs distinct in comparisons.
+- The validated DashScope custom endpoint uses `qwen3.8-max`; do not substitute an OpenRouter snapshot slug without changing the endpoint and revalidating the provider mapping.
 - Direct VS Code -> DashScope works without a proxy for both `qwen3.7-plus` and `qwen3.7-max` when `enable_thinking: false` is set in `requestBody`.
 - The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
 - When using the proxy, keep `enable_thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `false` on tool turns.

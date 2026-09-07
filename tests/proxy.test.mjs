@@ -339,6 +339,21 @@ describe('Qwen proxy rewrite logic', () => {
     assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
   })
 
+  it('forwards Qwen snapshot model IDs unchanged', async () => {
+    const res = await proxyRequest(proxyPort, {
+      model: 'qwen/qwen3.8-max-0902',
+      messages: [{ role: 'user', content: 'Hello' }],
+      stream: false
+    })
+
+    assert.equal(res.status, 200)
+    const data = await res.json()
+    const received = data.receivedBody
+
+    assert.equal(received.model, 'qwen/qwen3.8-max-0902')
+    assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
+  })
+
   it('tool-enabled chat: sets enable_thinking to false', async () => {
     const res = await proxyRequest(proxyPort, {
       model: 'qwen3.8-max',
