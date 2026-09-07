@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision), `qwen3.7-plus` (vision), and `qwen3.7-max` (text) work both direct and via the local proxy. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
+> **TL;DR:** `qwen3.8-max` (vision), `qwen3.7-plus` (vision), and `qwen3.7-max` (text) work both direct and via the local proxy. OpenRouter currently lists two frozen Qwen 3.8 Max snapshots: the unversioned `qwen/qwen3.8-max` (0803) and `qwen/qwen3.8-max-0902`. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
 
 ## At a Glance
 
@@ -27,6 +27,68 @@
 | `qwen3.7-max`  | ❌ No  | 1M      | _(unspecified)_ | Larger text-only model                                  |
 
 > The live `chatLanguageModels.json` points Qwen at the local proxy by default; the direct DashScope URL is shown below for users who prefer a static `enable_thinking: false` setup.
+
+### OpenRouter snapshot records
+
+These are separate OpenRouter catalog entries, not two picker labels for one model:
+
+| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                           |
+| ----------------------- | -------- | --------------------- | --------------------------------------------------------------- |
+| `qwen/qwen3.8-max`      | 0803     | **53.4**              | August 3 launch checkpoint; OpenRouter now labels it superseded |
+| `qwen/qwen3.8-max-0902` | 0902     | **46.9**              | September snapshot; released September 4 and listed separately  |
+
+The DashScope custom-endpoint snippets below use the provider model ID `qwen3.8-max`. Do not replace it with the OpenRouter `qwen/qwen3.8-max-0902` slug unless you also change the upstream URL to OpenRouter and have verified that path independently.
+
+### Optional OpenRouter snapshot proxy
+
+The proxy forwards the `model` field without mapping it, so it can also be pointed at OpenRouter for the two catalog snapshots. This is an **optional, unvalidated OpenRouter path**; it is separate from the validated DashScope setup above and requires an OpenRouter API key.
+
+1. Add this to the repo-root `.env` file:
+
+   ```dotenv
+   QWEN_UPSTREAM_URL=https://openrouter.ai/api/v1/chat/completions
+   ```
+
+2. Start the existing Qwen proxy:
+
+   ```bash
+   npm run proxy:qwen
+   ```
+
+3. Add a separate provider group using the OpenRouter key and these model entries:
+
+   ```json
+   {
+     "name": "Qwen (OpenRouter snapshots)",
+     "vendor": "customendpoint",
+     "apiKey": "",
+     "apiType": "chat-completions",
+     "models": [
+       {
+         "id": "qwen/qwen3.8-max",
+         "name": "Qwen 3.8 Max (0803)",
+         "url": "http://127.0.0.1:3458/v1/chat/completions",
+         "toolCalling": true,
+         "vision": true,
+         "streaming": true,
+         "maxInputTokens": 991000,
+         "maxOutputTokens": 131072
+       },
+       {
+         "id": "qwen/qwen3.8-max-0902",
+         "name": "Qwen 3.8 Max (0902)",
+         "url": "http://127.0.0.1:3458/v1/chat/completions",
+         "toolCalling": true,
+         "vision": true,
+         "streaming": true,
+         "maxInputTokens": 991000,
+         "maxOutputTokens": 131072
+       }
+     ]
+   }
+   ```
+
+Set the API key through **Chat: Manage Language Models**, then verify the proxy with `curl http://127.0.0.1:3458/healthz`. Do not run this route at the same time as the default DashScope route unless each process uses a different `QWEN_PROXY_PORT` and log path.
 
 ## Quick Start
 
@@ -218,7 +280,7 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 ## Notes
 
 - **Vision (`qwen3.8-max`, `qwen3.7-plus`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
-- **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected.
+- **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected. The two OpenRouter snapshot slugs are catalog records; the benchmark difference does not mean the DashScope config should silently switch IDs.
 - **Thinking trade-off:** Direct = thinking always off (loops stable, no reasoning visible). Proxy = thinking on in plain chat, off in tool turns.
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 

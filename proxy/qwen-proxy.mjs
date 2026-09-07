@@ -6,6 +6,9 @@ import { createProxy } from '../lib/create-proxy.mjs'
 /**
  * Supported model scope for this proxy:
  * - Validated with `qwen3.8-max`, `qwen3.7-plus`, and `qwen3.7-max`.
+ * - The rewrite can also be used with OpenRouter model IDs such as
+ *   `qwen/qwen3.8-max-0902`; the proxy forwards model IDs unchanged. That route
+ *   is not part of the validated DashScope setup.
  * - Expected to work for any Qwen3 hybrid-thinking model (qwen3-* series)
  *   that supports the `enable_thinking` top-level field on DashScope's
  *   OpenAI-compatible surface.
@@ -33,9 +36,13 @@ Starts a local HTTP proxy that conditionally injects enable_thinking: false
 when the request includes a tools array, letting Qwen hybrid-thinking models
 show reasoning in plain chat while keeping tool loops stable.
 
+The proxy forwards the requested model ID unchanged, including the DashScope
+ID qwen3.8-max and OpenRouter ID qwen/qwen3.8-max-0902.
+
 Environment variables:
   QWEN_PROXY_PORT              Local listen port. Default: 3458 (falls back to PORT)
-  QWEN_UPSTREAM_URL            Upstream DashScope chat-completions URL.
+  QWEN_UPSTREAM_URL            Upstream chat-completions URL (DashScope by default;
+                               OpenRouter can be selected for snapshot IDs).
                                Default: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
   QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS
                                Inject enable_thinking: false when tools are present.
