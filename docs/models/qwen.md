@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision), `qwen3.7-plus` (vision), and `qwen3.7-max` (text) work both direct and via the local proxy. OpenRouter's September 10 rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **40.3**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
+> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's September 10 rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **40.3**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
 
 ## At a Glance
 
@@ -8,10 +8,10 @@
 | ---------------------- | -------------------------------------------------------------------------------- |
 | Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
 | Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                       |
-| Vision                 | ✅ Yes (`qwen3.8-max`, `qwen3.7-plus`)                                           |
+| Vision                 | ✅ Yes (`qwen3.8-max`)                                                           |
 | Tool calling           | ✅ Yes                                                                           |
 | Context                | 1M                                                                               |
-| Max output             | 131K (`qwen3.8-max`); see Models table for other models                          |
+| Max output             | 131K                                                                             |
 | Endpoint               | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
 | Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                      |
 | Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                       |
@@ -20,11 +20,9 @@
 
 ### Models
 
-| Model          | Vision | Context | Max output      | Notes                                                   |
-| -------------- | ------ | ------- | --------------- | ------------------------------------------------------- |
-| `qwen3.8-max`  | ✅ Yes | 1M      | 131K            | Frontier multimodal model; reasoning enabled by default |
-| `qwen3.7-plus` | ✅ Yes | 1M      | _(unspecified)_ | Primary model with image understanding                  |
-| `qwen3.7-max`  | ❌ No  | 1M      | _(unspecified)_ | Larger text-only model                                  |
+| Model         | Vision | Context | Max output | Notes                                                   |
+| ------------- | ------ | ------- | ---------- | ------------------------------------------------------- |
+| `qwen3.8-max` | ✅ Yes | 1M      | 131K       | Frontier multimodal model; reasoning enabled by default |
 
 > The live `chatLanguageModels.json` points Qwen at the local proxy by default; the direct DashScope URL is shown below for users who prefer a static `enable_thinking: false` setup.
 
@@ -32,10 +30,10 @@
 
 These are separate OpenRouter catalog entries, not two picker labels for one model:
 
-| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                           |
-| ----------------------- | -------- | --------------------- | --------------------------------------------------------------- |
+| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                                              |
+| ----------------------- | -------- | --------------------- | ---------------------------------------------------------------------------------- |
 | `qwen/qwen3.8-max`      | 0803     | **53.4 (#2)**         | September 10 ranking-card result; exact unversioned API entry is no longer exposed |
-| `qwen/qwen3.8-max-0902` | 0902     | **40.3**              | September snapshot; current exact-ID API metadata                    |
+| `qwen/qwen3.8-max-0902` | 0902     | **40.3**              | September snapshot; current exact-ID API metadata                                  |
 
 The DashScope custom-endpoint snippets below use the provider model ID `qwen3.8-max`. Do not replace it with the OpenRouter `qwen/qwen3.8-max-0902` slug unless you also change the upstream URL to OpenRouter and have verified that path independently.
 
@@ -105,7 +103,7 @@ Set the API key through **Chat: Manage Language Models**, then verify the proxy 
 1. **Use the direct-path JSON snippet** below.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
-4. **Restart VS Code** and pick "Qwen 3.8 Max", "Qwen 3.7 Plus", or "Qwen 3.7 Max".
+4. **Restart VS Code** and pick "Qwen 3.8 Max".
 
 ## Setup
 
@@ -146,24 +144,6 @@ DashScope is region-specific — your API key only works on the endpoint it was 
       "maxInputTokens": 991000,
       "maxOutputTokens": 131072,
       "requestBody": { "enable_thinking": false }
-    },
-    {
-      "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max (text)",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "requestBody": { "enable_thinking": false }
-    },
-    {
-      "id": "qwen3.7-plus",
-      "name": "Qwen 3.7 Plus (vision)",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true,
-      "requestBody": { "enable_thinking": false }
     }
   ]
 }
@@ -203,22 +183,6 @@ DashScope is region-specific — your API key only works on the endpoint it was 
       "streaming": true,
       "maxInputTokens": 991000,
       "maxOutputTokens": 131072
-    },
-    {
-      "id": "qwen3.7-max",
-      "name": "Qwen 3.7 Max (text)",
-      "url": "http://127.0.0.1:3458/v1/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true
-    },
-    {
-      "id": "qwen3.7-plus",
-      "name": "Qwen 3.7 Plus (vision)",
-      "url": "http://127.0.0.1:3458/v1/chat/completions",
-      "toolCalling": true,
-      "vision": true,
-      "streaming": true
     }
   ]
 }
@@ -279,7 +243,7 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 ## Notes
 
-- **Vision (`qwen3.8-max`, `qwen3.7-plus`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
+- **Vision (`qwen3.8-max`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
 - **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected. The OpenRouter ranking card and 0902 API metadata are separate source records; the benchmark difference does not mean the DashScope config should silently switch IDs.
 - **Thinking trade-off:** Direct = thinking always off (loops stable, no reasoning visible). Proxy = thinking on in plain chat, off in tool turns.
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
@@ -299,13 +263,9 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashScope (international) rates for **non-thinking** mode:
 
-| Model          | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
-| -------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
-| `qwen3.8-max`  | $2.00                 | —                      | $6.00                  | —                      |
-| `qwen3.7-plus` | $0.40 / 1M (20% off: $0.32) | $1.20 / 1M (20% off: $0.96) | $1.60 / 1M (20% off: $1.28) | $4.80 / 1M (20% off: $3.84) |
-| `qwen3.7-max`  | $2.50 / 1M            | —                      | $7.50 / 1M             | —                      |
-
-> **Qwen 3.7 pricing** (checked September 10, 2026): Qwen Cloud lists `qwen3.7-max` at **$2.50 / $7.50** per 1M input/output. `qwen3.7-plus` lists **$0.40 / $1.60** up to 256K input and **$1.20 / $4.80** above 256K, with a temporary 20% discount shown separately. The table above shows list and discounted values together.
+| Model         | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
+| ------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
+| `qwen3.8-max` | $2.00                 | —                     | $6.00                  | —                      |
 
 > **Billing options:** Qwen Cloud now offers a separate Token Plan subscription with access to Qwen3.8 Max. The validated VS Code snippets in this document use the PAYG DashScope-compatible endpoint and API key; do not assume the Token Plan base URL or credentials are interchangeable without following Qwen Cloud's current integration instructions.
 

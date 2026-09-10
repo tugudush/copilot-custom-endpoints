@@ -16,7 +16,7 @@ When a model is added, removed, renamed, re-priced, or re-scored, update **all t
 ## Rules
 
 1. **Same model set.** Every model listed in one file must appear in the other two. If a model is intentionally excluded from a file (e.g., a comparison-only model like Grok 4.6 or Claude Fable 5 that has no pricing row), apply that decision consistently and note it in each file — don't silently drop it from just one.
-2. **Same model name.** Use the identical display name in all three tables (e.g., `Claude Fable 5`, `Qwen 3.6 Plus`, `DeepSeek V4 Flash 0731`). Don't abbreviate in one file and spell out in another.
+2. **Same model name.** Use the identical display name in all three tables (e.g., `Claude Fable 5`, `Qwen 3.8 Max (0902)`, `DeepSeek V4 Flash 0731`). Don't abbreviate in one file and spell out in another.
 3. **Same facts.** Intelligence Score (AA Intelligence Index), Est. session cost, Cost per intelligence, input/cached/output pricing, context window, and vision capability must match across files. The AA score is a single source of truth — the same number everywhere.
 4. **Status notes travel together.** If a model is deprecated, superseded, or comparison-only, say so consistently in all three files. Footnote _numbers_ are per-file and independent, but the underlying note must exist wherever the model is listed.
 5. **Re-sort after every change.**

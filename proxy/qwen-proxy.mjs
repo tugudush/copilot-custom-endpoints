@@ -5,7 +5,7 @@ import { createProxy } from '../lib/create-proxy.mjs'
 
 /**
  * Supported model scope for this proxy:
- * - Validated with `qwen3.8-max`, `qwen3.7-plus`, and `qwen3.7-max`.
+ * - Validated with `qwen3.8-max`.
  * - The rewrite can also be used with OpenRouter model IDs such as
  *   `qwen/qwen3.8-max-0902`; the proxy forwards model IDs unchanged. That route
  *   is not part of the validated DashScope setup.

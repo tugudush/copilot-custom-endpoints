@@ -98,36 +98,6 @@
       }
     },
     {
-      "id": "glm-5.2",
-      "name": "GLM 5.2 (text)",
-      "url": "https://api.z.ai/api/paas/v4/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "maxInputTokens": 1048576,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "enabled" },
-        "temperature": 1.0,
-        "top_p": 0.95
-      }
-    },
-    {
-      "id": "glm-5.1",
-      "name": "GLM 5.1 (text)",
-      "url": "https://api.z.ai/api/paas/v4/chat/completions",
-      "toolCalling": true,
-      "vision": false,
-      "streaming": true,
-      "maxInputTokens": 204800,
-      "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "enabled" },
-        "temperature": 1,
-        "top_p": 0.95
-      }
-    },
-    {
       "id": "glm-5v-turbo",
       "name": "GLM 5V Turbo (vision)",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",

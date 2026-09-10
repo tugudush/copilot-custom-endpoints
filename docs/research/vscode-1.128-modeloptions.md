@@ -83,8 +83,6 @@ Snapshot taken from the live `chatLanguageModels.json` on 2026-07-08 (matching t
 
 | Model                       | `url`                                           | Current `requestBody`                                                                      | What can move to `modelOptions`                               | What must remain in `requestBody`                                                                                                 |
 | --------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Qwen 3.7 Max** (text)     | `http://127.0.0.1:3458/v1/chat/completions`     | _(none)_                                                                                   | Nothing to gain — proxy owns sampling + `enable_thinking`.    | _(none)_                                                                                                                          |
-| **Qwen 3.7 Plus** (vision)  | `http://127.0.0.1:3458/v1/chat/completions`     | _(none)_                                                                                   | Same — proxy owns it.                                         | _(none)_                                                                                                                          |
 | **Kimi K2.6** (vision)      | `http://127.0.0.1:3457/v1/chat/completions`     | `temperature: 1`                                                                           | `temperature: 1` (proxy also forces this; cosmetic move only) | _(none)_                                                                                                                          |
 | **Kimi K2.7 Code** (vision) | `http://127.0.0.1:3457/v1/chat/completions`     | `temperature: 1`, `max_tokens: 4096`                                                       | `temperature: 1`                                              | **`max_tokens: 4096`** (no `modelOptions` equivalent; K2.7 is always-thinking, see [models/kimi.md](../models/kimi.md))           |
 | **MiMo V2.5 Pro** (text)    | `http://127.0.0.1:3459/v1/chat/completions`     | `temperature: 1`, `top_p: 0.95`                                                            | Both                                                          | _(proxy injects `thinking: { type: "disabled" }` on tool turns; nothing else needed)_                                             |
@@ -92,7 +90,7 @@ Snapshot taken from the live `chatLanguageModels.json` on 2026-07-08 (matching t
 | **GLM 5V Turbo** (vision)   | `https://api.z.ai/api/paas/v4/chat/completions` | `thinking: { type: "enabled" }`, `temperature: 1`, `top_p: 0.95`                           | `temperature: 1`, `top_p: 0.95`                               | **`thinking: { type: "enabled" }`** (Z.ai server-side `clear_thinking` defaults to `true`, see [models/glm.md](../models/glm.md)) |
 | **MiniMax M3** (vision)     | `https://api.minimax.io/v1/chat/completions`    | `thinking: { type: "adaptive" }`, `reasoning_split: true`, `temperature: 1`, `top_p: 0.95` | `temperature: 1`, `top_p: 0.95`                               | **`thinking: { type: "adaptive" }`**, **`reasoning_split: true`** (see [models/minimax.md](../models/minimax.md))                 |
 
-**Net change if migrated:** 8 `temperature` / `top_p` entries move out of `requestBody` into `modelOptions`; 3 entries (`Kimi K2.7 Code`, `GLM 5V Turbo`, `MiniMax M3`) retain a smaller `requestBody` for provider-specific keys; 5 entries (`Kimi K2.6`, both MiMo, both Qwen) end up with no `requestBody` at all.
+**Net change if migrated:** 8 `temperature` / `top_p` entries move out of `requestBody` into `modelOptions`; 3 entries (`Kimi K2.7 Code`, `GLM 5V Turbo`, `MiniMax M3`) retain a smaller `requestBody` for provider-specific keys; 3 entries (`Kimi K2.6` and both MiMo models) end up with no `requestBody` at all.
 
 ---
 
@@ -164,9 +162,9 @@ Most likely to require attention: **GLM 5V Turbo** (no proxy in front, `modelOpt
 
 The Kimi K2.7 proxy detects `kimi-k2.7*` model slugs and **skips** the thinking-disable rewrite (K2.7 is always-thinking — see [models/kimi.md](../models/kimi.md)). The upstream also requires `max_tokens ≤ 4096` for K2.7 Code in agent mode to avoid VS Code's "Response too long" error. **There is no `modelOptions.max_tokens` equivalent** — this value must stay in `requestBody`. Do **not** attempt to express it as `maxOutputTokens` (that is a VS Code capability hint, not an upstream request-body parameter).
 
-### 5.2 Kimi K2.6 / Qwen 3.7 / MiMo V2.5 — proxies still win
+### 5.2 Kimi K2.6 / MiMo V2.5 — proxies still win
 
-The Qwen and MiMo proxies dynamically choose which fields to inject (`enable_thinking` for Qwen, `thinking` for MiMo) based on whether tools are present. The Kimi proxy forces `temperature: 1` and `top_p: 0.95` on every request, regardless of what VS Code sends. For these three providers, **`modelOptions` is a comment**: the visible request body is determined by the proxy, not by the `chatLanguageModels.json` entry. Migration is harmless but provides no behavioral benefit.
+The MiMo proxy dynamically chooses which fields to inject (`thinking`) based on whether tools are present. The Kimi proxy forces `temperature: 1` and `top_p: 0.95` on every request, regardless of what VS Code sends. For these providers, **`modelOptions` is a comment**: the visible request body is determined by the proxy, not by the `chatLanguageModels.json` entry. Migration is harmless but provides no behavioral benefit.
 
 ### 5.3 GLM — server-side `temperature` is hard-capped
 
@@ -178,13 +176,12 @@ Per [models/minimax.md](../models/minimax.md), MiniMax M3 reasons regardless of 
 
 ### 5.5 `top_p: null` vs `top_p: 0.95`
 
-| Provider            | Recommended `top_p` | Reasoning                                        |
-| ------------------- | ------------------- | ------------------------------------------------ |
-| GLM 5V Turbo        | `0.95`              | Z.ai docs explicitly pair with `temperature: 1`. |
-| MiniMax M3          | `0.95`              | Empirically validated.                           |
-| MiMo V2.5 / Pro     | `0.95`              | Empirically validated.                           |
-| Kimi K2.6 / K2.7    | n/a                 | Proxy forces `0.95`.                             |
-| Qwen 3.7 Plus / Max | n/a                 | Proxy handles.                                   |
+| Provider         | Recommended `top_p` | Reasoning                                        |
+| ---------------- | ------------------- | ------------------------------------------------ |
+| GLM 5V Turbo     | `0.95`              | Z.ai docs explicitly pair with `temperature: 1`. |
+| MiniMax M3       | `0.95`              | Empirically validated.                           |
+| MiMo V2.5 / Pro  | `0.95`              | Empirically validated.                           |
+| Kimi K2.6 / K2.7 | n/a                 | Proxy forces `0.95`.                             |
 
 For models that don't have a strict requirement, `top_p: null` (omit and let the server default) is also acceptable. There is no documented advantage to either choice for our providers.
 
