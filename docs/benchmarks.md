@@ -1,59 +1,59 @@
 # Benchmark Scores
 
-> **Updated:** September 7, 2026 — the main table now uses current OpenRouter Artificial Analysis snapshots and replaces Arena columns with **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench**. The four task columns use OpenAI's official GPT-6 Astra comparison and are populated only where the same published run reports that model. Current OpenRouter AA values are not mixed with the launch-era v4.1.1 values quoted by OpenAI.
+> **Updated:** September 10, 2026 — the main table now uses the current OpenRouter Artificial Analysis model metadata and the live OpenRouter benchmark ranking card. It retains **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench** as the official OpenAI comparison columns. Current OpenRouter AA values are not mixed with the launch-era v4.1.1 values quoted by OpenAI.
 
-A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The four task columns are **official OpenAI comparison results**, not Arena scores and not independent AA composite scores. Values were checked on September 6, 2026.
+A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The four task columns are **official OpenAI comparison results**, not Arena scores and not independent AA composite scores. Values were checked on September 10, 2026.
 
 `MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject.
 
-OpenRouter currently exposes two separate Qwen 3.8 Max snapshots: the unversioned `qwen/qwen3.8-max` is the August **0803** checkpoint at **53.4**, while `qwen/qwen3.8-max-0902` is the September snapshot at **46.9**. Keep the scores attached to their exact slugs; the 0803 score must not be assigned to 0902.
+The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with 53.4**. OpenRouter no longer exposes an exact `qwen/qwen3.8-max` entry in its public model API; its model-page documentation canonicalizes that link to `qwen/qwen3.8-max-0902`, whose current API metadata reports **40.3**. The table keeps the 53.4 ranking-card result attached to the historical 0803 comparison record and records 0902's API value separately. Do not treat those two values as interchangeable.
 
 ## Main table
 
 | #   | Model                      | Provider  | Source            | AA Intelligence Index (OpenRouter) | Terminal-Bench 4.0 | ARC-AGI-3 | FrontierMath Tier 4 (v2) | AutomationBench |
 | --- | -------------------------- | --------- | ----------------- | ---------------------------------- | ------------------ | --------- | ------------------------ | --------------- |
-| 1   | **Claude Fable 5.1**       | Anthropic | Copilot native    | **56.8**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
-| 2   | **GPT-6 Astra**            | OpenAI    | Copilot native    | **54.7**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
-| 3   | **Claude Opus 5**          | Anthropic | Copilot native    | **54.1**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
-| 4   | **Qwen 3.8 Max (0803)³⁰**  | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
-| 5   | **Claude Fable 5**         | Anthropic | Copilot native    | **53.2**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
-| 6   | **GPT-5.6 Sol**            | OpenAI    | Copilot native    | **51.3**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
-| 7   | **Grok 4.6**               | xAI       | Copilot native    | **50.6**                           | —                  | —         | —                        | —               |
-| 8   | **Kimi K3**                | Moonshot  | Custom endpoint   | **50.2**                           | —                  | —         | —                        | —               |
-| 9   | **GLM 5.3**                | Z.ai      | Custom endpoint   | **48.6**                           | —                  | —         | —                        | —               |
-| 10  | **Gemini 3.8 Flash**       | Google    | N/A (Gemini API)  | **47.1**                           | 19.1%              | —         | —                        | —               |
-| 11  | **Qwen 3.8 Max (0902)³¹**  | DashScope | Custom endpoint   | **46.9**                           | —                  | —         | —                        | —               |
-| 12  | **GPT-5.6 Terra**          | OpenAI    | Copilot native    | **46.8**                           | —                  | —         | —                        | —               |
-| 13  | **GLM 5.3 Flash**          | Z.ai      | Custom endpoint   | **46.2**                           | —                  | —         | —                        | —               |
-| 14  | **Grok 4.5**               | xAI       | Copilot native    | **45.5**                           | —                  | —         | —                        | —               |
-| 15  | **Gemini 3.7 Flash**       | Google    | Copilot native    | **45.2**                           | —                  | —         | —                        | —               |
-| 16  | **Claude Sonnet 5**        | Anthropic | Copilot native    | **45.1**                           | —                  | —         | —                        | —               |
-| 17  | **GPT-5.6 Luna**           | OpenAI    | Copilot native    | **43.4**                           | —                  | —         | —                        | —               |
-| 18  | **DeepSeek V4 Pro 0813**   | DeepSeek  | Copilot extension | **42.1**                           | —                  | —         | —                        | —               |
-| 19  | **DeepSeek V4 Flash 0731** | DeepSeek  | Copilot extension | **40.8**                           | —                  | —         | —                        | —               |
-| 20  | **Gemini 3.6 Flash**       | Google    | Copilot native    | **40.3**                           | —                  | —         | —                        | —               |
-| 21  | **Gemini 3.1 Pro**         | Google    | Copilot native    | **36.7**                           | —                  | —         | —                        | —               |
-| 22  | **MiniMax M3**             | MiniMax   | Custom endpoint   | **35.7**                           | —                  | —         | —                        | —               |
-| 23  | **MiMo V2.5 Pro**          | Xiaomi    | Custom endpoint   | **32.6**                           | —                  | —         | —                        | —               |
-| 24  | **MiMo V2.5**              | Xiaomi    | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 25  | **Qwen 3.7 Plus**          | DashScope | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 26  | **Qwen 3.6 Plus**          | DashScope | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 27  | **GPT-5.4 mini**           | OpenAI    | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 28  | **Kimi K2.6**              | Moonshot  | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 29  | **Kimi K2.7 Code**         | Moonshot  | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 30  | **GLM 5V Turbo**           | Z.ai      | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 31  | **GLM 5.2**                | Z.ai      | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 32  | **GLM 5.1**                | Z.ai      | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 33  | **Qwen 3.7 Max**           | DashScope | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
-| 34  | **Gemini 3.5 Flash**       | Google    | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 35  | **GPT-5.4**                | OpenAI    | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 36  | **Claude Sonnet 4.6**      | Anthropic | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 37  | **Claude Opus 4.8**        | Anthropic | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 38  | **Claude Opus 4.7**        | Anthropic | Copilot native    | —                                  | —                  | —         | —                        | —               |
-| 39  | **GPT-5.5**                | OpenAI    | Copilot native    | —                                  | —                  | —         | —                        | —               |
+| 1   | **Claude Fable 5.1**       | Anthropic | Copilot native    | **53.4**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
+| 2   | **Qwen 3.8 Max (0803)³⁰**  | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
+| 3   | **GPT-6 Astra**            | OpenAI    | Copilot native    | **52.8**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
+| 4   | **Claude Opus 5**          | Anthropic | Copilot native    | **50.7**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
+| 5   | **Claude Fable 5**         | Anthropic | Copilot native    | **49.7**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
+| 6   | **GPT-5.6 Sol**            | OpenAI    | Copilot native    | **47.1**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
+| 7   | **GLM 5.3**                | Z.ai      | Custom endpoint   | **44.9**                           | —                  | —         | —                        | —               |
+| 8   | **Grok 4.6**               | xAI       | Copilot native    | **44.4**                           | —                  | —         | —                        | —               |
+| 9   | **Kimi K3**                | Moonshot  | Custom endpoint   | **43.8**                           | —                  | —         | —                        | —               |
+| 10  | **GPT-5.6 Terra**          | OpenAI    | Copilot native    | **42.3**                           | —                  | —         | —                        | —               |
+| 11  | **Claude Opus 4.8**        | Anthropic | Copilot native    | **42.0**                           | —                  | —         | —                        | —               |
+| 12  | **GLM 5.3 Flash**          | Z.ai      | Custom endpoint   | **41.9**                           | —                  | —         | —                        | —               |
+| 13  | **Gemini 3.8 Flash**       | Google    | N/A (Gemini API)  | **41.2**                           | 19.1%              | —         | —                        | —               |
+| 14  | **Qwen 3.8 Max (0902)³¹**  | DashScope | Custom endpoint   | **40.3**                           | —                  | —         | —                        | —               |
+| 15  | **Gemini 3.7 Flash**       | Google    | Copilot native    | **39.4**                           | —                  | —         | —                        | —               |
+| 16  | **Grok 4.5**               | xAI       | Copilot native    | **39.1**                           | —                  | —         | —                        | —               |
+| 17  | **GPT-5.5**                | OpenAI    | Copilot native    | **38.6**                           | —                  | —         | —                        | —               |
+| 18  | **Claude Sonnet 5**        | Anthropic | Copilot native    | **38.4**                           | —                  | —         | —                        | —               |
+| 19  | **GPT-5.6 Luna**           | OpenAI    | Copilot native    | **37.5**                           | —                  | —         | —                        | —               |
+| 20  | **DeepSeek V4 Pro 0813**   | DeepSeek  | Copilot extension | **36.3**                           | —                  | —         | —                        | —               |
+| 21  | **DeepSeek V4 Flash 0731** | DeepSeek  | Copilot extension | **34.5**                           | —                  | —         | —                        | —               |
+| 22  | **Gemini 3.6 Flash**       | Google    | Copilot native    | **34.3**                           | —                  | —         | —                        | —               |
+| 23  | **Gemini 3.5 Flash**       | Google    | Copilot native    | **33.0**                           | —                  | —         | —                        | —               |
+| 24  | **Claude Sonnet 4.6**      | Anthropic | Copilot native    | **30.5**                           | —                  | —         | —                        | —               |
+| 25  | **Gemini 3.1 Pro**         | Google    | Copilot native    | **30.4**                           | —                  | —         | —                        | —               |
+| 26  | **Qwen 3.7 Max**           | DashScope | Custom endpoint   | **29.9**                           | —                  | —         | —                        | —               |
+| 27  | **MiniMax M3**             | MiniMax   | Custom endpoint   | **29.6**                           | —                  | —         | —                        | —               |
+| 28  | **MiMo V2.5 Pro**          | Xiaomi    | Custom endpoint   | **26.4**                           | —                  | —         | —                        | —               |
+| 29  | **GLM 5.1**                | Z.ai      | Custom endpoint   | **26.4**                           | —                  | —         | —                        | —               |
+| 30  | **Qwen 3.7 Plus**          | DashScope | Custom endpoint   | **25.8**                           | —                  | —         | —                        | —               |
+| 31  | **GPT-5.4 mini**           | OpenAI    | Copilot native    | **24.6**                           | —                  | —         | —                        | —               |
+| 32  | **MiMo V2.5**              | Xiaomi    | Custom endpoint   | **22.3**                           | —                  | —         | —                        | —               |
+| 33  | **Qwen 3.6 Plus**          | DashScope | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 34  | **Kimi K2.6**              | Moonshot  | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 35  | **Kimi K2.7 Code**         | Moonshot  | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 36  | **GLM 5V Turbo**           | Z.ai      | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 37  | **GLM 5.2**                | Z.ai      | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 38  | **GPT-5.4**                | OpenAI    | Copilot native    | —                                  | —                  | —         | —                        | —               |
+| 39  | **Claude Opus 4.7**        | Anthropic | Copilot native    | —                                  | —                  | —         | —                        | —               |
 | 40  | **Gemini 3.8 Flash Cyber** | Google    | N/A (Fairwind)    | —                                  | —                  | —         | —                        | —               |
 
-> **Historical Arena notes:** The numbered notes below preserve the previous Arena snapshot for provenance only. They are no longer columns in the main table and their older AA values must not be used for current ranking.
+> **Historical snapshot notes:** The numbered notes below preserve release-era and Arena values for provenance. The main table and the September 10 OpenRouter refresh note are authoritative for current AA ranking; older AA values in the notes must not be used for current comparisons.
 
 ¹ GPT-5.5 (56.3) and GPT-5.4 (53.1) AA scores are from the **xhigh** preset; their high presets score lower.
 
@@ -113,9 +113,9 @@ OpenRouter currently exposes two separate Qwen 3.8 Max snapshots: the unversione
 
 ²⁹ **GPT-6 Astra** (OpenAI, released **September 3, 2026**) — OpenAI's launch comparison reports an Artificial Analysis Intelligence Index **61.2** (methodology v4.1.1), Coding Agent Index **67.0**, Terminal-Bench 4.0 **57.9%**, and DeepSWE v1.1 **74.1%**. It supports reasoning, text + image input, text output, and a 1.05M-token context window. It was released too recently for Arena rankings and is a **GitHub Copilot native** model (GA, Powerful). Artificial Analysis's current v4.2 model page reports **55** after a methodology refresh; that score is not mixed into this v4.1.1 comparison table. See the [GPT-6 Astra announcement](https://openai.com/index/gpt-6-astra/) and [OpenAI's model documentation](https://developers.openai.com/api/docs/models/gpt-6-astra).
 
-³⁰ **Qwen 3.8 Max (0803)** is the August 3, 2026 launch checkpoint exposed by OpenRouter under the unversioned slug [`qwen/qwen3.8-max`](https://openrouter.ai/qwen/qwen3.8-max). The September 7 ranking snapshot gives it an AA Intelligence Index of **53.4**. It is the older checkpoint and is listed separately from 0902; the vendor-reported launch matrix below belongs to this release package.
+³⁰ **Qwen 3.8 Max (0803)** is the August 3, 2026 launch checkpoint represented by OpenRouter's unversioned ranking card [`qwen/qwen3.8-max`](https://openrouter.ai/qwen/qwen3.8-max). The September 10 ranking card places it at **#2 with 53.4**. It is listed separately from 0902; the vendor-reported launch matrix below belongs to this release package. The public model API no longer exposes the exact unversioned ID.
 
-³¹ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026. The September 7 ranking snapshot gives it an AA Intelligence Index of **46.9**. It shares the same 1M multimodal capability profile and Qwen Cloud pricing as 0803, but its score must not be substituted for the 0803 row or vice versa. The validated DashScope setup is documented in [models/qwen.md](models/qwen.md).
+³¹ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026. The current public model API reports an AA Intelligence Index of **40.3** for this exact ID. It shares the same 1M multimodal capability profile and Qwen Cloud PAYG pricing as 0803, but its score must not be substituted for the ranking-card 0803 result or vice versa. The validated DashScope setup is documented in [models/qwen.md](models/qwen.md).
 
 ## Qwen 3.8 launch evidence matrix
 
