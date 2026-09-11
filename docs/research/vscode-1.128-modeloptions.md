@@ -81,13 +81,13 @@ The two fields do **not** conflict because they live in different layers. There 
 
 Snapshot taken from the live `chatLanguageModels.json` on 2026-07-08 (matching the layout in [`docs/example-config.md`](../example-config.md)):
 
-| Model                       | `url`                                           | Current `requestBody`                                                                      | What can move to `modelOptions`                               | What must remain in `requestBody`                                                                                                 |
-| --------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K2.6** (vision)      | `http://127.0.0.1:3457/v1/chat/completions`     | `temperature: 1`                                                                           | `temperature: 1` (proxy also forces this; cosmetic move only) | _(none)_                                                                                                                          |
-| **Kimi K2.7 Code** (vision) | `http://127.0.0.1:3457/v1/chat/completions`     | `temperature: 1`, `max_tokens: 4096`                                                       | `temperature: 1`                                              | **`max_tokens: 4096`** (no `modelOptions` equivalent; K2.7 is always-thinking, see [models/kimi.md](../models/kimi.md))           |
-| **MiMo V2.5 Pro** (text)    | `http://127.0.0.1:3459/v1/chat/completions`     | `temperature: 1`, `top_p: 0.95`                                                            | Both                                                          | _(proxy injects `thinking: { type: "disabled" }` on tool turns; nothing else needed)_                                             |
-| **MiMo V2.5** (vision)      | `http://127.0.0.1:3459/v1/chat/completions`     | `temperature: 1`, `top_p: 0.95`                                                            | Both                                                          | _(proxy manages `thinking`)_                                                                                                      |
-| **MiniMax M3** (vision)     | `https://api.minimax.io/v1/chat/completions`    | `thinking: { type: "adaptive" }`, `reasoning_split: true`, `temperature: 1`, `top_p: 0.95` | `temperature: 1`, `top_p: 0.95`                               | **`thinking: { type: "adaptive" }`**, **`reasoning_split: true`** (see [models/minimax.md](../models/minimax.md))                 |
+| Model                       | `url`                                        | Current `requestBody`                                                                      | What can move to `modelOptions`                               | What must remain in `requestBody`                                                                                       |
+| --------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Kimi K2.6** (vision)      | `http://127.0.0.1:3457/v1/chat/completions`  | `temperature: 1`                                                                           | `temperature: 1` (proxy also forces this; cosmetic move only) | _(none)_                                                                                                                |
+| **Kimi K2.7 Code** (vision) | `http://127.0.0.1:3457/v1/chat/completions`  | `temperature: 1`, `max_tokens: 4096`                                                       | `temperature: 1`                                              | **`max_tokens: 4096`** (no `modelOptions` equivalent; K2.7 is always-thinking, see [models/kimi.md](../models/kimi.md)) |
+| **MiMo V2.5 Pro** (text)    | `http://127.0.0.1:3459/v1/chat/completions`  | `temperature: 1`, `top_p: 0.95`                                                            | Both                                                          | _(proxy injects `thinking: { type: "disabled" }` on tool turns; nothing else needed)_                                   |
+| **MiMo V2.5** (vision)      | `http://127.0.0.1:3459/v1/chat/completions`  | `temperature: 1`, `top_p: 0.95`                                                            | Both                                                          | _(proxy manages `thinking`)_                                                                                            |
+| **MiniMax M3** (vision)     | `https://api.minimax.io/v1/chat/completions` | `thinking: { type: "adaptive" }`, `reasoning_split: true`, `temperature: 1`, `top_p: 0.95` | `temperature: 1`, `top_p: 0.95`                               | **`thinking: { type: "adaptive" }`**, **`reasoning_split: true`** (see [models/minimax.md](../models/minimax.md))       |
 
 **Net change if migrated:** 8 `temperature` / `top_p` entries move out of `requestBody` into `modelOptions`; 2 entries (`Kimi K2.7 Code`, `MiniMax M3`) retain a smaller `requestBody` for provider-specific keys; 3 entries (`Kimi K2.6` and both MiMo models) end up with no `requestBody` at all.
 
@@ -175,11 +175,11 @@ Per [models/minimax.md](../models/minimax.md), MiniMax M3 reasons regardless of 
 
 ### 5.5 `top_p: null` vs `top_p: 0.95`
 
-| Provider         | Recommended `top_p` | Reasoning                                        |
-| ---------------- | ------------------- | ------------------------------------------------ |
-| MiniMax M3       | `0.95`              | Empirically validated.                           |
-| MiMo V2.5 / Pro  | `0.95`              | Empirically validated.                           |
-| Kimi K2.6 / K2.7 | n/a                 | Proxy forces `0.95`.                             |
+| Provider         | Recommended `top_p` | Reasoning              |
+| ---------------- | ------------------- | ---------------------- |
+| MiniMax M3       | `0.95`              | Empirically validated. |
+| MiMo V2.5 / Pro  | `0.95`              | Empirically validated. |
+| Kimi K2.6 / K2.7 | n/a                 | Proxy forces `0.95`.   |
 
 For models that don't have a strict requirement, `top_p: null` (omit and let the server default) is also acceptable. There is no documented advantage to either choice for our providers.
 

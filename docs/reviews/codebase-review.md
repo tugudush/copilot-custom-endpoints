@@ -271,7 +271,7 @@ Well-structured: correct `"type": "module"`, four `bin` entries (main + 3 direct
 | `docs/models/qwen.md`      | Thorough. Covers 3.8 Max, 3.7 Plus, 3.7 Max. Proxy vs direct paths, regional endpoints.                                                            |
 | `docs/models/mimo.md`      | Excellent. Covers V2.5 and V2.5 Pro. Extension-first recommendation with feature comparison table. PAYG vs Token Plan.                             |
 | `docs/models/minimax.md`   | Excellent. Covers M3 direct setup, priority tier, PAYG vs Token Plan key distinction. Extension alternatives documented.                           |
-| `docs/models/glm.md`       | Thorough. Covers 5.2 and 5.1. Coding Plan limitation documented. Three VS Code extensions compared.                                         |
+| `docs/models/glm.md`       | Thorough. Covers 5.2 and 5.1. Coding Plan limitation documented. Three VS Code extensions compared.                                                |
 | `docs/pricing.md`          | Outstanding. Cost-per-intelligence ranking across 25+ models, session cost estimates, Copilot credit conversion. Updated Aug 3, 2026.              |
 | `docs/benchmarks.md`       | Outstanding. AA Intelligence Index + Arena rankings for 30 models. Footnotes explain missing/approximate scores. Updated Jul 26, 2026.             |
 | `docs/competitors.md`      | Good. Four-tier competitor analysis with overlap assessment and uniqueness summary.                                                                |

@@ -18,8 +18,8 @@
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Mode                   | **Direct** (no proxy)                                                                                              |
 | Billing                | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
-| Vision                 | ✅ Yes (`glm-5.3-flash`)                                                                                            |
-| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5.3-flash`)                                                              |
+| Vision                 | ✅ Yes (`glm-5.3-flash`)                                                                                           |
+| Tool calling           | ✅ Yes (native multimodal tool use on `glm-5.3-flash`)                                                             |
 | Context                | 1M (`glm-5.3-flash` / `glm-5.3` / `glm-5.2` Solid Lossless Context)                                                |
 | Max output             | 131072                                                                                                             |
 | Required `requestBody` | `thinking: { type: "enabled" }` + `reasoning_effort: "max"` (recommended)                                          |
