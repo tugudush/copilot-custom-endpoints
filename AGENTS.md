@@ -10,7 +10,6 @@ This repository keeps durable validation records for custom language-model endpo
 - **DeepSeek V4 Pro 0813 / V4 Flash 0731** — current builds (August 2026) use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed. The API keeps the plain model IDs `deepseek-v4-pro` and `deepseek-v4-flash` while pricing uses peak/off-peak rates.
 - **Xiaomi MiMo V2.5 / V2.5 Pro** — works direct with static `thinking: {"type": "disabled"}` in `requestBody`; or via `proxy/mimo-proxy.mjs` for dynamic thinking suppression. The live `chatLanguageModels.json` points both models at the local proxy (`http://127.0.0.1:3459`) with no `thinking` override in `requestBody` — the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
-- **GLM 5V Turbo** (Z.ai / Zhipu AI) — works direct with `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95` in `requestBody`. No proxy needed. `clear_thinking` defaults to `true` on the server, so VS Code's failure to forward `reasoning_content` between tool turns does not break loops.
 - **GLM 5.3** (Z.ai / Zhipu AI) — released **August 18, 2026**. Works direct with the same request pattern, no proxy needed. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). 1M context, text-only, 753B params. Current OpenRouter AA Intelligence Index **44.9** (coding **74.8**, agentic **53.4**). See [docs/models/glm.md](docs/models/glm.md).
 - **GLM 5.3 Flash** (Z.ai / Zhipu AI) — released **August 26, 2026**. First native **multimodal** GLM-5 model (text + image input, text output); direct integration, no proxy needed. Hybrid sparse + linear attention architecture, 320B total / 18B active params (open weights, MIT license), 1M context. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Current OpenRouter AA Intelligence Index **41.9** (Coding **71.5**, Agentic **51.2**). List pricing is **$0.15 / $0.03 / $0.50** per 1M (input/cached/output); the 50% launch promotion ended September 9, 2026. Note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false`; for the VS Code custom-endpoint path keep the repo's validated GLM pattern (leave `clear_thinking` unset so the server default `true` keeps tool loops stable). See [docs/models/glm.md](docs/models/glm.md).
 
@@ -25,7 +24,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max, plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment for Xiaomi MiMo V2.5 (omnimodal) and V2.5 Pro (text, largest).
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
-- [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3, GLM 5.3 Flash, and GLM 5V Turbo (Z.ai / Zhipu AI).
+- [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4 extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
@@ -141,12 +140,12 @@ When using the proxy, update VS Code config to point MiMo model URLs to `http://
 
 ### GLM (Z.ai / Zhipu AI)
 
-- Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`, and `glm-5v-turbo`.
+- Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, and `glm-5.1`.
 - Recommended `requestBody`: `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95`. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
 - **GLM 5.3 and GLM 5.3 Flash are always-thinking** — `thinking.type` only supports `enabled` (disabling reasoning is not supported) and `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Migration: if you previously sent `thinking.type: "disabled"`, switch to `enabled` + `reasoning_effort: "low"` before pointing at `glm-5.3` / `glm-5.3-flash`.
 - `tool_choice` only supports `auto`; VS Code's default is `auto` so no override needed.
 - `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. Do **not** set `clear_thinking: false` from `requestBody`. (Exception note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
-- Vision is supported on `glm-5.3-flash` (native multimodal) and `glm-5v-turbo`. `glm-5.3`, `glm-5.2`, and `glm-5.1` are text-only.
+- Vision is supported on `glm-5.3-flash` (native multimodal). `glm-5.3`, `glm-5.2`, and `glm-5.1` are text-only.
 - Endpoint (international): `https://api.z.ai/api/paas/v4/chat/completions`. China: `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 - Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).
 - The **GLM Coding Plan** endpoint is **not** usable from VS Code custom endpoints — it is locked to a curated list of officially supported tools. Use the general PaaS endpoint above.

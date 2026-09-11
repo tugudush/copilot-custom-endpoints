@@ -30,7 +30,6 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiniMax M3**             | MiniMax    | No                      | ✅     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
 | **GLM 5.3 Flash**          | Z.ai       | No                      | ✅     | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **GLM 5.3**                | Z.ai       | No                      | ❌     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **GLM 5V Turbo**           | Z.ai       | No                      | ✅     | [Manual setup](docs/models/glm.md)                                                                                                          |
 | **DeepSeek V4 Flash 0731** | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 | **DeepSeek V4 Pro 0813**   | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 
@@ -128,11 +127,9 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **Kimi K3**                | Moonshot  | **~$0.0685**          | **43.8**           | ~$3.00       | ✅     | 1M             |
 | **GPT-5.6 Sol**            | OpenAI    | **~$0.0849**          | **47.1**           | ~$4.00       | ✅     | 1M             |
 | **Claude Opus 5**          | Anthropic | **~$0.0986**          | **50.7**           | ~$5.00       | ✅     | 1M             |
-| **Claude Opus 4.8**        | Anthropic | **~$0.1190**          | **42.0**           | ~$5.00       | ✅     | 1M             |
 | **Claude Fable 5.1**       | Anthropic | **~$0.1873**          | **53.4**           | ~$10.00      | ✅     | 1M             |
 | **GPT-6 Astra**            | OpenAI    | **~$0.1894**          | **52.8**           | ~$10.00      | ✅     | 1M             |
 | **Claude Fable 5**         | Anthropic | **~$0.2012**          | **49.7**           | ~$10.00      | ✅     | 1M             |
-| **GLM 5V Turbo**           | Z.ai      | —                     | —                  | ~$1.00       | ✅     | 200K           |
 
 > Detailed pricing, benchmark provenance, and model-specific notes live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md). This page stays focused on setup and model selection. For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
