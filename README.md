@@ -20,21 +20,18 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                          | Provider   | Needs proxy?            | Vision                 | Setup guide                                                                                                                                 |
-| ------------------------------ | ---------- | ----------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3 / K2.7 Code / K2.6** | Moonshot   | **Yes**                 | ✅                     | [Manual setup](docs/models/kimi.md)                                                                                                         |
-| **MiMo V2.5**                  | Xiaomi     | Optional (recommended)  | ✅                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.5 Pro**              | Xiaomi     | Optional (recommended)  | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
-| **Qwen 3.7 Plus**              | DashScope  | Optional (recommended)  | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.7 Max**               | DashScope  | Optional (recommended)  | ❌                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **Qwen 3.8 Max (0803)**        | OpenRouter | Optional (experimental) | ✅                     | [Snapshot/proxy setup](docs/models/qwen.md#optional-openrouter-snapshot-proxy)                                                              |
-| **Qwen 3.8 Max (0902)**        | DashScope  | Optional (recommended)  | ✅                     | [Manual setup](docs/models/qwen.md)                                                                                                         |
-| **MiniMax M3**                 | MiniMax    | No                      | ✅                     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
-| **GLM 5.3 Flash**              | Z.ai       | No                      | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **GLM 5.3 / 5.2 / 5.1**        | Z.ai       | No                      | ✅ via extension proxy | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **GLM 5V Turbo**               | Z.ai       | No                      | ✅                     | [Manual setup](docs/models/glm.md)                                                                                                          |
-| **DeepSeek V4 Flash 0731**     | DeepSeek   | No (uses an extension)  | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
-| **DeepSeek V4 Pro 0813**       | DeepSeek   | No (uses an extension)  | ❌                     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
+| Model                      | Provider   | Needs proxy?            | Vision | Setup guide                                                                                                                                 |
+| -------------------------- | ---------- | ----------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kimi K3**                | Moonshot   | **Yes**                 | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                         |
+| **MiMo V2.5**              | Xiaomi     | Optional (recommended)  | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **MiMo V2.5 Pro**          | Xiaomi     | Optional (recommended)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) ★ / [Manual setup](docs/models/mimo.md) |
+| **Qwen 3.8 Max (0803)**    | OpenRouter | Optional (experimental) | ✅     | [Snapshot/proxy setup](docs/models/qwen.md#optional-openrouter-snapshot-proxy)                                                              |
+| **Qwen 3.8 Max (0902)**    | DashScope  | Optional (recommended)  | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                         |
+| **MiniMax M3**             | MiniMax    | No                      | ✅     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                         |
+| **GLM 5.3 Flash**          | Z.ai       | No                      | ✅     | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **GLM 5.3**                | Z.ai       | No                      | ❌     | [Manual setup](docs/models/glm.md)                                                                                                          |
+| **DeepSeek V4 Flash 0731** | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
+| **DeepSeek V4 Pro 0813**   | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)   |
 
 ## Setup
 
@@ -108,7 +105,7 @@ npx copilot-custom-endpoint clean    # Remove debug_log/
 
 ## Pricing snapshot
 
-All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns. DeepSeek V4 estimates use peak rates; official off-peak rates are half. The current AA values come from OpenRouter's September 10 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **40.3**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. Current corrections include OpenAI GPT-5.6 Sol at **$4 / $0.40 / $20**, Anthropic Sonnet 5 at **$2 / $0.20 / $10**, xAI Grok 4.5 cache reads at **$0.30**, and Alibaba's Qwen 3.7 list rates at **$2.50 / $0.25 / $7.50** (Max) and **$0.40 / $0.04 / $1.60** (Plus).
+All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns. DeepSeek V4 estimates use peak rates; official off-peak rates are half. The current AA values come from OpenRouter's September 10 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **40.3**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. Current corrections include OpenAI GPT-5.6 Sol at **$4 / $0.40 / $20** and Anthropic Sonnet 5 at **$2 / $0.20 / $10**.
 
 | Model                      | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | -------------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
@@ -119,102 +116,27 @@ All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To conve
 | **DeepSeek V4 Flash 0731** | DeepSeek  | **~$0.0101**          | **34.5**           | ~$0.35       | ❌     | 1M             |
 | **MiMo V2.5 Pro**          | Xiaomi    | **~$0.0114**          | **26.4**           | ~$0.30       | ❌     | 1M             |
 | **MiniMax M3 Priority**    | MiniMax   | **~$0.0139**          | **29.6**           | ~$0.41       | ✅     | 1M             |
-| **Qwen 3.7 Plus**          | DashScope | **~$0.0140**          | **25.8**           | ~$0.36       | ✅     | 1M             |
 | **Gemini 3.8 Flash**       | Google    | **~$0.0182**          | **41.2**           | ~$0.75       | ✅     | 1M             |
-| **Gemini 3.7 Flash**       | Google    | **~$0.0190**          | **39.4**           | ~$0.75       | ✅     | 1M             |
-| **Gemini 3.6 Flash**       | Google    | **~$0.0219**          | **34.3**           | ~$0.75       | ✅     | 1M             |
 | **GLM 5.3**                | Z.ai      | **~$0.0254**          | **44.9**           | ~$1.14       | ❌     | 1M             |
 | **DeepSeek V4 Pro 0813**   | DeepSeek  | **~$0.0292**          | **36.3**           | ~$1.06       | ❌     | 1M             |
 | **Qwen 3.8 Max (0803)**    | DashScope | **~$0.0300**          | **53.4**           | ~$1.60       | ✅     | 1M             |
-| **GPT-5.4 mini**           | OpenAI    | **~$0.0337**          | **24.6**           | ~$0.83       | ❌     | 400K           |
 | **Grok 4.6**               | xAI       | **~$0.0360**          | **44.4**           | ~$1.60       | ✅     | 500K           |
 | **Qwen 3.8 Max (0902)**    | DashScope | **~$0.0397**          | **40.3**           | ~$1.60       | ✅     | 1M             |
-| **Grok 4.5**               | xAI       | **~$0.0409**          | **39.1**           | ~$1.60       | ✅     | 500K           |
-| **GLM 5.1**                | Z.ai      | **~$0.0432**          | **26.4**           | ~$1.14       | ❌     | 200K           |
-| **Gemini 3.5 Flash**       | Google    | **~$0.0500**          | **33.0**           | ~$1.65       | ✅     | 1M             |
 | **GPT-5.6 Terra**          | OpenAI    | **~$0.0520**          | **42.3**           | ~$2.20       | ✅     | 1M             |
 | **Claude Sonnet 5**        | Anthropic | **~$0.0521**          | **38.4**           | ~$2.00       | ✅     | 1M             |
-| **Qwen 3.7 Max**           | DashScope | **~$0.0669**          | **29.9**           | ~$2.00       | ❌     | 1M             |
 | **Kimi K3**                | Moonshot  | **~$0.0685**          | **43.8**           | ~$3.00       | ✅     | 1M             |
-| **Gemini 3.1 Pro**         | Google    | **~$0.0724**          | **30.4**           | ~$2.20       | ✅     | 1M             |
 | **GPT-5.6 Sol**            | OpenAI    | **~$0.0849**          | **47.1**           | ~$4.00       | ✅     | 1M             |
-| **Claude Sonnet 4.6**      | Anthropic | **~$0.0984**          | **30.5**           | ~$3.00       | ✅     | 1M             |
 | **Claude Opus 5**          | Anthropic | **~$0.0986**          | **50.7**           | ~$5.00       | ✅     | 1M             |
-| **Claude Opus 4.8**        | Anthropic | **~$0.1190**          | **42.0**           | ~$5.00       | ✅     | 1M             |
-| **GPT-5.5**                | OpenAI    | **~$0.1425**          | **38.6**           | ~$5.50       | ✅     | 1M             |
 | **Claude Fable 5.1**       | Anthropic | **~$0.1873**          | **53.4**           | ~$10.00      | ✅     | 1M             |
 | **GPT-6 Astra**            | OpenAI    | **~$0.1894**          | **52.8**           | ~$10.00      | ✅     | 1M             |
 | **Claude Fable 5**         | Anthropic | **~$0.2012**          | **49.7**           | ~$10.00      | ✅     | 1M             |
-| **Qwen 3.6 Plus**          | DashScope | —                     | —                  | ~$0.55       | ✅     | 1M             |
-| **Kimi K2.6**              | Moonshot  | —                     | —                  | ~$0.88       | ✅     | 256K           |
-| **Kimi K2.7 Code**         | Moonshot  | —                     | —                  | ~$0.88       | ✅     | 262K           |
-| **GLM 5V Turbo**           | Z.ai      | —                     | —                  | ~$1.00       | ✅     | 200K           |
-| **GLM 5.2**                | Z.ai      | —                     | —                  | ~$1.14       | ❌     | 1M             |
-| **GPT-5.4**                | OpenAI    | —                     | —                  | ~$2.75       | ✅     | 1M             |
-| **Claude Opus 4.7**        | Anthropic | —                     | —                  | ~$5.00       | ✅     | 1M             |
-| **Gemini 3.8 Flash Cyber** | Google    | —                     | —                  | —            | —      | —              |
 
-> **Historical footnotes:** The numbered notes below preserve release and pricing context from the prior September 5 snapshot. They are not the current AA ranking source; use the table above and its OpenRouter refresh note for current scores.
-
-¹ Gemini 3.1 Pro pricing applies to prompts ≤200K tokens.
-
-³ Score is an **estimate** from Artificial Analysis (labelled "independent evaluation forthcoming"). Not a confirmed run of the full evaluation suite. As of August 7, 2026, **GLM 5V Turbo (35.0)** is the only remaining estimate in this table — MiMo V2.5 is now a measured 38.0.
-
-⁴ **MiniMax M3 Priority** is the same `MiniMax-M3` weights invoked with `"service_tier": "priority"` in the request body — **not a separate model**. Costs **1.5× Standard** (effective post-50%-off rates: $0.45 / $1.80 / $0.09 per 1M for input/output/cached ≤512K) in exchange for **priority admission** (faster responses, fewer failures during MiniMax peak hours). Capabilities, context window, vision, tools, rate limits, and thinking modes are identical to Standard. See [docs/research/minimax-m3-priority.md](docs/research/minimax-m3-priority.md).
-
-⁵ **Claude Sonnet 5** has introductory pricing of **$2.00 / $10.00** per MTok (input/output) through **August 31, 2026**. Standard pricing of $3.00 / $15.00 shown above takes effect September 1, 2026. Released June 30, 2026 — Arena rankings pending. AA Intelligence Index score of **55.3** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5).
-
-⁶ **GPT-5.6** launched July 9, 2026. On July 30, OpenAI reduced Luna pricing by 80% to $0.20/$1.20 and Terra pricing by 20% to $2/$12 per 1M input/output tokens; Sol remains $5/$30. All support image input and 1M context. The Batch API offers an additional 50% discount for asynchronous jobs. OpenRouter is currently running a limited-time 50% promo on Terra and Luna (effective $0.10/$0.60 and $1/$6 per 1M input/output respectively). Benchmark details and cache-write pricing are maintained in [docs/pricing.md](docs/pricing.md).
-
-⁷ **Kimi K3** launched July 16, 2026. 2.8T params (open-source weights by July 27, 2026). Always-thinking reasoning model — uses `reasoning_effort` (not the K2.x `thinking` parameter). AA Intelligence Index score of **59.7** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/kimi-k3). Priced at $3.00 / $15.00 per MTok input/output. Requires the local Kimi proxy. See [docs/models/kimi.md](docs/models/kimi.md).
-
-⁸ **Gemini 3.6 Flash** launched July 21, 2026. **Promotional pricing** of $0.75 / $3.75 per MTok input/output ($0.075 cached) through **December 31, 2026**; $1.50 / $7.50 from January 1, 2027. AA Intelligence Index score of **51.6** confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-6-flash). 1M context with vision.
-
-⁹ **Claude Opus 5** launched July 24, 2026. AA Intelligence Index score of **63.1** (#1 overall) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-opus-5). Priced at $5.00 / $25.00 per MTok input/output (same as Opus 4.8). 1M context, text + image input, adaptive reasoning. Also available in Fast mode ($10/$50 per MTok input/output). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). See [Anthropic's Opus 5 announcement](https://www.anthropic.com/news/claude-opus-5).
-
-¹⁰ **Historical Qwen 3.8 Max AA record:** an earlier run reported **58.1** for the launch-era unversioned entry. The current OpenRouter rankings card shows the unversioned record at **53.4 (#2)**, while the exact 0902 API metadata row is **40.3**; see the [benchmark table](docs/benchmarks.md) and [Qwen setup guide](docs/models/qwen.md#openrouter-snapshot-records).
-
-¹¹ **Grok 4.5** (xAI, released July 8, 2026) is now a **GitHub Copilot native** model (GA, Versatile). AA Intelligence Index **55.8** (high), Coding **72.4**, Agentic **48.9**. 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount; Copilot long-context >200K tier $4.00 / $1.00 / $12.00). See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
-
-¹² **Qwen 3.7 price cuts** (verified August 7, 2026): `qwen3.7-max` dropped from $2.50 / $7.50 to **$1.475 / $4.425** per 1M input/output (cached $0.295), and `qwen3.7-plus` dropped from $0.40 / $1.60 to **$0.32 / $1.28** per 1M (cached $0.064).
-
-¹³ **Gemini 3.7 Flash** (Google, released August 13, 2026) is GitHub Copilot native (GA, Versatile). AA Intelligence Index **56** (high preset) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/gemini-3-7-flash). **Promotional pricing** of $0.75 / $3.75 per MTok input/output ($0.075 cached) through December 31, 2026, then $1.50 / $7.50. 1M context, text + image + speech + video input, and the fastest model on AA's leaderboard (340 t/s).
-
-¹⁴ **Grok 4.6** (xAI, released August 12, 2026) is now a **GitHub Copilot native** model (GA). AA Intelligence Index **61** (high preset, #6/188). 500K context, text + image input. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6), the [xAI announcement](https://x.ai/news/grok-4-6), and the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
-
-¹⁵ **Claude Fable 5** (Anthropic, released June 9, 2026) is now a **GitHub Copilot native** model (GA, Powerful). AA Intelligence Index **62.1** (#3/188) confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-fable-5). **#1 in all four Arena leaderboards** (Text, Agent, Code, Overall). 1M context, text + image input, adaptive reasoning. Priced at $10.00 / $50.00 per MTok input/output ($1.00 cached, 90% cache discount). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). **Superseded as Anthropic's flagship by Claude Fable 5.1 (September 2026 — see footnote ²¹)**. See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
-
-¹⁶ **Qwen 3.6 Plus** (DashScope, released April 2, 2026) — AA Intelligence Index **40.0**. Priced at $0.50 / $3.00 per MTok input/output ($0.05 cached). 1M context, text + image + video input. **Deprecated** in favor of Qwen 3.7 Plus.
-
-¹⁷ **GLM 5.3** (Z.ai, released August 18, 2026) — new flagship. AA Intelligence Index **59.5** (OpenRouter AA-sourced; AA page lists rounded **60**, #8/182). Priced identically to GLM 5.2: $1.40 / $0.26 / $4.40 per 1M input/cached/output. 1M context, text-only, always-thinking with `reasoning_effort` (low/high/max, default max). Released too recently for Arena rankings. See the [AA model page](https://artificialanalysis.ai/models/glm-5-3) and [Z.ai docs](https://docs.z.ai/guides/llm/glm-5.3).
-
-¹⁸ **GLM 5.3 Flash** (Z.ai, released August 26, 2026) — Z.ai's first native multimodal GLM-5 model (text + image input, text output). Hybrid sparse + linear attention architecture, 320B total / 18B active parameters (open weights, MIT), 1M context window. AA Intelligence Index **57.5** (Coding **71.5**, Agentic **58.2**). Priced at **$0.15 / $0.03 / $0.50** per 1M input/cached/output (list; 50% off launch promo through September 9, 2026). Always-thinking with `reasoning_effort` (low/high/max, default max). The cheapest cost-per-intelligence row in this table (~$0.0022, ~$0.13/session). See [docs/models/glm.md](docs/models/glm.md) and the [AA model page](https://artificialanalysis.ai/models/glm-5-3-flash).
-
-¹⁹ **Gemini 3.8 Flash** (`gemini-3.8-flash`, released September 2, 2026) — Google's most intelligent Flash model, built for long-horizon software engineering and autonomous agents. AA Intelligence Index **58.7** (OpenRouter AA-sourced; AA page rounds to **59**, #17/196), Coding **76.3**, Agentic **50.0**. 1M context, text + image + speech + video + PDF input. Configurable thinking (low/medium/high). **Not yet GitHub Copilot native** — priced from the Gemini API at the same promotional rates as 3.7 Flash ($0.75 / $3.75 per MTok input/output, $0.075 cached) through December 31, 2026, then $1.50 / $7.50. Fast (305.5 t/s) but very verbose — budget more output tokens than the score alone suggests. See the [Google announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/) and the [AA model page](https://artificialanalysis.ai/models/gemini-3-8-flash).
-
-²⁰ **Gemini 3.8 Flash Cyber** (released September 2, 2026) — cybersecurity-specialized variant of 3.8 Flash (autonomous vulnerability discovery + automated patching). **Restricted access** via Google's [Fairwind Program](https://deepmind.google/fairwind-program/) — no public API pricing and no AA Intelligence Index run, hence the `—` cells. Vendor-reported CyberGym Pass@1 **86.2** and CWE-Bench Pass@1 **47.2**. See the [Google announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/3-8-flash-and-3-8-flash-cyber/).
-
-²¹ **Claude Fable 5.1** (released September 1, 2026) — Anthropic's new flagship; AA Intelligence Index **65.7** (OpenRouter AA-sourced; AA page rounds to **66**, #1/196), Coding **81.6**, Agentic **61.3** — now the top-scoring model in this table. GitHub Copilot native (GA, Powerful). 1M context, text + image input, adaptive reasoning. Priced at $10.00 / $50.00 per MTok input/output ($0.25 cached — down from Fable 5's $1.00; 97.5% cache discount; $12.50 cache write). Uses the newer Claude tokenizer (~30% more tokens than pre-4.7 models). Too new for Arena rankings. See the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing) and the [AA model page](https://artificialanalysis.ai/models/claude-fable-5-1).
-
-²² **GPT-6 Astra** (released September 3, 2026) — OpenAI's frontier model, available as `gpt-6-astra` through the API and as a GitHub Copilot native model (GA, Powerful). AA Intelligence Index **61.2** (launch comparison, methodology v4.1.1); 1M context, text + image input, text output, and reasoning. Standard pricing is $10.00 / $1.00 / $50.00 per 1M input/cached/output tokens, for a modeled ~$10.00 session and ~$0.163 CPI. It is too new for Arena rankings. See the [GPT-6 Astra announcement](https://openai.com/index/gpt-6-astra/), [OpenAI API pricing](https://developers.openai.com/api/docs/pricing), and [OpenAI model documentation](https://developers.openai.com/api/docs/models/gpt-6-astra).
-
-²³ **Qwen 3.8 Max (0803)** is the August 3, 2026 checkpoint represented by OpenRouter's unversioned [`qwen/qwen3.8-max`](https://openrouter.ai/qwen/qwen3.8-max) ranking card. It scores **53.4 (#2)** in the September 10 ranking and is retained as a comparison-only record because the public model API now canonicalizes that link to 0902. The [Qwen setup guide](docs/models/qwen.md) explains why this frozen snapshot is not a second DashScope picker entry.
-
-²⁴ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026, with a current OpenRouter API metadata score of **40.3**. It shares Qwen Cloud's $2.00 / $0.25 implicit-cache / $6.00 rates, 1M context, and vision capability with 0803. The validated DashScope/proxy setup uses `qwen3.8-max`; the OpenRouter slug is not automatically interchangeable with that provider ID.
-
-For footnotes, sources, and detailed notes (cache behavior, tiered pricing, free quotas) see [docs/pricing.md](docs/pricing.md). For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
+> Detailed pricing, benchmark provenance, and model-specific notes live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md). This page stays focused on setup and model selection. For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
 >
-> For current OpenRouter AA scores, the **Claude Fable 5.1** and **Qwen 3.8 Max (0803)** records are tied at **53.4** on the live ranking surfaces; the exact Qwen 0902 API metadata row is **40.3**. GPT-6 Astra still leads the separate OpenAI comparison benchmarks.
->
-> - **GLM 5.3 Flash** — current AA **41.9**, ~$0.13/session, vision-capable, and the best low-cost scored option in this table.
-> - **GPT-5.6 Luna** — current AA **37.5**, ~$0.22/session, vision-capable, and the cheapest current OpenAI scored row.
-> - **DeepSeek V4 Flash 0731** — current AA **34.5**, ~$0.35/session at peak direct rates, text-only and inexpensive for coding-heavy work.
-> - **GPT-6 Astra** — current OpenRouter AA **52.8**, ~$10.00/session, while OpenAI reports leading results on Terminal-Bench 4.0, ARC-AGI-3, FrontierMath Tier 4, and AutomationBench. Use it for the hardest planning and research tasks.
-> - **Qwen 3.8 Max (0803)** — ranking-card AA **53.4 (#2)**, ~$1.60/session, 1M context, and vision-capable. The exact 0902 API metadata row is **40.3** at the same PAYG rate.
->
-> **MiniMax M3** (current AA **29.6**, ~$0.27/session) remains the simplest direct custom-endpoint option: no proxy or extension, vision, 1M context, and tool calling.
+> - **GLM 5.3 Flash** — the lowest cost per intelligence in this table (~$0.0030), at about $0.13/session with vision.
+> - **GPT-5.6 Luna** — the lowest cost per intelligence among Copilot-native scored models (~$0.0059), at about $0.22/session with vision.
 
 ## Companion tools
 
@@ -229,7 +151,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 **Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
 
 - **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
-- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash → Qwen3.7-plus → Kimi K2.6 → MiMo-V2.5`.
+- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash → Qwen3.8-max → MiMo-V2.5`.
 - **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
 - **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
 

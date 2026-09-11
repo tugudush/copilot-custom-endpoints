@@ -40,8 +40,8 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 | **Local processes**      | **No** — direct HTTPS                                                                | **No** — pure extension                                                                                       | **No** — pure extension                                                                                                                                   | **No** — pure extension                                                                                                                     |
 | **Primary upstream**     | `https://api.z.ai/api/paas/v4` (Standard PaaS)                                       | `https://api.z.ai/api/coding/paas/v4` (Coding Plan)                                                           | `https://open.bigmodel.cn/api/coding/paas/v4` (Coding Plan, default)                                                                                      | Both Coding Plan and Standard, selectable                                                                                                   |
 | **Auth**                 | Bearer token via `Chat: Manage Language Models` UI                                   | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                         | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                                                                     | Bearer token via `GLM: Set API Key` → `SecretStorage`                                                                                       |
-| **Available models**     | 5: `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`, `glm-5v-turbo`                  | 14: GLM-5.2 through GLM-4.5, plus vision models                                                               | 3 default: GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash; +custom                                                                                                | GLM-5.3 (Coding Plan default), GLM-5.3-Flash, GLM-5.2, 5.1, 5, 4.7, 4.5 Air; +custom                                                        |
-| **Vision**               | ✅ Native on `glm-5.3-flash` / `glm-5v-turbo`                                        | ✅ Native on vision models (GLM-5V-Turbo, 4.6V, 4.5V)                                                         | ✅ Native on GLM-5.3-Flash / GLM-4.6V-Flash; **Transparent Vision Proxy** for text-only models (GLM-5.3-Flash on Coding Plan, GLM-4.6V-Flash on Standard) | ✅ Native on GLM-5.3-Flash (PNG/JPEG); automatic GLM-5.3-Flash image analysis for text-only models                                          |
+| **Available models**     | 4: `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`                                  | 14: GLM-5.2 through GLM-4.5, plus vision models                                                               | 3 default: GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash; +custom                                                                                                | GLM-5.3 (Coding Plan default), GLM-5.3-Flash, GLM-5.2, 5.1, 5, 4.7, 4.5 Air; +custom                                                        |
+| **Vision**               | ✅ Native on `glm-5.3-flash`                                        | ✅ Native on vision models (4.6V, 4.5V)                                                                        | ✅ Native on GLM-5.3-Flash / GLM-4.6V-Flash; **Transparent Vision Proxy** for text-only models (GLM-5.3-Flash on Coding Plan, GLM-4.6V-Flash on Standard) | ✅ Native on GLM-5.3-Flash (PNG/JPEG); automatic GLM-5.3-Flash image analysis for text-only models                                          |
 | **Tool calling**         | ✅                                                                                   | ✅                                                                                                            | ✅ (128-tool cap, experimental tool-list stabilization)                                                                                                   | ✅ (128-tool cap)                                                                                                                           |
 | **Streaming**            | ✅ VS Code built-in                                                                  | ✅ SSE via OpenAI SDK                                                                                         | ✅ SSE via custom client                                                                                                                                  | ✅ SSE via custom client                                                                                                                    |
 | **Thinking handling**    | `thinking: { type: "enabled" }` in `requestBody`; reasoning **discarded** by VS Code | Per-model `thinkingMode` dropdown in picker; `reasoning_content` → `LanguageModelThinkingPart` (proposed API) | Per-model **Thinking Effort** dropdown (`None`/`High`/`Max`); `reasoning_content` → `LanguageModelThinkingPart`                                           | Per-model **Thinking Effort** (`Low`/`High`/`Max`, mandatory, Max default) for GLM-5.3; None/High/Max for GLM-5.2; binary toggle for others |
@@ -69,7 +69,7 @@ All three are MIT-licensed, community-built, and unaffiliated with Zhipu AI, Z.A
 **Key characteristics:**
 
 - **Coding Plan only.** Base URL hardcoded to `https://api.z.ai/api/coding/paas/v4`. No Standard API support.
-- **Widest model catalog.** 14 models registered: GLM-5.2 (on-off-effort), GLM-5.1/5/5-Turbo/4.7/4.7-Flash/4.7-FlashX/4.6 (on-off), GLM-4.6V/5V-Turbo (vision, on-off), GLM-4.5/4.5-Flash/4.5-Air/4.5V (always-on).
+- **Widest model catalog.** 14 models registered: GLM-5.2 (on-off-effort), GLM-5.1/5/5-Turbo/4.7/4.7-Flash/4.7-FlashX/4.6 (on-off), GLM-4.6V (vision, on-off), GLM-4.5/4.5-Flash/4.5-Air/4.5V (always-on).
 - **Three thinking support tiers** encoded per-model:
   - `on-off-effort` (GLM-5.2): picker shows Auto/High/Max/Disabled
   - `on-off` (5.1, 5, 4.7, etc.): picker shows Auto/Enabled/Disabled
@@ -175,16 +175,16 @@ This is **not a fixable gap** on our side — it's a fundamental limitation of t
 
 ### 5. Model catalog
 
-- **Our setup:** 5 models (GLM-5.3-Flash, GLM-5.3, GLM-5.2, GLM-5.1, GLM-5V-Turbo). You can add more by editing JSON.
+- **Our setup:** 4 models (GLM-5.3-Flash, GLM-5.3, GLM-5.2, GLM-5.1). You can add more by editing JSON.
 - **zelosleone:** 14 models covering the full GLM lineup including legacy and vision models.
 - **umbrella22:** 3 default (GLM-5.3, GLM-5.3-Flash, GLM-4.6V-Flash) + unlimited custom.
 - **KiwiGaze:** GLM-5.3 (Coding Plan default), GLM-5.3-Flash, GLM-5.2, 5.1, 5, 4.7, 4.5 Air + unlimited custom. Filters by API mode.
 
 ### 6. Vision strategy
 
-- **Our setup:** Native vision on `glm-5.3-flash` and `glm-5v-turbo` — the two models configured with `vision: true`. Images go directly to the multimodal model (validated August 28, 2026 on both chat attachments and the `view_image` tool path). GLM-5.3, GLM-5.2 and GLM-5.1 are text-only and will error on image input.
+- **Our setup:** Native vision on `glm-5.3-flash`, configured with `vision: true`. Images go directly to the multimodal model (validated August 28, 2026 on both chat attachments and the `view_image` tool path). GLM-5.3, GLM-5.2 and GLM-5.1 are text-only and will error on image input.
 - **umbrella22:** Per-model image modes. GLM-5.3-Flash and GLM-4.6V-Flash use `native` mode (direct base64 input — same as our setup). Text-only models use the Vision Proxy: images are described first (GLM-5.3-Flash on Coding Plan connections, GLM-4.6V-Flash on Standard API), then the description is sent to the target model. This lets you use GLM-5.3 with images without switching models.
-- **zelosleone:** Native vision on GLM-5V-Turbo, GLM-4.6V, GLM-4.5V — no proxy needed.
+- **zelosleone:** Native vision on GLM-4.6V and GLM-4.5V — no proxy needed.
 - **KiwiGaze:** Native vision on GLM-5.3-Flash (PNG/JPEG, v0.4.1). Text-only models get automatic image analysis via GLM-5.3-Flash — the analysis is injected as text before the request, on the same endpoint and key (no separate Vision key or MCP server since v0.4.1 removed the Vision MCP).
 
 For GLM-5.3-Flash itself the two approaches are now equivalent (direct native vision either way). The umbrella22 vision proxy remains the pragmatic answer for GLM-5.3 users who occasionally need image understanding without switching models.
@@ -197,7 +197,7 @@ For GLM-5.3-Flash itself the two approaches are now equivalent (direct native vi
 | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **No extension install**             | Pure `chatLanguageModels.json` config. Works on locked-down VS Code installs, air-gapped environments, or any VS Code variant that supports custom endpoints.                                                                    |
 | **No Coding Plan dependency**        | Works with any Z.ai Standard API key. The extensions either require Coding Plan (zelosleone) or default to it (umbrella22).                                                                                                      |
-| **`glm-5.3-flash` native vision**    | Our setup configures `glm-5.3-flash` (and `glm-5v-turbo`) with `vision: true` for native multimodal — no proxy/description round-trip needed. Validated August 28, 2026 on both chat attachments and the `view_image` tool path. |
+| **`glm-5.3-flash` native vision**    | Our setup configures `glm-5.3-flash` with `vision: true` for native multimodal — no proxy/description round-trip needed. Validated August 28, 2026 on both chat attachments and the `view_image` tool path. |
 | **Full `requestBody` control**       | We can tweak `temperature`, `top_p`, `thinking`, and any other parameter without waiting for an extension update. Extensions have opinionated defaults.                                                                          |
 | **`clear_thinking: true` awareness** | Our docs explicitly document why the server default is a perfect match for VS Code's missing-`reasoning_content` behavior. Extensions work around this with the proposed API instead.                                            |
 | **Existing comprehensive docs**      | `docs/models/glm.md` is a full setup guide, configuration reference, troubleshooting table, and validation record maintained in-repo.                                                                                            |
@@ -252,7 +252,7 @@ For GLM-5.3-Flash itself the two approaches are now equivalent (direct native vi
 
 - Have a **Z.ai Standard API key** (Pay-as-You-Go) and don't want a Coding Plan subscription.
 - Want the **simplest possible setup** — no extension install, just JSON config.
-- Need **native vision on `glm-5.3-flash` or `glm-5v-turbo`** — both configured with `vision: true` (validated August 28, 2026).
+- Need **native vision on `glm-5.3-flash`** — configured with `vision: true` (validated August 28, 2026).
 - Prefer **one mental model** for all providers (Kimi, Qwen, MiMo, MiniMax, DeepSeek, GLM — all via `chatLanguageModels.json`).
 - Don't need to see the model's reasoning/thinking in chat.
 - Are on a **locked-down VS Code install** where extensions can't be installed.
@@ -307,7 +307,7 @@ For GLM-5.3-Flash itself the two approaches are now equivalent (direct native vi
 
 ### Not worth adopting
 
-- **Vision Proxy pattern.** Our setup uses `glm-5.3-flash` / `glm-5v-turbo` for native vision. Adding a vision proxy would require a local service (or extension), undermining the zero-proxy simplicity.
+- **Vision Proxy pattern.** Our setup uses `glm-5.3-flash` for native vision. Adding a vision proxy would require a local service (or extension), undermining the zero-proxy simplicity.
 - **Coding Plan endpoint support.** Structurally impossible from `chatLanguageModels.json` — the Coding Plan endpoint is tool-gated. This is a fundamental limitation, not a missing feature.
 - **`LanguageModelThinkingPart` reasoning rendering.** Requires the native provider API — not available to custom endpoints. This is the one irreparable gap.
 

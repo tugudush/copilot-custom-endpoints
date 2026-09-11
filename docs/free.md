@@ -33,8 +33,7 @@ Many providers offer substantial trial credits or token pools when you first sig
 
 - **Free Quota:** DashScope offers a standard tier of **1 Million input tokens + 1 Million output tokens** per model.
 - **Validity:** Valid for **90 days** from the exact date you activate Model Studio. This applies individually to major models, including:
-  - `qwen3.7-max`
-  - `qwen3.6-plus`
+  - `qwen3.8-max`
   - `qwen3-coder-plus`
   - `qwq-plus`
 - **Multimodal Quota:** Also offers **100 free generated images** for vision models (e.g., `qwen-image-2.0-pro`, `z-image-turbo`) and **50–200 free seconds of video generation** on selected `wan` video models.
@@ -46,7 +45,7 @@ Many providers offer substantial trial credits or token pools when you first sig
 
 ### Moonshot AI (Kimi)
 
-- **Free Quota:** New sign-ups receive a **15 RMB (~$2 USD)** free trial credit. This allows for extensive testing of models like `kimi-k2.6` (which costs $0.16 input / $0.95–$4.00 output per million tokens) before needing to load a payment method.
+- **Free Quota:** New sign-ups receive a **15 RMB (~$2 USD)** free trial credit for testing supported models before needing to load a payment method.
 
 ### MiniMax
 

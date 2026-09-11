@@ -24,5 +24,5 @@ When updating the pricing tables in `docs/pricing.md` or `README.md`, sort rows 
 
 If adding a new model with `Cost per intelligence = ~$0.015` and `Intelligence Score = 45`:
 
-- It would go between `MiniMax M3 Priority` (~$0.0092) and `Kimi K2.6` (~$0.021).
+- It would go between `MiniMax M3 Priority` (~$0.0139) and `Gemini 3.8 Flash` (~$0.0182).
 - The correct column values must be filled in consistently across both files.

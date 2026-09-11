@@ -25,26 +25,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 991000,
         "maxOutputTokens": 131072
-      },
-      {
-        "id": "qwen3.7-max",
-        "name": "Qwen 3.7 Max (text)",
-        "url": "http://127.0.0.1:3458/v1/chat/completions",
-        "toolCalling": true,
-        "vision": false,
-        "streaming": true,
-        "maxInputTokens": 1048576,
-        "maxOutputTokens": 131072
-      },
-      {
-        "id": "qwen3.7-plus",
-        "name": "Qwen 3.7 Plus (vision)",
-        "url": "http://127.0.0.1:3458/v1/chat/completions",
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 1048576,
-        "maxOutputTokens": 131072
       }
     ]
   },
@@ -67,33 +47,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1000000,
         "maxOutputTokens": 131072
-      },
-      {
-        "id": "kimi-k2.6",
-        "name": "Kimi K2.6 (vision)",
-        "url": "http://127.0.0.1:3457/v1/chat/completions",
-        "requestBody": {
-          "temperature": 1
-        },
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 262144,
-        "maxOutputTokens": 32768
-      },
-      {
-        "id": "kimi-k2.7-code",
-        "name": "Kimi K2.7 Code (vision)",
-        "url": "http://127.0.0.1:3457/v1/chat/completions",
-        "requestBody": {
-          "temperature": 1,
-          "max_tokens": 4096
-        },
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 262144,
-        "maxOutputTokens": 4096
       }
     ]
   },
@@ -194,51 +147,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
           "temperature": 1.0,
           "top_p": 0.95
         }
-      },
-      {
-        "id": "glm-5.2",
-        "name": "GLM 5.2 (text)",
-        "url": "https://api.z.ai/api/paas/v4/chat/completions",
-        "toolCalling": true,
-        "vision": false,
-        "streaming": true,
-        "maxInputTokens": 1048576,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "temperature": 1.0,
-          "top_p": 0.95
-        }
-      },
-      {
-        "id": "glm-5.1",
-        "name": "GLM 5.1 (text)",
-        "url": "https://api.z.ai/api/paas/v4/chat/completions",
-        "toolCalling": true,
-        "vision": false,
-        "streaming": true,
-        "maxInputTokens": 204800,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "temperature": 1,
-          "top_p": 0.95
-        }
-      },
-      {
-        "id": "glm-5v-turbo",
-        "name": "GLM 5V Turbo (vision)",
-        "url": "https://api.z.ai/api/paas/v4/chat/completions",
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 204800,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "temperature": 1,
-          "top_p": 0.95
-        }
       }
     ]
   }
@@ -250,9 +158,9 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 If you only need one provider, jump straight to its setup guide:
 
 - [Kimi K3 / K2.6 / K2.7 Code](kimi.md)
-- [Qwen 3.7 Plus / 3.7 Max](qwen.md)
+- [Qwen 3.8 Max](qwen.md)
 - [Xiaomi MiMo (V2.5 / V2.5 Pro)](mimo.md)
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
-- [GLM (5.3 Flash / 5.3 / 5.2 / 5.1 / 5V Turbo)](glm.md)
+- [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
 
 > **DeepSeek V4 Pro 0813 / V4 Flash 0731** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.
