@@ -1,43 +1,43 @@
 # Benchmark Scores
 
-> **Updated:** September 11, 2026 — the roster cleanup removes two retired models. The main table continues to use the current OpenRouter Artificial Analysis model metadata and the live OpenRouter benchmark ranking card. It retains **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench** as the official OpenAI comparison columns. Current OpenRouter AA values are not mixed with the launch-era v4.1.1 values quoted by OpenAI.
+> **Updated:** September 16, 2026 — the roster cleanup removes two retired models and the refresh incorporates current Qwen and DeepSeek records. The main table continues to use the current OpenRouter Artificial Analysis model metadata and the live OpenRouter benchmark ranking card. It retains **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench** as the official OpenAI comparison columns. Current OpenRouter AA values are not mixed with the launch-era v4.1.1 values quoted by OpenAI.
 
-A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The four task columns are **official OpenAI comparison results**, not Arena scores and not independent AA composite scores. Values were checked on September 10, 2026.
+A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The four task columns are **official OpenAI comparison results**, not Arena scores and not independent AA composite scores. Values were checked against live sources on September 15, 2026.
 
 `MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject.
 
-The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with 53.4**. OpenRouter no longer exposes an exact `qwen/qwen3.8-max` entry in its public model API; its model-page documentation canonicalizes that link to `qwen/qwen3.8-max-0902`, whose current API metadata reports **40.3**. The table keeps the 53.4 ranking-card result attached to the historical 0803 comparison record and records 0902's API value separately. Do not treat those two values as interchangeable.
+The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with 53.4**. OpenRouter no longer exposes an exact `qwen/qwen3.8-max` entry in its public model API; its model-page documentation canonicalizes that link to `qwen/qwen3.8-max-0902`, whose current API metadata reports **45.4**. The table keeps the 53.4 ranking-card result attached to the historical 0803 comparison record and records 0902's API value separately. Do not treat those two values as interchangeable.
 
 ## Main table
 
-| #   | Model                      | Provider  | Source            | AA Intelligence Index (OpenRouter) | Terminal-Bench 4.0 | ARC-AGI-3 | FrontierMath Tier 4 (v2) | AutomationBench |
-| --- | -------------------------- | --------- | ----------------- | ---------------------------------- | ------------------ | --------- | ------------------------ | --------------- |
-| 1   | **Claude Fable 5.1**       | Anthropic | Copilot native    | **53.4**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
-| 2   | **Qwen 3.8 Max (0803)³⁰**  | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
-| 3   | **GPT-6 Astra**            | OpenAI    | Copilot native    | **52.8**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
-| 4   | **Claude Opus 5**          | Anthropic | Copilot native    | **50.7**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
-| 5   | **Claude Fable 5**         | Anthropic | Copilot native    | **49.7**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
-| 6   | **GPT-5.6 Sol**            | OpenAI    | Copilot native    | **47.1**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
-| 7   | **GLM 5.3**                | Z.ai      | Custom endpoint   | **44.9**                           | —                  | —         | —                        | —               |
-| 8   | **Grok 4.6**               | xAI       | Copilot native    | **44.4**                           | —                  | —         | —                        | —               |
-| 9   | **Kimi K3**                | Moonshot  | Custom endpoint   | **43.8**                           | —                  | —         | —                        | —               |
-| 10  | **GPT-5.6 Terra**          | OpenAI    | Copilot native    | **42.3**                           | —                  | —         | —                        | —               |
-| 12  | **GLM 5.3 Flash**          | Z.ai      | Custom endpoint   | **41.9**                           | —                  | —         | —                        | —               |
-| 13  | **Gemini 3.8 Flash**       | Google    | N/A (Gemini API)  | **41.2**                           | 19.1%              | —         | —                        | —               |
-| 14  | **Qwen 3.8 Max (0902)³¹**  | DashScope | Custom endpoint   | **40.3**                           | —                  | —         | —                        | —               |
-| 15  | **Claude Sonnet 5**        | Anthropic | Copilot native    | **38.4**                           | —                  | —         | —                        | —               |
-| 16  | **GPT-5.6 Luna**           | OpenAI    | Copilot native    | **37.5**                           | —                  | —         | —                        | —               |
-| 17  | **DeepSeek V4 Pro 0813**   | DeepSeek  | Copilot extension | **36.3**                           | —                  | —         | —                        | —               |
-| 18  | **DeepSeek V4 Flash 0731** | DeepSeek  | Copilot extension | **34.5**                           | —                  | —         | —                        | —               |
-| 19  | **MiniMax M3**             | MiniMax   | Custom endpoint   | **29.6**                           | —                  | —         | —                        | —               |
-| 20  | **MiMo V2.5 Pro**          | Xiaomi    | Custom endpoint   | **26.4**                           | —                  | —         | —                        | —               |
-| 21  | **MiMo V2.5**              | Xiaomi    | Custom endpoint   | **22.3**                           | —                  | —         | —                        | —               |
+| #   | Model                     | Provider  | Source            | AA Intelligence Index (OpenRouter) | Terminal-Bench 4.0 | ARC-AGI-3 | FrontierMath Tier 4 (v2) | AutomationBench |
+| --- | ------------------------- | --------- | ----------------- | ---------------------------------- | ------------------ | --------- | ------------------------ | --------------- |
+| 1   | **Claude Fable 5.1**      | Anthropic | Copilot native    | **53.4**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
+| 2   | **Qwen 3.8 Max (0803)³⁰** | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
+| 3   | **GPT-6 Astra**           | OpenAI    | Copilot native    | **52.8**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
+| 4   | **Claude Opus 5**         | Anthropic | Copilot native    | **50.7**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
+| 5   | **Claude Fable 5**        | Anthropic | Copilot native    | **49.7**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
+| 6   | **GPT-5.6 Sol**           | OpenAI    | Copilot native    | **47.1**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
+| 7   | **Qwen 3.8 Max (0902)³¹** | DashScope | Custom endpoint   | **45.4**                           | —                  | —         | —                        | —               |
+| 8   | **GLM 5.3**               | Z.ai      | Custom endpoint   | **44.9**                           | —                  | —         | —                        | —               |
+| 9   | **Grok 4.6**              | xAI       | Copilot native    | **44.4**                           | —                  | —         | —                        | —               |
+| 10  | **Kimi K3**               | Moonshot  | Custom endpoint   | **43.8**                           | —                  | —         | —                        | —               |
+| 11  | **GPT-5.6 Terra**         | OpenAI    | Copilot native    | **42.3**                           | —                  | —         | —                        | —               |
+| 12  | **GLM 5.3 Flash**         | Z.ai      | Custom endpoint   | **41.9**                           | —                  | —         | —                        | —               |
+| 13  | **Gemini 3.8 Flash**      | Google    | N/A (Gemini API)  | **41.2**                           | 19.1%              | —         | —                        | —               |
+| 14  | **DeepSeek V4.1 Flash**   | DeepSeek  | Copilot extension | **39.5**                           | —                  | —         | —                        | —               |
+| 15  | **Claude Sonnet 5**       | Anthropic | Copilot native    | **38.4**                           | —                  | —         | —                        | —               |
+| 16  | **GPT-5.6 Luna**          | OpenAI    | Copilot native    | **37.5**                           | —                  | —         | —                        | —               |
+| 17  | **DeepSeek V4 Pro 0813**  | DeepSeek  | Copilot extension | **36.3**                           | —                  | —         | —                        | —               |
+| 18  | **MiniMax M3**            | MiniMax   | Custom endpoint   | **29.6**                           | —                  | —         | —                        | —               |
+| 19  | **MiMo V2.5 Pro**         | Xiaomi    | Custom endpoint   | **26.4**                           | —                  | —         | —                        | —               |
+| 20  | **MiMo V2.5**             | Xiaomi    | Custom endpoint   | **22.3**                           | —                  | —         | —                        | —               |
 
 > **Reference notes:** The details below preserve release-era and Arena provenance. Use the main table and September 10 refresh note for current AA ranking.
 
 ⁷ DeepSeek V4 Pro (base) is not listed on the Code Arena; the thinking variant (DeepSeek V4 Pro Thinking) ranks #24.
 
-⁹ **Claude Sonnet 5** was released on **June 30, 2026** — too recent for Arena rankings (insufficient votes). AA Intelligence Index score (**55.3**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5). Anthropic's official pricing confirms $3.00 / $15.00 per MTok input/output (standard, from Sep 1, 2026) with introductory pricing of $2.00 / $10.00 through August 31, 2026. Supports text + image input, 1M context window, and adaptive reasoning. Uses a newer tokenizer than earlier Sonnet models.
+⁹ **Claude Sonnet 5** was released on **June 30, 2026** — too recent for Arena rankings (insufficient votes). AA Intelligence Index score (**55.3**) is confirmed by [Artificial Analysis](https://artificialanalysis.ai/models/claude-sonnet-5). Anthropic's current pricing keeps **$2.00 / $10.00** per MTok input/output as the standard rate; the previously announced September 1 increase to $3.00 / $15.00 will not occur. Supports text + image input, 1M context window, and adaptive reasoning. Uses a newer tokenizer than earlier Sonnet models.
 
 ¹⁰ **GPT-5.6** was released on **July 9, 2026**. Artificial Analysis reports Intelligence Index scores of **60.9** for Sol, **56.6** for Terra, and **52.3** for Luna; all support text + image input and a 1M-token context window. Arena's July 10 snapshot lists `gpt-5.6-sol-xhigh` at **#8 in Text Arena** and `gpt-5.6-sol-xhigh (codex-harness)` at **#2 in Code/WebDev Arena**; the exact `max` variants and Terra/Luna are not listed. See [OpenAI's GPT-5.6 announcement](https://openai.com/index/gpt-5-6/) and the [Sol](https://artificialanalysis.ai/models/gpt-5-6-sol), [Terra](https://artificialanalysis.ai/models/gpt-5-6-terra), and [Luna](https://artificialanalysis.ai/models/gpt-5-6-luna) model pages.
 
@@ -51,7 +51,7 @@ The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with
 
 ¹⁶ Arena snapshots: **Text #5, 1496 ±10** (August 1, 2026), **Vision #2, 1305 ±9** (August 1, 2026), and **Code/WebDev #4, 1668 ±18** (August 2, 2026). Qwen 3.8 Max is not listed in the August 4 Agent Arena table. See [Text Arena](https://arena.ai/leaderboard/text), [Vision Arena](https://arena.ai/leaderboard/vision), [Code Arena](https://arena.ai/leaderboard/code/webdev), and [Agent Arena](https://arena.ai/leaderboard/agent).
 
-¹⁸ **DeepSeek V4 Flash 0731** — July 31, 2026 re-post-trained public release. AA Intelligence Index **51.8**, Coding **69.1**, and Agentic **48.4** in the current OpenRouter/Artificial Analysis snapshot. DeepSeek's official agent results are Terminal-Bench 2.1 **82.7**, NL2Repo **54.2**, Cybergym **76.7**, DeepSWE **54.4**, Toolathlon Verified **70.3**, Agents' Last Exam **25.2**, AutomationBench (Public) **25.1**, DSBench-FullStack **68.7**, and DSBench-Hard **59.6**. These vendor-reported scores are separate from AA's composite index. See the [DeepSeek update log](https://api-docs.deepseek.com/updates/) and [model record](models/deepseek.md).
+¹⁸ **DeepSeek V4.1 Flash** — the current API build behind canonical model ID `deepseek-flash`, with 1M context and text + image input. The legacy `deepseek-v4-flash` alias remains accepted but is retired. OpenRouter's current model metadata reports AA Intelligence **39.5**; no current Coding or Agentic composite was exposed in the checked record. The agent results below belong to the retired 0731 release and are retained as historical evidence: Terminal-Bench 2.1 **82.7**, NL2Repo **54.2**, Cybergym **76.7**, DeepSWE **54.4**, Toolathlon Verified **70.3**, Agents' Last Exam **25.2**, AutomationBench (Public) **25.1**, DSBench-FullStack **68.7**, and DSBench-Hard **59.6**. See the [DeepSeek update log](https://api-docs.deepseek.com/updates/) and [model record](models/deepseek.md).
 
 ¹⁹ **Grok 4.6** (xAI/SpaceXAI, released **August 12, 2026**) is now a **GitHub Copilot native** model (GA). AA Intelligence Index **61** (high reasoning preset, **#6/188**). 500K context window, text + image input, text output. Priced at $2.00 / $0.50 / $6.00 per 1M input/cached/output (75% cache discount). Released too recently for Arena rankings. See the [AA model page](https://artificialanalysis.ai/models/grok-4-6), the [xAI announcement](https://x.ai/news/grok-4-6), and the [GitHub Copilot models & pricing page](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing).
 
@@ -71,7 +71,7 @@ The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with
 
 ³⁰ **Qwen 3.8 Max (0803)** is the August 3, 2026 launch checkpoint represented by OpenRouter's unversioned ranking card [`qwen/qwen3.8-max`](https://openrouter.ai/qwen/qwen3.8-max). The September 10 ranking card places it at **#2 with 53.4**. It is listed separately from 0902; the vendor-reported launch matrix below belongs to this release package. The public model API no longer exposes the exact unversioned ID.
 
-³¹ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026. The current public model API reports an AA Intelligence Index of **40.3** for this exact ID. It shares the same 1M multimodal capability profile and Qwen Cloud PAYG pricing as 0803, but its score must not be substituted for the ranking-card 0803 result or vice versa. The validated DashScope setup is documented in [models/qwen.md](models/qwen.md).
+³¹ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026. The current public model API reports an AA Intelligence Index of **45.4** for this exact ID. It shares the same 1M multimodal capability profile and Qwen Cloud PAYG pricing as 0803, but its score must not be substituted for the ranking-card 0803 result or vice versa. The validated DashScope setup is documented in [models/qwen.md](models/qwen.md).
 
 ## Qwen 3.8 launch evidence matrix
 
@@ -86,7 +86,7 @@ The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with
 | IFBench              | **82.8**            | Vendor result |
 | Parametric CAD Bench | **91.5**            | Vendor result |
 
-These scores describe the published **0803 launch** evaluation package and should not be collapsed into a synthetic overall score. OpenRouter now exposes that checkpoint as the unversioned `qwen/qwen3.8-max` row at **53.4**. The separate **0902** snapshot has an OpenRouter AA Intelligence Index of **46.9**; that current composite is separate from the vendor-reported launch matrix.
+These scores describe the published **0803 launch** evaluation package and should not be collapsed into a synthetic overall score. OpenRouter now exposes that checkpoint as the unversioned `qwen/qwen3.8-max` row at **53.4**. The separate **0902** snapshot has an OpenRouter AA Intelligence Index of **45.4**; that current composite is separate from the vendor-reported launch matrix.
 
 ## Column key: what each benchmark measures
 
