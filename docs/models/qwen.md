@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's September 10 rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **40.3**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
+> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's live rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **45.4**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
 
 ## At a Glance
 
@@ -30,10 +30,10 @@
 
 These are separate OpenRouter catalog entries, not two picker labels for one model:
 
-| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                                              |
-| ----------------------- | -------- | --------------------- | ---------------------------------------------------------------------------------- |
-| `qwen/qwen3.8-max`      | 0803     | **53.4 (#2)**         | September 10 ranking-card result; exact unversioned API entry is no longer exposed |
-| `qwen/qwen3.8-max-0902` | 0902     | **40.3**              | September snapshot; current exact-ID API metadata                                  |
+| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                                         |
+| ----------------------- | -------- | --------------------- | ----------------------------------------------------------------------------- |
+| `qwen/qwen3.8-max`      | 0803     | **53.4 (#2)**         | Current ranking-card result; exact unversioned API entry is no longer exposed |
+| `qwen/qwen3.8-max-0902` | 0902     | **45.4**              | September snapshot; current exact-ID API metadata                             |
 
 The DashScope custom-endpoint snippets below use the provider model ID `qwen3.8-max`. Do not replace it with the OpenRouter `qwen/qwen3.8-max-0902` slug unless you also change the upstream URL to OpenRouter and have verified that path independently.
 
