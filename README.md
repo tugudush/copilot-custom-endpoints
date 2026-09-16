@@ -65,7 +65,8 @@ Open the setup guide for the model you picked (links in the table above) and cop
 1. Open VS Code Settings (`Ctrl+,` / `Cmd+,`).
 2. Search for **"Chat: Utility Small Model"** (setting ID: `chat.lm.utilitySmallModel`).
 3. Pick the **fastest, cheapest model** available to you from the dropdown. Good choices:
-   - **DeepSeek V4.1 Flash** — if you have the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension installed (fastest, ~$0.27/session at peak rates).
+   - **GLM 5.3 Flash** — if you have [GLM configured](docs/models/glm.md) (cheapest custom-endpoint option, ~$0.13/session).
+   - **GPT-5.6 Luna** — if it is available through your native Copilot models (fast, ~$0.22/session).
    - **MiMo V2.5** — if you already have Xiaomi MiMo configured (cheapest custom-endpoint option, ~$0.10/session).
    - **Default** — if you still have native Copilot model access, this lets VS Code use its built-in fast model.
 4. The setting takes effect immediately — no restart needed.
@@ -105,7 +106,21 @@ npx copilot-custom-endpoint clean    # Remove debug_log/
 
 ## Pricing snapshot
 
-All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01. To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns. DeepSeek estimates use peak rates; official off-peak rates are half. The current AA values come from OpenRouter's September 15 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. Current corrections include DeepSeek V4.1 Flash at **$0.30 / $0.006 / $1.20** peak, OpenAI GPT-5.6 Sol at **$4 / $0.40 / $20**, and Anthropic Sonnet 5 at **$2 / $0.20 / $10**.
+All prices are **USD per 1M tokens** (non-cached). 1 AI credit = $0.01; multiply a dollar amount by 100 to convert it to credits (for example, $5.00/1M = 500 credits/1M).
+
+The table is sorted by **Cost per intelligence**, lowest first. This is a value metric calculated as:
+
+`estimated session cost / Intelligence Score`
+
+It approximates the cost of one point on the AA Intelligence Index under the common workload below. A lower number means more benchmark intelligence per estimated dollar; it is not an overall quality ranking or a provider billing quote.
+
+**Est. session** uses ~10K input + ~2K output tokens per turn over 50 turns: 500K input tokens plus 100K output tokens total. For each model, the estimate is:
+
+`(0.5 × input price) + (0.1 × output price)`
+
+For example, GLM 5.3 Flash is `(0.5 × $0.15) + (0.1 × $0.50) = $0.125`, shown as `~$0.13`. Cached-input discounts are not included. Actual costs vary with context length, output length, caching, pricing tiers, promotions, and provider billing. DeepSeek estimates use peak rates; official off-peak rates are half.
+
+The current AA values come from OpenRouter's September 15 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. Current corrections include DeepSeek V4.1 Flash at **$0.30 / $0.006 / $1.20** peak, OpenAI GPT-5.6 Sol at **$4 / $0.40 / $20**, and Anthropic Sonnet 5 at **$2 / $0.20 / $10**.
 
 | Model                    | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | ------------------------ | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
