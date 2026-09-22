@@ -2,7 +2,7 @@
 
 Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
-> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
+> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
 >
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
@@ -57,11 +57,11 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
-        "id": "mimo-v2.5-pro",
-        "name": "MiMo V2.5 Pro (text)",
+        "id": "mimo-v2.6-pro",
+        "name": "MiMo V2.6 Pro",
         "url": "http://127.0.0.1:3459/v1/chat/completions",
         "toolCalling": true,
-        "vision": false,
+        "vision": true,
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
@@ -71,14 +71,28 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         }
       },
       {
-        "id": "mimo-v2.5",
-        "name": "MiMo V2.5 (vision)",
+        "id": "mimo-v2.6-flash",
+        "name": "MiMo V2.6 Flash",
         "url": "http://127.0.0.1:3459/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
         "streaming": true,
         "maxInputTokens": 1048576,
-        "maxOutputTokens": 32768,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "temperature": 1,
+          "top_p": 0.95
+        }
+      },
+      {
+        "id": "mimo-v2.6-pro-ultraspeed",
+        "name": "MiMo V2.6 Pro UltraSpeed",
+        "url": "http://127.0.0.1:3459/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
         "requestBody": {
           "temperature": 1,
           "top_p": 0.95

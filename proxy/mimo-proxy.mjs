@@ -2,10 +2,11 @@
 import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { createProxy } from '../lib/create-proxy.mjs'
+import { rewriteMiMo } from '../lib/mimo-rewrite.mjs'
 
 /**
  * Supported model scope for this proxy:
- * - Validated with `mimo-v2.5-pro`, `mimo-v2.5`, and `mimo-v2-flash`.
+ * - Validated with the MiMo V2.6 and V2.5 chat model IDs.
  * - Expected to work for any MiMo model that supports the `thinking` object
  *   with a `type` field on the OpenAI-compatible surface.
  * - Not intended for non-MiMo providers, because the rewrite assumes
@@ -28,83 +29,25 @@ const logPath = process.env.MIMO_PROXY_LOG ?? defaultLogPath
 if (process.argv.includes('--help')) {
   console.log(`MiMo proxy
 
-Starts a local HTTP proxy that conditionally injects thinking: { type: "disabled" }
-when the request includes a tools array, letting MiMo models show reasoning in
-plain chat while keeping tool loops stable.
+Starts a local HTTP proxy that preserves MiMo V2.6 thinking when the request
+history includes reasoning_content, and falls back to thinking: { type: "disabled" }
+when a tool loop has missing reasoning history. Legacy MiMo models use the
+disabled-thinking fallback for tool-enabled requests.
 
 Environment variables:
   MIMO_PROXY_PORT              Local listen port. Default: 3459 (falls back to PORT)
   MIMO_UPSTREAM_URL            Upstream MiMo chat-completions URL.
                                Default: https://api.xiaomimimo.com/v1/chat/completions
   MIMO_PROXY_DISABLE_THINKING_WITH_TOOLS
-                               Inject thinking: { type: "disabled" } when tools are present.
-                               Default: 1
+                               Enable the tool-loop fallback that injects thinking:
+                               { type: "disabled" } for legacy models or incomplete
+                               V2.6 reasoning history. Default: 1
   MIMO_PROXY_LOG               Path to the redacted NDJSON log file.
 
 Suggested VS Code model URL:
   http://127.0.0.1:3459/v1/chat/completions
 `)
   process.exit(0)
-}
-
-// ---- Provider-specific rewrite logic ----
-
-function summarizePayload(payload, hasTools, rewriteInfo) {
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const tools = Array.isArray(payload.tools) ? payload.tools : []
-
-  return {
-    model: payload.model,
-    stream: payload.stream,
-    hasTools,
-    toolCount: tools.length,
-    toolChoice: payload.tool_choice,
-    ...rewriteInfo,
-    maxTokens:
-      payload.max_tokens ??
-      payload.max_completion_tokens ??
-      payload.max_output_tokens,
-    messageCount: messages.length,
-    messageRoles: messages.map((message) => message?.role).slice(0, 16),
-    topLevelKeys: Object.keys(payload).sort()
-  }
-}
-
-function rewriteMiMo(payload) {
-  // Determine if a tool is actually being invoked:
-  // - tool_choice is set and not "none"
-  // - OR there is a "tool" role message in the conversation
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const hasToolRole = messages.some((message) => message?.role === 'tool')
-  const toolChoice = payload.tool_choice
-  const hasActiveToolCall =
-    hasToolRole ||
-    (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
-  const hasTools = hasActiveToolCall
-  const incomingThinkingType = payload?.thinking?.type
-
-  if (disableThinkingWithTools && hasTools) {
-    // Tool-enabled request: suppress thinking to avoid reasoning_content issues
-    payload.thinking = { type: 'disabled' }
-  } else {
-    // Plain chat: remove thinking so the model uses its default (enabled for V2.5 models)
-    delete payload.thinking
-  }
-
-  const rewrittenThinkingType =
-    disableThinkingWithTools && hasTools ? 'disabled' : undefined
-
-  const summary = summarizePayload(payload, hasTools, {
-    incomingThinkingType,
-    rewrittenThinkingType
-  })
-
-  const modeTag = hasTools ? '[tools]' : '[chat]'
-  const consoleMsg = `${modeTag} thinking.type=${String(incomingThinkingType)} -> ${
-    hasTools && disableThinkingWithTools ? '"disabled"' : '<deleted>'
-  }, model=${payload.model ?? '?'}`
-
-  return { summary, consoleMsg }
 }
 
 // ---- Create and start ----
@@ -114,8 +57,12 @@ const { start } = createProxy({
   port,
   logPath,
   label: 'mimo-proxy',
-  healthCheckExtras: { disableThinkingWithTools },
-  rewriteRequest: rewriteMiMo,
+  healthCheckExtras: {
+    disableThinkingWithTools,
+    preserveV26ThinkingWithReasoningContent: true
+  },
+  rewriteRequest: (payload) =>
+    rewriteMiMo(payload, { disableThinkingWithTools }),
   startupMessages: (_port, _upstreamUrl) => [
     `[mimo-proxy] listening on http://127.0.0.1:${_port}/v1/chat/completions`,
     `[mimo-proxy] forwarding to ${_upstreamUrl}`,

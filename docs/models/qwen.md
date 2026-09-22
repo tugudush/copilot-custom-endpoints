@@ -95,14 +95,14 @@ Set the API key through **Chat: Manage Language Models**, then verify the proxy 
 1. **Start the proxy:** `npm run proxy:qwen` (or `npx copilot-custom-endpoint qwen`).
 2. **Use the proxy-path JSON snippet** below.
 3. **Set your DashScope API key** via Command Palette → **Chat: Manage Language Models**.
-4. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+4. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
 5. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
 
 ### Direct (no proxy)
 
 1. **Use the direct-path JSON snippet** below.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
-3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.5). [Why?](../../README.md#4-configure-the-utility-small-model)
+3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
 4. **Restart VS Code** and pick "Qwen 3.8 Max".
 
 ## Setup
