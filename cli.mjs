@@ -15,7 +15,7 @@ Start a local proxy for VS Code Copilot custom endpoints.
   copilot-custom-endpoint all     Start all proxies concurrently (default)
   copilot-custom-endpoint kimi    Start the Kimi K2 proxy on port 3457
   copilot-custom-endpoint qwen    Start the Qwen 3.x proxy on port 3458
-  copilot-custom-endpoint mimo    Start the MiMo V2.5 proxy on port 3459
+  copilot-custom-endpoint mimo    Start the MiMo V2.6 proxy on port 3459
   copilot-custom-endpoint clean   Remove the debug_log/ directory
 
 Environment variables: see --help for each proxy.

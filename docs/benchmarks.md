@@ -1,39 +1,43 @@
 # Benchmark Scores
 
-> **Updated:** September 16, 2026 — the roster cleanup removes two retired models and the refresh incorporates current Qwen and DeepSeek records. The main table continues to use the current OpenRouter Artificial Analysis model metadata and the live OpenRouter benchmark ranking card. It retains **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench** as the official OpenAI comparison columns. Current OpenRouter AA values are not mixed with the launch-era v4.1.1 values quoted by OpenAI.
+> **Updated:** September 22, 2026 — the refresh incorporates Xiaomi MiMo V2.6, xAI Grok 4.7, and current OpenRouter Artificial Analysis v4.3.2 metadata. It retains **Terminal-Bench 4.0**, **ARC-AGI-3**, **FrontierMath Tier 4 (v2)**, and **AutomationBench** as the official OpenAI comparison columns. Current OpenRouter AA values are not mixed with launch-era scores quoted by model vendors.
 
 A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The four task columns are **official OpenAI comparison results**, not Arena scores and not independent AA composite scores. Values were checked against live sources on September 15, 2026.
 
-`MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject.
+`MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject. MiMo V2.6 Flash, MiMo V2.6 Pro UltraSpeed, and legacy MiMo V2.5 currently have no OpenRouter composite score, so they are retained after the scored rows.
 
 The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with 53.4**. OpenRouter no longer exposes an exact `qwen/qwen3.8-max` entry in its public model API; its model-page documentation canonicalizes that link to `qwen/qwen3.8-max-0902`, whose current API metadata reports **45.4**. The table keeps the 53.4 ranking-card result attached to the historical 0803 comparison record and records 0902's API value separately. Do not treat those two values as interchangeable.
 
 ## Main table
 
-| #   | Model                     | Provider  | Source            | AA Intelligence Index (OpenRouter) | Terminal-Bench 4.0 | ARC-AGI-3 | FrontierMath Tier 4 (v2) | AutomationBench |
-| --- | ------------------------- | --------- | ----------------- | ---------------------------------- | ------------------ | --------- | ------------------------ | --------------- |
-| 1   | **Claude Fable 5.1**      | Anthropic | Copilot native    | **53.4**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
-| 2   | **Qwen 3.8 Max (0803)³⁰** | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
-| 3   | **GPT-6 Astra**           | OpenAI    | Copilot native    | **52.8**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
-| 4   | **Claude Opus 5**         | Anthropic | Copilot native    | **50.7**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
-| 5   | **Claude Fable 5**        | Anthropic | Copilot native    | **49.7**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
-| 6   | **GPT-5.6 Sol**           | OpenAI    | Copilot native    | **47.1**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
-| 7   | **Qwen 3.8 Max (0902)³¹** | DashScope | Custom endpoint   | **45.4**                           | —                  | —         | —                        | —               |
-| 8   | **GLM 5.3**               | Z.ai      | Custom endpoint   | **44.9**                           | —                  | —         | —                        | —               |
-| 9   | **Grok 4.6**              | xAI       | Copilot native    | **44.4**                           | —                  | —         | —                        | —               |
-| 10  | **Kimi K3**               | Moonshot  | Custom endpoint   | **43.8**                           | —                  | —         | —                        | —               |
-| 11  | **GPT-5.6 Terra**         | OpenAI    | Copilot native    | **42.3**                           | —                  | —         | —                        | —               |
-| 12  | **GLM 5.3 Flash**         | Z.ai      | Custom endpoint   | **41.9**                           | —                  | —         | —                        | —               |
-| 13  | **Gemini 3.8 Flash**      | Google    | N/A (Gemini API)  | **41.2**                           | 19.1%              | —         | —                        | —               |
-| 14  | **DeepSeek V4.1 Flash**   | DeepSeek  | Copilot extension | **39.5**                           | —                  | —         | —                        | —               |
-| 15  | **Claude Sonnet 5**       | Anthropic | Copilot native    | **38.4**                           | —                  | —         | —                        | —               |
-| 16  | **GPT-5.6 Luna**          | OpenAI    | Copilot native    | **37.5**                           | —                  | —         | —                        | —               |
-| 17  | **DeepSeek V4 Pro 0813**  | DeepSeek  | Copilot extension | **36.3**                           | —                  | —         | —                        | —               |
-| 18  | **MiniMax M3**            | MiniMax   | Custom endpoint   | **29.6**                           | —                  | —         | —                        | —               |
-| 19  | **MiMo V2.5 Pro**         | Xiaomi    | Custom endpoint   | **26.4**                           | —                  | —         | —                        | —               |
-| 20  | **MiMo V2.5**             | Xiaomi    | Custom endpoint   | **22.3**                           | —                  | —         | —                        | —               |
+| #   | Model                          | Provider  | Source            | AA Intelligence Index (OpenRouter) | Terminal-Bench 4.0 | ARC-AGI-3 | FrontierMath Tier 4 (v2) | AutomationBench |
+| --- | ------------------------------ | --------- | ----------------- | ---------------------------------- | ------------------ | --------- | ------------------------ | --------------- |
+| 1   | **Claude Fable 5.1**           | Anthropic | Copilot native    | **53.4**                           | 55.8%              | —         | 87.8%                    | 31.4%           |
+| 2   | **Qwen 3.8 Max (0803)³⁰**      | DashScope | Comparison only   | **53.4**                           | —                  | —         | —                        | —               |
+| 3   | **GPT-6 Astra**                | OpenAI    | Copilot native    | **52.7**                           | **57.9%**          | **99.9%** | **97.6%**                | **41.4%**       |
+| 4   | **Claude Opus 5**              | Anthropic | Copilot native    | **50.8**                           | 52.6%              | 30.2%     | 73.2%                    | 26.9%           |
+| 5   | **Claude Fable 5**             | Anthropic | Copilot native    | **49.6**                           | 44.5%              | —         | 90.2%                    | 17.4%           |
+| 6   | **GPT-5.6 Sol**                | OpenAI    | Copilot native    | **47.0**                           | 37.3%              | 7.8%      | 83.0%                    | 18.1%           |
+| 7   | **Grok 4.7³³**                 | xAI       | Comparison only   | **46.4**                           | —                  | —         | —                        | —               |
+| 8   | **MiMo V2.6 Pro³²**            | Xiaomi    | Custom endpoint   | **46.3**                           | —                  | —         | —                        | —               |
+| 9   | **Qwen 3.8 Max (0902)³¹**      | DashScope | Custom endpoint   | **45.4**                           | —                  | —         | —                        | —               |
+| 10  | **GLM 5.3**                    | Z.ai      | Custom endpoint   | **44.8**                           | —                  | —         | —                        | —               |
+| 11  | **Grok 4.6**                   | xAI       | Copilot native    | **44.3**                           | —                  | —         | —                        | —               |
+| 12  | **Kimi K3**                    | Moonshot  | Custom endpoint   | **43.6**                           | —                  | —         | —                        | —               |
+| 13  | **GPT-5.6 Terra**              | OpenAI    | Copilot native    | **42.1**                           | —                  | —         | —                        | —               |
+| 14  | **GLM 5.3 Flash**              | Z.ai      | Custom endpoint   | **41.8**                           | —                  | —         | —                        | —               |
+| 15  | **Gemini 3.8 Flash**           | Google    | N/A (Gemini API)  | **40.9**                           | 19.1%              | —         | —                        | —               |
+| 16  | **DeepSeek V4.1 Flash**        | DeepSeek  | Copilot extension | **39.5**                           | —                  | —         | —                        | —               |
+| 17  | **Claude Sonnet 5**            | Anthropic | Copilot native    | **38.2**                           | —                  | —         | —                        | —               |
+| 18  | **GPT-5.6 Luna**               | OpenAI    | Copilot native    | **37.3**                           | —                  | —         | —                        | —               |
+| 19  | **DeepSeek V4 Pro 0813**       | DeepSeek  | Copilot extension | **36.0**                           | —                  | —         | —                        | —               |
+| 20  | **MiniMax M3**                 | MiniMax   | Custom endpoint   | **29.2**                           | —                  | —         | —                        | —               |
+| 21  | **MiMo V2.5 Pro**              | Xiaomi    | Custom endpoint   | **26.0**                           | —                  | —         | —                        | —               |
+| 22  | **MiMo V2.6 Flash³²**          | Xiaomi    | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 23  | **MiMo V2.5**                  | Xiaomi    | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
+| 24  | **MiMo V2.6 Pro UltraSpeed³²** | Xiaomi    | Custom endpoint   | —                                  | —                  | —         | —                        | —               |
 
-> **Reference notes:** The details below preserve release-era and Arena provenance. Use the main table and September 10 refresh note for current AA ranking.
+> **Reference notes:** The details below preserve release-era and Arena provenance. Use the main table and September 22 refresh note for current AA ranking.
 
 ⁷ DeepSeek V4 Pro (base) is not listed on the Code Arena; the thinking variant (DeepSeek V4 Pro Thinking) ranks #24.
 
@@ -72,6 +76,10 @@ The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with
 ³⁰ **Qwen 3.8 Max (0803)** is the August 3, 2026 launch checkpoint represented by OpenRouter's unversioned ranking card [`qwen/qwen3.8-max`](https://openrouter.ai/qwen/qwen3.8-max). The September 10 ranking card places it at **#2 with 53.4**. It is listed separately from 0902; the vendor-reported launch matrix below belongs to this release package. The public model API no longer exposes the exact unversioned ID.
 
 ³¹ **Qwen 3.8 Max (0902)** is the separate [`qwen/qwen3.8-max-0902`](https://openrouter.ai/qwen/qwen3.8-max-0902) snapshot, released September 4, 2026. The current public model API reports an AA Intelligence Index of **45.4** for this exact ID. It shares the same 1M multimodal capability profile and Qwen Cloud PAYG pricing as 0803, but its score must not be substituted for the ranking-card 0803 result or vice versa. The validated DashScope setup is documented in [models/qwen.md](models/qwen.md).
+
+³² **MiMo V2.6** was released by Xiaomi on **September 22, 2026**. Pro, Flash, and Pro UltraSpeed are full-modality models with 1M context and 131K maximum output. OpenRouter's current metadata reports AA Intelligence **46.3** for Pro; Flash and Pro UltraSpeed have no current composite score. Xiaomi's release reports vendor results including DeepSWE v1.1 **72.6** for Pro and **65.7** for Flash after reinforcement-learning training. These vendor results are not substituted into the AA column. See Xiaomi's [V2.6 release](https://mimo.mi.com/docs/news/latest/v2-6) and [model list](https://mimo.mi.com/docs/en-US/quick-start/summary/model).
+
+³³ **Grok 4.7** (xAI/SpaceXAI, released **September 21, 2026**) is a comparison-only API row in this repository. OpenRouter reports AA Intelligence **46.4**; xAI reports CursorBench 4.0 **46.3%**, DeepSWE v1.1 **71.0%** at high effort, EEBench **64.0%**, AA Briefcase **1,657**, and Terminal-Bench 4.0 **38.0%**. Those vendor-reported results remain outside the official OpenAI comparison columns in the main table. See the [xAI announcement](https://x.ai/news/grok-4-7) and [AA model page](https://artificialanalysis.ai/models/grok-4-7).
 
 ## Qwen 3.8 launch evidence matrix
 
