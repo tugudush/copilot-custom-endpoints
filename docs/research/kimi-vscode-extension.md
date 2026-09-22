@@ -196,7 +196,7 @@ None of this is needed for the extension because its endpoint accepts the model 
 - **No extension install:** only `chatLanguageModels.json` and `node` are required; works on locked-down VS Code installs.
 - **Transparent behaviour:** redacted NDJSON proxy logs + 36 tests let you see exactly what is being sent to Moonshot.
 - **K2.7 Code awareness:** proven safe configuration with `maxOutputTokens: 4096` to avoid VS Code's "Response too long" error in agent mode.
-- **Provider-agnostic proxy:** the same Node proxy pattern extends to Qwen 3.x, MiMo V2.5, and any other OpenAI-compatible provider.
+- **Provider-agnostic proxy:** the same Node proxy pattern extends to Qwen 3.x, MiMo, and any other OpenAI-compatible provider.
 
 ### The extension wins on…
 

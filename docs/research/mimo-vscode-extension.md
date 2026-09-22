@@ -14,17 +14,11 @@ The extension takes the **harder but more capable path**: thinking mode is alway
 
 ## Features in the Extension NOT Present in Our Setup
 
-### 1. Third Model: `mimo-v2.5-pro-ultraspeed`
+### 1. Third Model: UltraSpeed Tier
 
-The extension exposes a third MiMo model we don't have configured:
+The extension exposes a latency-focused UltraSpeed variant ("Fast Pro reasoning for latency-sensitive agent tasks") alongside the standard Pro tier. Our `chatLanguageModels.json` covers this tier with `mimo-v2.6-pro-ultraspeed`.
 
-| Model ID                   | Description                                            | Vision | Context |
-| -------------------------- | ------------------------------------------------------ | ------ | ------- |
-| `mimo-v2.5-pro-ultraspeed` | "Fast Pro reasoning for latency-sensitive agent tasks" | ❌     | 917K    |
-
-Our `chatLanguageModels.json` only has `mimo-v2.5-pro` and `mimo-v2.5`.
-
-**Action:** Add `mimo-v2.5-pro-ultraspeed` to our MiMo model list if Xiaomi's API supports it.
+**Action:** None — the UltraSpeed tier is already configured for the current API family.
 
 ### 2. Thinking Mode WITH Tool Calling (Reasoning Content Cache)
 
@@ -145,7 +139,7 @@ Our setup requires reading `docs/models/mimo.md` manually.
 
 ### 12. Automatic Image Stripping
 
-If you send images to `mimo-v2.5-pro` (text-only), the extension strips them with a logged warning. Our setup would pass them through — likely getting an API error from MiMo.
+If you send images to a text-only model, the extension strips them with a logged warning. Our setup would pass them through — likely getting an API error from MiMo.
 
 ### 13. `stream_options: { include_usage: true }`
 
@@ -157,7 +151,7 @@ The extension has a `modelIdOverrides` setting for third-party API proxies:
 
 ```json
 "mimo-copilot.modelIdOverrides": {
-    "mimo-v2.5-pro": "some-other-model-id"
+    "mimo-v2.6-pro": "some-other-model-id"
 }
 ```
 
@@ -196,7 +190,7 @@ The extension uses `maxInputTokens: 917504` (917K) for all MiMo models. Our conf
 
 ### High Impact / Low Effort
 
-1. **Add `mimo-v2.5-pro-ultraspeed`** to `chatLanguageModels.json` if the API supports it. Just a new model entry.
+1. **Add `mimo-v2.6-pro-ultraspeed`** to `chatLanguageModels.json` if it isn't there yet. Just a new model entry.
 
 2. **Set `maxInputTokens` to `917504`** instead of `1048576` — matches the extension's more accurate limit.
 
@@ -231,6 +225,6 @@ The extension uses `maxInputTokens: 917504` (917K) for all MiMo models. Our conf
 | **API key storage**    | `SecretStorage` (OS keychain)                 | VS Code `chat.lm.secret`                |
 | **Token visibility**   | Context widget + output channel               | None                                    |
 | **Cache awareness**    | Full feedback loop                            | None (transparent proxy)                |
-| **Models exposed**     | 3 (UltraSpeed, Pro, V2.5)                     | 2 (Pro, V2.5)                           |
+| **Models exposed**     | 3 (incl. UltraSpeed)                          | 3 (Pro, Flash, UltraSpeed)              |
 | **Endpoint switching** | Settings dropdown                             | Manual JSON edit                        |
 | **Maintenance burden** | Extension updates                             | Proxy + config maintenance              |

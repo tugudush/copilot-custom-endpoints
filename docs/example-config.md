@@ -6,7 +6,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 >
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
-> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` on tool turns and leaves it absent on plain chat). OpenRouter lists Qwen 3.8 Max as two frozen snapshots (`qwen/qwen3.8-max` = 0803 and `qwen/qwen3.8-max-0902` = 0902); this DashScope config intentionally uses the provider ID `qwen3.8-max` and does not pretend the OpenRouter slugs are interchangeable.
+> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` when tool history is missing `reasoning_content` and leaves it absent on plain chat). OpenRouter lists Qwen 3.8 Max as two frozen snapshots (`qwen/qwen3.8-max` = 0803 and `qwen/qwen3.8-max-0902` = 0902); this DashScope config intentionally uses the provider ID `qwen3.8-max` and does not pretend the OpenRouter slugs are interchangeable.
 
 ```json
 [
@@ -173,7 +173,7 @@ If you only need one provider, jump straight to its setup guide:
 
 - [Kimi K3 / K2.6 / K2.7 Code](kimi.md)
 - [Qwen 3.8 Max](qwen.md)
-- [Xiaomi MiMo (V2.5 / V2.5 Pro)](mimo.md)
+- [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](mimo.md)
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
 

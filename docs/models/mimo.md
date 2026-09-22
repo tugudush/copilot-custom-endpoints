@@ -1,6 +1,6 @@
 # Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** MiMo V2.6 is now the current API family. The proxy-backed custom endpoint keeps V2.6 thinking enabled when `reasoning_content` is present and falls back to disabled thinking when VS Code drops that history field. Direct and proxy configurations are documented below; MiMo V2.5 and V2.5 Pro remain available until Xiaomi's October 21, 2026 deprecation.
+> **TL;DR:** MiMo V2.6 is now the current API family. The proxy-backed custom endpoint keeps V2.6 thinking enabled when `reasoning_content` is present and falls back to disabled thinking when VS Code drops that history field. Direct and proxy configurations are documented below.
 
 ## At a Glance
 
@@ -10,10 +10,10 @@
 | Alternative methods    | Direct API (static `thinking: disabled`) or the Xiaomi extension                                                       |
 | Mode (custom endpoint) | **Direct** (static `thinking: disabled`) **or** **Proxy** (dynamic, local on `:3459`)                                  |
 | Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (shared `requestBody`)                                              |
-| Vision                 | ✅ Yes (all V2.6 models; V2.5 Pro remains text-only)                                                                   |
+| Vision                 | ✅ Yes (all V2.6 models)                                                                                               |
 | Tool calling           | ✅ Yes; V2.6 preserves thinking only when the history includes `reasoning_content`                                     |
 | Context                | 1M                                                                                                                     |
-| Max output             | 131072 (V2.6 and V2.5 chat models)                                                                                     |
+| Max output             | 131072                                                                                                                 |
 | Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`                                                                       |
 | Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                            |
 | Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                                  |
@@ -25,10 +25,8 @@
 | `mimo-v2.6-pro`            | ✅     | 1M      | 131072     | Flagship full-modality reasoning for complex and long-horizon work |
 | `mimo-v2.6-flash`          | ✅     | 1M      | 131072     | Lower-cost full-modality model for frequent calls                  |
 | `mimo-v2.6-pro-ultraspeed` | ✅     | 1M      | 131072     | V2.6 Pro quality with the latency-focused UltraSpeed service       |
-| `mimo-v2.5-pro` _(legacy)_ | ❌     | 1M      | 131072     | Text-only; deprecated October 21, 2026                             |
-| `mimo-v2.5` _(legacy)_     | ✅     | 1M      | 131072     | Full-modality; deprecated October 21, 2026                         |
 
-> Xiaomi's API requires the lowercase IDs above. V2.5 and V2.5 Pro are scheduled to stop accepting their old names at 10:00 Beijing time on October 21, 2026.
+> Xiaomi's API requires the lowercase IDs above.
 
 ## Quick Start
 
@@ -64,7 +62,7 @@ Simplest no-proxy approach — but thinking is always off, so you never see mode
 
 ### Alternative: With optional proxy (dynamic thinking)
 
-The `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call history contains `reasoning_content`. When VS Code sends a tool loop with missing reasoning history, it injects `thinking: { "type": "disabled" }` to avoid Xiaomi's 400 response. Legacy V2.5 models always use that fallback for tool-enabled requests.
+The `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call history contains `reasoning_content`. When VS Code sends a tool loop with missing reasoning history, it injects `thinking: { "type": "disabled" }` to avoid Xiaomi's 400 response.
 
 - `npm run proxy:mimo` (from the repo root)
 - `npx copilot-custom-endpoint mimo` (standalone)
@@ -241,15 +239,14 @@ When using the proxy, point model `url`s to `http://127.0.0.1:3459/v1/chat/compl
 - **Thinking is required for full agent quality.** MiMo V2.6 returns HTTP 400 if `reasoning_content` is missing from history when thinking is on. The proxy preserves thinking when that field is present and disables it as a compatibility fallback when VS Code drops it; an extension with a per-`tool_call_id` reasoning cache can keep thinking enabled throughout.
 - **`tool_choice` other than `"auto"` is stripped** and treated as `"auto"`. Don't override it (VS Code's default is `auto`).
 - **Rate limits:** 100 RPM / 10M TPM per model per account.
-- **Vision and full modality:** V2.6 Pro, Flash, and Pro UltraSpeed accept text, image, video, and audio; VS Code custom endpoints expose image input through `vision: true`. V2.5 Pro remains text-only.
-- **Deprecation:** Xiaomi will deprecate `mimo-v2.5-pro` and `mimo-v2.5` at 10:00 Beijing time on October 21, 2026.
+- **Vision and full modality:** V2.6 Pro, Flash, and Pro UltraSpeed accept text, image, video, and audio; VS Code custom endpoints expose image input through `vision: true`.
 
 ## Troubleshooting
 
 | Symptom                                    | Likely cause                                             | Fix                                                                                                                                                           |
 | ------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Use the proxy (`npm run proxy:mimo`), or add `thinking: { type: "disabled" }` to `requestBody`; an extension with a reasoning cache can keep thinking enabled |
-| Vision request returns an error            | Used the legacy text-only `mimo-v2.5-pro`                | Use `mimo-v2.6-pro`, `mimo-v2.6-flash`, `mimo-v2.6-pro-ultraspeed`, or legacy `mimo-v2.5` for image input                                                     |
+| Vision request returns an error            | The model entry is missing `vision: true`                | Add `vision: true` to the model entry — every current MiMo model accepts image input                                                                          |
 | Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                                                                               |
 | 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                                                                                             |
 | 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                                                                                              |
@@ -263,7 +260,5 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). Oversea
 | `mimo-v2.6-pro`            | $0.0036 / 1M      | $0.435 / 1M        | $0.87 / 1M |
 | `mimo-v2.6-flash`          | $0.0028 / 1M      | $0.14 / 1M         | $0.28 / 1M |
 | `mimo-v2.6-pro-ultraspeed` | $0.036 / 1M       | $4.35 / 1M         | $8.70 / 1M |
-| `mimo-v2.5-pro` _(legacy)_ | $0.0036 / 1M      | $0.435 / 1M        | $0.87 / 1M |
-| `mimo-v2.5` _(legacy)_     | $0.0028 / 1M      | $0.14 / 1M         | $0.28 / 1M |
 
 > Cache writing is currently free of charge (limited-time offer). MiMo also offers a Token Plan subscription with discounted rates and a free cache-writing promotion.

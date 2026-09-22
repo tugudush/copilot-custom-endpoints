@@ -6,7 +6,7 @@ import { rewriteMiMo } from '../lib/mimo-rewrite.mjs'
 
 /**
  * Supported model scope for this proxy:
- * - Validated with the MiMo V2.6 and V2.5 chat model IDs.
+ * - Validated with the MiMo V2.6 chat model IDs.
  * - Expected to work for any MiMo model that supports the `thinking` object
  *   with a `type` field on the OpenAI-compatible surface.
  * - Not intended for non-MiMo providers, because the rewrite assumes
@@ -31,8 +31,7 @@ if (process.argv.includes('--help')) {
 
 Starts a local HTTP proxy that preserves MiMo V2.6 thinking when the request
 history includes reasoning_content, and falls back to thinking: { type: "disabled" }
-when a tool loop has missing reasoning history. Legacy MiMo models use the
-disabled-thinking fallback for tool-enabled requests.
+when a tool loop has missing reasoning history.
 
 Environment variables:
   MIMO_PROXY_PORT              Local listen port. Default: 3459 (falls back to PORT)
@@ -40,8 +39,8 @@ Environment variables:
                                Default: https://api.xiaomimimo.com/v1/chat/completions
   MIMO_PROXY_DISABLE_THINKING_WITH_TOOLS
                                Enable the tool-loop fallback that injects thinking:
-                               { type: "disabled" } for legacy models or incomplete
-                               V2.6 reasoning history. Default: 1
+                               { type: "disabled" } for incomplete reasoning history.
+                               Default: 1
   MIMO_PROXY_LOG               Path to the redacted NDJSON log file.
 
 Suggested VS Code model URL:

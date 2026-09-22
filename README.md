@@ -20,20 +20,19 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                        | Provider   | Needs proxy?            | Vision | Setup guide                                                                                                                                  |
-| ---------------------------- | ---------- | ----------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3**                  | Moonshot   | **Yes**                 | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                          |
-| **MiMo V2.6 Pro**            | Xiaomi     | **Yes**                 | ✅     | [Manual setup](docs/models/mimo.md)                                                                                                          |
-| **MiMo V2.6 Flash**          | Xiaomi     | **Yes**                 | ✅     | [Manual setup](docs/models/mimo.md)                                                                                                          |
-| **MiMo V2.6 Pro UltraSpeed** | Xiaomi     | **Yes**                 | ✅     | [Manual setup](docs/models/mimo.md)                                                                                                          |
-| **MiMo V2.5 / V2.5 Pro**     | Xiaomi     | Optional (legacy)       | V2.5   | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Migration guide](docs/models/mimo.md) |
-| **Qwen 3.8 Max (0803)**      | OpenRouter | Optional (experimental) | ✅     | [Snapshot/proxy setup](docs/models/qwen.md#optional-openrouter-snapshot-proxy)                                                               |
-| **Qwen 3.8 Max (0902)**      | DashScope  | Optional (recommended)  | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                          |
-| **MiniMax M3**               | MiniMax    | No                      | ✅     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                          |
-| **GLM 5.3 Flash**            | Z.ai       | No                      | ✅     | [Manual setup](docs/models/glm.md)                                                                                                           |
-| **GLM 5.3**                  | Z.ai       | No                      | ❌     | [Manual setup](docs/models/glm.md)                                                                                                           |
-| **DeepSeek V4.1 Flash**      | DeepSeek   | No (uses an extension)  | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)    |
-| **DeepSeek V4 Pro 0813**     | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md)    |
+| Model                        | Provider   | Needs proxy?            | Vision | Setup guide                                                                                                                               |
+| ---------------------------- | ---------- | ----------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Kimi K3**                  | Moonshot   | **Yes**                 | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                       |
+| **MiMo V2.6 Pro**            | Xiaomi     | **Yes**                 | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
+| **MiMo V2.6 Flash**          | Xiaomi     | **Yes**                 | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
+| **MiMo V2.6 Pro UltraSpeed** | Xiaomi     | **Yes**                 | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
+| **Qwen 3.8 Max (0803)**      | OpenRouter | Optional (experimental) | ✅     | [Snapshot/proxy setup](docs/models/qwen.md#optional-openrouter-snapshot-proxy)                                                            |
+| **Qwen 3.8 Max (0902)**      | DashScope  | Optional (recommended)  | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                       |
+| **MiniMax M3**               | MiniMax    | No                      | ✅     | [Extension](https://github.com/tugudush/minimax-copilot) ★ / [Manual setup](docs/models/minimax.md)                                       |
+| **GLM 5.3 Flash**            | Z.ai       | No                      | ✅     | [Manual setup](docs/models/glm.md)                                                                                                        |
+| **GLM 5.3**                  | Z.ai       | No                      | ❌     | [Manual setup](docs/models/glm.md)                                                                                                        |
+| **DeepSeek V4.1 Flash**      | DeepSeek   | No (uses an extension)  | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
+| **DeepSeek V4 Pro 0813**     | DeepSeek   | No (uses an extension)  | ❌     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
 
 ## Setup
 
@@ -122,7 +121,7 @@ It approximates the cost of one point on the AA Intelligence Index under the com
 
 For example, GLM 5.3 Flash is `(0.5 × $0.15) + (0.1 × $0.50) = $0.125`, shown as `~$0.13`. Cached-input discounts are not included. Actual costs vary with context length, output length, caching, pricing tiers, promotions, and provider billing. DeepSeek estimates use peak rates; official off-peak rates are half.
 
-The current AA values come from OpenRouter's September 22 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh adds Xiaomi MiMo V2.6 and xAI Grok 4.7, and uses the current AA v4.3.2 composites.
+The current AA values come from OpenRouter's September 22 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh records Gemini 3.8 Flash as **Copilot-native** and adds Xiaomi MiMo V2.6 and xAI Grok 4.7 as **Copilot-native** models, using the current AA v4.3.2 composites.
 
 | Model                        | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | ---------------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
@@ -131,7 +130,6 @@ The current AA values come from OpenRouter's September 22 model metadata and ran
 | **MiMo V2.6 Pro**            | Xiaomi    | **~$0.0066**          | **46.3**           | ~$0.30       | ✅     | 1M             |
 | **DeepSeek V4.1 Flash**      | DeepSeek  | **~$0.0068**          | **39.5**           | ~$0.27       | ✅     | 1M             |
 | **MiniMax M3**               | MiniMax   | **~$0.0093**          | **29.2**           | ~$0.27       | ✅     | 1M             |
-| **MiMo V2.5 Pro**            | Xiaomi    | **~$0.0115**          | **26.0**           | ~$0.30       | ❌     | 1M             |
 | **Gemini 3.8 Flash**         | Google    | **~$0.0183**          | **40.9**           | ~$0.75       | ✅     | 1M             |
 | **GLM 5.3**                  | Z.ai      | **~$0.0254**          | **44.8**           | ~$1.14       | ❌     | 1M             |
 | **DeepSeek V4 Pro 0813**     | DeepSeek  | **~$0.0294**          | **36.0**           | ~$1.06       | ❌     | 1M             |
@@ -141,6 +139,7 @@ The current AA values come from OpenRouter's September 22 model metadata and ran
 | **Grok 4.6**                 | xAI       | **~$0.0361**          | **44.3**           | ~$1.60       | ✅     | 500K           |
 | **GPT-5.6 Terra**            | OpenAI    | **~$0.0523**          | **42.1**           | ~$2.20       | ✅     | 1M             |
 | **Claude Sonnet 5**          | Anthropic | **~$0.0524**          | **38.2**           | ~$2.00       | ✅     | 1M             |
+| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **~$0.0658**          | **46.3**           | ~$3.05       | ✅     | 1M             |
 | **Kimi K3**                  | Moonshot  | **~$0.0688**          | **43.6**           | ~$3.00       | ✅     | 1M             |
 | **GPT-5.6 Sol**              | OpenAI    | **~$0.0851**          | **47.0**           | ~$4.00       | ✅     | 1M             |
 | **Claude Opus 5**            | Anthropic | **~$0.0984**          | **50.8**           | ~$5.00       | ✅     | 1M             |
@@ -148,10 +147,8 @@ The current AA values come from OpenRouter's September 22 model metadata and ran
 | **GPT-6 Astra**              | OpenAI    | **~$0.1898**          | **52.7**           | ~$10.00      | ✅     | 1M             |
 | **Claude Fable 5**           | Anthropic | **~$0.2016**          | **49.6**           | ~$10.00      | ✅     | 1M             |
 | **MiMo V2.6 Flash**          | Xiaomi    | —                     | —                  | ~$0.10       | ✅     | 1M             |
-| **MiMo V2.5**                | Xiaomi    | —                     | —                  | ~$0.10       | ✅     | 1M             |
-| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | —                     | —                  | ~$3.05       | ✅     | 1M             |
 
-> `MiniMax M3 Priority` is intentionally omitted from this snapshot because it is the same model with a priority service tier; the full pricing table documents its separate tier cost.
+> `MiMo V2.6 Pro UltraSpeed` uses the MiMo V2.6 Pro benchmark score because it is the same-quality latency tier; no independent composite is published. `MiniMax M3 Priority` is intentionally omitted from this snapshot because it is the same model with a priority service tier; the full pricing table documents its separate tier cost.
 
 > Detailed pricing, benchmark provenance, and model-specific notes live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md). This page stays focused on setup and model selection. For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
@@ -173,7 +170,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 **Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
 
 - **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
-- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash → Qwen3.8-max → MiMo-V2.5`.
+- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash → Qwen3.8-max`.
 - **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
 - **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
 

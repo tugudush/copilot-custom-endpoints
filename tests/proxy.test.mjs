@@ -490,9 +490,9 @@ describe('MiMo proxy rewrite logic', () => {
     assert.equal(body.disableThinkingWithTools, true)
   })
 
-  it('plain chat: deletes thinking (model defaults to enabled)', async () => {
+  it('plain chat: deletes thinking', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'mimo-v2.5-pro',
+      model: 'mimo-v2.6-pro',
       messages: [{ role: 'user', content: 'Hello' }],
       stream: false
     })
@@ -506,7 +506,7 @@ describe('MiMo proxy rewrite logic', () => {
 
   it('tool-enabled chat: sets thinking.type to disabled', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'mimo-v2.5-pro',
+      model: 'mimo-v2.6-pro',
       messages: [{ role: 'user', content: 'Search' }],
       tools: [{ type: 'function', function: { name: 'search' } }],
       thinking: { type: 'enabled' },
@@ -522,7 +522,7 @@ describe('MiMo proxy rewrite logic', () => {
 
   it('tool-enabled chat: overrides explicit thinking.type: enabled', async () => {
     const res = await proxyRequest(proxyPort, {
-      model: 'mimo-v2.5-pro',
+      model: 'mimo-v2.6-flash',
       messages: [{ role: 'user', content: 'Search' }],
       tools: [{ type: 'function', function: { name: 'search' } }],
       thinking: { type: 'enabled' },

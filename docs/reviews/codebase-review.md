@@ -14,7 +14,7 @@ The repo also serves as a **validation knowledge base** — model records under 
 
 | Area               | v1.0.0                               | v2.0.0                                                                                            |
 | ------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------- |
-| Proxies            | 2 (Kimi, Qwen)                       | 3 (+ MiMo V2.5 dynamic thinking suppression)                                                      |
+| Proxies            | 2 (Kimi, Qwen)                       | 3 (+ MiMo dynamic thinking suppression)                                                           |
 | Tests              | 29 (18 unit + 11 integration)        | 36 (18 unit + 18 integration — +7 MiMo tests)                                                     |
 | Kimi proxy         | K2.5/K2.6 only                       | + K2.7 always-thinking bypass + K3 `reasoning_effort` handling                                    |
 | Qwen proxy         | Basic tool detection (`tools` array) | Improved tool detection (also checks `tool` role messages + `tool_choice`) + Qwen 3.8 Max         |
@@ -50,7 +50,7 @@ docs/
   models/
     kimi.md              Kimi K2.6 / K2.7 / K3 validation + setup guide
     qwen.md              Qwen 3.8 Max validation + setup guide
-    mimo.md              MiMo V2.5 / V2.5 Pro validation + setup guide
+    mimo.md              MiMo V2.6 validation + setup guide
     minimax.md           MiniMax M3 validation + setup guide
     glm.md               GLM 5.1 / 5.2 validation + setup guide
   pricing.md             Cost-per-intelligence comparison table
@@ -160,7 +160,7 @@ The layout is clean and flat. No build step, no transpilation — the `.mjs` fil
 
 ---
 
-### 3.5 `proxy/mimo-proxy.mjs` — MiMo V2.5 Proxy (New)
+### 3.5 `proxy/mimo-proxy.mjs` — MiMo Proxy (New)
 
 **Purpose:** Intercepts VS Code → Xiaomi MiMo requests and implements dynamic thinking suppression: reasoning stays ON in plain chat (delete `thinking`, letting MiMo default to enabled), turns OFF when tools are present (inject `thinking: { type: "disabled" }`).
 
@@ -269,7 +269,7 @@ Well-structured: correct `"type": "module"`, four `bin` entries (main + 3 direct
 | `AGENTS.md`                | Comprehensive agent guidance with project map, commands, provider-specific constraints, and validation expectations.                               |
 | `docs/models/kimi.md`      | Thorough. Covers K2.6, K2.7 Code, and K3. Documents failures, direct-path incompatibility, and extension alternative.                              |
 | `docs/models/qwen.md`      | Thorough. Covers 3.8 Max, 3.7 Plus, 3.7 Max. Proxy vs direct paths, regional endpoints.                                                            |
-| `docs/models/mimo.md`      | Excellent. Covers V2.5 and V2.5 Pro. Extension-first recommendation with feature comparison table. PAYG vs Token Plan.                             |
+| `docs/models/mimo.md`      | Excellent. Covers the MiMo V2.6 family. Extension-first recommendation with feature comparison table. PAYG vs Token Plan.                          |
 | `docs/models/minimax.md`   | Excellent. Covers M3 direct setup, priority tier, PAYG vs Token Plan key distinction. Extension alternatives documented.                           |
 | `docs/models/glm.md`       | Thorough. Covers 5.2 and 5.1. Coding Plan limitation documented. Three VS Code extensions compared.                                                |
 | `docs/pricing.md`          | Outstanding. Cost-per-intelligence ranking across 25+ models, session cost estimates, Copilot credit conversion. Updated Aug 3, 2026.              |
@@ -320,7 +320,7 @@ The pricing and benchmark tables are particularly impressive — they provide a 
 | 6   | Tool detection missed mid-conversation tool follow-ups          | ✅ All three proxies now detect tools via both `tools` array AND `tool` role messages in conversation history + `tool_choice` presence. Catches VS Code's pattern of omitting `tools` on post-tool follow-up turns. |
 | 7   | Kimi K2.7 always-thinking models rejected `thinking: disabled`  | ✅ Kimi proxy detects `kimi-k2.7*` model prefix and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Validated June 14, 2026.                                                        |
 | 8   | Kimi K3 uses `reasoning_effort` instead of `thinking` parameter | ✅ Kimi proxy detects `kimi-k3` prefix, skips thinking-disable rewrite, and **deletes stray `thinking` blocks** that would cause 400 errors. Validated July 17, 2026.                                               |
-| 9   | MiMo V2.5 tool-calling broken without thinking suppression      | ✅ New `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning ON in plain chat, OFF on tool turns. Static `thinking: { type: "disabled" }` also works direct.                                      |
+| 9   | MiMo tool-calling broken without thinking suppression           | ✅ New `proxy/mimo-proxy.mjs` provides dynamic thinking suppression: reasoning ON in plain chat, OFF on tool turns. Static `thinking: { type: "disabled" }` also works direct.                                      |
 | 10  | API keys in `.env` not loaded by proxy scripts                  | ✅ Added `dotenv` dependency and `import 'dotenv/config'` to `cli.mjs` and all three proxy entry points. `.env` files in the project root are auto-loaded for both `npm run` and `npx` usage.                       |
 | 11  | No validation that example config matches live config           | ✅ Added `test-files/validate-example-config.mjs` that compares `docs/example-config.md` against the user's live `chatLanguageModels.json` and reports mismatches.                                                  |
 

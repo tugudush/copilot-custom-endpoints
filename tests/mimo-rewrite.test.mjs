@@ -28,10 +28,16 @@ describe('MiMo request rewrite', () => {
     )
   })
 
-  it('disables thinking for legacy MiMo tool requests', () => {
+  it('overrides explicit thinking when reasoning history is missing', () => {
     const payload = {
-      model: 'mimo-v2.5-pro',
-      messages: [{ role: 'user', content: 'Search' }],
+      model: 'mimo-v2.6-pro',
+      messages: [
+        { role: 'user', content: 'Search' },
+        {
+          role: 'assistant',
+          tool_calls: [{ id: 'call-1', type: 'function' }]
+        }
+      ],
       tools: [{ type: 'function', function: { name: 'search' } }],
       thinking: { type: 'enabled' }
     }
@@ -39,7 +45,7 @@ describe('MiMo request rewrite', () => {
     const result = rewriteMiMo(payload)
 
     assert.deepEqual(payload.thinking, { type: 'disabled' })
-    assert.equal(result.summary.isV26, false)
+    assert.equal(result.summary.missingReasoningContent, true)
   })
 
   it('preserves V2.6 thinking when tool history includes reasoning content', () => {
