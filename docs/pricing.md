@@ -1,6 +1,6 @@
 # Pricing
 
-> **Latest refresh (September 23, 2026):** OpenRouter's current metadata uses Artificial Analysis v4.3.2 composites. MiMo V2.6 Pro is **46.3**, Grok 4.7 is **46.4**, and the current values for existing rows are refreshed below. Gemini 3.8 Flash is now available as a GitHub Copilot native model. Xiaomi released the V2.6 Pro, Flash, and Pro UltraSpeed models on September 22; the September 23 roster cleanup removes two retired legacy models. xAI released Grok 4.7 on September 21 at the same short-context rates as Grok 4.6: **$2 / $0.50 cache hit / $6**. The table preserves Qwen's 0803 ranking-card value (**53.4**) and 0902 metadata value (**45.4**) as separate records. The current table is authoritative for present comparisons.
+> **Latest refresh (September 23, 2026):** OpenRouter's current metadata uses Artificial Analysis v4.3.2 composites. The September 22 Copilot releases add Claude Opus 5.5 (**57.6**), GPT-6 Sol (**47.5**), and GPT-6 Luna (**37.3**) to the roster. The API list rates are **$4 / $0.20 cache hit / $20** for Opus 5.5, **$2 / $0.20 / $10** for Sol, and **$0.10 / $0.01 / $0.50** for Luna. MiMo V2.6 Pro is **46.3**, Grok 4.7 is **46.4**, and current values for existing rows are refreshed below. Gemini 3.8 Flash is also available as a GitHub Copilot native model. Xiaomi released the V2.6 Pro, Flash, and Pro UltraSpeed models on September 22; the September 23 roster cleanup removes two retired legacy models. xAI released Grok 4.7 on September 21 at the same short-context rates as Grok 4.6: **$2 / $0.50 cache hit / $6**. The table preserves Qwen's 0803 ranking-card value (**53.4**) and 0902 metadata value (**45.4**) as separate records. The current table is authoritative for present comparisons.
 
 > **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
 >
@@ -24,6 +24,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 
 | Model                        | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
 | ---------------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
+| **GPT-6 Luna**               | OpenAI    | **~$0.0027**          | **37.3**           | $0.10                         | $0.01                         | $0.50                         | ~$0.10       | 1M             |
 | **GLM 5.3 Flash**            | Z.ai      | **~$0.0030**          | **41.8**           | $0.15                         | $0.03                         | $0.50                         | ~$0.13       | 1M             |
 | **GPT-5.6 Luna**             | OpenAI    | **~$0.0059**          | **37.3**           | $0.20                         | $0.02                         | $1.20                         | ~$0.22       | 1M             |
 | **MiMo V2.6 Pro**            | Xiaomi    | **~$0.0066**          | **46.3**           | $0.435                        | $0.0036                       | $0.87                         | ~$0.30       | 1M             |
@@ -37,10 +38,12 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Grok 4.7**                 | xAI       | **~$0.0345**          | **46.4**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
 | **Qwen 3.8 Max (0902)**      | DashScope | **~$0.0352**          | **45.4**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
 | **Grok 4.6**                 | xAI       | **~$0.0361**          | **44.3**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
+| **GPT-6 Sol**                | OpenAI    | **~$0.0421**          | **47.5**           | $2.00                         | $0.20                         | $10.00                        | ~$2.00       | 1M             |
 | **GPT-5.6 Terra**            | OpenAI    | **~$0.0523**          | **42.1**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
 | **Claude Sonnet 5**          | Anthropic | **~$0.0524**          | **38.2**           | $2.00                         | $0.20                         | $10.00                        | ~$2.00       | 1M             |
 | **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **~$0.0658**          | **46.3**           | $4.35                         | $0.036                        | $8.70                         | ~$3.05       | 1M             |
 | **Kimi K3**                  | Moonshot  | **~$0.0688**          | **43.6**           | $3.00                         | $0.30                         | $15.00                        | ~$3.00       | 1M             |
+| **Claude Opus 5.5**          | Anthropic | **~$0.0694**          | **57.6**           | $4.00                         | $0.20                         | $20.00                        | ~$4.00       | 1M             |
 | **GPT-5.6 Sol**              | OpenAI    | **~$0.0851**          | **47.0**           | $4.00                         | $0.40                         | $20.00                        | ~$4.00       | 1M             |
 | **Claude Opus 5**            | Anthropic | **~$0.0984**          | **50.8**           | $5.00                         | $0.50                         | $25.00                        | ~$5.00       | 1M             |
 | **Claude Fable 5.1**         | Anthropic | **~$0.1873**          | **53.4**           | $10.00                        | $0.25                         | $50.00                        | ~$10.00      | 1M             |
@@ -54,8 +57,8 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 >
 > - **DeepSeek** input pricing shown is the **peak cache miss** price. Peak cache hits are $0.006/M for V4.1 Flash and $0.044/M for Pro; off-peak rates are half. See the [DeepSeek pricing page](https://api-docs.deepseek.com/quick_start/pricing) for the full schedule.
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.6 Pro ($0.0036/M, ~120× cheaper), V2.6 Flash ($0.0028/M, ~50× cheaper), and V2.6 Pro UltraSpeed ($0.036/M, ~120× cheaper). A Xiaomi price cut took effect on 2026-05-27.
-> - **Anthropic (Claude)** models also have a cache write cost ($6.25/MTok for Opus, $3.75/MTok for Sonnet, $1.25/MTok for Haiku). Opus 5, Sonnet 5, and Fable 5 / 5.1 use a new tokenizer that produces approximately 30% more tokens for the same text.
-> - **OpenAI** models support cached input at 0.1× base input rate.
+> - **Anthropic (Claude)** cache reads and cache writes are billed separately. Claude Opus 5.5 cache reads are $0.20/M; cache writes are $5/M for 5 minutes or $8/M for 1 hour. Fast mode costs $8/M input and $40/M output. Opus 5.5, Opus 5, Sonnet 5, and Fable 5 / 5.1 use a newer tokenizer that produces approximately 30% more tokens for the same text.
+> - **OpenAI** models support cached input at 0.1× base input rate. GPT-6 Sol and Luna also bill cache writes separately at 1.25× input. The GPT-6 rows show standard rates through 272K input; for requests >272K, input and cache-read rates double and output is 1.5×.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi** official tables list **Cache Hit before Cache Miss** (opposite order to our table). The rows below transpose them so "Input" = cache miss and "Cached input" = cache hit.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
@@ -67,13 +70,22 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions can estimate monthly capacity by multiplying each modeled session cost by 100 to convert it to AI credits, then mixing models as needed.
 
-> Prices last verified: September 22, 2026. Always check the official pages for the latest rates:
+> Prices last verified: September 23, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
 > - [OpenAI GPT-5.6 announcement](https://openai.com/index/gpt-5-6/)
 > - [OpenAI GPT-5.6 price update](https://openai.com/index/advancing-the-price-performance-frontier-with-gpt-5-6/)
+> - [OpenAI GPT-6 Sol and Luna announcement](https://openai.com/index/introducing-gpt-6-sol-and-luna/)
+> - [OpenAI GPT-6 Sol API details](https://developers.openai.com/api/docs/models/gpt-6-sol)
+> - [OpenAI GPT-6 Luna API details](https://developers.openai.com/api/docs/models/gpt-6-luna)
 > - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+> - [Anthropic Claude Opus 5.5 announcement](https://www.anthropic.com/claude-opus-5-5)
+> - [Anthropic Opus 5.5 API docs](https://platform.claude.com/docs/en/models/opus-5-5/overview)
+> - [GitHub Copilot GPT-6 Sol and Luna release](https://github.blog/changelog/2026-09-22-openais-gpt-6-sol-and-gpt-6-luna-now-available)
+> - [GitHub Copilot Claude Opus 5.5 release](https://github.blog/changelog/2026-09-22-claude-opus-5-5-is-now-available-in-github-copilot)
+> - [GitHub Copilot supported models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
+> - [Artificial Analysis GPT-6 Sol](https://artificialanalysis.ai/models/gpt-6-sol), [GPT-6 Luna](https://artificialanalysis.ai/models/gpt-6-luna), and [Claude Opus 5.5](https://artificialanalysis.ai/models/claude-opus-5-5)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)
