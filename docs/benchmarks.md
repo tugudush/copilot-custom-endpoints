@@ -1,10 +1,10 @@
 # Benchmark Scores
 
-> **Updated:** September 23, 2026 — the refresh adds the September 22 Copilot releases Claude Opus 5.5, GPT-6 Sol, and GPT-6 Luna; it also incorporates Xiaomi MiMo V2.6, xAI Grok 4.7, Gemini 3.8 Flash, and current OpenRouter Artificial Analysis v4.3.2 metadata. The main table now combines the comparable OpenAI release columns with Anthropic's current Opus 5.5 comparison metrics. Current OpenRouter AA values are not mixed with launch-era scores quoted by model vendors.
+> **Updated:** September 23, 2026 — the refresh adds the September 22 Copilot releases Claude Opus 5.5, GPT-6 Sol, and GPT-6 Luna; it also incorporates Xiaomi MiMo V2.6, xAI Grok 4.7, Gemini 3.8 Flash, and current OpenRouter Artificial Analysis v4.3.2 metadata. The main table now combines the comparable OpenAI release columns with Anthropic's current Opus 5.5 comparison metrics. Current OpenRouter AA values are not mixed with launch-era scores quoted by model vendors. It also records Xiaomi's published MiMo V2.6 Flash launch results in a dedicated section below.
 
 A comparison of models available through **GitHub Copilot** (native or extension), custom endpoints, and comparison-only API rows. Rows are ordered by the **current OpenRouter AA Intelligence Index** score (highest first); models without a current composite are listed after scored rows. Cells with `—` mean that no directly comparable public result was verified. The OpenAI and Anthropic benchmark columns use publisher-reported results with the effort, harness, and safeguard caveats documented below. Values were checked against live sources on September 23, 2026.
 
-`MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject. MiMo V2.6 Flash has no OpenRouter composite score. Pro UltraSpeed is the latency-focused service tier of Pro, so it shares Pro's score while remaining a separate priced API entry.
+`MiniMax M3 Priority` is intentionally omitted because it is the same M3 model invoked with a priority service tier, not a separate model or benchmark subject. MiMo V2.6 Flash has no OpenRouter composite score; its Xiaomi-reported launch results are collected in the MiMo V2.6 Flash launch results section below. Pro UltraSpeed is the latency-focused service tier of Pro, so it shares Pro's score while remaining a separate priced API entry.
 
 The live OpenRouter rankings card lists unversioned **Qwen3.8 Max** at **#2 with 53.4**. OpenRouter no longer exposes an exact `qwen/qwen3.8-max` entry in its public model API; its model-page documentation canonicalizes that link to `qwen/qwen3.8-max-0902`, whose current API metadata reports **45.4**. The table keeps the 53.4 ranking-card result attached to the historical 0803 comparison record and records 0902's API value separately. Do not treat those two values as interchangeable.
 
@@ -59,6 +59,31 @@ These are publisher-reported launch results for GPT-6 Sol and GPT-6 Luna that do
 | GPT-6 Luna | DeepSWE v1.1                     | 66.6%  | Maximum effort               | [OpenAI](https://openai.com/index/introducing-gpt-6-sol-and-luna/) |
 
 OpenAI also reports GPT-6 Luna high-effort AutomationBench improving by 5.4 percentage points over GPT-5.6 Luna at 58% lower cost per task; its release page does not give the absolute score. On OSWorld 2.0, Luna at maximum effort exceeds GPT-5.6 Sol at medium effort for one tenth the cost, again without a directly stated score.
+
+## MiMo V2.6 Flash Launch Results
+
+These are Xiaomi-reported launch results for **MiMo V2.6 Flash** (released September 22, 2026) that do not have dedicated columns in the main table. Xiaomi does not report effort settings or harnesses for these runs, and the benchmark versions are not interchangeable with the main-table columns — Xiaomi's OSWorld-Verified is not OSWorld 2.0, and its Terminal Bench numbers come from Xiaomi's own runs. Rows marked in-house are Xiaomi's own benchmarks. The launch comparison set mixes model generations, so treat these as publisher-reported context rather than a uniform leaderboard.
+
+| Benchmark              | MiMo V2.6 Flash | Setting or caveat          |
+| ---------------------- | --------------- | -------------------------- |
+| DeepSWE v1.1           | 67.9%           | Xiaomi-reported comparison |
+| ProgramBench           | 26.0%           |                            |
+| MiMo Code Bench        | 61.2%           | In-house                   |
+| Toolathlon-Verified    | 73.6%           |                            |
+| AutomationBench v1.0.6 | 52.3%           |                            |
+| Agents' Last Exam      | 27.6%           |                            |
+| Terminal Bench 4.0     | 28.8%           | Xiaomi harness             |
+| Terminal Bench 2.1     | 87.6%           | Xiaomi harness             |
+| OSWorld-Verified       | 80.8%           | Not the OSWorld 2.0 column |
+| JobBench               | 61.2%           |                            |
+| MiMo VisualCoding      | 71.5%           | In-house                   |
+| CyberGym               | 95.1%           | Ahead of V2.6 Pro's 94.0%  |
+| ExploitGym             | 6.0%            |                            |
+| ExploitBench           | 25.3%           |                            |
+| SEC Bench Pro          | 47.5%           |                            |
+| MiMo Cyber Bench       | 77.2%           | In-house                   |
+
+Xiaomi publishes no GDPval-AA 2.1 result for Flash and none of the FrontierCode, CursorBench, Humanity's Last Exam, Terminal-Bench Science, or Chartography results used above. MiMo V2.6 Pro's launch results appear in the same Xiaomi appendix and the [MiMo-V2.6-Pro-RL model card](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL). A composite intelligence score may appear on OpenRouter or Artificial Analysis later and would then move the model into the main table. Sources: [Xiaomi](https://mimo.xiaomi.com/mimo-v2-6) and the [MiMo-V2.6-Flash-RL model card](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL).
 
 ## Column definitions: what each benchmark measures
 
