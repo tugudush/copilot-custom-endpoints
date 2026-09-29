@@ -121,10 +121,11 @@ It approximates the cost of one point on the AA Intelligence Index under the com
 
 For example, GLM 5.3 Flash is `(0.5 × $0.15) + (0.1 × $0.50) = $0.125`, shown as `~$0.13`. Cached-input discounts are not included. Actual costs vary with context length, output length, caching, pricing tiers, promotions, and provider billing. DeepSeek estimates use peak rates; official off-peak rates are half.
 
-The current AA values come from OpenRouter's September 23 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh records Gemini 3.8 Flash, Grok 4.7, GPT-6 Sol, GPT-6 Luna, and Claude Opus 5.5 as **Copilot-native** models, using current AA v4.3.2 composites.
+The current AA values come from OpenRouter's September 29 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh records Gemini 3.8 Flash, Grok 4.7, GPT-6 Sol, GPT-6 Luna, Claude Opus 5.5, and Claude Sonnet 5.5 as **Copilot-native** models, using current AA v4.3.2 composites. MiMo V2.6 Flash now has a composite (**37.9**) and moves to the top of the table.
 
 | Model                        | Provider  | Cost per intelligence | Intelligence Score | Est. session | Vision | Context window |
 | ---------------------------- | --------- | --------------------- | ------------------ | ------------ | ------ | -------------- |
+| **MiMo V2.6 Flash**          | Xiaomi    | **~$0.0026**          | **37.9**           | ~$0.10       | ✅     | 1M             |
 | **GPT-6 Luna**               | OpenAI    | **~$0.0027**          | **37.3**           | ~$0.10       | ✅     | 1M             |
 | **GLM 5.3 Flash**            | Z.ai      | **~$0.0030**          | **41.8**           | ~$0.13       | ✅     | 1M             |
 | **GPT-5.6 Luna**             | OpenAI    | **~$0.0059**          | **37.3**           | ~$0.22       | ✅     | 1M             |
@@ -137,6 +138,7 @@ The current AA values come from OpenRouter's September 23 model metadata and ran
 | **Qwen 3.8 Max (0803)**      | DashScope | **~$0.0300**          | **53.4**           | ~$1.60       | ✅     | 1M             |
 | **Grok 4.7**                 | xAI       | **~$0.0345**          | **46.4**           | ~$1.60       | ✅     | 500K           |
 | **Qwen 3.8 Max (0902)**      | DashScope | **~$0.0352**          | **45.4**           | ~$1.60       | ✅     | 1M             |
+| **Claude Sonnet 5.5**        | Anthropic | **~$0.0357**          | **56.0**           | ~$2.00       | ✅     | 1M             |
 | **Grok 4.6**                 | xAI       | **~$0.0361**          | **44.3**           | ~$1.60       | ✅     | 500K           |
 | **GPT-6 Sol**                | OpenAI    | **~$0.0421**          | **47.5**           | ~$2.00       | ✅     | 1M             |
 | **GPT-5.6 Terra**            | OpenAI    | **~$0.0523**          | **42.1**           | ~$2.20       | ✅     | 1M             |
@@ -149,17 +151,17 @@ The current AA values come from OpenRouter's September 23 model metadata and ran
 | **Claude Fable 5.1**         | Anthropic | **~$0.1873**          | **53.4**           | ~$10.00      | ✅     | 1M             |
 | **GPT-6 Astra**              | OpenAI    | **~$0.1898**          | **52.7**           | ~$10.00      | ✅     | 1M             |
 | **Claude Fable 5**           | Anthropic | **~$0.2016**          | **49.6**           | ~$10.00      | ✅     | 1M             |
-| **MiMo V2.6 Flash**          | Xiaomi    | —                     | —                  | ~$0.10       | ✅     | 1M             |
 
-> `MiMo V2.6 Pro UltraSpeed` uses the MiMo V2.6 Pro benchmark score because it is the same-quality latency tier; no independent composite is published. `MiniMax M3 Priority` is intentionally omitted from this snapshot because it is the same model with a priority service tier; the full pricing table documents its separate tier cost. `MiMo V2.6 Flash` has no OpenRouter composite score; Xiaomi's published launch benchmarks for it are recorded in [docs/benchmarks.md](docs/benchmarks.md).
-> GPT-6 Sol and Luna use standard rates up to 272K input tokens; requests above that threshold have higher input/cache and output rates. GitHub Copilot also bills cache writes separately. Plan access differs: Sol requires Pro+ or higher, Luna is available from Pro, and Claude Opus 5.5 requires Pro+ or higher.
+> `MiMo V2.6 Pro UltraSpeed` uses the MiMo V2.6 Pro benchmark score because it is the same-quality latency tier; no independent composite is published. `MiniMax M3 Priority` is intentionally omitted from this snapshot because it is the same model with a priority service tier; the full pricing table documents its separate tier cost. `MiMo V2.6 Flash`'s composite (37.9) is OpenRouter's Artificial Analysis v4.3.2 value; Xiaomi's published launch benchmarks for it are recorded in [docs/benchmarks.md](docs/benchmarks.md).
+> GPT-6 Sol and Luna use standard rates up to 272K input tokens; requests above that threshold have higher input/cache and output rates. GitHub Copilot also bills cache writes separately. Plan access differs: Sol requires Pro+ or higher, Luna and Claude Sonnet 5.5 are available from Pro, and Claude Opus 5.5 requires Pro+ or higher.
 
 > Detailed pricing, benchmark provenance, and model-specific notes live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md). This page stays focused on setup and model selection. For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
 
 > **👤 Personal picks** —
 >
-> - **GPT-6 Luna** — the lowest cost per intelligence in this table (~$0.0027), at about $0.10/session with vision.
-> - **GLM 5.3 Flash** — the lowest cost per intelligence among custom-endpoint models (~$0.0030), at about $0.13/session with vision.
+> - **MiMo V2.6 Flash** — the lowest cost per intelligence in this table (~$0.0026), at about $0.10/session with vision.
+> - **GPT-6 Luna** — the lowest cost per intelligence among Copilot-native models (~$0.0027), at about $0.10/session with vision.
+> - **GLM 5.3 Flash** — the runner-up among custom-endpoint models (~$0.0030), at about $0.13/session with vision.
 
 ## Companion tools
 
@@ -212,7 +214,7 @@ GitHub ships a first-party MCP server (and it's even bundled into Copilot), so a
 2. If the provider needs request rewriting, add a proxy under `proxy/`.
 3. Submit a PR.
 
-The current AA values come from OpenRouter's September 23 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh records Gemini 3.8 Flash, Grok 4.7, GPT-6 Sol, GPT-6 Luna, and Claude Opus 5.5 as **Copilot-native** models, using current AA v4.3.2 composites.
+The current AA values come from OpenRouter's September 29 model metadata and ranking card; **every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.** The OpenRouter ranking card places unversioned Qwen3.8 Max at **53.4 (#2)**, while the exact 0902 API metadata row is **45.4**. Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This refresh records Gemini 3.8 Flash, Grok 4.7, GPT-6 Sol, GPT-6 Luna, Claude Opus 5.5, and Claude Sonnet 5.5 as **Copilot-native** models, using current AA v4.3.2 composites. MiMo V2.6 Flash now has a composite (**37.9**).
 
 - **Chat only.** Inline completions, semantic search, and next-edit suggestions still need a GitHub-hosted model.
 - Each proxy is tuned for a specific provider family. Don't point the Kimi proxy at an arbitrary OpenAI-compatible endpoint.
