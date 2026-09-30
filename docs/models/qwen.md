@@ -1,22 +1,23 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's live rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **45.4**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat.
+> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's live rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **45.4**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
-| Field                  | Value                                                                            |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`) |
-| Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                       |
-| Vision                 | ✅ Yes (`qwen3.8-max`)                                                           |
-| Tool calling           | ✅ Yes                                                                           |
-| Context                | 1M                                                                               |
-| Max output             | 131K                                                                             |
-| Endpoint               | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions`        |
-| Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                      |
-| Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                       |
-| `requestBody` (direct) | `enable_thinking: false`                                                         |
-| `requestBody` (proxy)  | _none — proxy injects based on tool activity_                                    |
+| Field                  | Value                                                                                              |
+| ---------------------- | -------------------------------------------------------------------------------------------------- |
+| Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`)                   |
+| Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                                         |
+| Vision                 | ✅ Yes (`qwen3.8-max`)                                                                             |
+| Tool calling           | ✅ Yes                                                                                             |
+| Context                | 1M                                                                                                 |
+| Max output             | 131K                                                                                               |
+| Protocol               | **OpenAI-compatible** (`/compatible-mode/v1`) — not native DashScope (`/api/v1`)                   |
+| Endpoint               | `https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions` |
+| Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                                        |
+| Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                         |
+| `requestBody` (direct) | `enable_thinking: false`                                                                           |
+| `requestBody` (proxy)  | _none — proxy injects based on tool activity_                                                      |
 
 ### Models
 
@@ -92,30 +93,38 @@ Set the API key through **Chat: Manage Language Models**, then verify the proxy 
 
 ### With Proxy (recommended)
 
-1. **Start the proxy:** `npm run proxy:qwen` (or `npx copilot-custom-endpoint qwen`).
-2. **Use the proxy-path JSON snippet** below.
-3. **Set your DashScope API key** via Command Palette → **Chat: Manage Language Models**.
-4. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
-5. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
+1. **Set the upstream:** add `QWEN_UPSTREAM_URL=https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions` to the git-ignored repo-root `.env` ([why this endpoint](#which-endpoint-to-use)). Without it the proxy falls back to the legacy shared DashScope domain.
+2. **Start the proxy:** `npm run proxy:qwen` (or `npx copilot-custom-endpoint qwen`).
+3. **Use the proxy-path JSON snippet** below.
+4. **Set your DashScope API key** via Command Palette → **Chat: Manage Language Models**.
+5. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
+6. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
 
 ### Direct (no proxy)
 
-1. **Use the direct-path JSON snippet** below.
+1. **Use the direct-path JSON snippet** below and replace `<your-workspace-id>` in `url` with your workspace ID.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
 4. **Restart VS Code** and pick "Qwen 3.8 Max".
 
 ## Setup
 
-### Regional endpoints
+### Which endpoint to use
 
-DashScope is region-specific — your API key only works on the endpoint it was created for:
+Model Studio's **API Quick Access** dialog (shown once, right after you create a key) lists an **API Host**, an **OpenAI Compatible Endpoint**, and a **DashScope** URL. Two choices matter:
 
-| Region        | Endpoint                                                                  |
-| ------------- | ------------------------------------------------------------------------- |
-| Singapore     | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` |
-| China         | `https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions`      |
-| US (Virginia) | `https://dashscope-us.aliyuncs.com/compatible-mode/v1/chat/completions`   |
+- **Protocol — OpenAI-compatible (`/compatible-mode/v1`).** VS Code's `chat-completions` custom endpoint and `proxy/qwen-proxy.mjs` speak the OpenAI Chat Completions schema. The **DashScope** card (`/api/v1`) is the native DashScope protocol (`input.messages` requests, `output.choices` responses, `{code, message, request_id}` errors) and does not work here.
+- **Domain — workspace-dedicated (`<workspace-id>.<region>.maas.aliyuncs.com`).** Alibaba recommends it for production: higher concurrency, network isolation, and a 3600 s request timeout (600 s on the legacy DashScope domains, which Alibaba says stop supporting new features after September 30, 2026). The legacy domains still work, so existing setups keep running.
+
+The chat URL is `https://` + domain + `/compatible-mode/v1/chat/completions`. Copy the domain from the API Quick Access dialog (or the **API Host** column on Workspace Management); the **OpenAI Compatible Endpoint** value plus `/chat/completions` gives the same URL.
+
+| Region        | Workspace-dedicated domain (recommended)               | Legacy DashScope domain       |
+| ------------- | ------------------------------------------------------ | ----------------------------- |
+| Singapore     | `<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com` | `dashscope-intl.aliyuncs.com` |
+| China         | `<your-workspace-id>.cn-beijing.maas.aliyuncs.com`     | `dashscope.aliyuncs.com`      |
+| US (Virginia) | `<your-workspace-id>.us-east-1.maas.aliyuncs.com`      | `dashscope-us.aliyuncs.com`   |
+
+API keys are bound to their region (and, on a workspace-dedicated domain, to their workspace); a mismatch returns `401 invalid_api_key`. Source: [Alibaba Cloud Model Studio — Regions and endpoints](https://www.alibabacloud.com/help/en/model-studio/regions).
 
 ### 1. VS Code configuration
 
@@ -137,7 +146,7 @@ DashScope is region-specific — your API key only works on the endpoint it was 
     {
       "id": "qwen3.8-max",
       "name": "Qwen 3.8 Max (vision)",
-      "url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "url": "https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
       "streaming": true,
@@ -200,6 +209,8 @@ DashScope is **Pay-as-You-Go only** — but new Model Studio users get **1M inpu
 4. Paste your DashScope API key.
 
 > VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Keys are region-specific.
+>
+> New keys start with `sk-ws-` and are shown only once, in the **API Quick Access** dialog — copy the key before closing it. Older `sk-` keys keep working.
 
 ## Local Proxy
 
@@ -217,12 +228,12 @@ The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression on top of the direc
 
 Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically).
 
-| Variable                                 | Default                                                                   | Purpose                                            |
-| ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------- |
-| `QWEN_PROXY_PORT`                        | `3458`                                                                    | Local listen port                                  |
-| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` | Upstream DashScope endpoint                        |
-| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson`                                             | Redacted NDJSON log path                           |
-| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                       | Set to `0` to skip tool-aware thinking suppression |
+| Variable                                 | Default                                                                            | Purpose                                                                                 |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `QWEN_PROXY_PORT`                        | `3458`                                                                             | Local listen port                                                                       |
+| `QWEN_UPSTREAM_URL`                      | `https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions` (legacy) | Upstream OpenAI-compatible endpoint — set to your workspace-dedicated URL (recommended) |
+| `QWEN_PROXY_LOG`                         | `debug_log/qwen-proxy.ndjson`                                                      | Redacted NDJSON log path                                                                |
+| `QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS` | `1`                                                                                | Set to `0` to skip tool-aware thinking suppression                                      |
 
 ### What the proxy does
 
@@ -250,14 +261,15 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 ## Troubleshooting
 
-| Symptom                                         | Likely cause                                 | Fix                                                                                                          |
-| ----------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| "Connection refused" (proxy mode)               | Proxy not running                            | `npm run proxy:qwen`                                                                                         |
-| Tool loops fail with `reasoning_content` errors | Direct path missing `enable_thinking: false` | Add `enable_thinking: false` to `requestBody`                                                                |
-| Tool loops still fail with proxy                | Proxy not rewriting                          | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
-| Vision fails with external image URL            | DashScope couldn't reach the URL             | Use a base64 data URI instead                                                                                |
-| 401 Unauthorized                                | API key region mismatch                      | Match your key to the regional endpoint                                                                      |
-| Want to switch back to direct                   | Proxy mode active                            | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
+| Symptom                                         | Likely cause                                                     | Fix                                                                                                          |
+| ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| "Connection refused" (proxy mode)               | Proxy not running                                                | `npm run proxy:qwen`                                                                                         |
+| Tool loops fail with `reasoning_content` errors | Direct path missing `enable_thinking: false`                     | Add `enable_thinking: false` to `requestBody`                                                                |
+| Tool loops still fail with proxy                | Proxy not rewriting                                              | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
+| Vision fails with external image URL            | DashScope couldn't reach the URL                                 | Use a base64 data URI instead                                                                                |
+| 401 Unauthorized                                | API key region or workspace mismatch                             | Match your key to the endpoint's region (and workspace, on a workspace-dedicated domain)                     |
+| 404 Not Found                                   | URL uses the native DashScope path (`/api/v1`) or omits the path | Use `/compatible-mode/v1/chat/completions`                                                                   |
+| Want to switch back to direct                   | Proxy mode active                                                | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
 
 ## Pricing
 

@@ -1,6 +1,8 @@
 # Pricing
 
-> **Latest refresh (September 29, 2026):** Claude Sonnet 5.5 (released September 28, GA in GitHub Copilot from Pro) is added at **$2 / $0.20 cache hit / $10** per 1M tokens, unchanged from Sonnet 5, with an Artificial Analysis v4.3.2 composite of **56.0**. MiMo V2.6 Flash now has a composite (**37.9**), so it is scored and sorted instead of listed last; at ~$0.0026 it is the lowest cost per intelligence in the table. All other first-party rates were re-verified with no changes.
+> **Latest refresh (September 30, 2026):** GPT-6.1 Sol (released September 29 at OpenAI DevDay; GA in GitHub Copilot the same day for Pro+, Max, Business, and Enterprise) is added at **$2 / $0.10 cache hit / $10** per 1M tokens — identical input/output to GPT-6 Sol, with cache hits at half the rate ($0.10 vs $0.20) — and an Artificial Analysis v4.3.2 composite of **51.8**, so at **~$0.0386** per intelligence point it sorts between Grok 4.6 and GPT-6 Sol. OpenAI cancelled the planned **GPT-6.1 Astra** over safety concerns, so no such row exists. Every other composite and first-party rate was re-checked against live OpenRouter metadata and provider pages with no changes.
+>
+> **Earlier refresh (September 29, 2026):** Claude Sonnet 5.5 (released September 28, GA in GitHub Copilot from Pro) is added at **$2 / $0.20 cache hit / $10** per 1M tokens, unchanged from Sonnet 5, with an Artificial Analysis v4.3.2 composite of **56.0**. MiMo V2.6 Flash now has a composite (**37.9**), so it is scored and sorted instead of listed last; at ~$0.0026 it is the lowest cost per intelligence in the table. All other first-party rates were re-verified with no changes.
 >
 > **Earlier refresh (September 23, 2026):** OpenRouter's current metadata uses Artificial Analysis v4.3.2 composites. The September 22 Copilot releases add Claude Opus 5.5 (**57.6**), GPT-6 Sol (**47.5**), and GPT-6 Luna (**37.3**) to the roster. The API list rates are **$4 / $0.20 cache hit / $20** for Opus 5.5, **$2 / $0.20 / $10** for Sol, and **$0.10 / $0.01 / $0.50** for Luna. MiMo V2.6 Pro is **46.3**, Grok 4.7 is **46.4**, and current values for existing rows are refreshed below. Gemini 3.8 Flash is also available as a GitHub Copilot native model. Xiaomi released the V2.6 Pro, Flash, and Pro UltraSpeed models on September 22; the September 23 roster cleanup removes two retired legacy models. xAI released Grok 4.7 on September 21 at the same short-context rates as Grok 4.6: **$2 / $0.50 cache hit / $6**. The table preserves Qwen's 0803 ranking-card value (**53.4**) and 0902 metadata value (**45.4**) as separate records. The current table is authoritative for present comparisons.
 
@@ -42,6 +44,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Qwen 3.8 Max (0902)**      | DashScope | **~$0.0352**          | **45.4**           | $2.00                         | $0.25                         | $6.00                         | ~$1.60       | 1M             |
 | **Claude Sonnet 5.5**        | Anthropic | **~$0.0357**          | **56.0**           | $2.00                         | $0.20                         | $10.00                        | ~$2.00       | 1M             |
 | **Grok 4.6**                 | xAI       | **~$0.0361**          | **44.3**           | $2.00                         | $0.50                         | $6.00                         | ~$1.60       | 500K           |
+| **GPT-6.1 Sol**              | OpenAI    | **~$0.0386**          | **51.8**           | $2.00                         | $0.10                         | $10.00                        | ~$2.00       | 1M             |
 | **GPT-6 Sol**                | OpenAI    | **~$0.0421**          | **47.5**           | $2.00                         | $0.20                         | $10.00                        | ~$2.00       | 1M             |
 | **GPT-5.6 Terra**            | OpenAI    | **~$0.0523**          | **42.1**           | $2.00                         | $0.20                         | $12.00                        | ~$2.20       | 1M             |
 | **Claude Sonnet 5**          | Anthropic | **~$0.0524**          | **38.2**           | $2.00                         | $0.20                         | $10.00                        | ~$2.00       | 1M             |
@@ -61,7 +64,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - **DeepSeek** input pricing shown is the **peak cache miss** price. Peak cache hits are $0.006/M for V4.1 Flash and $0.044/M for Pro; off-peak rates are half. See the [DeepSeek pricing page](https://api-docs.deepseek.com/quick_start/pricing) for the full schedule.
 > - **MiMo** input pricing shown is the **cache miss** price. Cache hits are essentially free for V2.6 Pro ($0.0036/M, ~120× cheaper), V2.6 Flash ($0.0028/M, ~50× cheaper), and V2.6 Pro UltraSpeed ($0.036/M, ~120× cheaper). A Xiaomi price cut took effect on 2026-05-27.
 > - **Anthropic (Claude)** cache reads and cache writes are billed separately. Claude Opus 5.5 cache reads are $0.20/M; cache writes are $5/M for 5 minutes or $8/M for 1 hour. Fast mode costs $8/M input and $40/M output. Opus 5.5, Opus 5, Sonnet 5 / 5.5, and Fable 5 / 5.1 use a newer tokenizer that produces approximately 30% more tokens for the same text. Claude Sonnet 5.5 keeps Sonnet 5's $2 / $0.20 / $10 rates (cache writes $2.50/M for 5 minutes and $4/M for 1 hour; batch $1 / $5), and Anthropic made those rates permanent: the Sonnet 5 increase to $3 / $15 scheduled for September 1 was cancelled. Artificial Analysis measured Sonnet 5.5 at 138.7 tokens/s but very verbose (410M output tokens to run the Intelligence Index vs an 88M median), so real sessions can cost more than this table's modeled token counts; Anthropic reports up to 30% fewer tokens per task than Sonnet 5.
-> - **OpenAI** models support cached input at 0.1× base input rate. GPT-6 Sol and Luna also bill cache writes separately at 1.25× input. The GPT-6 rows show standard rates through 272K input; for requests >272K, input and cache-read rates double and output is 1.5×.
+> - **OpenAI** models support cached input at 0.1× base input rate — except **GPT-6.1 Sol**, whose cache hits are 0.05× ($0.10/M, half of GPT-6 Sol's $0.20/M). GPT-6 Sol, GPT-6.1 Sol, and Luna also bill cache writes separately at 1.25× input. The GPT-6 and GPT-6.1 rows show standard rates through 272K input; for requests >272K, input and cache-read rates double and output is 1.5×.
 > - **Qwen** models use **tiered pricing** — determined by total input tokens per request. Prices above are for non-thinking mode.
 > - **Kimi** official tables list **Cache Hit before Cache Miss** (opposite order to our table; Kimi K3 also bills cache writes separately at $3.00/M for a 5-minute TTL and $6.00/M for 1 hour). The rows below transpose them so "Input" = cache miss and "Cached input" = cache hit.
 > - **DashScope** offers a **free quota** of 1M input + 1M output tokens per model, valid for 90 days.
@@ -73,7 +76,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions can estimate monthly capacity by multiplying each modeled session cost by 100 to convert it to AI credits, then mixing models as needed.
 
-> Prices last verified: September 29, 2026. Always check the official pages for the latest rates:
+> Prices last verified: September 30, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
@@ -82,15 +85,18 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - [OpenAI GPT-6 Sol and Luna announcement](https://openai.com/index/introducing-gpt-6-sol-and-luna/)
 > - [OpenAI GPT-6 Sol API details](https://developers.openai.com/api/docs/models/gpt-6-sol)
 > - [OpenAI GPT-6 Luna API details](https://developers.openai.com/api/docs/models/gpt-6-luna)
+> - [OpenAI GPT-6.1 Sol announcement](https://openai.com/index/introducing-gpt-6-1-sol/)
+> - [OpenAI GPT-6.1 Sol API details](https://developers.openai.com/api/docs/models/gpt-6.1-sol)
 > - [Anthropic (Claude) pricing](https://platform.claude.com/docs/en/about-claude/pricing)
 > - [Anthropic Claude Opus 5.5 announcement](https://www.anthropic.com/claude-opus-5-5)
 > - [Anthropic Opus 5.5 API docs](https://platform.claude.com/docs/en/models/opus-5-5/overview)
 > - [Anthropic Claude Sonnet 5.5 announcement](https://www.anthropic.com/claude-sonnet-5-5)
 > - [GitHub Copilot Claude Sonnet 5.5 release](https://github.blog/changelog/2026-09-28-claude-sonnet-5-5-in-github-copilot)
 > - [GitHub Copilot GPT-6 Sol and Luna release](https://github.blog/changelog/2026-09-22-openais-gpt-6-sol-and-gpt-6-luna-now-available)
+> - [GitHub Copilot GPT-6.1 Sol release](https://github.blog/changelog/2026-09-29-gpt-6-1-sol-in-github-copilot)
 > - [GitHub Copilot Claude Opus 5.5 release](https://github.blog/changelog/2026-09-22-claude-opus-5-5-is-now-available-in-github-copilot)
 > - [GitHub Copilot supported models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
-> - [Artificial Analysis GPT-6 Sol](https://artificialanalysis.ai/models/gpt-6-sol), [GPT-6 Luna](https://artificialanalysis.ai/models/gpt-6-luna), [Claude Opus 5.5](https://artificialanalysis.ai/models/claude-opus-5-5), [Claude Sonnet 5.5](https://artificialanalysis.ai/models/claude-sonnet-5-5), and [MiMo-V2.6-Flash](https://artificialanalysis.ai/models/mimo-v2-6-flash)
+> - [Artificial Analysis GPT-6 Sol](https://artificialanalysis.ai/models/gpt-6-sol), [GPT-6 Luna](https://artificialanalysis.ai/models/gpt-6-luna), [GPT-6.1 Sol](https://artificialanalysis.ai/models/gpt-6-1-sol), [Claude Opus 5.5](https://artificialanalysis.ai/models/claude-opus-5-5), [Claude Sonnet 5.5](https://artificialanalysis.ai/models/claude-sonnet-5-5), and [MiMo-V2.6-Flash](https://artificialanalysis.ai/models/mimo-v2-6-flash)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [DashScope pricing](https://www.alibabacloud.com/help/en/model-studio/billing-for-model-studio)
 > - [DeepSeek pricing](https://api-docs.deepseek.com/quick_start/pricing)

@@ -41,9 +41,11 @@ ID qwen3.8-max and OpenRouter ID qwen/qwen3.8-max-0902.
 
 Environment variables:
   QWEN_PROXY_PORT              Local listen port. Default: 3458 (falls back to PORT)
-  QWEN_UPSTREAM_URL            Upstream chat-completions URL (DashScope by default;
-                               OpenRouter can be selected for snapshot IDs).
-                               Default: https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
+  QWEN_UPSTREAM_URL            Upstream chat-completions URL (OpenAI-compatible path).
+                               Recommended: your workspace-dedicated endpoint, e.g.
+                               https://<workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions
+                               OpenRouter can be selected for snapshot IDs.
+                               Default (legacy shared domain): https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
   QWEN_PROXY_DISABLE_THINKING_WITH_TOOLS
                                Inject enable_thinking: false when tools are present.
                                Default: 1
