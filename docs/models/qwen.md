@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's live rankings card shows unversioned Qwen3.8 Max at **#2 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **45.4**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
+> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. OpenRouter's live rankings card shows unversioned Qwen3.8 Max at **#3 with 53.4**, while the exact `qwen/qwen3.8-max-0902` API metadata row is **45.4**; the public API no longer exposes the unversioned ID. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
@@ -29,32 +29,47 @@
 
 ### OpenRouter snapshot records
 
-These are separate OpenRouter catalog entries, not two picker labels for one model:
+These are separate OpenRouter catalog entries, not alternative labels for one model:
 
-| OpenRouter slug         | Snapshot | AA Intelligence Index | Notes                                                                         |
-| ----------------------- | -------- | --------------------- | ----------------------------------------------------------------------------- |
-| `qwen/qwen3.8-max`      | 0803     | **53.4 (#2)**         | Current ranking-card result; exact unversioned API entry is no longer exposed |
-| `qwen/qwen3.8-max-0902` | 0902     | **45.4**              | September snapshot; current exact-ID API metadata                             |
+| OpenRouter slug          | Snapshot | AA Intelligence Index | Notes                                                                         |
+| ------------------------ | -------- | --------------------- | ----------------------------------------------------------------------------- |
+| `qwen/qwen3.8-max`       | 0803     | **53.4 (#3)**         | Current ranking-card result; exact unversioned API entry is no longer exposed |
+| `qwen/qwen3.8-max-0902`  | 0902     | **45.4**              | September snapshot; current exact-ID API metadata                             |
+| `qwen/qwen3.8-max-prime` | 0923     | —                     | Higher-throughput variant at 2× the 0902 rates; no AA composite yet           |
 
 The DashScope custom-endpoint snippets below use the provider model ID `qwen3.8-max`. Do not replace it with the OpenRouter `qwen/qwen3.8-max-0902` slug unless you also change the upstream URL to OpenRouter and have verified that path independently.
 
+OpenRouter's `qwen/qwen3.8-max-prime` SKU (0923) is a higher-throughput variant billed at 2× the 0902 list rates (**$4 / $0.50 cache read / $12** per 1M tokens). No AA composite is published for it yet, and it is not part of the validated DashScope setup.
+
 ### Optional OpenRouter snapshot proxy
 
-The proxy forwards the `model` field without mapping it, so it can also be pointed at OpenRouter for the two catalog snapshots. This is an **optional, unvalidated OpenRouter path**; it is separate from the validated DashScope setup above and requires an OpenRouter API key.
+The proxy forwards the `model` field without mapping it, so it can also be pointed at OpenRouter for these catalog entries. This is an **optional, unvalidated OpenRouter path**; it is separate from the validated DashScope setup above and requires an OpenRouter API key.
 
-1. Add this to the repo-root `.env` file:
+1. Point the proxy at OpenRouter — pick **one** of these launch methods:
+   - **From the repo (`.env`):** add this to the repo-root `.env` file, then start the proxy with `npm run proxy:qwen`:
 
-   ```dotenv
-   QWEN_UPSTREAM_URL=https://openrouter.ai/api/v1/chat/completions
-   ```
+     ```dotenv
+     QWEN_UPSTREAM_URL=https://openrouter.ai/api/v1/chat/completions
+     ```
 
-2. Start the existing Qwen proxy:
+     > `npm run proxy:qwen` always runs with cwd = repo root, so the proxy's `import 'dotenv/config'` picks up this `.env` automatically.
 
-   ```bash
-   npm run proxy:qwen
-   ```
+   - **Via npx:** `npx copilot-custom-endpoint qwen` forks the same proxy, but loads `.env` from **whatever directory you run it in**. If that directory has no `.env` with `QWEN_UPSTREAM_URL`, the proxy silently falls back to the legacy DashScope upstream and OpenRouter slugs like `qwen/qwen3.8-max` will fail against it. Either run it from a directory containing a suitable `.env`, or set the variable in the shell first (see next option). Note that `npx` runs the **published** package version, not your local working tree.
 
-3. Add a separate provider group using the OpenRouter key and these model entries:
+   - **Inline env var (Git Bash / bash):** shell variables take precedence over `.env` (dotenv does not override variables already in `process.env`), so this works from any directory without editing `.env`:
+
+     ```bash
+     QWEN_UPSTREAM_URL=https://openrouter.ai/api/v1/chat/completions npx copilot-custom-endpoint qwen
+     ```
+
+     PowerShell equivalent:
+
+     ```powershell
+     $env:QWEN_UPSTREAM_URL = 'https://openrouter.ai/api/v1/chat/completions'
+     npx copilot-custom-endpoint qwen
+     ```
+
+2. Add a separate provider group using the OpenRouter key and these model entries:
 
    ```json
    {
@@ -76,6 +91,16 @@ The proxy forwards the `model` field without mapping it, so it can also be point
        {
          "id": "qwen/qwen3.8-max-0902",
          "name": "Qwen 3.8 Max (0902)",
+         "url": "http://127.0.0.1:3458/v1/chat/completions",
+         "toolCalling": true,
+         "vision": true,
+         "streaming": true,
+         "maxInputTokens": 991000,
+         "maxOutputTokens": 131072
+       },
+       {
+         "id": "qwen/qwen3.8-max-prime",
+         "name": "Qwen 3.8 Max Prime (0923)",
          "url": "http://127.0.0.1:3458/v1/chat/completions",
          "toolCalling": true,
          "vision": true,
