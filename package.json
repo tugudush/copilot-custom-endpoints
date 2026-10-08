@@ -1,6 +1,6 @@
 {
   "name": "copilot-custom-endpoint",
-  "version": "3.4.1",
+  "version": "3.4.2",
   "description": "Local proxies for VS Code Copilot custom endpoints — Kimi K2, Qwen 3.x & MiMo V2.6",
   "license": "MIT",
   "type": "module",
@@ -28,9 +28,9 @@
     "test": "node --test tests/**/*.test.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --check .",
-    "format:fix": "prettier --write .",
-    "lf": "npm run lint && npm run format:fix"
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lf": "npm run lint && npm run format"
   },
   "repository": {
     "type": "git",
