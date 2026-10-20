@@ -1,58 +1,44 @@
-# DeepSeek V4 for Copilot Chat
+# DeepSeek V4.1 Flash for Copilot Chat
 
-DeepSeek V4 Pro and V4.1 Flash are provided by the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They do not use this repository's `chatLanguageModels.json` custom-endpoint configuration.
+DeepSeek V4.1 Flash is provided by the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It does not use this repository's `chatLanguageModels.json` custom-endpoint configuration.
 
-## Current builds
+## Current build
 
-The current API model IDs and builds are:
+The current API model ID and build are:
 
-| API model         | Current version      | Update                                | Context | Modality                   | Parameters                                                      |
-| ----------------- | -------------------- | ------------------------------------- | ------- | -------------------------- | --------------------------------------------------------------- |
-| `deepseek-flash`  | DeepSeek-V4.1-Flash  | September 10, 2026; current API build | 1M      | Text + image in / text out | Causal Encoder-Decoder sparse MoE; 8B input / 16B output active |
-| `deepseek-v4-pro` | DeepSeek-V4-Pro-0813 | August 13, 2026; GA release           | 1M      | Text in / text out         | 1.6T total / 49B active                                         |
+| API model        | Current version          | Update                              | Context | Modality                   | Parameters                                                      |
+| ---------------- | ------------------------ | ----------------------------------- | ------- | -------------------------- | --------------------------------------------------------------- |
+| `deepseek-flash` | DeepSeek-V4.1-Flash-1017 | October 17, 2026; current API build | 1M      | Text + image in / text out | Causal Encoder-Decoder sparse MoE; 8B input / 16B output active |
 
-The [DeepSeek API pricing page](https://api-docs.deepseek.com/quick_start/pricing) identifies `deepseek-flash` as the current Flash model and says the legacy `deepseek-v4-flash` names remain accepted but are retired. Do not add the version suffix to the API request or the extension override.
+The [DeepSeek API pricing page](https://api-docs.deepseek.com/quick_start/pricing) identifies `deepseek-flash` as the current Flash model and reports its model version as **DeepSeek-V4.1-Flash-1017**. Do not add the version suffix to the API request or the extension override.
+
+DeepSeek's [October 17 release note](https://api-docs.deepseek.com/news/news261017) describes 1017 as a Pareto improvement over the September 10 build: stronger benchmarks, faster task completion, and shorter outputs. The model supports both non-thinking and thinking (default) modes, keeps the 1M context window and vision input, and publishes open weights on [Hugging Face](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017) (552B total / 16B active parameters, MIT license).
 
 ## Model ID overrides
 
-The extension's `deepseek-copilot.modelIdOverrides` setting changes the upstream API model IDs while keeping the normal DeepSeek entries in the Copilot model picker. The current official DeepSeek Chat Completions API accepts `deepseek-flash` and `deepseek-v4-pro`, so map the extension's logical Flash entry to the canonical current ID:
+The extension's `deepseek-copilot.modelIdOverrides` setting changes the upstream API model ID while keeping the normal DeepSeek entry in the Copilot model picker. The current official DeepSeek Chat Completions API accepts `deepseek-flash`, so map the extension's logical Flash entry to that canonical ID.
 
-```jsonc
-{
-  "deepseek-copilot.modelIdOverrides": {
-    "deepseek-v4-flash": "deepseek-flash",
-    "deepseek-v4-pro": "deepseek-v4-pro"
-  }
-}
-```
+> **Warning:** Do **not** use the human-readable version label as a model ID. `DeepSeek-V4.1-Flash-1017` is a version string, not a valid `model` field; use `deepseek-flash`. Sending a version-suffixed ID to `https://api.deepseek.com` can return **HTTP 400 "Invalid request body format"**.
 
-> **Warning:** Do **not** use the human-readable version labels as model IDs. `DeepSeek-V4.1-Flash` and `DeepSeek-V4-Pro-0813` are version strings, not valid `model` fields. Use `deepseek-flash` for current Flash requests and `deepseek-v4-pro` for Pro. Sending a version-suffixed ID to `https://api.deepseek.com` can return **HTTP 400 "Invalid request body format"**.
+Only add an override when the configured `deepseek-copilot.baseUrl` expects a different model name (e.g., a third-party proxy). The left-hand key is the extension's logical model key; it is not an arbitrary picker label. The right-hand value is sent verbatim as the provider's `model` field.
 
-Only add an override when the configured `deepseek-copilot.baseUrl` expects a different model name (e.g., a third-party proxy). The left-hand keys are the extension's logical model keys; they are not arbitrary picker labels. The right-hand values are sent verbatim as the provider's `model` field.
+Select the **DeepSeek V4.1 Flash** entry in Copilot Chat after reloading the window. The picker may still display the family name without the build suffix; that is expected. The override is not a model registration or a way to add a new picker entry.
 
-For Flash or Pro, select the corresponding **DeepSeek V4** entry in Copilot Chat after reloading the window. The picker may still display the family name without the build suffix; that is expected. The override is not a model registration or a way to add a new picker entry.
+## Benchmarks
 
-## Updated benchmarks
+The current Artificial Analysis v4.3.2 composite for **V4.1 Flash 1017** is **45**, up from **39.5** for the superseded September 10 build (whose AA page is now marked deprecated). AA measures 1017 at 216 tokens/s and **$0.26 per Intelligence Index task**, and it generated **210M output tokens** to run the index versus a 140M median (the September build used 250M), so it remains fast but very verbose. Current Coding and Agentic composites were not exposed in the checked metadata. DeepSeek's [release note](https://api-docs.deepseek.com/news/news261017) reports stronger benchmark performance, faster task completion, and shorter outputs than the September build; those vendor results are not directly comparable to the AA composite.
 
-DeepSeek's official August updates report the following agent-focused results for the retired 0731 Flash release and the GA Pro release:
-
-- **Historical Flash 0731:** Terminal-Bench 2.1 **82.7**, NL2Repo **54.2**, Cybergym **76.7**, DeepSWE **54.4**, Toolathlon Verified **70.3**, Agents' Last Exam **25.2**, AutomationBench (Public) **25.1**, DSBench-FullStack **68.7**, and DSBench-Hard **59.6**.
-- **Pro 0813:** HLE without/with tools **42.7/60.0**, Terminal-Bench 2.1 **87.9**, NL2Repo **61.5**, Cybergym **83.3**, DeepSWE **62.7**, Toolathlon Verified **74.1**, Agents' Last Exam **25.7**, AutomationBench (Public) **31.8**, DSBench-FullStack **71.1**, and DSBench-Hard **67.2**.
-
-The current OpenRouter metadata reports **V4.1 Flash 39.5 AA Intelligence** and **Pro 36.3 AA Intelligence**. Current Flash Coding and Agentic composites were not exposed in the checked metadata. The older 0731 snapshot reported **51.8 AA Intelligence / 69.1 Coding / 48.4 Agentic**, while Pro's current metadata reports **36.3 AA Intelligence / 68.8 Coding / 49.6 Agentic**. AA values are independent composite scores; DeepSeek's agent results above are vendor-reported and should not be treated as the same metric.
-
-Sources: [DeepSeek pricing and model page](https://api-docs.deepseek.com/quick_start/pricing), [Flash benchmark snapshot](https://openrouter.ai/deepseek/deepseek-v4.1-flash), [Pro benchmark snapshot](https://openrouter.ai/deepseek/deepseek-v4-pro-0813), [Flash AA page](https://artificialanalysis.ai/models/deepseek-v4-1-flash), and [Pro AA page](https://artificialanalysis.ai/models/deepseek-v4-pro).
+Sources: [DeepSeek pricing and model page](https://api-docs.deepseek.com/quick_start/pricing), [DeepSeek 1017 release note](https://api-docs.deepseek.com/news/news261017), [1017 benchmark snapshot](https://openrouter.ai/deepseek/deepseek-v4.1-flash-1017), and [1017 AA page](https://artificialanalysis.ai/models/deepseek-v4-1-flash-1017).
 
 ## Current API pricing
 
-DeepSeek switched V4 pricing to peak/off-peak rates at **16:00 UTC on August 16, 2026**. Prices below are USD per 1M tokens. Peak hours are **01:00-04:00 and 06:00-10:00 UTC**; off-peak rates are half the peak rates.
+DeepSeek switched to peak/off-peak rates at **16:00 UTC on August 16, 2026**. Prices below are USD per 1M tokens. Peak hours are **01:00-04:00 and 06:00-10:00 UTC**; off-peak rates are half the peak rates.
 
-| API model         | Cache hit                     | Cache miss                  | Output                      |
-| ----------------- | ----------------------------- | --------------------------- | --------------------------- |
-| `deepseek-flash`  | $0.003 off-peak / $0.006 peak | $0.15 off-peak / $0.30 peak | $0.60 off-peak / $1.20 peak |
-| `deepseek-v4-pro` | $0.022 off-peak / $0.044 peak | $0.66 off-peak / $1.32 peak | $1.98 off-peak / $3.96 peak |
+| API model        | Cache hit                     | Cache miss                  | Output                      |
+| ---------------- | ----------------------------- | --------------------------- | --------------------------- |
+| `deepseek-flash` | $0.003 off-peak / $0.006 peak | $0.15 off-peak / $0.30 peak | $0.60 off-peak / $1.20 peak |
 
-The legacy `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` names remain accepted but are retired aliases for V4.1 Flash. See the [official Models & Pricing page](https://api-docs.deepseek.com/quick_start/pricing) for the live rates and concurrency limits.
+The 1017 build keeps these rates unchanged. See the [official Models & Pricing page](https://api-docs.deepseek.com/quick_start/pricing) for the live rates and concurrency limits.
 
 ## Tool-list stabilization (`experimental.stabilizeToolList`)
 
@@ -62,13 +48,13 @@ The legacy `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` names remain a
 - **When off**, the preflight pass is skipped entirely.
 - **Plain chat (no tools) never triggers the flag** — it is inert and has no effect (and no cost) on non-tool requests. It neither causes nor fixes plain-chat 400s such as the invalid model-ID case above.
 
-Recommendation: leave it `true` if you use **agent mode or MCP tools** with DeepSeek V4; it is harmless to keep for plain-chat-only use, and safe to remove if you never invoke tools.
+Recommendation: leave it `true` if you use **agent mode or MCP tools** with DeepSeek V4.1 Flash; it is harmless to keep for plain-chat-only use, and safe to remove if you never invoke tools.
 
 ## Troubleshooting
 
 1. Confirm the extension is installed and update it if the setting is not recognized. The setting is owned by `Vizards.deepseek-v4-for-copilot`.
-2. Use the exact setting name and logical key:
-   `deepseek-copilot.modelIdOverrides` → `deepseek-flash`.
+2. Use the exact setting name and point the Flash entry at `deepseek-flash`:
+   `deepseek-copilot.modelIdOverrides`.
 3. Reload VS Code after changing the setting (`Developer: Reload Window`).
 4. Verify the extension's `deepseek-copilot.baseUrl` points at the compatible provider or proxy. An override changes only the model ID; it does not change the endpoint, authentication, request format, or model capabilities.
 5. For HTTP 400 errors during agent mode or MCP/tool use, enable the extension's tool-list compatibility option:

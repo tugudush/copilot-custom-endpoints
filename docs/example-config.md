@@ -2,7 +2,7 @@
 
 Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
-> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4 Flash or MiMo V2.6 Flash). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
+> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
 >
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
@@ -177,4 +177,4 @@ If you only need one provider, jump straight to its setup guide:
 - [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
 
-> **DeepSeek V4 Pro 0813 / V4 Flash 0731** use the [DeepSeek V4 for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension. They appear in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and are configured via the extension's settings block.
+> **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.
