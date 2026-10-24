@@ -263,21 +263,21 @@ Well-structured: correct `"type": "module"`, four `bin` entries (main + 3 direct
 
 ## 5. Documentation
 
-| Document                   | Quality                                                                                                                                            |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `README.md`                | Excellent. Model picker table, 5-step setup, utility small model requirement, common commands.                                                     |
-| `AGENTS.md`                | Comprehensive agent guidance with project map, commands, provider-specific constraints, and validation expectations.                               |
-| `docs/models/kimi.md`      | Thorough. Covers K2.6, K2.7 Code, and K3. Documents failures, direct-path incompatibility, and extension alternative.                              |
-| `docs/models/qwen.md`      | Thorough. Covers 3.8 Max, 3.7 Plus, 3.7 Max. Proxy vs direct paths, regional endpoints.                                                            |
-| `docs/models/mimo.md`      | Excellent. Covers the MiMo V2.6 family. Extension-first recommendation with feature comparison table. PAYG vs Token Plan.                          |
-| `docs/models/minimax.md`   | Excellent. Covers M3 direct setup, priority tier, PAYG vs Token Plan key distinction. Extension alternatives documented.                           |
-| `docs/models/glm.md`       | Thorough. Covers 5.2 and 5.1. Coding Plan limitation documented. Three VS Code extensions compared.                                                |
-| `docs/pricing.md`          | Outstanding. Cost-per-intelligence ranking across 25+ models, session cost estimates, Copilot credit conversion. Updated Aug 3, 2026.              |
-| `docs/benchmarks.md`       | Outstanding. AA Intelligence Index + Arena rankings for 30 models. Footnotes explain missing/approximate scores. Updated Jul 26, 2026.             |
-| `docs/competitors.md`      | Good. Four-tier competitor analysis with overlap assessment and uniqueness summary.                                                                |
-| `docs/free.md`             | Useful. Free tiers and trial quotas across all supported providers.                                                                                |
-| `docs/example-config.md`   | Excellent. Full real-world `chatLanguageModels.json` with all validated providers. Cross-referenced by validation script.                          |
-| `docs/research/` (6 files) | Good. Per-provider VS Code extension comparisons (Kimi, MiMo, MiniMax, GLM), M3 priority tier research, VS Code 1.128 model options investigation. |
+| Document                   | Quality                                                                                                                                |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`                | Excellent. Model picker table, 5-step setup, utility small model requirement, common commands.                                         |
+| `AGENTS.md`                | Comprehensive agent guidance with project map, commands, provider-specific constraints, and validation expectations.                   |
+| `docs/models/kimi.md`      | Thorough. Covers K2.6, K2.7 Code, and K3. Documents failures, direct-path incompatibility, and extension alternative.                  |
+| `docs/models/qwen.md`      | Thorough. Covers 3.8 Max, 3.7 Plus, 3.7 Max. Proxy vs direct paths, regional endpoints.                                                |
+| `docs/models/mimo.md`      | Excellent. Covers the MiMo V2.6 family. Extension-first recommendation with feature comparison table. PAYG vs Token Plan.              |
+| `docs/models/minimax.md`   | Excellent. Covers M3.1 Flash / M3 direct setup, thinking depth, PAYG vs Token Plan key distinction. Extension alternatives documented. |
+| `docs/models/glm.md`       | Thorough. Covers 5.2 and 5.1. Coding Plan limitation documented. Three VS Code extensions compared.                                    |
+| `docs/pricing.md`          | Outstanding. Cost-per-intelligence ranking across 25+ models, session cost estimates, Copilot credit conversion. Updated Aug 3, 2026.  |
+| `docs/benchmarks.md`       | Outstanding. AA Intelligence Index + Arena rankings for 30 models. Footnotes explain missing/approximate scores. Updated Jul 26, 2026. |
+| `docs/competitors.md`      | Good. Four-tier competitor analysis with overlap assessment and uniqueness summary.                                                    |
+| `docs/free.md`             | Useful. Free tiers and trial quotas across all supported providers.                                                                    |
+| `docs/example-config.md`   | Excellent. Full real-world `chatLanguageModels.json` with all validated providers. Cross-referenced by validation script.              |
+| `docs/research/` (5 files) | Good. Per-provider VS Code extension comparisons (Kimi, MiMo, MiniMax, GLM) and the VS Code 1.128 model options investigation.         |
 
 The model documentation is notably thorough — it documents what _didn't_ work (e.g., the failed direct-path attempts, the `ERR_CONNECTION_RESET` investigation, the Coding Plan endpoint lockout) rather than just the final working state. This is valuable for future troubleshooting.
 

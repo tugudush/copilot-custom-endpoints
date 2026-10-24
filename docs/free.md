@@ -49,7 +49,7 @@ Many providers offer substantial trial credits or token pools when you first sig
 
 ### MiniMax
 
-- **Free Quota:** Provides standard developer sign-up starter credits. Additionally, a **permanent 50% off** discount applies to all MiniMax-M3 pay-as-you-go usage (Standard and Priority tiers) — making the effective rates $0.30 / 1M input and $1.20 / 1M output (≤ 512K tier) instead of the $0.60 / 1M and $2.40 / 1M list prices.
+- **Free Quota:** Provides standard developer sign-up starter credits. Additionally, a **permanent 50% off** discount applies to all MiniMax-M3 pay-as-you-go usage — making the effective rates $0.30 / 1M input and $1.20 / 1M output (≤ 512K tier) instead of the $0.60 / 1M and $2.40 / 1M list prices.
 
 ---
 

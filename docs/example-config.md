@@ -107,6 +107,23 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "MiniMax-M3.1-Flash",
+        "name": "MiniMax M3.1 Flash (vision)",
+        "url": "https://api.minimax.io/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1048576,
+        "maxOutputTokens": 131072,
+        "requestBody": {
+          "thinking": { "type": "adaptive" },
+          "reasoning_split": true,
+          "reasoning_effort": "high",
+          "temperature": 1,
+          "top_p": 0.95
+        }
+      },
+      {
         "id": "MiniMax-M3",
         "name": "MiniMax M3 (vision)",
         "url": "https://api.minimax.io/v1/chat/completions",
@@ -174,7 +191,7 @@ If you only need one provider, jump straight to its setup guide:
 - [Kimi K3 / K2.6 / K2.7 Code](kimi.md)
 - [Qwen 3.8 Max](qwen.md)
 - [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](mimo.md)
-- [MiniMax M3 (Standard)](minimax.md) and [MiniMax M3 (Priority)](minimax.md#5-m3-priority-tier-optional)
+- [MiniMax M3.1 Flash / M3](minimax.md)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
 
 > **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.

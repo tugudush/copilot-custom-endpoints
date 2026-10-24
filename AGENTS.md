@@ -14,6 +14,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **DeepSeek V4.1 Flash** — uses the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed. The canonical API model ID is `deepseek-flash`; the current build is V4.1-Flash-1017 (October 17, 2026). Pricing uses peak/off-peak rates.
 - **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — full-modality models with 1M context and 128K output. The local `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call history includes `reasoning_content`, and injects `thinking: {"type": "disabled"}` when VS Code sends incomplete history.
 - **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
+- **MiniMax M3.1 Flash** — released **October 19, 2026**; API ID `MiniMax-M3.1-Flash`. 1M context, text + image + video input, open weights promised later. **Always-thinking**: `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (code 2013), so tune depth with `reasoning_effort` (`low`/`medium`/`high`/`xhigh`/`max`, default `max`). `reasoning_split: false` is unsupported; `temperature`/`top_p` are ignored (fixed at 1 / 0.95); `service_tier` is **not** supported. Flat pricing **$0.15 / $0.015 cache read / $0.60** per 1M. OpenRouter AA v4.3.2 Intelligence Index **43**. Direct integration, no proxy needed.
 - **GLM 5.3** (Z.ai / Zhipu AI) — released **August 18, 2026**. Works direct with the same request pattern, no proxy needed. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). 1M context, text-only, 753B params. Current OpenRouter AA Intelligence Index **44.9** (coding **74.8**, agentic **53.4**). See [docs/models/glm.md](docs/models/glm.md).
 - **GLM 5.3 Flash** (Z.ai / Zhipu AI) — released **August 26, 2026**. First native **multimodal** GLM-5 model (text + image input, text output); direct integration, no proxy needed. Hybrid sparse + linear attention architecture, 320B total / 18B active params (open weights, MIT license), 1M context. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Current OpenRouter AA Intelligence Index **41.9** (Coding **71.5**, Agentic **51.2**). List pricing is **$0.15 / $0.03 / $0.50** per 1M (input/cached/output); the 50% launch promotion ended September 9, 2026. Note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false`; for the VS Code custom-endpoint path keep the repo's validated GLM pattern (leave `clear_thinking` unset so the server default `true` keeps tool loops stable). See [docs/models/glm.md](docs/models/glm.md).
 
@@ -27,7 +28,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K3.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max, plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment and V2.6 setup guide for Xiaomi MiMo.
-- [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 (multimodal frontier coding model with 1M context).
+- [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 and M3.1 Flash (multimodal frontier coding models with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4.1 Flash extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
@@ -130,15 +131,21 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Endpoint: `https://api.xiaomimimo.com/v1/chat/completions` (pay-as-you-go). Token Plan uses `https://token-plan-cn.xiaomimimo.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MIMO_API_KEY` header (standard).
 
-### MiniMax M3
+### MiniMax M3 / M3.1 Flash
 
-- Direct VS Code → MiniMax API works without a proxy.
-- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code).
+- Direct VS Code → MiniMax API works without a proxy for both `MiniMax-M3` and `MiniMax-M3.1-Flash`.
+- **M3.1 Flash is always-thinking.** `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (`model "MiniMax-M3.1-Flash" requires adaptive thinking`, base_resp code 2013). Never put `disabled` in `requestBody` for this model. Reduce latency with a lower `reasoning_effort` instead: `low` / `medium` / `high` / `xhigh` / `max` (server default `max`).
+- `reasoning_split` cannot be set to `false` on M3.1 Flash; thinking is always returned on `reasoning_content` and `content` holds only the final answer. Keep `reasoning_split: true` for parity with the validated M3 entry.
+- `temperature` / `top_p` are **ignored** (M3-family models are fixed at `1` and `0.95`); keep the repo's standard `1` / `0.95` values so the JSON stays uniform, and never send `top_p` outside `(0, 1]`.
+- `service_tier` (an admission-class field priced at 1.5× Standard) is supported only on `MiniMax-M3`; M3.1 Flash rejects it.
+- MiniMax recommends appending the complete assistant message (including `reasoning_content`) to history for interleaved thinking. VS Code does not preserve `reasoning_content` across tool turns, so expect reduced reasoning continuity in agent mode — a quality trade-off, not a hard error (unlike Kimi K2.7).
+
+- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code). On **M3.1 Flash**, add `reasoning_effort` to choose thinking depth; the field is ignored by M3.
 - **Important:** `thinking: { "type": "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless. The setting only changes the response field layout, not actual model behavior.
 - `MiniMax-M3` is multimodal (text + image + video). M3 has 1M context window.
 - Endpoint (international): `https://api.minimax.io/v1/chat/completions`. China: `https://api.minimaxi.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MINIMAX_API_KEY` header (standard).
-- Model IDs are case-sensitive: `MiniMax-M3` (capital M's, lowercase i).
+- Model IDs are case-sensitive: `MiniMax-M3` and `MiniMax-M3.1-Flash` (capital M's, lowercase i).
 - Rate limits: 200 RPM / 10M TPM.
 - The full rationale, tested values, and evidence live in [docs/models/minimax.md](docs/models/minimax.md); do not duplicate that record here.
 
