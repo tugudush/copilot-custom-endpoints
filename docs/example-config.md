@@ -35,6 +35,20 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "apiType": "chat-completions",
     "models": [
       {
+        "id": "kimi-k3.1-pro",
+        "name": "Kimi K3.1 Pro (vision)",
+        "url": "http://127.0.0.1:3457/v1/chat/completions",
+        "requestBody": {
+          "temperature": 1,
+          "max_tokens": 8192
+        },
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 1000000,
+        "maxOutputTokens": 131072
+      },
+      {
         "id": "kimi-k3",
         "name": "Kimi K3 (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",

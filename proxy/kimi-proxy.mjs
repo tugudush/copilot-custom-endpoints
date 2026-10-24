@@ -118,8 +118,9 @@ function rewriteKimi(payload) {
 
   // K2.7 and K3 are always-thinking and reject thinking: disabled.
   // K2.7 uses `thinking` parameter; K3 uses `reasoning_effort` instead.
-  // Detect K2.7 variants (e.g. kimi-k2.7-code) and K3 variants (e.g. kimi-k3)
-  // and skip the thinking-disable rewrite while keeping temperature/top_p enforcement.
+  // Detect K2.7 variants (e.g. kimi-k2.7-code) and K3-family variants
+  // (e.g. kimi-k3, kimi-k3.1-pro, kimi-k3.1-pro-highspeed) and skip the
+  // thinking-disable rewrite while keeping temperature/top_p enforcement.
   const isK27 = model.startsWith('kimi-k2.7')
   const isK3 = model.startsWith('kimi-k3')
   const isAlwaysThinking = isK27 || isK3

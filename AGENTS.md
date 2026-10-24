@@ -4,7 +4,7 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
-- **Kimi K3** (Moonshot) — newly validated (July 17, 2026). Requires the local proxy shim `proxy/kimi-proxy.mjs`. K3 is always-thinking and uses `reasoning_effort` (not `thinking`); the proxy detects K3, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. 2.8T params, 1M context, current OpenRouter AA Intelligence Index **43.8**.
+- **Kimi K3.1 Pro** (Moonshot) — released October 23, 2026; the current Kimi flagship and the target of this repo's Kimi setup. Post-trained K3 (3T class), 1M context, open weights promised by November 4, 2026, and a faster `kimi-k3.1-pro-highspeed` SKU. Always-thinking: `reasoning_effort` accepts `low` / `high` / `max` (default `max`) and chain-of-thought cannot be disabled. `kimi-k3.1-pro` runs through the local proxy shim `proxy/kimi-proxy.mjs`, which detects every `kimi-k3*` slug, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. Flat pricing $2 / $0.20 cache read / $10 per 1M; current OpenRouter AA Intelligence Index **55.1**. `kimi-k3` (July 2026, 2.8T params, AA **43.6**) remains served and supported.
 - **GPT-6 Astra** (OpenAI) — released September 3, 2026; available natively in GitHub Copilot and through the API as `gpt-6-astra`. It supports reasoning, text + image input, a 1.05M context window, and standard pricing of $10 / $1 / $50 per 1M input/cached/output tokens. The launch comparison reports AA Intelligence Index **61.2** using methodology v4.1.1; current OpenRouter metadata reports **52.7** under v4.3.2. No custom-endpoint setup is maintained in this repo.
 - **GPT-6 Sol / GPT-6 Luna** (OpenAI) — announced September 22, 2026; API IDs are `gpt-6-sol` and `gpt-6-luna`, and both are GA in GitHub Copilot. Sol is available on Pro+, Max, Business, and Enterprise; Luna is available from Pro. Both accept text and images, have a 1.05M-token context window, and support 128K output. Standard API prices up to 272K input are $2 / $0.20 cached / $10 output for Sol and $0.10 / $0.01 / $0.50 for Luna; long-context rates increase above 272K. Current OpenRouter AA v4.3.2 scores: Sol **47.5**, Luna **37.3**. No custom-endpoint setup is maintained in this repo.
 - **GPT-6.1 Sol** (OpenAI) — released September 29, 2026 at DevDay; API ID `gpt-6.1-sol`, GA in GitHub Copilot for Pro+, Max, Business, and Enterprise (not Pro). Text + image input, 1.05M context, 128K output; `reasoning_effort` supports `low` / `medium` (default) / `high` / `xhigh` / `max` (`none` and `minimal` are rejected). Standard API prices up to 272K input are $2 / $0.10 cached / $10 output — cache hits are 0.05× input (half of GPT-6 Sol) and cache writes are $2.50 (1.25×) — with higher rates above 272K. Current OpenRouter AA v4.3.2 score **51.8**. OpenAI documents Chat Completions without tool calling (the Responses API is required for tools), and the planned GPT-6.1 Astra was cancelled over safety concerns. No custom-endpoint setup is maintained in this repo.
@@ -25,7 +25,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 ## Project Map
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
-- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment for Kimi K3.
+- [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment and setup guide for Kimi K3.1 Pro and K3.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max, plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment and V2.6 setup guide for Xiaomi MiMo.
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 and M3.1 Flash (multimodal frontier coding models with 1M context).
@@ -101,9 +101,10 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 
 ## Provider-specific constraints
 
-### Kimi K2 / K3
+### Kimi K3.1 Pro / K3 / K2.x
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
+- **K3.1 Pro** (October 2026) shares the K3 request shape: always-thinking, `reasoning_effort` `low` / `high` / `max` (default `max`; chain-of-thought cannot be disabled — lower the effort instead), `tool_choice` supports `auto`, `required`, and named tools, `max_completion_tokens` defaults to 131072 (max 1048576), sampling is fixed at `temperature=1` / `top_p=0.95` / `n=1` / zero penalties, and vision accepts text + image plus video via `ms://<file-id>` (public image URLs are rejected). The proxy's `kimi-k3` prefix detection covers `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`, so no proxy change is needed for new K3.1 slugs.
 - **K3** (July 2026) is always-thinking and uses `reasoning_effort` (currently only `max`) — NOT the K2.x `thinking` parameter. The proxy detects `kimi-k3` slugs and skips the thinking-disable rewrite, **deletes any stray `thinking` block**, and keeps temperature/top_p enforcement. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072. Fixed sampling: `temperature=1`, `top_p=0.95`. 1M context, 2.8T params (open-source weights by July 27, 2026). AA Intelligence Index **59.7**.
 - **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
