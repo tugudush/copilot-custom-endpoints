@@ -59,7 +59,18 @@
   "models": [
     {
       "id": "kimi-k3.1-pro",
-      "name": "Kimi K3.1 Pro (vision)",
+      "name": "Kimi K3.1 Pro (Custom Endpoint)",
+      "url": "http://127.0.0.1:3457/v1/chat/completions",
+      "requestBody": { "temperature": 1, "max_tokens": 8192 },
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 1000000,
+      "maxOutputTokens": 131072
+    },
+    {
+      "id": "kimi-k3",
+      "name": "Kimi K3 (Custom Endpoint)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
       "requestBody": { "temperature": 1, "max_tokens": 8192 },
       "toolCalling": true,
@@ -74,7 +85,7 @@
 
 > **K3.1 Pro note:** `max_tokens` is set to **8192** as a safe starting point. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median). The API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor your usage and adjust upward if needed. K3.1 Pro uses `reasoning_effort` (`low` / `high` / `max`, default `max`), not the K2.x `thinking` parameter; add `"reasoning_effort": "low"` to `requestBody` if answers take too long. The proxy forwards the value untouched.
 >
-> To also expose K3, duplicate the entry with `"id": "kimi-k3"`, `"name": "Kimi K3 (vision)"` and `"max_tokens": 8192` — nothing else changes.
+> Both models are in the snippet above — delete the entry you don't plan to use. K3 accepts the same `requestBody`; it only supports `reasoning_effort: "max"`.
 
 ### 2. API key
 
