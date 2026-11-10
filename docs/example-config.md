@@ -6,7 +6,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 >
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
 >
-> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` when tool history is missing `reasoning_content` and leaves it absent on plain chat). OpenRouter lists Qwen 3.8 Max as two frozen snapshots (`qwen/qwen3.8-max` = 0803 and `qwen/qwen3.8-max-0902` = 0902); this DashScope config intentionally uses the provider ID `qwen3.8-max` and does not pretend the OpenRouter slugs are interchangeable.
+> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` when tool history is missing `reasoning_content` and leaves it absent on plain chat). This DashScope config uses the provider ID `qwen3.8-max`.
 
 ```json
 [
@@ -37,20 +37,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
       {
         "id": "kimi-k3.1-pro",
         "name": "Kimi K3.1 Pro (vision)",
-        "url": "http://127.0.0.1:3457/v1/chat/completions",
-        "requestBody": {
-          "temperature": 1,
-          "max_tokens": 8192
-        },
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 1000000,
-        "maxOutputTokens": 131072
-      },
-      {
-        "id": "kimi-k3",
-        "name": "Kimi K3 (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
         "requestBody": {
           "temperature": 1,
@@ -136,22 +122,6 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
           "temperature": 1,
           "top_p": 0.95
         }
-      },
-      {
-        "id": "MiniMax-M3",
-        "name": "MiniMax M3 (vision)",
-        "url": "https://api.minimax.io/v1/chat/completions",
-        "toolCalling": true,
-        "vision": true,
-        "streaming": true,
-        "maxInputTokens": 1048576,
-        "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "adaptive" },
-          "reasoning_split": true,
-          "temperature": 1,
-          "top_p": 0.95
-        }
       }
     ]
   },
@@ -202,10 +172,10 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 If you only need one provider, jump straight to its setup guide:
 
-- [Kimi K3 / K2.6 / K2.7 Code](kimi.md)
+- [Kimi K3.1 Pro / K2.6 / K2.7 Code](kimi.md)
 - [Qwen 3.8 Max](qwen.md)
 - [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](mimo.md)
-- [MiniMax M3.1 Flash / M3](minimax.md)
+- [MiniMax M3.1 Flash](minimax.md)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
 
 > **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.

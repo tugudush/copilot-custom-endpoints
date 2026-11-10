@@ -4,23 +4,22 @@
 
 This repository keeps durable validation records for custom language-model endpoint experiments. The current validated setups are:
 
-- **Kimi K3.1 Pro** (Moonshot) — released October 23, 2026; the current Kimi flagship and the target of this repo's Kimi setup. Post-trained K3 (3T class), 1M context, open weights promised by November 4, 2026, and a faster `kimi-k3.1-pro-highspeed` SKU. Always-thinking: `reasoning_effort` accepts `low` / `high` / `max` (default `max`) and chain-of-thought cannot be disabled. `kimi-k3.1-pro` runs through the local proxy shim `proxy/kimi-proxy.mjs`, which detects every `kimi-k3*` slug, skips the thinking-disable rewrite, and deletes any stray `thinking` block while keeping temperature/top_p enforcement. Flat pricing $2 / $0.20 cache read / $10 per 1M; current OpenRouter AA Intelligence Index **55.1**. `kimi-k3` (July 2026, 2.8T params, AA **43.6**) remains served and supported.
-- **GPT-6 Astra** (OpenAI) — released September 3, 2026; available natively in GitHub Copilot and through the API as `gpt-6-astra`. It supports reasoning, text + image input, a 1.05M context window, and standard pricing of $10 / $1 / $50 per 1M input/cached/output tokens. The launch comparison reports AA Intelligence Index **61.2** using methodology v4.1.1; current OpenRouter metadata reports **52.7** under v4.3.2. No custom-endpoint setup is maintained in this repo.
-- **GPT-6 Sol / GPT-6 Luna** (OpenAI) — announced September 22, 2026; API IDs are `gpt-6-sol` and `gpt-6-luna`, and both are GA in GitHub Copilot. Sol is available on Pro+, Max, Business, and Enterprise; Luna is available from Pro. Both accept text and images, have a 1.05M-token context window, and support 128K output. Standard API prices up to 272K input are $2 / $0.20 cached / $10 output for Sol and $0.10 / $0.01 / $0.50 for Luna; long-context rates increase above 272K. Current OpenRouter AA v4.3.2 scores: Sol **47.5**, Luna **37.3**. No custom-endpoint setup is maintained in this repo.
-- **GPT-6.1 Sol** (OpenAI) — released September 29, 2026 at DevDay; API ID `gpt-6.1-sol`, GA in GitHub Copilot for Pro+, Max, Business, and Enterprise (not Pro). Text + image input, 1.05M context, 128K output; `reasoning_effort` supports `low` / `medium` (default) / `high` / `xhigh` / `max` (`none` and `minimal` are rejected). Standard API prices up to 272K input are $2 / $0.10 cached / $10 output — cache hits are 0.05× input (half of GPT-6 Sol) and cache writes are $2.50 (1.25×) — with higher rates above 272K. Current OpenRouter AA v4.3.2 score **51.8**. OpenAI documents Chat Completions without tool calling (the Responses API is required for tools), and the planned GPT-6.1 Astra was cancelled over safety concerns. No custom-endpoint setup is maintained in this repo.
-- **Claude Opus 5.5** (Anthropic) — announced September 22, 2026; API ID `claude-opus-5-5`; GA in Copilot Pro+, Max, Business, and Enterprise. It supports text + image, 1M context, and 128K output; adaptive thinking is always on, and forced tool choice is unsupported. Standard pricing is $4 / $0.20 cache read / $20 per 1M input/cached/output tokens, with $5/$8 cache writes and $8/$40 Fast Mode. Current OpenRouter AA v4.3.2 score is **57.6**. No custom-endpoint setup has been validated in this repo.
-- **Gemini 4 Argon** (Google) — released October 13, 2026 (Gemini API GA and Copilot-native the same day); API ID `gemini-4-argon`; GA in GitHub Copilot for Pro+, Max, Business, and Enterprise (not Pro). Google's flagship reasoning model with a unified 1M-token context window, long decode up to 1M tokens, and thinking levels `low` / `medium` (default) / `high`. Accepts text, image, video, audio, and PDF input; outputs text. Introductory pricing is $2 / $0.10 implicit cache / $10 per 1M tokens through November 30, 2026 (doubling to $4 / $0.20 / $20 thereafter); output prices include thinking tokens, and only implicit caching is supported. Current OpenRouter/AA v4.3.2 composite is **53**. No custom-endpoint setup is maintained in this repo.
-- **Qwen 3.8 Max** (DashScope/OpenRouter) — the live OpenRouter rankings card puts unversioned Qwen3.8 Max at **#3 with 53.4** (tied on score with Claude Fable 5.1); the separate `qwen/qwen3.8-max-0902` metadata row reports **45.4**. OpenRouter also lists a higher-throughput `qwen/qwen3.8-max-prime` SKU (0923) at **$4 / $0.50 cache read / $12** per 1M, with no AA composite yet — see [docs/models/qwen.md](docs/models/qwen.md). The validated DashScope setup uses provider ID `qwen3.8-max`; `proxy/qwen-proxy.mjs` forwards model IDs unchanged and dynamically suppresses thinking during tool activity. Qwen Cloud now also offers a separate Token Plan subscription; the validated snippets remain PAYG DashScope examples.
-- **DeepSeek V4.1 Flash** — uses the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) VS Code extension; no custom-endpoint config needed. The canonical API model ID is `deepseek-flash`; the current build is V4.1-Flash-1017 (October 17, 2026). Pricing uses peak/off-peak rates.
-- **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — full-modality models with 1M context and 128K output. The local `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call history includes `reasoning_content`, and injects `thinking: {"type": "disabled"}` when VS Code sends incomplete history.
-- **MiniMax M3** — works direct with `thinking: { "type": "adaptive" }` and `reasoning_split: true` in `requestBody` (recommended for the cleanest response format). The model still reasons regardless of the `thinking` setting; `disabled` is a soft hint. No proxy needed.
-- **MiniMax M3.1 Flash** — released **October 19, 2026**; API ID `MiniMax-M3.1-Flash`. 1M context, text + image + video input, open weights promised later. **Always-thinking**: `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (code 2013), so tune depth with `reasoning_effort` (`low`/`medium`/`high`/`xhigh`/`max`, default `max`). `reasoning_split: false` is unsupported; `temperature`/`top_p` are ignored (fixed at 1 / 0.95); `service_tier` is **not** supported. Flat pricing **$0.15 / $0.015 cache read / $0.60** per 1M. OpenRouter AA v4.3.2 Intelligence Index **43**. Direct integration, no proxy needed.
-- **GLM 5.3** (Z.ai / Zhipu AI) — released **August 18, 2026**. Works direct with the same request pattern, no proxy needed. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). 1M context, text-only, 753B params. Current OpenRouter AA Intelligence Index **44.9** (coding **74.8**, agentic **53.4**). See [docs/models/glm.md](docs/models/glm.md).
-- **GLM 5.3 Flash** (Z.ai / Zhipu AI) — released **August 26, 2026**. First native **multimodal** GLM-5 model (text + image input, text output); direct integration, no proxy needed. Hybrid sparse + linear attention architecture, 320B total / 18B active params (open weights, MIT license), 1M context. **Always-thinking**: `thinking.type` only supports `enabled`; `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Current OpenRouter AA Intelligence Index **41.9** (Coding **71.5**, Agentic **51.2**). List pricing is **$0.15 / $0.03 / $0.50** per 1M (input/cached/output); the 50% launch promotion ended September 9, 2026. Note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false`; for the VS Code custom-endpoint path keep the repo's validated GLM pattern (leave `clear_thinking` unset so the server default `true` keeps tool loops stable). See [docs/models/glm.md](docs/models/glm.md).
+- **Kimi K3.1 Pro** (Moonshot, October 23, 2026) — always-thinking; runs through the local proxy `proxy/kimi-proxy.mjs`. See [docs/models/kimi.md](docs/models/kimi.md).
+- **GPT-6 Astra** (OpenAI, September 3, 2026) — native in GitHub Copilot. No custom-endpoint setup maintained here.
+- **GPT-6 Sol / GPT-6 Luna** (OpenAI, September 22, 2026) — `gpt-6-sol` and `gpt-6-luna`; GA in Copilot. No custom-endpoint setup maintained here.
+- **GPT-6.1 Sol** (OpenAI, September 29, 2026) — `gpt-6.1-sol`; GA in Copilot (not Pro). No custom-endpoint setup maintained here.
+- **Claude Opus 5.5** (Anthropic, September 22, 2026) — `claude-opus-5-5`; GA in Copilot; adaptive thinking always on. No custom-endpoint setup validated here.
+- **Gemini 4 Argon** (Google, October 13, 2026) — `gemini-4-argon`; GA in Copilot (not Pro). No custom-endpoint setup maintained here.
+- **Qwen 3.8 Max** (DashScope) — `qwen3.8-max`; optional proxy `proxy/qwen-proxy.mjs`. See [docs/models/qwen.md](docs/models/qwen.md).
+- **DeepSeek V4.1 Flash** — via the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension; no custom-endpoint config. See [docs/models/deepseek.md](docs/models/deepseek.md).
+- **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — optional proxy `proxy/mimo-proxy.mjs`. See [docs/models/mimo.md](docs/models/mimo.md).
+- **MiniMax M3.1 Flash** (October 19, 2026) — `MiniMax-M3.1-Flash`; always-thinking; direct, no proxy. See [docs/models/minimax.md](docs/models/minimax.md).
+- **GLM 5.3** (Z.ai, August 18, 2026) — text-only; always-thinking; direct, no proxy. See [docs/models/glm.md](docs/models/glm.md).
+- **GLM 5.3 Flash** (Z.ai, August 26, 2026) — multimodal (text + image input); always-thinking; direct, no proxy. See [docs/models/glm.md](docs/models/glm.md).
 
 **⚠️ VS Code now requires `chat.lm.utilitySmallModel` to be set for BYOK/custom-endpoint users.** Open Settings → search "Chat: Utility Small Model" → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). Without it, utility flows like token counting and prompt truncation may silently fail. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
 
-Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents.
+Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents. Pricing and benchmark scores live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md), not here.
 
 ## Project Map
 
@@ -28,7 +27,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment and setup guide for Kimi K3.1 Pro and K3.
 - [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max, plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment and V2.6 setup guide for Xiaomi MiMo.
-- [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3 and M3.1 Flash (multimodal frontier coding models with 1M context).
+- [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3.1 Flash (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4.1 Flash extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
@@ -101,18 +100,16 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 
 ## Provider-specific constraints
 
-### Kimi K3.1 Pro / K3 / K2.x
+### Kimi K3.1 Pro / K2.x
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
-- **K3.1 Pro** (October 2026) shares the K3 request shape: always-thinking, `reasoning_effort` `low` / `high` / `max` (default `max`; chain-of-thought cannot be disabled — lower the effort instead), `tool_choice` supports `auto`, `required`, and named tools, `max_completion_tokens` defaults to 131072 (max 1048576), sampling is fixed at `temperature=1` / `top_p=0.95` / `n=1` / zero penalties, and vision accepts text + image plus video via `ms://<file-id>` (public image URLs are rejected). The proxy's `kimi-k3` prefix detection covers `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`, so no proxy change is needed for new K3.1 slugs.
-- **K3** (July 2026) is always-thinking and uses `reasoning_effort` (currently only `max`) — NOT the K2.x `thinking` parameter. The proxy detects `kimi-k3` slugs and skips the thinking-disable rewrite, **deletes any stray `thinking` block**, and keeps temperature/top_p enforcement. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072. Fixed sampling: `temperature=1`, `top_p=0.95`. 1M context, 2.8T params (open-source weights by July 27, 2026). AA Intelligence Index **59.7**.
+- **K3.1 Pro** (October 2026) is always-thinking, `reasoning_effort` `low` / `high` / `max` (default `max`; chain-of-thought cannot be disabled — lower the effort instead), `tool_choice` supports `auto`, `required`, and named tools, `max_completion_tokens` defaults to 131072 (max 1048576), sampling is fixed at `temperature=1` / `top_p=0.95` / `n=1` / zero penalties, and vision accepts text + image plus video via `ms://<file-id>` (public image URLs are rejected). The proxy's `kimi-k3` prefix detection covers `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`, so no proxy change is needed for new K3.1 slugs.
 - **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.
 
 ### Qwen 3.x (DashScope)
 
-- OpenRouter's public model API no longer lists an exact `qwen/qwen3.8-max` entry; `qwen/qwen3.8-max-0902` remains the current exact-ID snapshot, and a newer higher-throughput `qwen/qwen3.8-max-prime` SKU (0923) has no AA composite yet. Keep those scores and slugs distinct in comparisons.
 - The validated DashScope custom endpoint uses `qwen3.8-max`; do not substitute an OpenRouter snapshot slug without changing the endpoint and revalidating the provider mapping.
 - Direct VS Code -> DashScope works without a proxy for `qwen3.8-max` when `enable_thinking: false` is set in `requestBody`.
 - Use the OpenAI-compatible path (`/compatible-mode/v1`); never the native DashScope path (`/api/v1`), whose request/response schema VS Code and the proxy do not speak.
@@ -132,21 +129,19 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Endpoint: `https://api.xiaomimimo.com/v1/chat/completions` (pay-as-you-go). Token Plan uses `https://token-plan-cn.xiaomimimo.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MIMO_API_KEY` header (standard).
 
-### MiniMax M3 / M3.1 Flash
+### MiniMax M3.1 Flash
 
-- Direct VS Code → MiniMax API works without a proxy for both `MiniMax-M3` and `MiniMax-M3.1-Flash`.
+- Direct VS Code → MiniMax API works without a proxy for `MiniMax-M3.1-Flash`.
 - **M3.1 Flash is always-thinking.** `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (`model "MiniMax-M3.1-Flash" requires adaptive thinking`, base_resp code 2013). Never put `disabled` in `requestBody` for this model. Reduce latency with a lower `reasoning_effort` instead: `low` / `medium` / `high` / `xhigh` / `max` (server default `max`).
-- `reasoning_split` cannot be set to `false` on M3.1 Flash; thinking is always returned on `reasoning_content` and `content` holds only the final answer. Keep `reasoning_split: true` for parity with the validated M3 entry.
-- `temperature` / `top_p` are **ignored** (M3-family models are fixed at `1` and `0.95`); keep the repo's standard `1` / `0.95` values so the JSON stays uniform, and never send `top_p` outside `(0, 1]`.
-- `service_tier` (an admission-class field priced at 1.5× Standard) is supported only on `MiniMax-M3`; M3.1 Flash rejects it.
+- `reasoning_split` cannot be set to `false` on M3.1 Flash; thinking is always returned on `reasoning_content` and `content` holds only the final answer.
+- `temperature` / `top_p` are **ignored** (M3.1 Flash is fixed at `1` and `0.95`); keep the repo's standard `1` / `0.95` values so the JSON stays uniform, and never send `top_p` outside `(0, 1]`.
+- `service_tier` (an admission-class field priced at 1.5× Standard) is rejected by M3.1 Flash.
 - MiniMax recommends appending the complete assistant message (including `reasoning_content`) to history for interleaved thinking. VS Code does not preserve `reasoning_content` across tool turns, so expect reduced reasoning continuity in agent mode — a quality trade-off, not a hard error (unlike Kimi K2.7).
 
-- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code). On **M3.1 Flash**, add `reasoning_effort` to choose thinking depth; the field is ignored by M3.
-- **Important:** `thinking: { "type": "disabled" }` is **not** a hard override — the model still reasons internally and emits `<think>` tags / `reasoning_content` regardless. The setting only changes the response field layout, not actual model behavior.
-- `MiniMax-M3` is multimodal (text + image + video). M3 has 1M context window.
+- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code). On **M3.1 Flash**, add `reasoning_effort` to choose thinking depth.
 - Endpoint (international): `https://api.minimax.io/v1/chat/completions`. China: `https://api.minimaxi.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MINIMAX_API_KEY` header (standard).
-- Model IDs are case-sensitive: `MiniMax-M3` and `MiniMax-M3.1-Flash` (capital M's, lowercase i).
+- Model IDs are case-sensitive: `MiniMax-M3.1-Flash` (capital M's, lowercase i).
 - Rate limits: 200 RPM / 10M TPM.
 - The full rationale, tested values, and evidence live in [docs/models/minimax.md](docs/models/minimax.md); do not duplicate that record here.
 
