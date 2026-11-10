@@ -182,25 +182,12 @@ These work alongside the providers above and fill gaps that VS Code's built-in t
 
 VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, GIF, WebP). That's a hard wall if you want to ask an AI assistant about a screen recording, a screencast, a product demo, or any other video. Several vision-capable models in this repo actually accept video natively — but VS Code's tool pipeline never gets the chance to forward it.
 
-**Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, and Claude Code** out of the box, and:
+**Video Context MCP** is a small MCP server that bridges that gap. It works with **GitHub Copilot, Cursor, Claude Code, OpenAI Codex, and Google Antigravity** out of the box, and:
 
-- **Extracts frames** from local files or remote URLs (no `ffmpeg` gymnastics required).
-- **Routes them through a multi-provider fallback chain** — `Gemini → GLM 4.6V Flash → Qwen3.8-max`.
-- **Answers natural-language questions** about the video grounded in actual frames: "what does the speaker click in the last 30 seconds?", "summarize the demo", "find the frame where the error appears".
-- **Extras:** timestamp search, audio transcription with speaker diarization, and video metadata (resolution, duration, codec).
-
-### 🪣 [Bitbucket MCP](https://bitbucketmcp.tugudush.com/) — _secure, read-only Bitbucket access for VS Code Copilot, Cursor, and Claude Code_
-
-GitHub ships a first-party MCP server (and it's even bundled into Copilot), so asking "what's open in my org's repos / show me PR #123" works seamlessly on github.com. **Bitbucket has no equivalent** — Atlassian hasn't shipped one — which leaves Bitbucket Cloud users copy-pasting PR URLs, diffs, and file contents into chat by hand.
-
-**Bitbucket MCP** is a small MCP server that closes that gap. It works with **VS Code GitHub Copilot, Cursor, and Claude Code** out of the box, and:
-
-- **38 tools across 8 categories** — repositories, pull requests, branches & commits, diffs & comparisons, CI/CD pipelines, issues, code search, and users.
-- **Read-only by design** — `makeRequest()` blocks all non-GET requests at runtime, so no write, delete, or modify operation is possible.
-- **Token-friendly output** — every tool supports `text`, `json`, and `toon` (Token-Oriented Object Notation) formats; `toon` cuts LLM token consumption by 30–60% on large PR/commit lists.
-- **JMESPath filtering** on all 38 tools, so you can trim responses (e.g. only open PRs, or just title + author) before they hit the model.
-- **One-call PR context** — `bb_get_context` bundles PR metadata, diffstat, CI statuses, and comments in a single request.
-- **Drop-in install** — `npm install -g @tugudush/bitbucket-mcp` plus a short `.vscode/mcp.json` entry, authenticated with a Bitbucket API token + your Atlassian email.
+- **Answers natural-language questions** about the video grounded in actual frames and the audio transcript: "what does the speaker click in the last 30 seconds?", "find the frame where the error appears". It can also generate structured summaries with key scenes and timelines.
+- **Extracts frames** at specific timestamps, scene changes, or fixed intervals, from local files or remote `http(s)` URLs.
+- **Falls back across providers** — Gemini 3.8 Flash (default) → MiniMax-M3.1-Flash → Kimi K3.1 Pro → Qwen3.8 Max → MiMo-V2.6 → GLM-5.3-Flash. If a key is missing or a call fails, the next provider is tried.
+- **Extras:** timestamp search, audio transcription with speaker diarization and SRT/VTT/JSON export, and video metadata (resolution, duration, fps, codec).
 
 ## Need help?
 
