@@ -123,9 +123,11 @@ The current AA values are **Artificial Analysis Intelligence Index v5.0** compos
 
 **Every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** The Qwen 3.8 Max row scores **33.6** under v5.0, and Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6**.
 
-This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
+This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
 
 **GPT-6.1 Terra** (released October 2026, in Copilot since October 26) enters at **51** on flat pricing of **$1 / $0.05 cache read / $5** per 1M tokens with vision and a 1M context, which puts it at **~$0.0196** per intelligence point — about half of GPT-6.1 Sol’s **~$0.0367**. Gemini 4 Argon (released October 13, 2026) scores **50.4** on Google’s introductory pricing of **$2 / $0.10 implicit cache / $10** per 1M tokens, which doubles to **$4 / $0.20 / $20** on December 1, 2026.
+
+**Gemini 4 Carbon** (announced October 28, 2026; in Copilot since November 10) scores **60** — second overall behind Claude Fable 5.2 — on the same **$2 / $0.10 / $10** introductory rates as Argon, which also double to **$4 / $0.20 / $20** on December 1. That puts it at **~$0.0333** per intelligence point at roughly **$2.00** per modeled session, but Google notes Carbon spends more tokens per task than Argon, so a real Carbon session costs more at identical rates. Its **60** is Artificial Analysis' current v5.0.1 value; Google's launch post listed **59** under v5.0.
 
 Claude Haiku 5.5 (released October 7, 2026) scores **36.2** and, at **~$0.0028** per intelligence point, is still the lowest cost per intelligence in the table; MiMo V2.6 Flash (**26.7**) is still the cheapest custom-endpoint option at **~$0.0037**.
 
@@ -145,6 +147,7 @@ DeepSeek’s **V4.1-Flash-1017** build (released October 17, 2026) scores **32**
 | **GPT-6.1 Terra**            | OpenAI    | **~$0.0196**          | **51**             | ~$1.00       | ✅     | 1M             |
 | **Gemini 3.8 Flash**         | Google    | **~$0.0246**          | **30.5**           | ~$0.75       | ✅     | 1M             |
 | **Muse Spark 1.3**           | Meta      | **~$0.0288**          | **36.4**           | ~$1.05       | ✅     | 1M             |
+| **Gemini 4 Carbon**          | Google    | **~$0.0333**          | **60**             | ~$2.00       | ✅     | 1M             |
 | **GLM 5.3**                  | Z.ai      | **~$0.0360**          | **31.7**           | ~$1.14       | ❌     | 1M             |
 | **GPT-6.1 Sol**              | OpenAI    | **~$0.0367**          | **54.5**           | ~$2.00       | ✅     | 1M             |
 | **Claude Sonnet 5.5**        | Anthropic | **~$0.0369**          | **54.2**           | ~$2.00       | ✅     | 1M             |
@@ -160,7 +163,7 @@ DeepSeek’s **V4.1-Flash-1017** build (released October 17, 2026) scores **32**
 | **Claude Fable 5.1**         | Anthropic | **~$0.2012**          | **49.7**           | ~$10.00      | ✅     | 1M             |
 
 > `MiMo V2.6 Pro UltraSpeed` uses the MiMo V2.6 Pro score (same quality, lower latency).
-> Plan access: GPT-6 Sol, GPT-6.1 Sol, Claude Opus 5.5, Claude Fable 5.2, and Gemini 4 Argon need Pro+ or higher; GPT-6 Luna and Claude Sonnet 5.5 are available from Pro; Claude Haiku 5.5 is on every paid plan.
+> Plan access: GPT-6 Sol, GPT-6.1 Sol, Claude Opus 5.5, Claude Fable 5.2, Gemini 4 Argon, and Gemini 4 Carbon need Pro+ or higher; GPT-6 Luna and Claude Sonnet 5.5 are available from Pro; Claude Haiku 5.5 is on every paid plan.
 > Claude Haiku 5.5 is priced by prompt length; the table shows its sub-100K rates.
 
 > Detailed pricing, benchmark provenance, and model-specific notes live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md). This page stays focused on setup and model selection. For a copy-paste config containing **all providers at once**, see [docs/example-config.md](docs/example-config.md).
@@ -210,7 +213,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 2. If the provider needs request rewriting, add a proxy under `proxy/`.
 3. Submit a PR.
 
-The current AA values are **Artificial Analysis Intelligence Index v5.0** composites taken from OpenRouter’s model metadata (re-based from v4.3.2 on October 31, 2026); **every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
+The current AA values are **Artificial Analysis Intelligence Index v5.0** composites taken from OpenRouter’s model metadata (re-based from v4.3.2 on October 31, 2026); **every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
 
 - **Chat only.** Inline completions, semantic search, and next-edit suggestions still need a GitHub-hosted model.
 - Each proxy is tuned for a specific provider family. Don't point the Kimi proxy at an arbitrary OpenAI-compatible endpoint.
