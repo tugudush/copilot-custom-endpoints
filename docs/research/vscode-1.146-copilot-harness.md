@@ -293,14 +293,15 @@ The production Kimi, Qwen, and MiMo proxies therefore still applied their normal
 
 ### Results per route
 
-| Route                                  | Model                      | Turn 1 (plain, 128 tools) | Tool turn                 | Provider status |
-| -------------------------------------- | -------------------------- | ------------------------- | ------------------------- | --------------- |
-| Kimi proxy `:3457` → relay → Moonshot  | `kimi-k3.1-pro`            | 200                       | 200, tool result accepted | ✅ Pass         |
-| Qwen proxy `:3458` → relay → DashScope | `qwen3.8-max`              | 200                       | 200, tool result accepted | ✅ Pass         |
-| MiMo proxy `:3459` → relay → Xiaomi    | `mimo-v2.6-pro`            | 200                       | 200, tool result accepted | ✅ Pass         |
-| Relay `:3460` → MiniMax                | `MiniMax-M3.1-Flash`       | 200                       | 200, tool result accepted | ✅ Pass         |
-| Relay `:3461` → Z.ai                   | `glm-5.3-flash`, `glm-5.3` | 200                       | 200, tool result accepted | ✅ Pass         |
-| Local harness, any provider            | —                          | —                         | —                         | ⛔ Not tested   |
+| Route                                  | Model                          | Turn 1 (plain, 128 tools) | Tool turn                 | Provider status |
+| -------------------------------------- | ------------------------------ | ------------------------- | ------------------------- | --------------- |
+| Kimi proxy `:3457` → relay → Moonshot  | `kimi-k3.1-pro`                | 200                       | 200, tool result accepted | ✅ Pass         |
+| Qwen proxy `:3458` → relay → DashScope | `qwen3.8-max`                  | 200                       | 200, tool result accepted | ✅ Pass         |
+| MiMo proxy `:3459` → relay → Xiaomi    | `mimo-v2.6-pro`                | 200                       | 200, tool result accepted | ✅ Pass         |
+| Relay `:3460` → MiniMax                | `MiniMax-M3.1-Flash`           | 200                       | 200, tool result accepted | ✅ Pass         |
+| Relay `:3461` → Z.ai                   | `glm-5.3-flash`, `glm-5.3`     | 200                       | 200, tool result accepted | ✅ Pass         |
+| **Local harness** — all five routes    | Kimi, Qwen, MiMo, MiniMax, GLM | 200                       | 200, tool result accepted | ✅ Pass         |
+| Local harness, GLM 5.3 (text model)    | —                              | not run                   | —                         | ⚠️ Flash only   |
 
 Each passing route: the model appeared in the picker, streamed a reply, called a tool, and completed a follow-up turn after the tool result. A Kimi tool loop run also produced the intermediate `system/user/user/assistant/user` turn the harness inserts.
 
@@ -325,10 +326,31 @@ Findings, scoped to these runs:
 7. **The harness sends at most 128 tools.** The Chat view reported "The model only supports 128 tools, 143 tools were not provided to the model" in this profile; earlier baselines recorded 100–128 depending on configuration.
 8. **GLM needs no provider object to think.** Both `glm-5.3-flash` and `glm-5.3` completed the tool loop with no `thinking` field in the request; Z.ai thinks by default server-side and `clear_thinking` strips history, so the absence of a client-side object is harmless — the same conclusion the Phase 1 `requestBody` measurement implied, now confirmed live.
 
+### Local harness run (2026-11-13, same session)
+
+Second pass with the session target set to **Local**. All five routes completed a request and a tool follow-up with HTTP 200: `qwen-upstream`, `kimi-upstream`, `mimo-upstream`, `minimax`, `glm`. Seven requests, seven 200 responses, no provider errors.
+
+| Observation                            | Local harness                                                                                                                                                     |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tools sent                             | **57** (versus 128 on Copilot)                                                                                                                                    |
+| Tool names                             | Local vocabulary (`create_file`, `edit_notebook_file`, …), as in the Phase 1 baseline                                                                             |
+| Kimi reasoning replay on the tool turn | **Yes** — `reasoning_content` present on the assistant tool-call message                                                                                          |
+| Qwen `enable_thinking`                 | absent on the first request, `false` on the tool request                                                                                                          |
+| MiMo `thinking`                        | `{"type":"disabled"}` on a request whose history lacked reasoning                                                                                                 |
+| GLM / MiniMax `reasoning_effort`       | `"low"` / `"medium"` reached the providers; `max_completion_tokens: 131072` on both                                                                               |
+| Errors                                 | none from the providers; one `net::ERR_CONNECTION_REFUSED` from VS Code when the local relays had been stopped, cleared by **Try Again** once they were restarted |
+
+Two harness behaviours worth recording:
+
+1. **The session target does not persist.** A new chat starts on the Copilot harness even after a Local session; you must set the target again for every new chat. Mixing that up silently runs the wrong harness.
+2. **Changing the model inside a live session keeps the session**, so history crosses providers. Later requests carried earlier Kimi/MiMo/GLM tool turns into the next provider's request — realistic, but it means the Local runs after the first are not independent, single-provider conversations.
+
+Reasoning replay is therefore **harness-independent for Kimi**: Copilot and Local both replayed it on the tool turn.
+
 ### Still unverified
 
-- Any provider on the **Local harness**; the deprecation deadline still applies and the per-harness rule stands: a Copilot-harness pass is not evidence for Local.
 - Vision input on any route, and long-conversation compaction.
+- GLM 5.3 (text model) on the Local harness — only `glm-5.3-flash` was exercised there.
 - Whether a SecretStorage-set key (rather than the relay) changes any of the above; the request shape should be identical apart from the `Authorization` value, but this was not measured.
 
 ### Profile-loading note for future runs

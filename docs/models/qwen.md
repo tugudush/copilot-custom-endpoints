@@ -19,7 +19,7 @@
 | `modelOptions` | `temperature: 1`, `top_p: 0.95` (the only sampling control VS Code forwards)                       |
 | `requestBody`  | **Not forwarded on VS Code 1.146** — thinking must be controlled by the proxy                      |
 
-> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. Turn 1 carried 128 tools and no ool_choice (so thinking stayed at the DashScope default) and still succeeded; the proxy injected nable_thinking: false on the tool turn. Local harness not tested; vision not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. Turn 1 carried 128 tools and no ool_choice (so thinking stayed at the DashScope default) and still succeeded; the proxy injected nable_thinking: false on the tool turn. Both harnesses pass (Copilot sends 128 tools, Local sends 57); vision and long-context compaction not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
 
 ### Models
 

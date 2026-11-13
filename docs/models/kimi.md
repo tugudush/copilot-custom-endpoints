@@ -22,7 +22,7 @@
 
 > **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy, and the follow-up request **replayed
 > easoning_content on the assistant tool-call message** — the first direct evidence of reasoning replay on a custom endpoint.
-> easoning_effort: "high" and max_completion_tokens: 131072 reached Moonshot. Local harness not tested; vision not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> easoning_effort: "high" and max_completion_tokens: 131072 reached Moonshot. Both harnesses pass (Copilot sends 128 tools, Local sends 57); vision and long-context compaction not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
 
 ### Models
 
