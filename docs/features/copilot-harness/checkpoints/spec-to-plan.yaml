@@ -2,7 +2,7 @@ metadata:
   generated: '2026-11-13'
   source_spec: 'docs/research/vscode-1.146-copilot-harness.md'
   target_plan: 'docs/features/copilot-harness/plan.md'
-  note: 'The source is research, not a formal specification; REQ IDs are derived planning objectives.'
+  note: 'Inputs are research and the user request for both harnesses, not a formal specification; REQ IDs are derived planning objectives.'
 summary:
   total_requirements: 6
   covered_requirements: 6
@@ -27,4 +27,4 @@ validation:
   passed: true
   errors: []
   warnings:
-    - 'Planning objectives are derived from research; no formal REQ-tagged specification was supplied.'
+    - 'Planning objectives are derived from research and the user request; no formal REQ-tagged specification was supplied.'
