@@ -254,22 +254,82 @@ The profile was created with `code --user-data-dir="%TEMP%\copilot-harness-basel
 
 Phase 5's gap report. "Verified" means observed in this investigation; every provider row stays **blocked/not validated** because traffic only ever reached a loopback mock.
 
-| Evidence                                                                                     | Copilot harness                                           | Local harness                                |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------- |
-| Model visibility, streaming reply                                                            | ✅ Verified 2026-11-13                                    | ✅ Verified 2026-11-13                       |
-| Mocked tool call executed, follow-up request observed                                        | ✅ Verified 2026-11-13                                    | ✅ Verified 2026-11-13                       |
-| `modelOptions.temperature` / `top_p` forwarded                                               | ✅ Verified                                               | ✅ Verified                                  |
-| `requestBody` (`enable_thinking`, `reasoning_effort`, `max_tokens`)                          | ❌ Silently dropped — do not use                          | ❌ Silently dropped — do not use             |
-| `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` → `reasoning_effort` | ✅ Verified on the `thinking: true` entry                 | ⚠️ Not measured on that entry                |
-| `maxOutputTokens` → `max_completion_tokens`                                                  | ⚠️ Entry-dependent — observed only on the reasoning entry | ⚠️ Same limitation                           |
-| `thinking: true` creates a provider `thinking` object                                        | ❌ No — metadata only                                     | ❌ No — metadata only                        |
-| `reasoning_content` replayed in assistant tool-call history                                  | ⚠️ Unobserved (absent in every capture)                   | ⚠️ Unobserved (absent in every capture)      |
-| First-turn `tools` array without `tool_choice`                                               | ✅ Confirmed (128 tools)                                  | ✅ Confirmed (94 tools, distinct vocabulary) |
-| Enforced context/output limit at the provider                                                | ⚠️ Unmeasured — limits are configuration, not validated   | ⚠️ Unmeasured                                |
-| Vision input, long-conversation compaction                                                   | ⚠️ Not tested                                             | ⚠️ Not tested                                |
-| Real provider routes (Kimi, Qwen, MiMo, MiniMax, GLM)                                        | ⛔ Blocked — needs credentials, spend, test window        | ⛔ Blocked                                   |
-| Extension-provided DeepSeek (Agents window / editor)                                         | ⛔ Not tested                                             | ⛔ Not tested                                |
+| Evidence                                                                                     | Copilot harness                                                                                     | Local harness                                |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Model visibility, streaming reply                                                            | ✅ Verified 2026-11-13                                                                              | ✅ Verified 2026-11-13                       |
+| Mocked tool call executed, follow-up request observed                                        | ✅ Verified 2026-11-13                                                                              | ✅ Verified 2026-11-13                       |
+| `modelOptions.temperature` / `top_p` forwarded                                               | ✅ Verified                                                                                         | ✅ Verified                                  |
+| `requestBody` (`enable_thinking`, `reasoning_effort`, `max_tokens`)                          | ❌ Silently dropped — do not use                                                                    | ❌ Silently dropped — do not use             |
+| `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` → `reasoning_effort` | ✅ Verified on the `thinking: true` entry                                                           | ⚠️ Not measured on that entry                |
+| `maxOutputTokens` → `max_completion_tokens`                                                  | ⚠️ Entry-dependent — observed only on the reasoning entry                                           | ⚠️ Same limitation                           |
+| `thinking: true` creates a provider `thinking` object                                        | ❌ No — metadata only                                                                               | ❌ No — metadata only                        |
+| `reasoning_content` replayed in assistant tool-call history                                  | ⚠️ Unobserved (absent in every capture)                                                             | ⚠️ Unobserved (absent in every capture)      |
+| First-turn `tools` array without `tool_choice`                                               | ✅ Confirmed (128 tools)                                                                            | ✅ Confirmed (94 tools, distinct vocabulary) |
+| Enforced context/output limit at the provider                                                | ⚠️ Unmeasured — limits are configuration, not validated                                             | ⚠️ Unmeasured                                |
+| Vision input, long-conversation compaction                                                   | ⚠️ Not tested                                                                                       | ⚠️ Not tested                                |
+| Real provider routes (Kimi, Qwen, MiMo, MiniMax, GLM)                                        | ✅ Live-tested 2026-11-13, see [§9](#9-phase-3-live-provider-validation-copilot-harness-2026-11-13) | ⛔ Not tested                                |
+| Extension-provided DeepSeek (Agents window / editor)                                         | ⛔ Not tested                                                                                       | ⛔ Not tested                                |
 
 Automated checks after the Phase 2 and Phase 4 work: `npm test` 49/49 passing, `npm run lint` clean, `npx prettier --check .` clean.
 
 Cleanup state at the end of Phase 5 work: no test server holds a port (`:3457`–`:3459`, `:3490` all free) and no `Code.exe` references the isolated profile. Two idle `node` processes from the 13:39 baseline window (`proxy/qwen-proxy.mjs`, `proxy/kimi-proxy.mjs`) were left running untouched because they belong to the user's environment, hold no listening socket, and may be deliberately paused rather than orphaned. `debug_log/` still holds the sanitized captures listed above until the docs are committed.
+
+## 9. Phase 3 live provider validation, Copilot harness (2026-11-13)
+
+Real provider traffic, one isolated profile, loopback-only relays. Four of the five documented custom-endpoint routes completed a full plain-chat plus multi-step tool loop on the **Copilot harness**; GLM was reachable by direct API but its harness run did not complete, and **no Local-harness provider run was performed**. Everything in this section is Copilot harness unless stated otherwise.
+
+### How the traffic was routed, and why
+
+VS Code 1.146 does **not** send a literal `apiKey` from `chatLanguageModels.json`. A diagnostic endpoint on `:3470` received `Authorization: Bearer` with an empty token (header value literally `Bearer`, no other key header present) for an entry whose `apiKey` was a real provider key. Setting the key through **Chat: Manage Language Models → Update API Key** (SecretStorage) is the supported path, as the README already says; pasting a key into the JSON file is not.
+
+To keep credentials out of VS Code storage during the test, keys were injected by temporary local relays in `%TEMP%` that forward to the real provider with `Authorization: Bearer <key>` and rewrite nothing else:
+
+```
+VS Code -> production proxy (:3457/:3458/:3459) -> auth relay (:3462/:3463/:3464) -> provider
+VS Code -> auth relay (:3460 MiniMax, :3461 GLM)                                -> provider
+```
+
+The production Kimi, Qwen, and MiMo proxies therefore still applied their normal rewrites; the relay only supplied the credential. Relay summaries record the sanitized request shape after those rewrites, which is what the provider receives. All relays, the isolated profile, and the scratch workspace were deleted after the run; only the sanitized NDJSON captures in `debug_log/phase3-*.ndjson` were kept.
+
+### Results per route
+
+| Route                                  | Model                | Turn 1 (plain, 128 tools) | Tool turn                 | Provider status        |
+| -------------------------------------- | -------------------- | ------------------------- | ------------------------- | ---------------------- |
+| Kimi proxy `:3457` → relay → Moonshot  | `kimi-k3.1-pro`      | 200                       | 200, tool result accepted | ✅ Pass                |
+| Qwen proxy `:3458` → relay → DashScope | `qwen3.8-max`        | 200                       | 200, tool result accepted | ✅ Pass                |
+| MiMo proxy `:3459` → relay → Xiaomi    | `mimo-v2.6-pro`      | 200                       | 200, tool result accepted | ✅ Pass                |
+| Relay `:3460` → MiniMax                | `MiniMax-M3.1-Flash` | 200                       | 200, tool result accepted | ✅ Pass                |
+| Relay `:3461` → Z.ai                   | `glm-5.3-flash`      | not run in harness        | —                         | ⚠️ Direct API 200 only |
+| Local harness, any provider            | —                    | —                         | —                         | ⛔ Not tested          |
+
+Each passing route: the model appeared in the picker, streamed a reply, called a tool, and completed a follow-up turn after the tool result. A Kimi tool loop run also produced the intermediate `system/user/user/assistant/user` turn the harness inserts.
+
+### What each request actually contained
+
+| Route   | `reasoning_effort`                        | `max_completion_tokens` | Proxy-specific field                                      | Replayed assistant `reasoning_content`     |
+| ------- | ----------------------------------------- | ----------------------- | --------------------------------------------------------- | ------------------------------------------ |
+| Kimi    | `"high"` (from `supportsReasoningEffort`) | 131072                  | none (`thinking` object absent, correct for K3)           | **Yes — the tool-call message carried it** |
+| Qwen    | absent (no effort metadata on this entry) | absent                  | `enable_thinking: false` **only** on the tool turn        | No                                         |
+| MiMo    | absent                                    | absent                  | `thinking: {"type":"disabled"}` **only** on the tool turn | No                                         |
+| MiniMax | `"medium"`                                | 131072                  | none                                                      | No                                         |
+
+Findings, scoped to these runs:
+
+1. **Reasoning replay works for Kimi.** The third Kimi request contained an assistant message with `tool_calls` _and_ non-empty `reasoning_content`. The earlier claim that VS Code cannot preserve `reasoning_content` across tool turns is wrong for a `thinking: true` entry on this harness. This is the first direct evidence for the replay change in [microsoft/vscode#318809](https://github.com/microsoft/vscode/pull/318809) on a custom endpoint.
+2. **Replay is not automatic for every `thinking: true` entry.** MiniMax also declares `thinking: true` and received `max_completion_tokens`, yet its follow-up carried no `reasoning_content`, and Qwen/MiMo (no `thinking` metadata) replayed none either. Per-provider replay is therefore still an open question; only Kimi is proven.
+3. **The Qwen first-turn gap did not cause a failure.** Turn 1 went out with 128 tools, no `tool_choice`, and no `enable_thinking` (thinking at provider default) and returned 200; the proxy then injected `enable_thinking: false` for the tool turn. The limitation documented in [qwen.md](../models/qwen.md) is real but benign on `qwen3.8-max`.
+4. **The MiMo fallback engaged as designed.** Turn 1 sent no `thinking` object; the tool turn received `thinking: {"type":"disabled"}` because no `reasoning_content` was replayed. No HTTP 400.
+5. **`maxOutputTokens` → `max_completion_tokens` tracks the reasoning metadata, not the model.** Present on the Kimi (131072) and MiniMax (131072) entries, absent on Qwen and MiMo, whose entries declare no `thinking`. This matches the Phase 1 observation and confirms it is an entry-level rule.
+6. **`reasoning_effort` reaches the wire for effort-enabled entries** (`"high"` for Kimi, `"medium"` for MiniMax) with no `requestBody` involved.
+7. **The harness sends at most 128 tools.** The Chat view reported "The model only supports 128 tools, 143 tools were not provided to the model" in this profile; earlier baselines recorded 100–128 depending on configuration.
+
+### Still unverified
+
+- GLM through the harness (`glm-5.3-flash` returned 200 to a direct API probe with the same key, but the in-editor run was not completed).
+- Any provider on the **Local harness**; the deprecation deadline still applies and the per-harness rule stands: a Copilot-harness pass is not evidence for Local.
+- Vision input on any route, and long-conversation compaction.
+- Whether a SecretStorage-set key (rather than the relay) changes any of the above; the request shape should be identical apart from the `Authorization` value, but this was not measured.
+
+### Reproducing the run
+
+The relays were temporary and are gone; recreate them with the shape above if this needs repeating. The three production proxies are unchanged by this phase. Captures: `debug_log/phase3-kimi.ndjson`, `phase3-qwen.ndjson`, `phase3-mimo.ndjson` (proxy-level, redacted) and `phase3-relay.ndjson` (route-level summaries incl. reasoning-presence counts).

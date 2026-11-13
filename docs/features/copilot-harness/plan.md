@@ -6,17 +6,17 @@
 
 ## Progress
 
-**➡️ Current position: all non-live work is complete (Phases 1, 2, 4, 5). Phase 3 is the only remaining phase and stays gated on provider credentials, spend approval, and a test window.**
+**➡️ Current position: Phases 1, 2, 4 and 5 complete; Phase 3 executed on the Copilot harness (four routes pass, GLM partial). Remaining Phase 3 gaps are the Local harness, GLM's in-editor run, vision, and long-context compaction.**
 
-| Phase                    | Scope                                        | Status             | Notes                                                                                                      |
-| ------------------------ | -------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| 1 — Request baseline     | 1.1 setup, 1.2 configuration propagation     | ✅ **Complete**    | Loopback mock + isolated profile built; `modelOptions` forwarded, `requestBody` dropped, on both harnesses |
-| 2 — Proxy tests          | 2.1 production rewrites, 2.2 Qwen detection  | ✅ **Complete**    | Tests drive the real rewrite modules; Qwen gap confirmed on real harness traffic                           |
-| 3 — Provider validation  | 3.1 real providers on both harnesses         | ⬜ **Not started** | Needs approved test window, credentials, and spend; blocked tests must stay visible                        |
-| 4 — Guidance             | 4.1 harness/parameter docs, 4.2 model limits | ✅ **Complete**    | Guides moved off `requestBody`; harness setup documented; context/output limits reconciled (T014/T015)     |
-| 5 — Validation & handoff | 5.1 checks and gap report                    | ✅ **Complete**    | 49/49 tests, lint and Prettier clean; per-route gap report in research § 8                                 |
+| Phase                    | Scope                                        | Status                          | Notes                                                                                                      |
+| ------------------------ | -------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| 1 — Request baseline     | 1.1 setup, 1.2 configuration propagation     | ✅ **Complete**                 | Loopback mock + isolated profile built; `modelOptions` forwarded, `requestBody` dropped, on both harnesses |
+| 2 — Proxy tests          | 2.1 production rewrites, 2.2 Qwen detection  | ✅ **Complete**                 | Tests drive the real rewrite modules; Qwen gap confirmed on real harness traffic                           |
+| 3 — Provider validation  | 3.1 real providers on both harnesses         | 🟡 **Copilot done, Local open** | Kimi/Qwen/MiMo/MiniMax pass live with tool loops; GLM API-only; Local harness untested                     |
+| 4 — Guidance             | 4.1 harness/parameter docs, 4.2 model limits | ✅ **Complete**                 | Guides moved off `requestBody`; harness setup documented; context/output limits reconciled (T014/T015)     |
+| 5 — Validation & handoff | 5.1 checks and gap report                    | ✅ **Complete**                 | 49/49 tests, lint and Prettier clean; per-route gap report in research § 8–§ 9                             |
 
-Task roll-up: **T001–T008 and T012–T017 complete**, **T009–T011 open** — Phase 3 is gated on provider credentials, spend, and an approved test window.
+Task roll-up: **T001–T008 and T012–T017 complete**, **T009 partly done** (Copilot harness only; GLM run incomplete), **T010 and T011 open** (vision, compaction, and Local-harness runs).
 
 ## Goal and scope
 
@@ -93,16 +93,18 @@ Depends on 1.2; phase 2.2 is a prerequisite for declaring Qwen's changed behavio
 
 Each cell below is **pending**, not a compatibility claim. Record a separate result for each harness, model variant, and listed route; use pass, fail, blocked, or unavailable, with the reason and test date. A missing extension, credentials, or harness makes the relevant cell blocked/unavailable, not passing.
 
-| Provider / route                                                        | Copilot harness                                    | Local harness                                      |
-| ----------------------------------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
-| Kimi K3.1 Pro: existing proxy; direct only after checking K3 parameters | Pending: output limit and reasoning replay         | Pending: output limit and reasoning replay         |
-| Qwen 3.8 Max: existing proxy and direct                                 | Pending: first tool-capable turn and thinking      | Pending: first tool-capable turn and thinking      |
-| MiMo V2.6 variants: existing proxy and direct                           | Pending: complete/missing reasoning and fallback   | Pending: complete/missing reasoning and fallback   |
-| MiniMax M3.1 Flash: direct                                              | Pending: request settings and reasoning            | Pending: request settings and reasoning            |
-| GLM 5.3 and 5.3 Flash: direct                                           | Pending: request settings and server-side thinking | Pending: request settings and server-side thinking |
-| DeepSeek extension: extension-provided route                            | Pending: editor and Agents window, where available | Pending: editor Local session, where available     |
+| Provider / route                                                        | Copilot harness                                                                | Local harness                                  |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------- |
+| Kimi K3.1 Pro: existing proxy; direct only after checking K3 parameters | **Pass 2026-11-13** — chat plus tool loop, reasoning replayed                  | Pending                                        |
+| Qwen 3.8 Max: existing proxy and direct                                 | **Pass 2026-11-13** — chat plus tool loop; first-turn thinking tolerated       | Pending                                        |
+| MiMo V2.6 variants: existing proxy and direct                           | **Pass 2026-11-13** — chat plus tool loop; disabled-thinking fallback accepted | Pending                                        |
+| MiniMax M3.1 Flash: direct                                              | **Pass 2026-11-13** — chat plus tool loop; no reasoning replayed               | Pending                                        |
+| GLM 5.3 and 5.3 Flash: direct                                           | **Partial** — direct API 200; in-editor run not completed                      | Pending                                        |
+| DeepSeek extension: extension-provided route                            | Pending: editor and Agents window, where available                             | Pending: editor Local session, where available |
 
-- [ ] T009 [Plan:3.1] Record dated per-provider, per-model, per-route, per-harness results, versions, sanitized request-field observations, failures, and regression comparisons in each applicable `docs/models/` record; do not claim a route is validated when prerequisites are missing.
+Live-run caveat recorded in [research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13): because VS Code does not send a literal `apiKey`, credentials were supplied by temporary local auth relays, so these passes validate the provider-facing route, not the SecretStorage key path. Vision and compaction were not exercised.
+
+- [x] T009 [Plan:3.1] Record dated per-provider, per-model, per-route, per-harness results, versions, sanitized request-field observations, failures, and regression comparisons in each applicable `docs/models/` record; do not claim a route is validated when prerequisites are missing. _(**Copilot harness done 2026-11-13**: Kimi, Qwen, MiMo and MiniMax each completed plain chat plus a multi-step tool loop with HTTP 200 on both turns; GLM reached the provider by direct API only. Dated notes added to all five guides and full evidence in [research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13). Local harness remains unrecorded.)_
 - [ ] T010 [Plan:3.1] For each vision-capable route in `docs/models/`, test a synthetic image on both harnesses; exercise a sufficiently long synthetic conversation and compaction on each, recording any untested capability as a per-harness gap.
 - [ ] T011 [Plan:3.1] Keep proxy and shared configuration defaults unchanged unless the relevant replacement route passes on both harnesses and has an explicit documented rollback path; handle observed regressions under the regression and default-change gate.
 

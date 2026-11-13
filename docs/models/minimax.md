@@ -26,6 +26,11 @@
 | Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                                                        |
 | Auth                     | `Authorization: Bearer $MINIMAX_API_KEY` (or Subscription Key, see [Setup](#setup))                   |
 
+> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns on the direct route.
+> easoning_effort: "medium" and max_completion_tokens: 131072 reached MiniMax, and no hinking/
+> easoning_split field was needed.
+> easoning_content was not replayed on the tool turn. Local harness not tested; vision not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+
 ### Models
 
 | Model                | Vision | Context | Max output                      | Notes                                                                                                  |
