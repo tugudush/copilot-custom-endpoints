@@ -11,6 +11,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Claude Opus 5.5** (Anthropic, September 22, 2026) — `claude-opus-5-5`; GA in Copilot; adaptive thinking always on. No custom-endpoint setup validated here.
 - **Gemini 4 Argon** (Google, October 13, 2026) — `gemini-4-argon`; GA in Copilot (not Pro). No custom-endpoint setup maintained here.
 - **Gemini 4 Carbon** (Google, October 28, 2026; GA November 10, 2026) — `gemini-4-carbon`; GA in Copilot (not Pro); thinking levels `low` / `medium` / `high`. No custom-endpoint setup maintained here.
+- **Gemini 4 Hydrogen** (Google, November 12, 2026) — `gemini-4-hydrogen`; API-only (Google AI Studio and the Gemini API, free tier available) and not in Copilot as of November 13, 2026; thinking levels `low` / `medium` / `high` (default) / `xhigh`. No custom-endpoint setup maintained here.
 - **Qwen 3.8 Max** (DashScope) — `qwen3.8-max`; optional proxy `proxy/qwen-proxy.mjs`. See [docs/models/qwen.md](docs/models/qwen.md).
 - **DeepSeek V4.1 Flash** — via the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension; no custom-endpoint config. See [docs/models/deepseek.md](docs/models/deepseek.md).
 - **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — optional proxy `proxy/mimo-proxy.mjs`. See [docs/models/mimo.md](docs/models/mimo.md).

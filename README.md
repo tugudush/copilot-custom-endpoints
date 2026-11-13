@@ -128,6 +128,8 @@ This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Grok 4.
 
 **Gemini 4 Carbon** (announced October 28, 2026; in Copilot since November 10) scores **60** — second overall behind Claude Fable 5.2 — on the same **$2 / $0.10 / $10** introductory rates as Argon, which also double to **$4 / $0.20 / $20** on December 1. That puts it at **~$0.0333** per intelligence point at roughly **$2.00** per modeled session, but Google notes Carbon spends more tokens per task than Argon, so a real Carbon session costs more at identical rates. Its **60** is Artificial Analysis' current v5.0.1 value; Google's launch post listed **59** under v5.0.
 
+**Gemini 4 Hydrogen** (released November 12, 2026) is Google's cheap everyday-execution counterpart to Carbon and Argon, at a flat **$1.50 / $0.075 implicit cache / $7.50** per 1M tokens across the full 1M window — cheaper than Carbon's intro rates and unaffected by the December 1 price step on Argon and Carbon. It scores **54** at its `xhigh` thinking level (**51** at the default `high`), which puts it at **~$0.0278** per intelligence point at roughly **$1.50** per modeled session. It is API-only for now: Google ships it in AI Studio and the Gemini API, including a free tier, but it is not in Copilot, so reaching it means a custom endpoint. Hydrogen always thinks across `low` / `medium` / `high` / `xhigh`, so real token spend tracks the thinking level.
+
 Claude Haiku 5.5 (released October 7, 2026) scores **36.2** and, at **~$0.0028** per intelligence point, is still the lowest cost per intelligence in the table; MiMo V2.6 Flash (**26.7**) is still the cheapest custom-endpoint option at **~$0.0037**.
 
 Muse Spark 1.3 (Meta, released September 2, 2026) scores **36.4** on Meta Model API pricing of **$1.25 / $0.15 cached input / $4.25** per 1M tokens; its day-one `muse-spark-1.3-contributor` SKU is excluded from this snapshot because Meta may train future models on those prompts and completions.
@@ -145,6 +147,7 @@ DeepSeek’s **V4.1-Flash-1017** build (released October 17, 2026) scores **32**
 | **MiMo V2.6 Pro**            | Xiaomi    | **~$0.0102**          | **29.9**           | ~$0.30       | ✅     | 1M             |
 | **GPT-6.1 Terra**            | OpenAI    | **~$0.0196**          | **51**             | ~$1.00       | ✅     | 1M             |
 | **Gemini 3.8 Flash**         | Google    | **~$0.0246**          | **30.5**           | ~$0.75       | ✅     | 1M             |
+| **Gemini 4 Hydrogen**        | Google    | **~$0.0278**          | **54**             | ~$1.50       | ✅     | 1M             |
 | **Muse Spark 1.3**           | Meta      | **~$0.0288**          | **36.4**           | ~$1.05       | ✅     | 1M             |
 | **Gemini 4 Carbon**          | Google    | **~$0.0333**          | **60**             | ~$2.00       | ✅     | 1M             |
 | **GLM 5.3**                  | Z.ai      | **~$0.0360**          | **31.7**           | ~$1.14       | ❌     | 1M             |
