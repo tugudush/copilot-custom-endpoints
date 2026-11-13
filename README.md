@@ -13,7 +13,7 @@ If [OpenRouter](https://openrouter.ai) is blocked by your network or too generic
 1. **Pick a model** from the table below.
 2. **Add it to your VS Code config** — copy the snippet from the model's doc.
 3. **Set the API key** through VS Code's UI (it goes to your OS keychain, not the file).
-4. **Configure the Utility Small Model** — VS Code now requires a fast fallback model for built-in utility flows. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest custom-endpoint model (or "Default" if you have native Copilot models available). Without this, chat may not function correctly.
+4. **Check the utility models (optional)** — with a GitHub Copilot token, VS Code already uses Copilot's built-in utility models. Only if you use BYOK without Copilot sign-in do you need to set **Chat: Utility Model** / **Chat: Utility Small Model** (or point `chat.byokUtilityModelDefault` at _Main Agent Model_).
 5. **Open chat** and pick the model from the model picker.
 
 That's it. No code, no servers to manage (unless the model specifically needs the local proxy — the table tells you).
@@ -57,20 +57,19 @@ Open the setup guide for the model you picked (links in the table above) and cop
 3. Find your provider in the list, right-click the group name → **Update API Key**.
 4. Paste your key. It's stored in your OS keychain.
 
-### 4. Configure the Utility Small Model
+### 4. Utility models (usually nothing to do)
 
-> **⚠️ Required for BYOK/custom-endpoint users.** VS Code's latest update mandates that you explicitly set which model handles built-in small/fast utility flows. Without this, custom-endpoint models may not function correctly in chat or agent mode.
+> **You only need this when running BYOK without GitHub sign-in.** With a Copilot token available, VS Code defaults both utility settings to Copilot's built-in utility models.
 
 1. Open VS Code Settings (`Ctrl+,` / `Cmd+,`).
-2. Search for **"Chat: Utility Small Model"** (setting ID: `chat.lm.utilitySmallModel`).
-3. Pick the **fastest, cheapest model** available to you from the dropdown. Good choices:
-   - **GLM 5.3 Flash** — if you have [GLM configured](docs/models/glm.md) (cheapest custom-endpoint option, ~$0.13/session).
-   - **GPT-6 Luna** — if it is available through your native Copilot models (fast, ~$0.10/session).
-   - **MiMo V2.6 Flash** — if you already have Xiaomi MiMo configured (low-cost multimodal option, ~$0.10/session).
+2. Set **Chat: Utility Model** (`chat.utilityModel`) and **Chat: Utility Small Model** (`chat.utilitySmallModel`) — or set `chat.byokUtilityModelDefault` to **Main Agent Model**.
+3. Pick the **fastest, cheapest model** available to you. Good choices:
+   - **GLM 5.3 Flash** — if you have [GLM configured](docs/models/glm.md) (cheapest custom-endpoint option).
+   - **MiMo V2.6 Flash** — if you already have Xiaomi MiMo configured (low-cost multimodal option).
    - **Default** — if you still have native Copilot model access, this lets VS Code use its built-in fast model.
 4. The setting takes effect immediately — no restart needed.
 
-> **Why this matters:** VS Code uses a small utility model for quick background tasks (token counting, prompt truncation, lightweight completions). When you switch to custom-endpoint models, the framework still needs a fast model for these utility flows. If left unset, some features may silently degrade or fail.
+> **Why this matters:** utility flows (titles, summaries, intent detection, commit messages, PR descriptions) need a small model. Without a Copilot token and without these settings, those features are unavailable. The [VS Code documentation](https://code.visualstudio.com/docs/agent-customization/language-models#_change-the-model-for-utility-tasks) does not list token counting or prompt truncation among them.
 
 ### 5. Chat
 

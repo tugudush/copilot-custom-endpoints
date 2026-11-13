@@ -4,20 +4,20 @@
 
 ## At a Glance
 
-| Field                  | Value                                                                                              |
-| ---------------------- | -------------------------------------------------------------------------------------------------- |
-| Mode                   | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`)                   |
-| Billing                | **Pay-as-You-Go only** — 1M-token free quota for new users                                         |
-| Vision                 | ✅ Yes (`qwen3.8-max`)                                                                             |
-| Tool calling           | ✅ Yes                                                                                             |
-| Context                | 1M                                                                                                 |
-| Max output             | 131K                                                                                               |
-| Protocol               | **OpenAI-compatible** (`/compatible-mode/v1`) — not native DashScope (`/api/v1`)                   |
-| Endpoint               | `https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions` |
-| Proxy endpoint         | `http://127.0.0.1:3458/v1/chat/completions`                                                        |
-| Auth                   | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                         |
-| `requestBody` (direct) | `enable_thinking: false`                                                                           |
-| `requestBody` (proxy)  | _none — proxy injects based on tool activity_                                                      |
+| Field          | Value                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| Mode           | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`)                   |
+| Billing        | **Pay-as-You-Go only** — 1M-token free quota for new users                                         |
+| Vision         | ✅ Yes (`qwen3.8-max`)                                                                             |
+| Tool calling   | ✅ Yes                                                                                             |
+| Context        | 1M                                                                                                 |
+| Max output     | 131K                                                                                               |
+| Protocol       | **OpenAI-compatible** (`/compatible-mode/v1`) — not native DashScope (`/api/v1`)                   |
+| Endpoint       | `https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions` |
+| Proxy endpoint | `http://127.0.0.1:3458/v1/chat/completions`                                                        |
+| Auth           | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                         |
+| `modelOptions` | `temperature: 1`, `top_p: 0.95` (the only sampling control VS Code forwards)                       |
+| `requestBody`  | **Not forwarded on VS Code 1.146** — thinking must be controlled by the proxy                      |
 
 ### Models
 
@@ -25,7 +25,7 @@
 | ------------- | ------ | ------- | ---------- | ------------------------------------------------------- |
 | `qwen3.8-max` | ✅ Yes | 1M      | 131K       | Frontier multimodal model; reasoning enabled by default |
 
-> The live `chatLanguageModels.json` points Qwen at the local proxy by default; the direct DashScope URL is shown below for users who prefer a static `enable_thinking: false` setup.
+> The live `chatLanguageModels.json` points Qwen at the local proxy by default. A direct DashScope entry cannot disable reasoning on VS Code 1.146 — `requestBody` is dropped — so the direct path below runs with DashScope's thinking default and is listed only for connectivity checks.
 
 ## Quick Start
 
@@ -90,13 +90,13 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
       "streaming": true,
       "maxInputTokens": 991000,
       "maxOutputTokens": 131072,
-      "requestBody": { "enable_thinking": false }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
   ]
 }
 ```
 
-> The live `chatLanguageModels.json` points Qwen at the local proxy with no `requestBody` override; use the snippet above only if you're not running the proxy.
+> **Direct path caveat:** `enable_thinking` cannot be set from `chatLanguageModels.json` on VS Code 1.146, so reasoning stays at DashScope's default and tool loops may hit `reasoning_content` errors. Use the proxy for tool-heavy work.
 
 #### Proxy path
 
@@ -112,7 +112,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
    curl http://127.0.0.1:3458/healthz
    ```
 
-2. Use this snippet (URLs point at the proxy; no `requestBody` override):
+2. Use this snippet (URLs point at the proxy; no thinking configuration needed):
 
 ```json
 {
@@ -193,9 +193,9 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 ## Notes
 
 - **Vision (`qwen3.8-max`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
-- **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected.
-- **Thinking trade-off:** Direct = thinking always off (loops stable, no reasoning visible). Proxy = thinking on in plain chat, off in tool turns.
-- **First tool-capable request:** detection is history-based, so an initial request that sends a `tools` array with no `tool_choice` and no tool-role history is treated as plain chat (thinking stays on). If a provider rejects thinking on that first turn, the follow-up turn is suppressed once tool activity appears. `tool_choice: "none"` is also treated as plain chat. Harness-specific request shapes for this case are still unverified — see [the harness research](../research/vscode-1.146-copilot-harness.md).
+- **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). On VS Code 1.146 neither `enable_thinking` nor `reasoning_effort` can be set from `requestBody` — the proxy is what toggles thinking, leaving it on for plain chat and suppressing it when tool activity is detected.
+- **Thinking trade-off:** Proxy = thinking on in plain chat, off in tool turns. Without the proxy, thinking stays on and tool loops are at the provider's mercy.
+- **First tool-capable request:** detection is history-based, so an initial request that sends a `tools` array with no `tool_choice` and no tool-role history is treated as plain chat (thinking stays on). Measured on VS Code 1.146: both the Copilot and Local harnesses send their full tool set with **no** `tool_choice`, so the first turn is always plain chat. `tool_choice: "none"` is also treated as plain chat. See [the harness research](../research/vscode-1.146-copilot-harness.md).
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 
 ## Troubleshooting
@@ -203,12 +203,12 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 | Symptom                                         | Likely cause                                                     | Fix                                                                                                          |
 | ----------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | "Connection refused" (proxy mode)               | Proxy not running                                                | `npm run proxy:qwen`                                                                                         |
-| Tool loops fail with `reasoning_content` errors | Direct path missing `enable_thinking: false`                     | Add `enable_thinking: false` to `requestBody`                                                                |
+| Tool loops fail with `reasoning_content` errors | Direct path with thinking on; `requestBody` cannot disable it    | Use the proxy (`npm run proxy:qwen`)                                                                         |
 | Tool loops still fail with proxy                | Proxy not rewriting                                              | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
 | Vision fails with external image URL            | DashScope couldn't reach the URL                                 | Use a base64 data URI instead                                                                                |
 | 401 Unauthorized                                | API key region or workspace mismatch                             | Match your key to the endpoint's region (and workspace, on a workspace-dedicated domain)                     |
 | 404 Not Found                                   | URL uses the native DashScope path (`/api/v1`) or omits the path | Use `/compatible-mode/v1/chat/completions`                                                                   |
-| Want to switch back to direct                   | Proxy mode active                                                | Revert `url` to DashScope endpoint and restore `requestBody.enable_thinking: false`                          |
+| Want to switch back to direct                   | Proxy mode active                                                | Revert `url` to the DashScope endpoint; reasoning stays at the provider default                              |
 
 ## Pricing
 

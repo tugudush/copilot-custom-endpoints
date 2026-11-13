@@ -58,7 +58,10 @@
       "id": "kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro (Custom Endpoint)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
-      "requestBody": { "temperature": 1, "max_tokens": 8192 },
+      "modelOptions": { "temperature": 1 },
+      "supportsReasoningEffort": ["low", "high", "max"],
+      "reasoningEffortFormat": "chat-completions",
+      "thinking": true,
       "toolCalling": true,
       "vision": true,
       "streaming": true,
@@ -69,7 +72,7 @@
 }
 ```
 
-> **K3.1 Pro note:** `max_tokens` is set to **8192** as a safe starting point. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median). The API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor your usage and adjust upward if needed. K3.1 Pro uses `reasoning_effort` (`low` / `high` / `max`, default `max`), not the K2.x `thinking` parameter; add `"reasoning_effort": "low"` to `requestBody` if answers take too long. The proxy forwards the value untouched.
+> **K3.1 Pro note:** `requestBody` is **not forwarded** on VS Code 1.146 (measured on both harnesses), so `max_tokens` and a `reasoning_effort` entry in the config have no effect. `modelOptions` handles sampling, and the `supportsReasoningEffort` metadata above adds the **Thinking Effort** picker so you can lower effort without editing JSON. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median); the API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor usage. There is currently no supported way to cap output below that from this config.
 
 ### 2. API key
 

@@ -18,7 +18,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **GLM 5.3** (Z.ai, August 18, 2026) — text-only; always-thinking; direct, no proxy. See [docs/models/glm.md](docs/models/glm.md).
 - **GLM 5.3 Flash** (Z.ai, August 26, 2026) — multimodal (text + image input); always-thinking; direct, no proxy. See [docs/models/glm.md](docs/models/glm.md).
 
-**⚠️ VS Code now requires `chat.lm.utilitySmallModel` to be set for BYOK/custom-endpoint users.** Open Settings → search "Chat: Utility Small Model" → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). Without it, utility flows like token counting and prompt truncation may silently fail. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
+**⚠️ Utility models are only a BYOK-without-Copilot concern.** With a Copilot token, VS Code defaults utility flows to Copilot's built-in utility models. Without one, set `chat.utilityModel` / `chat.utilitySmallModel` or `chat.byokUtilityModelDefault` → _Main Agent Model_. See [README.md § Setup #4](README.md#4-configure-the-utility-small-model).
 
 Treat the model records under `docs/models/` as the source of truth and this file as the quick-start guidance for agents. Pricing and benchmark scores live in [docs/pricing.md](docs/pricing.md) and [docs/benchmarks.md](docs/benchmarks.md), not here.
 
@@ -81,7 +81,7 @@ The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON
 - `node proxy/qwen-proxy.mjs --help` prints the supported environment variables and defaults.
 - `curl http://127.0.0.1:3458/healthz` checks that the proxy is listening.
 
-When using the proxy, update VS Code config to point Qwen model URLs to `http://127.0.0.1:3458/v1/chat/completions` and remove static `enable_thinking` from `requestBody`. The proxy handles it dynamically.
+When using the proxy, update VS Code config to point Qwen model URLs to `http://127.0.0.1:3458/v1/chat/completions` and keep thinking configuration out of the model entry. The proxy handles it dynamically.
 
 ### MiMo V2.6 (with optional proxy)
 
@@ -91,7 +91,7 @@ The `proxy/mimo-proxy.mjs` preserves V2.6 reasoning when `reasoning_content` is 
 - `node proxy/mimo-proxy.mjs --help` prints the supported environment variables and defaults.
 - `curl http://127.0.0.1:3459/healthz` checks that the proxy is listening.
 
-When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to `http://127.0.0.1:3459/v1/chat/completions` and remove static `thinking` from `requestBody`. The proxy handles the V2.6 history-aware fallback dynamically.
+When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to `http://127.0.0.1:3459/v1/chat/completions` and keep thinking configuration out of the model entry. The proxy handles the V2.6 history-aware fallback dynamically.
 
 ## Working Rules
 
@@ -107,41 +107,41 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 
 - Assume the direct VS Code to Moonshot path is incompatible unless you revalidate it. The practical working path in this repo is VS Code -> local proxy -> Moonshot.
 - **K3.1 Pro** (October 2026) is always-thinking, `reasoning_effort` `low` / `high` / `max` (default `max`; chain-of-thought cannot be disabled — lower the effort instead), `tool_choice` supports `auto`, `required`, and named tools, `max_completion_tokens` defaults to 131072 (max 1048576), sampling is fixed at `temperature=1` / `top_p=0.95` / `n=1` / zero penalties, and vision accepts text + image plus video via `ms://<file-id>` (public image URLs are rejected). The proxy's `kimi-k3` prefix detection covers `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`, so no proxy change is needed for new K3.1 slugs.
-- **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. Use `maxOutputTokens: 4096` for agent mode to avoid VS Code's "Response too long" error.
+- **K2.7 Code** (June 2026) is always-thinking and rejects `thinking: disabled`. The proxy detects `kimi-k2.7*` slugs and skips the thinking-disable rewrite while keeping temperature/top_p enforcement. `maxOutputTokens: 4096` was previously recommended for agent mode; on 1.146 the forwarding of `maxOutputTokens` to `max_completion_tokens` was only observed for reasoning-metadata entries, so treat that cap as unverified.
 - **K2.6 / K2.5**: Plain-chat requests must be rewritten to Kimi-compatible sampling values. Tool-enabled requests must also disable thinking.
 - The full rationale, tested values, and evidence live in [docs/models/kimi.md](docs/models/kimi.md); do not duplicate that record here.
 
 ### Qwen 3.x (DashScope)
 
 - The validated DashScope custom endpoint uses `qwen3.8-max`; do not substitute an OpenRouter snapshot slug without changing the endpoint and revalidating the provider mapping.
-- Direct VS Code -> DashScope works without a proxy for `qwen3.8-max` when `enable_thinking: false` is set in `requestBody`.
+- Direct VS Code -> DashScope is **not viable for suppressing reasoning**: `requestBody` is dropped on VS Code 1.146, so `enable_thinking: false` never reaches DashScope. Use the proxy.
 - Use the OpenAI-compatible path (`/compatible-mode/v1`); never the native DashScope path (`/api/v1`), whose request/response schema VS Code and the proxy do not speak.
 - Prefer the workspace-dedicated domain `<workspace-id>.<region>.maas.aliyuncs.com` (Alibaba's recommendation; 3600 s request timeout vs 600 s). The legacy `dashscope-intl.aliyuncs.com` stays the proxy default and still works. Set the user's URL via `QWEN_UPSTREAM_URL` in the git-ignored `.env`; never commit a workspace ID or `sk-ws-` key.
 - The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tool activity is detected (a `"tool"`-role message or a non-default `tool_choice`).
-- When using the proxy, keep `enable_thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `false` on tool turns.
+- When using the proxy, keep `enable_thinking` out of the model entry entirely — `requestBody` is not forwarded on 1.146, and the proxy sets the field per turn.
 - `qwen3.8-max` supports vision.
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 
 ### Xiaomi MiMo
 
 - Direct VS Code -> MiMo API works for the V2.6 chat models. Xiaomi's current model list exposes `mimo-v2.6-pro`, `mimo-v2.6-flash`, and `mimo-v2.6-pro-ultraspeed`; check [docs/models/mimo.md](docs/models/mimo.md) before copying an older config.
-- Works via `proxy/mimo-proxy.mjs` for history-aware thinking preservation; direct custom endpoints can use static `thinking: {"type": "disabled"}` for maximum tool-loop compatibility.
+- Works via `proxy/mimo-proxy.mjs` for history-aware thinking preservation. A static `thinking: {"type": "disabled"}` in `requestBody` does **not** work on VS Code 1.146 — that field is dropped — so the proxy is the only way to control MiMo thinking from this repo.
 - MiMo V2.6 supports native text, image, video, and audio input with 1M context and 128K maximum output.
-- When using the proxy, keep `thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `{type: "disabled"}` on tool turns.
-- MiMo V2.6 defaults to thinking on at the API level; the proxy preserves it when reasoning history is present and uses the `requestBody` override as a fallback.
+- When using the proxy, keep `thinking` out of the model entry so the proxy can delete it on plain-chat turns and set it to `{type: "disabled"}` on incomplete tool history.
+- MiMo V2.6 defaults to thinking on at the API level; the proxy preserves it when reasoning history is present and disables it only when that history is incomplete.
 - Endpoint: `https://api.xiaomimimo.com/v1/chat/completions` (pay-as-you-go). Token Plan uses `https://token-plan-cn.xiaomimimo.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MIMO_API_KEY` header (standard).
 
 ### MiniMax M3.1 Flash
 
 - Direct VS Code → MiniMax API works without a proxy for `MiniMax-M3.1-Flash`.
-- **M3.1 Flash is always-thinking.** `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (`model "MiniMax-M3.1-Flash" requires adaptive thinking`, base_resp code 2013). Never put `disabled` in `requestBody` for this model. Reduce latency with a lower `reasoning_effort` instead: `low` / `medium` / `high` / `xhigh` / `max` (server default `max`).
+- **M3.1 Flash is always-thinking.** `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` return HTTP 400 (`model "MiniMax-M3.1-Flash" requires adaptive thinking`, base_resp code 2013). Reduce latency with a lower `reasoning_effort` instead: `low` / `medium` / `high` / `xhigh` / `max` (server default `max`).
 - `reasoning_split` cannot be set to `false` on M3.1 Flash; thinking is always returned on `reasoning_content` and `content` holds only the final answer.
 - `temperature` / `top_p` are **ignored** (M3.1 Flash is fixed at `1` and `0.95`); keep the repo's standard `1` / `0.95` values so the JSON stays uniform, and never send `top_p` outside `(0, 1]`.
 - `service_tier` (an admission-class field priced at 1.5× Standard) is rejected by M3.1 Flash.
 - MiniMax recommends appending the complete assistant message (including `reasoning_content`) to history for interleaved thinking. VS Code does not preserve `reasoning_content` across tool turns, so expect reduced reasoning continuity in agent mode — a quality trade-off, not a hard error (unlike Kimi K2.7).
 
-- Recommended config: `thinking: { "type": "adaptive" }` + `reasoning_split: true` in `requestBody`. The model decides when to reason and the server returns reasoning in a structured `reasoning_details` field (clean OpenAI format for VS Code). On **M3.1 Flash**, add `reasoning_effort` to choose thinking depth.
+- Supported config on VS Code 1.146: `modelOptions` for sampling plus `supportsReasoningEffort` (`low` … `max`) with `reasoningEffortFormat: "chat-completions"`. `thinking`, `reasoning_split`, and `reasoning_effort` inside `requestBody` are **dropped** — provider defaults apply.
 - Endpoint (international): `https://api.minimax.io/v1/chat/completions`. China: `https://api.minimaxi.com/v1/chat/completions`.
 - Auth: `Authorization: Bearer $MINIMAX_API_KEY` header (standard).
 - Model IDs are case-sensitive: `MiniMax-M3.1-Flash` (capital M's, lowercase i).
@@ -151,10 +151,10 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 ### GLM (Z.ai / Zhipu AI)
 
 - Direct VS Code → Z.ai PaaS works without a proxy for `glm-5.3-flash`, `glm-5.3`, `glm-5.2`, and `glm-5.1`.
-- Recommended `requestBody`: `thinking: { "type": "enabled" }`, `temperature: 1`, `top_p: 0.95`. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
-- **GLM 5.3 and GLM 5.3 Flash are always-thinking** — `thinking.type` only supports `enabled` (disabling reasoning is not supported) and `reasoning_effort` accepts `low`/`high`/`max` (default `max`). Migration: if you previously sent `thinking.type: "disabled"`, switch to `enabled` + `reasoning_effort: "low"` before pointing at `glm-5.3` / `glm-5.3-flash`.
+- Supported config on VS Code 1.146: `modelOptions` for `temperature`/`top_p` and `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` for effort. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
+- **GLM 5.3 and GLM 5.3 Flash are always-thinking** — `thinking.type` only supports `enabled` (disabling reasoning is not supported) and `reasoning_effort` accepts `low`/`high`/`max` (default `max`). `requestBody.thinking` is dropped on 1.146, which is harmless here because the provider thinks by default.
 - `tool_choice` only supports `auto`; VS Code's default is `auto` so no override needed.
-- `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. Do **not** set `clear_thinking: false` from `requestBody`. (Exception note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
+- `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. It cannot be changed from `chatLanguageModels.json` on 1.146 (`requestBody` is dropped), so leave the server default. (Exception note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
 - Vision is supported on `glm-5.3-flash` (native multimodal). `glm-5.3`, `glm-5.2`, and `glm-5.1` are text-only.
 - Endpoint (international): `https://api.z.ai/api/paas/v4/chat/completions`. China: `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 - Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).

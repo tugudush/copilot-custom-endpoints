@@ -2,11 +2,13 @@
 
 Here's a complete, real-world `chatLanguageModels.json` that combines **the `customendpoint` providers from the live `chatLanguageModels.json`**, plus the additional GLM models (`glm-5.3-flash`, `glm-5.3`, `glm-5.2`, `glm-5.1`) that are validated in [docs/models/glm.md](models/glm.md) but not present in every live config. Copy what you need, leave the rest out.
 
-> **⚠️ Reminder:** After adding models, you must also configure the **Utility Small Model** setting in VS Code. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). Without this, custom-endpoint models may not function correctly. See the [main README](../README.md#4-configure-the-utility-small-model) for details.
->
+> **⚠️ Measured on VS Code 1.146 (both harnesses):** `modelOptions` is forwarded to the provider; **`requestBody` is silently dropped**. Provider-specific objects such as `thinking`, `reasoning_split`, `enable_thinking`, and `max_tokens` therefore cannot be set from this file — route those models through their proxy, or accept the provider defaults. See [the harness research](research/vscode-1.146-copilot-harness.md).
+
+> **Utility models:** with a GitHub Copilot token, VS Code already uses its built-in utility models, so no extra setup is required. If you use BYOK without Copilot sign-in, set **Chat: Utility Model** and **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_). See the [main README](../README.md#4-configure-the-utility-small-model).
+
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
->
-> The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). When using a proxy, align the model `requestBody` overrides with the proxy's behavior: Qwen sends no `requestBody` (the proxy manages `enable_thinking` dynamically); MiMo sends only `temperature` and `top_p` (the proxy injects `thinking: {"type": "disabled"}` when tool history is missing `reasoning_content` and leaves it absent on plain chat). This DashScope config uses the provider ID `qwen3.8-max`.
+
+> **Note:** The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). The proxies manage thinking dynamically, so no thinking-related configuration belongs in this file.
 
 ```json
 [
@@ -38,10 +40,10 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "id": "kimi-k3.1-pro",
         "name": "Kimi K3.1 Pro (vision)",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
-        "requestBody": {
-          "temperature": 1,
-          "max_tokens": 8192
-        },
+        "modelOptions": { "temperature": 1 },
+        "supportsReasoningEffort": ["low", "high", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true,
         "toolCalling": true,
         "vision": true,
         "streaming": true,
@@ -65,10 +67,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "temperature": 1,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 }
       },
       {
         "id": "mimo-v2.6-flash",
@@ -79,10 +78,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "temperature": 1,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 }
       },
       {
         "id": "mimo-v2.6-pro-ultraspeed",
@@ -93,10 +89,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "temperature": 1,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 }
       }
     ]
   },
@@ -115,13 +108,10 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "adaptive" },
-          "reasoning_split": true,
-          "reasoning_effort": "high",
-          "temperature": 1,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "supportsReasoningEffort": ["low", "medium", "high", "xhigh", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true
       }
     ]
   },
@@ -140,12 +130,10 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "reasoning_effort": "max",
-          "temperature": 1.0,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "supportsReasoningEffort": ["low", "high", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true
       },
       {
         "id": "glm-5.3",
@@ -156,12 +144,10 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 1048576,
         "maxOutputTokens": 131072,
-        "requestBody": {
-          "thinking": { "type": "enabled" },
-          "reasoning_effort": "max",
-          "temperature": 1.0,
-          "top_p": 0.95
-        }
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "supportsReasoningEffort": ["low", "high", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true
       }
     ]
   }
@@ -170,12 +156,14 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 ## Per-model snippets
 
+> **Context numbers are not yet reconciled.** These entries use the provider's advertised 1M context while also declaring 131072 output tokens, so `maxInputTokens + maxOutputTokens` exceeds 1M. VS Code treats that sum as the model's total context, so it overstates the window. Adjust both values to the provider's real limits for your deployment — see [the harness research](research/vscode-1.146-copilot-harness.md#4-utility-models-and-context-limits).
+
 If you only need one provider, jump straight to its setup guide:
 
-- [Kimi K3.1 Pro / K2.6 / K2.7 Code](kimi.md)
-- [Qwen 3.8 Max](qwen.md)
-- [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](mimo.md)
-- [MiniMax M3.1 Flash](minimax.md)
-- [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](glm.md)
+- [Kimi K3.1 Pro / K2.6 / K2.7 Code](models/kimi.md)
+- [Qwen 3.8 Max](models/qwen.md)
+- [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](models/mimo.md)
+- [MiniMax M3.1 Flash](models/minimax.md)
+- [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](models/glm.md)
 
 > **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.

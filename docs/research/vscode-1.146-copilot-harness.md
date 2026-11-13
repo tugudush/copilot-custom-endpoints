@@ -207,3 +207,22 @@ The [Qwen integration tests](../../tests/proxy.test.mjs) construct a separate re
 6. Record the VS Code version, harness, model ID, route, configuration properties, outcomes, and any failures in the appropriate model record. Do not record credentials, workspace identifiers, full prompts, reasoning text, or unredacted request/response bodies.
 
 No endpoint, proxy, or user configuration was changed during this investigation. The above checks may incur provider charges and require a working user-supplied key.
+
+## 7. Temporary artifacts to delete when the work is finished
+
+Phase 1 created local scratch state outside the repository. None of it is needed once the plan's remaining phases are done, and everything is recreateable.
+
+| Artifact                             | Location                               | Size (2026-11-13) | State                                                                                                                                           |
+| ------------------------------------ | -------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Isolated VS Code profile             | `%TEMP%\copilot-harness-baseline`      | ~477 MB           | **Folder retained by request.** The window was closed, no processes remain, and `data\Backups` is empty, so deleting it loses no unsaved edits. |
+| Sanitized mock captures              | `debug_log/mock-endpoint.ndjson`       | small             | Git-ignored. Raw evidence behind the measurement tables above; keep until the docs are committed, then removable with `npm run clean:logs`.     |
+| Sanitized proxy captures             | `debug_log/qwen-proxy-baseline.ndjson` | small             | Git-ignored; same handling.                                                                                                                     |
+| Mock server and Qwen proxy processes | `:3490`, `:3458`                       | —                 | **Stopped.** Both ports verified closed.                                                                                                        |
+
+The profile was created with `code --user-data-dir="%TEMP%\copilot-harness-baseline\data"` and holds a scratch `chatLanguageModels.json` plus `settings.json` (`chat.agentHost.byokModels.enabled: true`). It is isolated from the user's real VS Code profile, which was never modified.
+
+**Deletion checklist (run only after the remaining phases are complete):**
+
+1. Confirm no `Code.exe` process references the profile: `Get-CimInstance Win32_Process -Filter "Name='Code.exe'" | Where-Object { $_.CommandLine -like '*copilot-harness-baseline*' }`
+2. Remove the folder: `Remove-Item -Recurse -Force "$env:TEMP\copilot-harness-baseline"`
+3. Remove captures: `npm run clean:logs`

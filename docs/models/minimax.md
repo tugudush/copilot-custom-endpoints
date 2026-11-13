@@ -1,8 +1,8 @@
 # MiniMax — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** **MiniMax-M3.1-Flash** (released October 19, 2026) is the current M-series Flash model and needs no proxy. Use `thinking: { "type": "adaptive" }` + `reasoning_split: true` + `reasoning_effort` in `requestBody` so the model can reason and the response arrives in a clean OpenAI format (`reasoning_content`, kept separate from `content`). **M3.1 Flash cannot disable thinking** — `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` both return HTTP 400 (`requires adaptive thinking`, code 2013) — so tune depth with `reasoning_effort` (`low` / `medium` / `high` / `xhigh` / `max`, default `max`).
+> **TL;DR:** **MiniMax-M3.1-Flash** (released October 19, 2026) is the current M-series Flash model and needs no proxy. Set sampling with `modelOptions` and expose the effort picker with `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"`; the server already returns reasoning on `reasoning_content` separately from `content`. **`requestBody` is not forwarded by VS Code 1.146**, so `thinking` and `reasoning_split` cannot be set from `chatLanguageModels.json`. **M3.1 Flash cannot disable thinking** — `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` both return HTTP 400 (`requires adaptive thinking`, code 2013) — so tune depth with `reasoning_effort` (`low` / `medium` / `high` / `xhigh` / `max`, default `max`).
 >
-> The same `url`, `model id`, and `requestBody` work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
+> The same `url`, `model id`, and model configuration work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
 > **🆕 Try a MiniMax Copilot extension first** (no JSON editing):
 >
@@ -13,18 +13,18 @@
 
 ## At a Glance
 
-| Field                    | Value                                                                                         |
-| ------------------------ | --------------------------------------------------------------------------------------------- |
-| Mode                     | **Direct** (no proxy)                                                                         |
-| Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)                              |
-| Vision                   | ✅ Yes (image + video)                                                                        |
-| Tool calling             | ✅ Yes                                                                                        |
-| Context                  | 1M                                                                                            |
-| Max output               | 131072 recommended (524288 max)                                                               |
-| Required `requestBody`   | M3.1 Flash: `thinking: { type: "adaptive" }, reasoning_split: true, reasoning_effort: "high"` |
-| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`                                                  |
-| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                                                |
-| Auth                     | `Authorization: Bearer $MINIMAX_API_KEY` (or Subscription Key, see [Setup](#setup))           |
+| Field                    | Value                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Mode                     | **Direct** (no proxy)                                                                                 |
+| Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)                                      |
+| Vision                   | ✅ Yes (image + video)                                                                                |
+| Tool calling             | ✅ Yes                                                                                                |
+| Context                  | 1M                                                                                                    |
+| Max output               | 131072 recommended (524288 max)                                                                       |
+| Supported config         | `modelOptions` for sampling + `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` |
+| Endpoint (international) | `https://api.minimax.io/v1/chat/completions`                                                          |
+| Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                                                        |
+| Auth                     | `Authorization: Bearer $MINIMAX_API_KEY` (or Subscription Key, see [Setup](#setup))                   |
 
 ### Models
 
@@ -74,17 +74,16 @@
       "streaming": true,
       "maxInputTokens": 1048576,
       "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "adaptive" },
-        "reasoning_split": true,
-        "reasoning_effort": "high",
-        "temperature": 1,
-        "top_p": 0.95
-      }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 },
+      "supportsReasoningEffort": ["low", "medium", "high", "xhigh", "max"],
+      "reasoningEffortFormat": "chat-completions",
+      "thinking": true
     }
   ]
 }
 ```
+
+> **Measured on VS Code 1.146:** `modelOptions` and the reasoning-effort metadata reach the provider; `requestBody` does **not**. Provider fields such as `thinking` and `reasoning_split` therefore cannot be set from this file — M3.1 Flash already returns thinking on `reasoning_content` by default, so this is a documentation fix rather than a regression.
 
 > **Model IDs are case-sensitive.** Use exactly `MiniMax-M3.1-Flash` (capital `M`s, lowercase `i`). Do **not** invent suffixed ids: VS Code forwards each `id` as the upstream `model` parameter, and the API only knows that id.
 
@@ -118,28 +117,20 @@ The same `chatLanguageModels.json` block above is reused unchanged. Only the sec
 2. Open `platform.minimax.io/user-center/payment/token-plan` and copy the **Subscription Key** (prefix `sk-cp-…`).
 3. In VS Code, run **Chat: Manage Language Models** → **MiniMax** group → **Update API Key** → paste the Subscription Key.
 
-When the Token Plan 5-hour or weekly quota is exhausted, the request fails with a Token Plan quota error (see [Troubleshooting](#troubleshooting)). At that point you can either wait for the quota window to reset, buy a Credits top-up at the same console (Credits use the same Subscription Key), or swap the key back to your Open Platform API Key to fall back to PAYG. The URL and `requestBody` do not change during the swap.
+When the Token Plan 5-hour or weekly quota is exhausted, the request fails with a Token Plan quota error (see [Troubleshooting](#troubleshooting)). At that point you can either wait for the quota window to reset, buy a Credits top-up at the same console (Credits use the same Subscription Key), or swap the key back to your Open Platform API Key to fall back to PAYG. The URL and model configuration do not change during the swap.
 
 ### 4. Thinking depth on M3.1 Flash
 
 M3.1 Flash always thinks — `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` both return HTTP 400. The only knob is **`reasoning_effort`**, which accepts `low` / `medium` / `high` / `xhigh` / `max` and defaults to `max` when omitted. Lower levels produce fewer thinking tokens at lower latency; `high` is a good starting point for agent/coding work in VS Code, and `max` matches the configuration Artificial Analysis benchmarked.
 
-```json
-"requestBody": {
-  "thinking": { "type": "adaptive" },
-  "reasoning_split": true,
-  "reasoning_effort": "high",
-  "temperature": 1,
-  "top_p": 0.95
-}
-```
+On VS Code 1.146 set this through the model picker's **Thinking Effort** control (backed by the `supportsReasoningEffort` metadata above), **not** through `requestBody` — that field is dropped before the request leaves VS Code.
 
-`reasoning_split: true` keeps thinking out of `content` and on `reasoning_content`. Setting it to `false` is not supported on M3.1 Flash, and the server already returns thinking separately by default. `temperature` and `top_p` are accepted but ignored on M3.1 Flash (fixed at `1` and `0.95`); they are kept here only so every provider block in this repo has the same shape.
+`reasoning_split: true` keeps thinking out of `content` and on `reasoning_content`; it cannot be set from `chatLanguageModels.json` on 1.146, and M3.1 Flash already returns thinking separately by default. `temperature` and `top_p` are accepted but ignored on M3.1 Flash (fixed at `1` and `0.95`); they stay in `modelOptions` only so every provider block shares the same shape.
 
 ## Notes
 
-- **`thinking: adaptive` + `reasoning_split: true`** is the recommended pair: the server returns thinking on the `reasoning_content` field, which keeps `content` clean for VS Code. The `thinking` field is effectively fixed at `adaptive` (the server rejects `disabled`).
-- **`reasoning_effort` controls thinking depth.** Values are `low` / `medium` / `high` / `xhigh` / `max`, default `max`; `none` is rejected.
+- **Thinking output is split by default:** the server returns thinking on `reasoning_content`, keeping `content` clean for VS Code. `thinking` is effectively fixed at `adaptive` (the server rejects `disabled`).
+- **`reasoning_effort` controls thinking depth.** Values are `low` / `medium` / `high` / `xhigh` / `max`, default `max`; `none` is rejected. Choose it in the model picker, not in `requestBody`.
 - **`temperature: 1`, `top_p: 0.95`** are accepted but **ignored** (M3.1 Flash is fixed at those values); `top_p` must still be inside `(0, 1]` if you send it.
 - **Interleaved thinking and tool loops:** MiniMax recommends sending the complete assistant message — including `reasoning_content` — back in history so the reasoning chain stays continuous. VS Code does not preserve `reasoning_content` across tool turns, so expect shallower continuity on long agent runs. This is a quality trade-off, not an error: unlike Kimi K2.7, M3.1 Flash does not reject a tool result whose assistant message lacks reasoning content.
 - **Max output:** `max_completion_tokens` is recommended at 131072 and accepts up to 524288; thinking tokens count toward that limit.
@@ -150,7 +141,7 @@ M3.1 Flash always thinks — `thinking: { "type": "disabled" }` and `reasoning_e
 | Symptom                                      | Likely cause                                                                        | Fix                                                                                                                                                                        |
 | -------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Model not in picker                          | Config not reloaded, or wrong casing                                                | Restart VS Code; verify the model ID is exactly `MiniMax-M3.1-Flash`                                                                                                       |
-| Reasoning leaks into `content`               | Missing `reasoning_split`                                                           | Add `reasoning_split: true` to `requestBody`                                                                                                                               |
+| Reasoning leaks into `content`               | Server did not split reasoning                                                      | `reasoning_split` cannot be set from `chatLanguageModels.json` on 1.146; check the provider response format instead                                                        |
 | 400 `requires adaptive thinking` (2013)      | `thinking: { "type": "disabled" }` or `reasoning_effort: "none"` sent to M3.1 Flash | Remove the override; lower `reasoning_effort` instead. On M3.1 Flash thinking cannot be disabled.                                                                          |
 | 400 `reasoning_split` cannot be false        | `reasoning_split: false` sent to M3.1 Flash                                         | Use `reasoning_split: true` (or omit it); split output is mandatory on this model.                                                                                         |
 | 400 / 2013 with `service_tier`               | `service_tier` sent to M3.1 Flash                                                   | Remove `service_tier` — M3.1 Flash does not accept that field                                                                                                              |
