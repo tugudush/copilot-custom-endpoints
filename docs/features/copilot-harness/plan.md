@@ -2,21 +2,21 @@
 
 **Date:** 2026-11-13  
 **Input:** [VS Code 1.146 research](../../research/vscode-1.146-copilot-harness.md)  
-**Status:** In progress — Phase 1 complete, Phase 2 complete, Phase 4 partly done. Phase 3 (real providers) not started.
+**Status:** Phases 1, 2, 4 and 5 complete; Phase 3 (real providers) blocked pending credentials, spend approval, and a test window.
 
 ## Progress
 
-**➡️ Current position: Phase 4.1 done for the measured behaviour; next actionable item is Phase 4.2 (model limits), then Phase 3 when provider credentials/spend are approved.**
+**➡️ Current position: all non-live work is complete (Phases 1, 2, 4, 5). Phase 3 is the only remaining phase and stays gated on provider credentials, spend approval, and a test window.**
 
-| Phase                    | Scope                                        | Status                           | Notes                                                                                                      |
-| ------------------------ | -------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1 — Request baseline     | 1.1 setup, 1.2 configuration propagation     | ✅ **Complete**                  | Loopback mock + isolated profile built; `modelOptions` forwarded, `requestBody` dropped, on both harnesses |
-| 2 — Proxy tests          | 2.1 production rewrites, 2.2 Qwen detection  | ✅ **Complete**                  | Tests drive the real rewrite modules; Qwen gap confirmed on real harness traffic                           |
-| 3 — Provider validation  | 3.1 real providers on both harnesses         | ⬜ **Not started**               | Needs approved test window, credentials, and spend; blocked tests must stay visible                        |
-| 4 — Guidance             | 4.1 harness/parameter docs, 4.2 model limits | 🟡 **4.1 done, 4.2 not started** | Guides moved off `requestBody`; context/output limits still unreconciled                                   |
-| 5 — Validation & handoff | 5.1 checks and gap report                    | ⬜ **Not started**               | Final test/lint run and per-harness summary pending                                                        |
+| Phase                    | Scope                                        | Status             | Notes                                                                                                      |
+| ------------------------ | -------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| 1 — Request baseline     | 1.1 setup, 1.2 configuration propagation     | ✅ **Complete**    | Loopback mock + isolated profile built; `modelOptions` forwarded, `requestBody` dropped, on both harnesses |
+| 2 — Proxy tests          | 2.1 production rewrites, 2.2 Qwen detection  | ✅ **Complete**    | Tests drive the real rewrite modules; Qwen gap confirmed on real harness traffic                           |
+| 3 — Provider validation  | 3.1 real providers on both harnesses         | ⬜ **Not started** | Needs approved test window, credentials, and spend; blocked tests must stay visible                        |
+| 4 — Guidance             | 4.1 harness/parameter docs, 4.2 model limits | ✅ **Complete**    | Guides moved off `requestBody`; harness setup documented; context/output limits reconciled (T014/T015)     |
+| 5 — Validation & handoff | 5.1 checks and gap report                    | ✅ **Complete**    | 49/49 tests, lint and Prettier clean; per-route gap report in research § 8                                 |
 
-Task roll-up: **T001–T008 and T013 complete**, T012 partly done (harness setup section outstanding), **T009–T011 and T014–T017 open**.
+Task roll-up: **T001–T008 and T012–T017 complete**, **T009–T011 open** — Phase 3 is gated on provider credentials, spend, and an approved test window.
 
 ## Goal and scope
 
@@ -112,15 +112,17 @@ Each cell below is **pending**, not a compatibility claim. Record a separate res
 
 Depends on phase 1 observations; provider-specific claims additionally depend on phase 3. Distinguish setup and verified behavior for both harnesses, including the Copilot harness BYOK opt-in and its experimental status, and Local harness deprecation. Correct utility guidance using the documented `chat.utilityModel`, `chat.utilitySmallModel`, and `chat.byokUtilityModelDefault` behavior; verify any old-setting migration separately. Replace unconditional reasoning-history and `requestBody` claims with harness-specific observed results or explicit uncertainty.
 
-- [ ] T012 [Plan:4.1] Update `README.md`, `AGENTS.md`, and `docs/example-config.md` for harness setup, utility models, and any verified configuration changes; keep links and copied examples consistent with affected `docs/models/` guides. _(Utility model and `requestBody` corrections done; **harness setup guidance** — Copilot BYOK opt-in, experimental status, Local deprecation — still to add.)_
+- [x] T012 [Plan:4.1] Update `README.md`, `AGENTS.md`, and `docs/example-config.md` for harness setup, utility models, and any verified configuration changes; keep links and copied examples consistent with affected `docs/models/` guides. _(Done: utility-model and `requestBody` corrections earlier; harness setup now documented — README § Setup #0 covers the Copilot BYOK opt-in (`chat.agentHost.byokModels.enabled`, experimental) and the Local deprecation date, with matching bullets in `AGENTS.md` and `docs/example-config.md`.)_
 - [x] T013 [Plan:4.1] Update the affected `docs/models/kimi.md`, `docs/models/qwen.md`, `docs/models/mimo.md`, `docs/models/minimax.md`, `docs/models/glm.md`, and `docs/models/deepseek.md` only to the extent supported by phase 1 or 3 evidence; retain explicit unvalidated warnings where needed. _(Done: five guides moved to `modelOptions`/effort metadata; deepseek.md has no new evidence and was left unchanged.)_
 
 ### 4.2 Verify model limits (REQ-005)
 
 Can start after 1.2 independently of live testing. Check current provider documentation for the exact total context and maximum output for each documented model, including units. For each example ensure `maxInputTokens + maxOutputTokens` does not exceed the confirmed total and separately verify what limits the actual outgoing request.
 
-- [ ] T014 [Plan:4.2] Record provider sources and calculate safe limits for the examples in `docs/example-config.md` and affected `docs/models/` records; do not infer a provider's exact 1M limit from an approximate label.
-- [ ] T015 [Plan:4.2] Update confirmed capability values consistently in affected guides and, if model facts are changed there, `README.md`, `docs/pricing.md`, and `docs/benchmarks.md`; preserve roster consistency and sort order.
+> **Status 2026-11-13:** Complete. The configuration reference's rule (`maxInputTokens + maxOutputTokens` must not exceed the window; VS Code uses the sum as the total) plus each provider's documented window yields `maxInputTokens = window − maxOutputTokens`. Every snippet in `docs/example-config.md` and the five guides now declares a consistent pair; sources and the derivation table are in [harness research § 4](../../research/vscode-1.146-copilot-harness.md#context-and-output-limits-reconciled-t014-2026-11-13). No model facts changed, so README/pricing/benchmarks needed no edit beyond their existing "1M" labels.
+
+- [x] T014 [Plan:4.2] Record provider sources and calculate safe limits for the examples in `docs/example-config.md` and affected `docs/models/` records; do not infer a provider's exact 1M limit from an approximate label. _(Done: 1,000,000 windows for `qwen3.8-max` and `MiniMax-M3.1-Flash`, 1,048,576 for Kimi K3.1 Pro, MiMo V2.6 and GLM 5.x, each cited to provider documentation; inputs 868,928 / 917,504.)_
+- [x] T015 [Plan:4.2] Update confirmed capability values consistently in affected guides and, if model facts are changed there, `README.md`, `docs/pricing.md`, and `docs/benchmarks.md`; preserve roster consistency and sort order. _(Done: `maxInputTokens` corrected in `docs/example-config.md`, kimi.md, qwen.md, mimo.md, minimax.md and glm.md with a one-line context-budget note each; no model facts changed, so the roster files are untouched.)_
 
 ## Phase 5 - Validation and handoff
 
@@ -128,8 +130,10 @@ Can start after 1.2 independently of live testing. Check current provider docume
 
 Depends on implementation and documentation work above; blocked live provider checks must remain visible and cannot count as passing.
 
-- [ ] T016 [Plan:5.1] Run `node --test tests\\proxy.test.mjs tests\\mimo-rewrite.test.mjs`, then `npm test` and `npm run lint` for any proxy changes; run Prettier's check on changed documentation and code without formatting unrelated files.
-- [ ] T017 [Plan:5.1] Verify test servers and temporary profiles created by this work are stopped/cleaned up, inspect redaction behavior, and summarize verified, blocked, unavailable, and failing routes separately by harness, including accepted regressions and follow-up, in `docs/research/vscode-1.146-copilot-harness.md`. _(Servers already stopped; the isolated profile is intentionally retained until the phases above are complete — see [§7 cleanup inventory](../../research/vscode-1.146-copilot-harness.md#7-temporary-artifacts-to-delete-when-the-work-is-finished).)_
+> **Status 2026-11-13:** Complete. `npm test` passes 49/49, `npm run lint` is clean, and `npx prettier --check .` is clean. No test server holds a port, no `Code.exe` references the isolated profile, and a scan of the git-ignored captures found only `Bearer <redacted>` markers. Two idle proxy processes from the baseline window were deliberately left untouched. The per-route, per-harness gap report is in [harness research § 8](../../research/vscode-1.146-copilot-harness.md#8-status-summary-by-route-and-harness-2026-11-13).
+
+- [x] T016 [Plan:5.1] Run `node --test tests\\proxy.test.mjs tests\\mimo-rewrite.test.mjs`, then `npm test` and `npm run lint` for any proxy changes; run Prettier's check on changed documentation and code without formatting unrelated files. _(Done: `npm test` 49/49, `npm run lint` clean, `npx prettier --check .` clean.)_
+- [x] T017 [Plan:5.1] Verify test servers and temporary profiles created by this work are stopped/cleaned up, inspect redaction behavior, and summarize verified, blocked, unavailable, and failing routes separately by harness, including accepted regressions and follow-up, in `docs/research/vscode-1.146-copilot-harness.md`. _(Done: ports free, no profile-holding `Code.exe`, redaction re-verified, and the summary table added as § 8. The isolated profile stays until Phase 3 runs — see [§7](../../research/vscode-1.146-copilot-harness.md#7-temporary-artifacts-to-delete-when-the-work-is-finished).)_
 
 ## Completion criteria
 

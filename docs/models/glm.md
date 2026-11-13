@@ -71,7 +71,7 @@
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 },
       "supportsReasoningEffort": ["low", "high", "max"],
@@ -85,7 +85,7 @@
       "toolCalling": true,
       "vision": false,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 },
       "supportsReasoningEffort": ["low", "high", "max"],
@@ -95,6 +95,8 @@
   ]
 }
 ```
+
+> **Context budget:** `917504 + 131072 = 1048576`, the GLM 5.x window (input and output combined). VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`.
 
 > **Leave `apiKey` as `""`** — set it through the Language Models UI so VS Code stores it in the OS keychain (it will replace the empty string with a `${input:chat.lm.secret.<id>}` reference).
 > If you signed up on `bigmodel.cn` (China), swap the `url` values in the block above to the regional endpoint `https://open.bigmodel.cn/api/paas/v4/chat/completions`.

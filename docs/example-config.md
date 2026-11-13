@@ -4,6 +4,8 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 > **⚠️ Measured on VS Code 1.146 (both harnesses):** `modelOptions` is forwarded to the provider; **`requestBody` is silently dropped**. Provider-specific objects such as `thinking`, `reasoning_split`, `enable_thinking`, and `max_tokens` therefore cannot be set from this file — route those models through their proxy, or accept the provider defaults. See [the harness research](research/vscode-1.146-copilot-harness.md).
 
+> **Harness check:** on the Copilot harness, custom-endpoint BYOK is experimental and requires `chat.agentHost.byokModels.enabled`; the Local harness is deprecated (removal planned February 2027) and needs no extra setting. See [README § Setup #0](../README.md#0-know-which-harness-you-are-on).
+
 > **Utility models:** with a GitHub Copilot token, VS Code already uses its built-in utility models, so no extra setup is required. If you use BYOK without Copilot sign-in, set **Chat: Utility Model** and **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_). See the [main README](../README.md#4-configure-the-utility-small-model).
 
 > **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
@@ -25,7 +27,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 991000,
+        "maxInputTokens": 868928,
         "maxOutputTokens": 131072
       }
     ]
@@ -47,7 +49,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1000000,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072
       }
     ]
@@ -65,7 +67,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 }
       },
@@ -76,7 +78,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 }
       },
@@ -87,7 +89,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 }
       }
@@ -106,7 +108,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 868928,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 },
         "supportsReasoningEffort": ["low", "medium", "high", "xhigh", "max"],
@@ -128,7 +130,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": true,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 },
         "supportsReasoningEffort": ["low", "high", "max"],
@@ -142,7 +144,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "toolCalling": true,
         "vision": false,
         "streaming": true,
-        "maxInputTokens": 1048576,
+        "maxInputTokens": 917504,
         "maxOutputTokens": 131072,
         "modelOptions": { "temperature": 1, "top_p": 0.95 },
         "supportsReasoningEffort": ["low", "high", "max"],
@@ -156,7 +158,17 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 ## Per-model snippets
 
-> **Context numbers are not yet reconciled.** These entries use the provider's advertised 1M context while also declaring 131072 output tokens, so `maxInputTokens + maxOutputTokens` exceeds 1M. VS Code treats that sum as the model's total context, so it overstates the window. Adjust both values to the provider's real limits for your deployment — see [the harness research](research/vscode-1.146-copilot-harness.md#4-utility-models-and-context-limits).
+> **Context limits follow one rule:** VS Code treats `maxInputTokens + maxOutputTokens` as the model's total context window, and the sum must not exceed the provider's advertised window. Every entry above therefore declares `maxInputTokens = window − maxOutputTokens`:
+>
+> | Model                      | Window (provider) | `maxOutputTokens` | `maxInputTokens` |
+> | -------------------------- | ----------------- | ----------------- | ---------------- |
+> | `qwen3.8-max`              | 1,000,000         | 131,072           | 868,928          |
+> | `kimi-k3.1-pro`            | 1,048,576         | 131,072           | 917,504          |
+> | `mimo-v2.6-*`              | 1,048,576         | 131,072           | 917,504          |
+> | `MiniMax-M3.1-Flash`       | 1,000,000         | 131,072           | 868,928          |
+> | `glm-5.3`, `glm-5.3-flash` | 1,048,576         | 131,072           | 917,504          |
+>
+> Trade-off: a smaller `maxInputTokens` makes VS Code compact the conversation slightly earlier than the provider's raw input cap (for example 868,928 instead of DashScope's 991,000-token input maximum), which is the safe side of the constraint. Alternatively set `contextWindow` to the provider's window and let VS Code derive `maxInputTokens = contextWindow − maxOutputTokens`. Sources and derivation: [harness research § 4](research/vscode-1.146-copilot-harness.md#4-utility-models-and-context-limits).
 
 If you only need one provider, jump straight to its setup guide:
 

@@ -189,6 +189,29 @@ Setup guidance should be corrected after confirming the applicable settings in t
 
 The same [model configuration reference](https://code.visualstudio.com/docs/agent-customization/language-models#_model-configuration-reference) says `maxInputTokens + maxOutputTokens` must not exceed the model's full context window. Several current model snippets describe a 1M context while assigning roughly 1M input **plus** 131072 output. Recheck each provider's exact limits and correct the capability values once confirmed; the discrepancy is a configuration risk, not a measured runtime failure.
 
+### Context and output limits, reconciled (T014, 2026-11-13)
+
+The configuration reference states the rule directly: "The sum of `maxInputTokens` and `maxOutputTokens` must not exceed the model's context window. VS Code uses the sum of these two values as the model's total context window… Typically, you set `maxInputTokens` to the model's context window size minus `maxOutputTokens`." It also documents an optional `contextWindow` field, which lets VS Code derive `maxInputTokens = contextWindow - maxOutputTokens`.
+
+Provider limits, from the provider's own documentation, plus the values now used in every snippet:
+
+| Model                      | Context window                      | Max output                                | `maxOutputTokens` | `maxInputTokens` | Source                                                                                                                                                                                                         |
+| -------------------------- | ----------------------------------- | ----------------------------------------- | ----------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kimi-k3.1-pro`            | 1,048,576 (input + output combined) | 131072 default, 1048576 technical maximum | 131072            | 917504           | [Kimi platform docs](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart), [Bedrock model card](https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-moonshot-ai-kimi-k3-1-highspeed.html) |
+| `qwen3.8-max`              | 1,000,000                           | 131072 (DashScope input cap: 991000)      | 131072            | 868928           | Alibaba Cloud Model Studio model list                                                                                                                                                                          |
+| `mimo-v2.6-*`              | 1,048,576                           | 131072 (128K)                             | 131072            | 917504           | [Xiaomi MiMo model docs](https://mimo.mi.com/docs/quick-start/summary/model)                                                                                                                                   |
+| `MiniMax-M3.1-Flash`       | 1,000,000                           | 131072 recommended, 524288 maximum        | 131072            | 868928           | [MiniMax text-generation docs](https://platform.minimax.io/docs/guides/text-generation)                                                                                                                        |
+| `glm-5.3`, `glm-5.3-flash` | 1,048,576                           | 131072 (128K)                             | 131072            | 917504           | [Z.ai GLM-5.3 migration guide](https://docs.z.ai/guides/overview/migrate-to-glm-new)                                                                                                                           |
+
+Confirming sources: Z.ai's migration guide states "maximum context 1M, maximum output 128K"; MiniMax's model table lists a 1,000,000-token context window for `MiniMax-M3.1-Flash`; DashScope's model list gives `qwen3.8-max` a 1,000,000-token context with a 991,000-token input cap and 131,072-token output cap; Kimi's docs describe the K3.1 Pro window as input plus output combined; MiMo documents a 1M window with 128K maximum generation.
+
+Consequences and trade-offs:
+
+- A declared total equal to the advertised window is the conservative reading. Where a provider quotes an input cap and an output cap separately (Qwen: 991,000 input / 131,072 output), the true simultaneous budget is not documented, so the snippet declares the advertised 1,000,000-token window instead of the 1,122,072-token sum. VS Code then compacts slightly earlier than DashScope's raw input cap; it cannot overstate the window and provoke provider-side `400` errors at the extreme end.
+- `maxOutputTokens` stays at each provider's documented default rather than its technical maximum (Kimi 1048576, MiniMax 524288), because output tokens are wire-visible on reasoning entries and a larger output budget would shrink the usable input window.
+- Model facts themselves did not change, so [README.md](../../README.md), [docs/pricing.md](../pricing.md), and [docs/benchmarks.md](../benchmarks.md) needed no edit beyond the existing "1M" context labels.
+- Whether VS Code enforces the invariant or merely displays it is unmeasured; the corrected values make the question moot for these examples.
+
 ## 5. Qwen tool detection and tests
 
 The actual [Qwen proxy](../../proxy/qwen-proxy.mjs) marks a request as having tool activity when history contains a `tool`-role message or `tool_choice` is present and not `"none"` or `null`. A nonempty `tools` array alone does not satisfy this condition. Thus an initial tool-capable request with `tools` but no `tool_choice` keeps the default thinking mode. Whether this leads to a provider error depends on the subsequent model response and history; the behavior itself follows from the code.
@@ -226,3 +249,27 @@ The profile was created with `code --user-data-dir="%TEMP%\copilot-harness-basel
 1. Confirm no `Code.exe` process references the profile: `Get-CimInstance Win32_Process -Filter "Name='Code.exe'" | Where-Object { $_.CommandLine -like '*copilot-harness-baseline*' }`
 2. Remove the folder: `Remove-Item -Recurse -Force "$env:TEMP\copilot-harness-baseline"`
 3. Remove captures: `npm run clean:logs`
+
+## 8. Status summary by route and harness (2026-11-13)
+
+Phase 5's gap report. "Verified" means observed in this investigation; every provider row stays **blocked/not validated** because traffic only ever reached a loopback mock.
+
+| Evidence                                                                                     | Copilot harness                                           | Local harness                                |
+| -------------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------- |
+| Model visibility, streaming reply                                                            | ✅ Verified 2026-11-13                                    | ✅ Verified 2026-11-13                       |
+| Mocked tool call executed, follow-up request observed                                        | ✅ Verified 2026-11-13                                    | ✅ Verified 2026-11-13                       |
+| `modelOptions.temperature` / `top_p` forwarded                                               | ✅ Verified                                               | ✅ Verified                                  |
+| `requestBody` (`enable_thinking`, `reasoning_effort`, `max_tokens`)                          | ❌ Silently dropped — do not use                          | ❌ Silently dropped — do not use             |
+| `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` → `reasoning_effort` | ✅ Verified on the `thinking: true` entry                 | ⚠️ Not measured on that entry                |
+| `maxOutputTokens` → `max_completion_tokens`                                                  | ⚠️ Entry-dependent — observed only on the reasoning entry | ⚠️ Same limitation                           |
+| `thinking: true` creates a provider `thinking` object                                        | ❌ No — metadata only                                     | ❌ No — metadata only                        |
+| `reasoning_content` replayed in assistant tool-call history                                  | ⚠️ Unobserved (absent in every capture)                   | ⚠️ Unobserved (absent in every capture)      |
+| First-turn `tools` array without `tool_choice`                                               | ✅ Confirmed (128 tools)                                  | ✅ Confirmed (94 tools, distinct vocabulary) |
+| Enforced context/output limit at the provider                                                | ⚠️ Unmeasured — limits are configuration, not validated   | ⚠️ Unmeasured                                |
+| Vision input, long-conversation compaction                                                   | ⚠️ Not tested                                             | ⚠️ Not tested                                |
+| Real provider routes (Kimi, Qwen, MiMo, MiniMax, GLM)                                        | ⛔ Blocked — needs credentials, spend, test window        | ⛔ Blocked                                   |
+| Extension-provided DeepSeek (Agents window / editor)                                         | ⛔ Not tested                                             | ⛔ Not tested                                |
+
+Automated checks after the Phase 2 and Phase 4 work: `npm test` 49/49 passing, `npm run lint` clean, `npx prettier --check .` clean.
+
+Cleanup state at the end of Phase 5 work: no test server holds a port (`:3457`–`:3459`, `:3490` all free) and no `Code.exe` references the isolated profile. Two idle `node` processes from the 13:39 baseline window (`proxy/qwen-proxy.mjs`, `proxy/kimi-proxy.mjs`) were left running untouched because they belong to the user's environment, hold no listening socket, and may be deliberately paused rather than orphaned. `debug_log/` still holds the sanitized captures listed above until the docs are committed.

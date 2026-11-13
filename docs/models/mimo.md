@@ -96,6 +96,8 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
+> **Context budget:** `917504 + 131072 = 1048576`, the V2.6 window. VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`. Both blocks below share the same limits.
+
 #### Direct (no thinking control)
 
 > **⚠️ On VS Code 1.146 the direct path cannot disable thinking.** `requestBody` is dropped, so MiMo keeps its thinking default and tool loops with incomplete reasoning history can fail with HTTP 400. Use the proxy below for tool-heavy work; the direct entry is fine for plain chat.
@@ -114,7 +116,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
@@ -125,7 +127,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
@@ -136,7 +138,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
@@ -160,7 +162,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
@@ -171,7 +173,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
@@ -182,7 +184,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }

@@ -88,13 +88,15 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 991000,
+      "maxInputTokens": 868928,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
   ]
 }
 ```
+
+> **Context budget:** `868928 + 131072 = 1000000`, the `qwen3.8-max` window. VS Code uses that sum as the model's total context; DashScope separately caps input at 991000 tokens, so 868928 leaves room for the output budget. Raise `maxInputTokens` only by lowering `maxOutputTokens`.
 
 > **Direct path caveat:** `enable_thinking` cannot be set from `chatLanguageModels.json` on VS Code 1.146, so reasoning stays at DashScope's default and tool loops may hit `reasoning_content` errors. Use the proxy for tool-heavy work.
 
@@ -128,7 +130,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 991000,
+      "maxInputTokens": 868928,
       "maxOutputTokens": 131072
     }
   ]

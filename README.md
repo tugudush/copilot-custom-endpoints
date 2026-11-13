@@ -34,6 +34,17 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Setup
 
+### 0. Know which harness you are on
+
+VS Code 1.146 runs chat sessions on one of two harnesses, and custom endpoints behave the same on both in our measurements — but the setup path differs:
+
+| Harness             | Status                                                                                                                                                    | BYOK setup                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **Copilot harness** | Default for new sessions since VS Code 1.143. Custom-endpoint BYOK is an **experimental** route.                                                          | Enable `chat.agentHost.byokModels.enabled`, then configure the provider normally. |
+| **Local harness**   | Deprecated; [scheduled for removal in February 2027](https://code.visualstudio.com/updates/v1_146#_copilot-harness-and-deprecation-of-the-local-harness). | No extra setting — custom endpoints are picked up directly.                       |
+
+If a model does not appear in the picker on the Copilot harness, check that setting before editing `chatLanguageModels.json`. Details: [harness research](docs/research/vscode-1.146-copilot-harness.md#1-harness-transition).
+
 ### 1. Find (or create) your config file
 
 | OS      | Path                                                              |

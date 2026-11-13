@@ -72,7 +72,7 @@
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 868928,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 },
       "supportsReasoningEffort": ["low", "medium", "high", "xhigh", "max"],
@@ -82,6 +82,8 @@
   ]
 }
 ```
+
+> **Context budget:** `868928 + 131072 = 1000000`, the M3.1 Flash window. VS Code uses that sum as the model's total context. The API allows up to 524288 output tokens, so raise `maxOutputTokens` only by lowering `maxInputTokens` to keep the sum inside the window.
 
 > **Measured on VS Code 1.146:** `modelOptions` and the reasoning-effort metadata reach the provider; `requestBody` does **not**. Provider fields such as `thinking` and `reasoning_split` therefore cannot be set from this file — M3.1 Flash already returns thinking on `reasoning_content` by default, so this is a documentation fix rather than a regression.
 

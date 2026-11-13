@@ -65,12 +65,14 @@
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1000000,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072
     }
   ]
 }
 ```
+
+> **Context budget:** `917504 + 131072 = 1048576`, the K3.1 Pro window (input and output combined). VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`.
 
 > **K3.1 Pro note:** `requestBody` is **not forwarded** on VS Code 1.146 (measured on both harnesses), so `max_tokens` and a `reasoning_effort` entry in the config have no effect. `modelOptions` handles sampling, and the `supportsReasoningEffort` metadata above adds the **Thinking Effort** picker so you can lower effort without editing JSON. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median); the API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor usage. There is currently no supported way to cap output below that from this config.
 
