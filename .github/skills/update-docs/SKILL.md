@@ -1,6 +1,7 @@
 ---
-agent: agent
-description: Audit and update all documentation (README.md, AGENTS.md, docs/models/) against the live chatLanguageModels.json config and proxy source files.
+name: update-docs
+description: 'Audit and update all documentation (README.md, AGENTS.md, docs/models/) against the live chatLanguageModels.json config and proxy source files.'
+disable-model-invocation: true
 ---
 
 You are updating the documentation in this repository to be accurate and complete. Follow these steps precisely.
