@@ -293,25 +293,26 @@ The production Kimi, Qwen, and MiMo proxies therefore still applied their normal
 
 ### Results per route
 
-| Route                                  | Model                | Turn 1 (plain, 128 tools) | Tool turn                 | Provider status        |
-| -------------------------------------- | -------------------- | ------------------------- | ------------------------- | ---------------------- |
-| Kimi proxy `:3457` → relay → Moonshot  | `kimi-k3.1-pro`      | 200                       | 200, tool result accepted | ✅ Pass                |
-| Qwen proxy `:3458` → relay → DashScope | `qwen3.8-max`        | 200                       | 200, tool result accepted | ✅ Pass                |
-| MiMo proxy `:3459` → relay → Xiaomi    | `mimo-v2.6-pro`      | 200                       | 200, tool result accepted | ✅ Pass                |
-| Relay `:3460` → MiniMax                | `MiniMax-M3.1-Flash` | 200                       | 200, tool result accepted | ✅ Pass                |
-| Relay `:3461` → Z.ai                   | `glm-5.3-flash`      | not run in harness        | —                         | ⚠️ Direct API 200 only |
-| Local harness, any provider            | —                    | —                         | —                         | ⛔ Not tested          |
+| Route                                  | Model                      | Turn 1 (plain, 128 tools) | Tool turn                 | Provider status |
+| -------------------------------------- | -------------------------- | ------------------------- | ------------------------- | --------------- |
+| Kimi proxy `:3457` → relay → Moonshot  | `kimi-k3.1-pro`            | 200                       | 200, tool result accepted | ✅ Pass         |
+| Qwen proxy `:3458` → relay → DashScope | `qwen3.8-max`              | 200                       | 200, tool result accepted | ✅ Pass         |
+| MiMo proxy `:3459` → relay → Xiaomi    | `mimo-v2.6-pro`            | 200                       | 200, tool result accepted | ✅ Pass         |
+| Relay `:3460` → MiniMax                | `MiniMax-M3.1-Flash`       | 200                       | 200, tool result accepted | ✅ Pass         |
+| Relay `:3461` → Z.ai                   | `glm-5.3-flash`, `glm-5.3` | 200                       | 200, tool result accepted | ✅ Pass         |
+| Local harness, any provider            | —                          | —                         | —                         | ⛔ Not tested   |
 
 Each passing route: the model appeared in the picker, streamed a reply, called a tool, and completed a follow-up turn after the tool result. A Kimi tool loop run also produced the intermediate `system/user/user/assistant/user` turn the harness inserts.
 
 ### What each request actually contained
 
-| Route   | `reasoning_effort`                        | `max_completion_tokens` | Proxy-specific field                                      | Replayed assistant `reasoning_content`     |
-| ------- | ----------------------------------------- | ----------------------- | --------------------------------------------------------- | ------------------------------------------ |
-| Kimi    | `"high"` (from `supportsReasoningEffort`) | 131072                  | none (`thinking` object absent, correct for K3)           | **Yes — the tool-call message carried it** |
-| Qwen    | absent (no effort metadata on this entry) | absent                  | `enable_thinking: false` **only** on the tool turn        | No                                         |
-| MiMo    | absent                                    | absent                  | `thinking: {"type":"disabled"}` **only** on the tool turn | No                                         |
-| MiniMax | `"medium"`                                | 131072                  | none                                                      | No                                         |
+| Route                            | `reasoning_effort`                        | `max_completion_tokens` | Proxy-specific field                                      | Replayed assistant `reasoning_content`     |
+| -------------------------------- | ----------------------------------------- | ----------------------- | --------------------------------------------------------- | ------------------------------------------ |
+| Kimi                             | `"high"` (from `supportsReasoningEffort`) | 131072                  | none (`thinking` object absent, correct for K3)           | **Yes — the tool-call message carried it** |
+| Qwen                             | absent (no effort metadata on this entry) | absent                  | `enable_thinking: false` **only** on the tool turn        | No                                         |
+| MiMo                             | absent                                    | absent                  | `thinking: {"type":"disabled"}` **only** on the tool turn | No                                         |
+| MiniMax                          | `"medium"`                                | 131072                  | none                                                      | No                                         |
+| GLM (`glm-5.3-flash`, `glm-5.3`) | `"low"`                                   | 131072                  | none — **no `thinking` object is sent**                   | No                                         |
 
 Findings, scoped to these runs:
 
@@ -322,13 +323,17 @@ Findings, scoped to these runs:
 5. **`maxOutputTokens` → `max_completion_tokens` tracks the reasoning metadata, not the model.** Present on the Kimi (131072) and MiniMax (131072) entries, absent on Qwen and MiMo, whose entries declare no `thinking`. This matches the Phase 1 observation and confirms it is an entry-level rule.
 6. **`reasoning_effort` reaches the wire for effort-enabled entries** (`"high"` for Kimi, `"medium"` for MiniMax) with no `requestBody` involved.
 7. **The harness sends at most 128 tools.** The Chat view reported "The model only supports 128 tools, 143 tools were not provided to the model" in this profile; earlier baselines recorded 100–128 depending on configuration.
+8. **GLM needs no provider object to think.** Both `glm-5.3-flash` and `glm-5.3` completed the tool loop with no `thinking` field in the request; Z.ai thinks by default server-side and `clear_thinking` strips history, so the absence of a client-side object is harmless — the same conclusion the Phase 1 `requestBody` measurement implied, now confirmed live.
 
 ### Still unverified
 
-- GLM through the harness (`glm-5.3-flash` returned 200 to a direct API probe with the same key, but the in-editor run was not completed).
 - Any provider on the **Local harness**; the deprecation deadline still applies and the per-harness rule stands: a Copilot-harness pass is not evidence for Local.
 - Vision input on any route, and long-conversation compaction.
 - Whether a SecretStorage-set key (rather than the relay) changes any of the above; the request shape should be identical apart from the `Authorization` value, but this was not measured.
+
+### Profile-loading note for future runs
+
+A custom-endpoint provider added to a fresh profile did **not** appear in the model picker until the Language Models editor had been opened once in that window (`Add Models…` → editor → close). Until then the picker listed only extension-provided models. The editor itself showed the provider immediately, so this is a picker/BYOK-bridge refresh, not a configuration or schema problem. A provider whose display name collides with an installed extension's (for example `GLM`) also hides behind that extension's group, which is why the second run named the provider `GLM Relay`.
 
 ### Reproducing the run
 

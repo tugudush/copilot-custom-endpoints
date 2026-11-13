@@ -12,7 +12,7 @@
 | **GLM Models for Copilot** (KiwiGaze) | [`yijiazhen-qi.glm-for-github-copilot-chat`](https://marketplace.visualstudio.com/items?itemName=yijiazhen-qi.glm-for-github-copilot-chat) |      ✅      |     ✅      | Quota dashboard, dual API           |
 | **GLM Chat Provider** (zelosleone)    | _(pending)_                                                                                                                                |      ❌      |     ✅      | 14 models, per-model thinking tiers |
 
-> **Partially validated 2026-11-13:** glm-5.3-flash returned HTTP 200 to a direct API probe with a workspace key; the in-editor harness run (plain chat plus tool loop) was **not completed**, so the custom-endpoint route is reachable but unproven. Local harness not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): `glm-5.3-flash` and `glm-5.3` each completed plain chat plus a multi-step tool loop with HTTP 200 on both turns on the direct route. `reasoning_effort: `"`low`"`and`max_completion_tokens: 131072`reached Z.ai with **no`thinking`object**, which is correct — the server forces deep thinking and`clear_thinking`handles history. No`reasoning_content` was replayed on the tool turn. Local harness not tested; vision not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
 
 ## At a Glance
 
