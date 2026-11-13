@@ -252,31 +252,31 @@ The profile was created with `code --user-data-dir="%TEMP%\copilot-harness-basel
 
 ## 8. Status summary by route and harness (2026-11-13)
 
-Phase 5's gap report. "Verified" means observed in this investigation; every provider row stays **blocked/not validated** because traffic only ever reached a loopback mock.
+Phase 5's gap report, updated after the Phase 3 live runs. "Verified" means observed in this investigation; the mock-only rows below describe what Phase 2 and Phase 4 established before real provider traffic, and the last two rows record what Phase 3 added.
 
-| Evidence                                                                                     | Copilot harness                                                                                     | Local harness                                |
-| -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| Model visibility, streaming reply                                                            | ✅ Verified 2026-11-13                                                                              | ✅ Verified 2026-11-13                       |
-| Mocked tool call executed, follow-up request observed                                        | ✅ Verified 2026-11-13                                                                              | ✅ Verified 2026-11-13                       |
-| `modelOptions.temperature` / `top_p` forwarded                                               | ✅ Verified                                                                                         | ✅ Verified                                  |
-| `requestBody` (`enable_thinking`, `reasoning_effort`, `max_tokens`)                          | ❌ Silently dropped — do not use                                                                    | ❌ Silently dropped — do not use             |
-| `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` → `reasoning_effort` | ✅ Verified on the `thinking: true` entry                                                           | ⚠️ Not measured on that entry                |
-| `maxOutputTokens` → `max_completion_tokens`                                                  | ⚠️ Entry-dependent — observed only on the reasoning entry                                           | ⚠️ Same limitation                           |
-| `thinking: true` creates a provider `thinking` object                                        | ❌ No — metadata only                                                                               | ❌ No — metadata only                        |
-| `reasoning_content` replayed in assistant tool-call history                                  | ⚠️ Unobserved (absent in every capture)                                                             | ⚠️ Unobserved (absent in every capture)      |
-| First-turn `tools` array without `tool_choice`                                               | ✅ Confirmed (128 tools)                                                                            | ✅ Confirmed (94 tools, distinct vocabulary) |
-| Enforced context/output limit at the provider                                                | ⚠️ Unmeasured — limits are configuration, not validated                                             | ⚠️ Unmeasured                                |
-| Vision input, long-conversation compaction                                                   | ⚠️ Not tested                                                                                       | ⚠️ Not tested                                |
-| Real provider routes (Kimi, Qwen, MiMo, MiniMax, GLM)                                        | ✅ Live-tested 2026-11-13, see [§9](#9-phase-3-live-provider-validation-copilot-harness-2026-11-13) | ⛔ Not tested                                |
-| Extension-provided DeepSeek (Agents window / editor)                                         | ⛔ Not tested                                                                                       | ⛔ Not tested                                |
+| Evidence                                                                                     | Copilot harness                                                                     | Local harness                                     |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Model visibility, streaming reply                                                            | ✅ Verified 2026-11-13                                                              | ✅ Verified 2026-11-13                            |
+| Mocked tool call executed, follow-up request observed                                        | ✅ Verified 2026-11-13                                                              | ✅ Verified 2026-11-13                            |
+| `modelOptions.temperature` / `top_p` forwarded                                               | ✅ Verified                                                                         | ✅ Verified                                       |
+| `requestBody` (`enable_thinking`, `reasoning_effort`, `max_tokens`)                          | ❌ Silently dropped — do not use                                                    | ❌ Silently dropped — do not use                  |
+| `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` → `reasoning_effort` | ✅ Verified on the `thinking: true` entry                                           | ⚠️ Not measured on that entry                     |
+| `maxOutputTokens` → `max_completion_tokens`                                                  | ⚠️ Entry-dependent — observed only on the reasoning entry                           | ⚠️ Same limitation                                |
+| `thinking: true` creates a provider `thinking` object                                        | ❌ No — metadata only                                                               | ❌ No — metadata only                             |
+| `reasoning_content` replayed in assistant tool-call history                                  | ⚠️ Only on the Kimi entry; absent for Qwen / MiMo / MiniMax / GLM                   | ⚠️ Same — Kimi only                               |
+| First-turn `tools` array without `tool_choice`                                               | ✅ Confirmed (128 tools)                                                            | ✅ Confirmed (94 tools in Phase 2, 57 in Phase 3) |
+| Enforced context/output limit at the provider                                                | ⚠️ Unmeasured — limits are configuration, not validated                             | ⚠️ Unmeasured                                     |
+| Vision input, long-conversation compaction                                                   | ⚠️ Not tested                                                                       | ⚠️ Not tested                                     |
+| Real provider routes (Kimi, Qwen, MiMo, MiniMax, GLM)                                        | ✅ Live-tested 2026-11-13, see [§9](#9-phase-3-live-provider-validation-2026-11-13) | ✅ Live-tested 2026-11-13, see §9                 |
+| Extension-provided DeepSeek (Agents window / editor)                                         | ⛔ Not tested                                                                       | ⛔ Not tested                                     |
 
 Automated checks after the Phase 2 and Phase 4 work: `npm test` 49/49 passing, `npm run lint` clean, `npx prettier --check .` clean.
 
 Cleanup state at the end of Phase 5 work: no test server holds a port (`:3457`–`:3459`, `:3490` all free) and no `Code.exe` references the isolated profile. Two idle `node` processes from the 13:39 baseline window (`proxy/qwen-proxy.mjs`, `proxy/kimi-proxy.mjs`) were left running untouched because they belong to the user's environment, hold no listening socket, and may be deliberately paused rather than orphaned. `debug_log/` still holds the sanitized captures listed above until the docs are committed.
 
-## 9. Phase 3 live provider validation, Copilot harness (2026-11-13)
+## 9. Phase 3 live provider validation (2026-11-13)
 
-Real provider traffic, one isolated profile, loopback-only relays. Four of the five documented custom-endpoint routes completed a full plain-chat plus multi-step tool loop on the **Copilot harness**; GLM was reachable by direct API but its harness run did not complete, and **no Local-harness provider run was performed**. Everything in this section is Copilot harness unless stated otherwise.
+Real provider traffic, one isolated profile, loopback-only relays. All five documented custom-endpoint routes — Kimi, Qwen, MiMo, MiniMax, GLM — completed a full plain-chat plus multi-step tool loop on **both** harnesses: on the Copilot harness first, then repeated on the Local harness in the same session. The Local run is recorded in [its own subsection](#local-harness-run-2026-11-13-same-session); everything before it is Copilot harness unless stated otherwise.
 
 ### How the traffic was routed, and why
 

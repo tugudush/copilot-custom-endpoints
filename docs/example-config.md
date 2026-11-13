@@ -8,7 +8,9 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 > **Utility models:** with a GitHub Copilot token, VS Code already uses its built-in utility models, so no extra setup is required. If you use BYOK without Copilot sign-in, set **Chat: Utility Model** and **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_). See the [main README](../README.md#4-configure-the-utility-small-model).
 
-> **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference.
+> **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference. A key pasted directly into this file is not used: measured on 1.146, the request went out as `Authorization: Bearer` with an empty token and the provider rejected it.
+
+> **After saving, open the Language Models editor once.** On 1.146 a provider added to this file stays invisible in the model picker until **Chat: Manage Language Models** (or the picker's **Add Models…**) has been opened in that window; the editor itself shows the provider immediately. If your provider's `name` matches an installed extension (for example `GLM` with the Z.ai extension installed), the picker merges them and your models hide behind the extension group — give the provider a distinct name.
 
 > **Note:** The live config points Qwen at the local proxy (`:3458`) and MiMo at the local proxy (`:3459`). The proxies manage thinking dynamically, so no thinking-related configuration belongs in this file.
 

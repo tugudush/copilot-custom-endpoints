@@ -103,6 +103,7 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Link to existing documentation instead of copying detailed configuration blocks or external source lists into new notes.
 - Keep proxy behavior provider-specific. [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is tuned for Kimi K2-family constraints, not for arbitrary OpenAI-compatible providers.
 - Preserve redaction when touching logging code. Auth headers and equivalent secrets must stay out of `debug_log/` artifacts.
+- When writing setup steps or testing a custom endpoint by hand: a literal `apiKey` in `chatLanguageModels.json` is **not** sent (measured: empty `Bearer` token), so keys must go through **Chat: Manage Language Models**; a newly added provider stays invisible in the model picker until that editor has been opened once in the window; a provider whose `name` matches an installed extension hides behind the extension's group; and the session target resets to Copilot on every new chat. Evidence in [harness research § 9](docs/research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
 ## Provider-specific constraints
 
@@ -142,7 +143,7 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - `reasoning_split` cannot be set to `false` on M3.1 Flash; thinking is always returned on `reasoning_content` and `content` holds only the final answer.
 - `temperature` / `top_p` are **ignored** (M3.1 Flash is fixed at `1` and `0.95`); keep the repo's standard `1` / `0.95` values so the JSON stays uniform, and never send `top_p` outside `(0, 1]`.
 - `service_tier` (an admission-class field priced at 1.5× Standard) is rejected by M3.1 Flash.
-- MiniMax recommends appending the complete assistant message (including `reasoning_content`) to history for interleaved thinking. VS Code does not preserve `reasoning_content` across tool turns, so expect reduced reasoning continuity in agent mode — a quality trade-off, not a hard error (unlike Kimi K2.7).
+- MiniMax recommends appending the complete assistant message (including `reasoning_content`) to history for interleaved thinking. Measured 2026-11-13: VS Code did **not** replay `reasoning_content` on MiniMax's tool turn (unlike Kimi, where it did), so expect reduced reasoning continuity in agent mode — a quality trade-off, not a hard error (unlike Kimi K2.7, which rejects such a request).
 
 - Supported config on VS Code 1.146: `modelOptions` for sampling plus `supportsReasoningEffort` (`low` … `max`) with `reasoningEffortFormat: "chat-completions"`. `thinking`, `reasoning_split`, and `reasoning_effort` inside `requestBody` are **dropped** — provider defaults apply.
 - Endpoint (international): `https://api.minimax.io/v1/chat/completions`. China: `https://api.minimaxi.com/v1/chat/completions`.
@@ -157,7 +158,7 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Supported config on VS Code 1.146: `modelOptions` for `temperature`/`top_p` and `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"` for effort. Server-side `temperature` is hard-capped at `1.0` — never send `> 1.0`.
 - **GLM 5.3 and GLM 5.3 Flash are always-thinking** — `thinking.type` only supports `enabled` (disabling reasoning is not supported) and `reasoning_effort` accepts `low`/`high`/`max` (default `max`). `requestBody.thinking` is dropped on 1.146, which is harmless here because the provider thinks by default.
 - `tool_choice` only supports `auto`; VS Code's default is `auto` so no override needed.
-- `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. This is a near-perfect match for VS Code, which does not preserve `reasoning_content` across tool turns. It cannot be changed from `chatLanguageModels.json` on 1.146 (`requestBody` is dropped), so leave the server default. (Exception note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
+- `clear_thinking` defaults to `true` on Z.ai's server, which **strips historical `reasoning_content`** between turns. Measured 2026-11-13: VS Code did not replay `reasoning_content` on the GLM tool turn either, and Z.ai accepted a request with no `thinking` object at all — so the server defaults already fit this client. It cannot be changed from `chatLanguageModels.json` on 1.146 (`requestBody` is dropped), so leave the server default. (Exception note: Z.ai's GLM-5.3-Flash docs recommend `thinking.clear_thinking: false` for clients that preserve `reasoning_content` — e.g. Claude Code / agent SDKs — not for the VS Code custom-endpoint path.)
 - Vision is supported on `glm-5.3-flash` (native multimodal). `glm-5.3`, `glm-5.2`, and `glm-5.1` are text-only.
 - Endpoint (international): `https://api.z.ai/api/paas/v4/chat/completions`. China: `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 - Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).

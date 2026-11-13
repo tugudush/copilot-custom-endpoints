@@ -20,9 +20,9 @@
 | Proxy endpoint | `http://127.0.0.1:3457/v1/chat/completions`   |
 | Auth           | `Authorization: Bearer $KIMI_API_KEY`         |
 
-> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy, and the follow-up request **replayed
-> easoning_content on the assistant tool-call message** — the first direct evidence of reasoning replay on a custom endpoint.
-> easoning_effort: "high" and max_completion_tokens: 131072 reached Moonshot. Both harnesses pass (Copilot sends 128 tools, Local sends 57); vision and long-context compaction not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy, and the follow-up request **replayed
+> `reasoning_content` on the assistant tool-call message** — the first direct evidence of reasoning replay on a custom endpoint.
+> `reasoning_effort: "high"` and `max_completion_tokens: 131072` reached Moonshot. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
 ### Models
 
@@ -78,7 +78,7 @@
 
 > **Context budget:** `917504 + 131072 = 1048576`, the K3.1 Pro window (input and output combined). VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`.
 
-> **K3.1 Pro note:** `requestBody` is **not forwarded** on VS Code 1.146 (measured on both harnesses), so `max_tokens` and a `reasoning_effort` entry in the config have no effect. `modelOptions` handles sampling, and the `supportsReasoningEffort` metadata above adds the **Thinking Effort** picker so you can lower effort without editing JSON. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median); the API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor usage. There is currently no supported way to cap output below that from this config.
+> **K3.1 Pro note:** `requestBody` is **not forwarded** on VS Code 1.146 (measured on both harnesses), so `max_tokens` and a `reasoning_effort` entry in the config have no effect. `modelOptions` handles sampling, and the `supportsReasoningEffort` metadata above adds the **Thinking Effort** picker so you can lower effort without editing JSON. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median); the API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor usage. Because this entry declares `thinking: true`, `maxOutputTokens` **is** forwarded as `max_completion_tokens` (measured: 131072 reached Moonshot), so lower that value to cap output; entries without the `thinking` metadata do not get this forwarding.
 
 ### 2. API key
 

@@ -18,7 +18,7 @@
 | Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                            |
 | Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                                  |
 
-> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. No reasoning history was replayed, so the proxy's fallback injected hinking: "{ type: disabled }" on the tool turn and Xiaomi accepted it. Both harnesses pass (Copilot sends 128 tools, Local sends 57); vision and long-context compaction not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. No reasoning history was replayed, so the proxy's fallback injected `thinking: { "type": "disabled" }` on the tool turn and Xiaomi accepted it. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
 ### Models
 

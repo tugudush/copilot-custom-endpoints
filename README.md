@@ -45,6 +45,8 @@ VS Code 1.146 runs chat sessions on one of two harnesses, and custom endpoints b
 
 If a model does not appear in the picker on the Copilot harness, check that setting before editing `chatLanguageModels.json`. Details: [harness research](docs/research/vscode-1.146-copilot-harness.md#1-harness-transition).
 
+> **The session target resets per chat.** Measured on 1.146: a new chat always starts on the Copilot harness even after a Local session, so pick the target again for every new chat. Changing the _model_ inside a live chat keeps the session — and its history — so switching provider mid-conversation carries the earlier turns across.
+
 ### 1. Find (or create) your config file
 
 | OS      | Path                                                              |
@@ -59,14 +61,18 @@ If the file doesn't exist yet, create it with `[]` inside.
 
 Open the setup guide for the model you picked (links in the table above) and copy its JSON snippet into the file. Each snippet is a single provider object inside the array.
 
-> **⚠️ Leave `apiKey` as `""`** — never paste the key into the JSON file.
+> **⚠️ Leave `apiKey` as `""`** — a key pasted into this file is **not** used. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed". Use the UI step below.
+
+> **The models don't appear in the picker yet.** After editing the file, open **Chat: Manage Language Models** once (or the picker's **Add Models…**) and close it. Measured on 1.146: until the editor has been opened in that window, the picker lists only extension-provided models while the editor already shows your provider.
+
+> **Name collision hides your models.** If your provider's `name` matches an installed extension's group (for example `GLM`, when the Z.ai extension is installed), the picker merges them and your models sit behind the extension's group. Give the provider a distinct name (`GLM Relay`, `Qwen (proxy)`, …).
 
 ### 3. Set the API key
 
 1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
 2. Run **Chat: Manage Language Models**.
 3. Find your provider in the list, right-click the group name → **Update API Key**.
-4. Paste your key. It's stored in your OS keychain.
+4. Paste your key. It's stored in your OS keychain, and VS Code resolves it into the request's `Authorization` header — the only path that works.
 
 ### 4. Utility models (usually nothing to do)
 

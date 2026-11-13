@@ -26,10 +26,9 @@
 | Endpoint (China)         | `https://api.minimaxi.com/v1/chat/completions`                                                        |
 | Auth                     | `Authorization: Bearer $MINIMAX_API_KEY` (or Subscription Key, see [Setup](#setup))                   |
 
-> **Live-validated 2026-11-13** (Copilot harness, VS Code 1.146): plain chat plus a multi-step tool loop returned HTTP 200 on both turns on the direct route.
-> easoning_effort: "medium" and max_completion_tokens: 131072 reached MiniMax, and no hinking/
-> easoning_split field was needed.
-> easoning_content was not replayed on the tool turn. Both harnesses pass (Copilot sends 128 tools, Local sends 57); vision and long-context compaction not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-copilot-harness-2026-11-13).
+> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns on the direct route.
+> `reasoning_effort: "medium"` and `max_completion_tokens: 131072` reached MiniMax, and no `thinking`/`reasoning_split` field was needed.
+> `reasoning_content` was not replayed on the tool turn. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
 ### Models
 
@@ -139,7 +138,7 @@ On VS Code 1.146 set this through the model picker's **Thinking Effort** control
 - **Thinking output is split by default:** the server returns thinking on `reasoning_content`, keeping `content` clean for VS Code. `thinking` is effectively fixed at `adaptive` (the server rejects `disabled`).
 - **`reasoning_effort` controls thinking depth.** Values are `low` / `medium` / `high` / `xhigh` / `max`, default `max`; `none` is rejected. Choose it in the model picker, not in `requestBody`.
 - **`temperature: 1`, `top_p: 0.95`** are accepted but **ignored** (M3.1 Flash is fixed at those values); `top_p` must still be inside `(0, 1]` if you send it.
-- **Interleaved thinking and tool loops:** MiniMax recommends sending the complete assistant message — including `reasoning_content` — back in history so the reasoning chain stays continuous. VS Code does not preserve `reasoning_content` across tool turns, so expect shallower continuity on long agent runs. This is a quality trade-off, not an error: unlike Kimi K2.7, M3.1 Flash does not reject a tool result whose assistant message lacks reasoning content.
+- **Interleaved thinking and tool loops:** MiniMax recommends sending the complete assistant message — including `reasoning_content` — back in history so the reasoning chain stays continuous. Measured 2026-11-13 on both harnesses: VS Code did **not** replay `reasoning_content` on the MiniMax tool turn (Kimi's entry did), so expect shallower continuity on long agent runs. This is a quality trade-off, not an error: unlike Kimi K2.7, M3.1 Flash does not reject a tool result whose assistant message lacks reasoning content.
 - **Max output:** `max_completion_tokens` is recommended at 131072 and accepts up to 524288; thinking tokens count toward that limit.
 - **Rate limits:** 200 RPM / 10M TPM. Input tokens above 512K are available in limited quantity for a limited time.
 
