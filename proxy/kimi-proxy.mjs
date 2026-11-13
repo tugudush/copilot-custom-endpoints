@@ -2,6 +2,7 @@
 import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { createProxy } from '../lib/create-proxy.mjs'
+import { rewriteKimi } from '../lib/kimi-rewrite.mjs'
 
 /**
  * Supported model scope for this proxy:
@@ -86,107 +87,6 @@ if (!Number.isFinite(forcedTopP)) {
   )
 }
 
-// ---- Provider-specific rewrite logic ----
-
-function summarizePayload(payload, hasTools, rewriteInfo) {
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const tools = Array.isArray(payload.tools) ? payload.tools : []
-
-  return {
-    model: payload.model,
-    stream: payload.stream,
-    ...rewriteInfo,
-    maxTokens:
-      payload.max_tokens ??
-      payload.max_completion_tokens ??
-      payload.max_output_tokens,
-    toolChoice: payload.tool_choice,
-    toolCount: tools.length,
-    hasTools,
-    messageCount: messages.length,
-    messageRoles: messages.map((message) => message?.role).slice(0, 16),
-    topLevelKeys: Object.keys(payload).sort()
-  }
-}
-
-function rewriteKimi(payload) {
-  const incomingTemperature = payload.temperature
-  const incomingTopP = payload.top_p
-  const incomingThinkingType = payload?.thinking?.type
-  const incomingReasoningEffort = payload?.reasoning_effort
-  const model = payload.model ?? ''
-
-  // K2.7 and K3 are always-thinking and reject thinking: disabled.
-  // K2.7 uses `thinking` parameter; K3 uses `reasoning_effort` instead.
-  // Detect K2.7 variants (e.g. kimi-k2.7-code) and K3-family variants
-  // (e.g. kimi-k3, kimi-k3.1-pro, kimi-k3.1-pro-highspeed) and skip the
-  // thinking-disable rewrite while keeping temperature/top_p enforcement.
-  const isK27 = model.startsWith('kimi-k2.7')
-  const isK3 = model.startsWith('kimi-k3')
-  const isAlwaysThinking = isK27 || isK3
-
-  // Determine if a tool is actually being invoked:
-  // - tool_choice is set and not "none"
-  // - OR there is a "tool" role message in the conversation
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const hasToolRole = messages.some((message) => message?.role === 'tool')
-  const toolChoice = payload.tool_choice
-  const hasActiveToolCall =
-    hasToolRole ||
-    (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
-  const hasTools = hasActiveToolCall
-
-  const useNonThinkingMode =
-    !isAlwaysThinking && disableThinkingWithTools && hasTools
-  const rewrittenTemperature = useNonThinkingMode
-    ? forcedNonThinkingTemperature
-    : forcedTemperature
-
-  // Capture incoming state before mutation
-  payload.__incomingThinkingType = incomingThinkingType
-  payload.__incomingReasoningEffort = incomingReasoningEffort
-
-  // Apply rewrites
-  payload.temperature = rewrittenTemperature
-  payload.top_p = forcedTopP
-
-  if (useNonThinkingMode) {
-    payload.thinking = { type: 'disabled' }
-  }
-
-  // K3 does not accept `thinking` — delete it if present so it doesn't cause a 400
-  if (isK3 && payload.thinking) {
-    delete payload.thinking
-  }
-
-  const rewrittenThinkingType = payload.thinking?.type
-  const rewriteInfo = {
-    model,
-    isK27,
-    isK3,
-    incomingTemperature,
-    rewrittenTemperature,
-    incomingTopP,
-    rewrittenTopP: forcedTopP,
-    incomingThinkingType,
-    rewrittenThinkingType,
-    incomingReasoningEffort
-  }
-
-  const summary = summarizePayload(payload, hasTools, rewriteInfo)
-
-  const modeTag = hasTools ? '[tools]' : '[chat]'
-  const k27Tag = isK27 ? '[k2.7]' : ''
-  const k3Tag = isK3 ? '[k3]' : ''
-  const consoleMsg = `${k27Tag}${k3Tag}${modeTag} temperature ${String(incomingTemperature)} -> ${String(rewrittenTemperature)}, top_p ${String(incomingTopP)} -> ${String(forcedTopP)}, thinking ${String(incomingThinkingType)} -> ${String(rewrittenThinkingType)}, reasoning_effort ${String(incomingReasoningEffort)}`
-
-  // Clean up internal keys before forwarding
-  delete payload.__incomingThinkingType
-  delete payload.__incomingReasoningEffort
-
-  return { summary, consoleMsg }
-}
-
 // ---- Create and start ----
 
 const { start } = createProxy({
@@ -195,7 +95,13 @@ const { start } = createProxy({
   logPath,
   label: 'kimi-proxy',
   healthCheckExtras: { forcedTemperature, forcedTopP },
-  rewriteRequest: rewriteKimi,
+  rewriteRequest: (payload) =>
+    rewriteKimi(payload, {
+      forcedTemperature,
+      forcedNonThinkingTemperature,
+      forcedTopP,
+      disableThinkingWithTools
+    }),
   startupMessages: (_port, _upstreamUrl) => [
     `[kimi-proxy] listening on http://127.0.0.1:${_port}/v1/chat/completions`,
     `[kimi-proxy] forwarding to ${_upstreamUrl}`,

@@ -195,6 +195,7 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 - **Vision (`qwen3.8-max`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
 - **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). The direct snippet disables reasoning for stable VS Code tool loops; the proxy leaves it on for plain chat and suppresses it when tool activity is detected.
 - **Thinking trade-off:** Direct = thinking always off (loops stable, no reasoning visible). Proxy = thinking on in plain chat, off in tool turns.
+- **First tool-capable request:** detection is history-based, so an initial request that sends a `tools` array with no `tool_choice` and no tool-role history is treated as plain chat (thinking stays on). If a provider rejects thinking on that first turn, the follow-up turn is suppressed once tool activity appears. `tool_choice: "none"` is also treated as plain chat. Harness-specific request shapes for this case are still unverified — see [the harness research](../research/vscode-1.146-copilot-harness.md).
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 
 ## Troubleshooting

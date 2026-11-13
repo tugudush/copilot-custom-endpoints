@@ -55,14 +55,18 @@ Depends on 1.1. For each harness, in separate controlled cases compare `requestB
 
 Can start independently of phase 1. Replace the duplicated Qwen and Kimi test rewrites with tests of the production behavior, using the smallest practical test seam or real proxy processes with a mock upstream. Preserve startup behavior, provider-specific rewrites, streaming, forwarded headers, and redacted logging. Retain the existing direct MiMo rewrite coverage.
 
-- [ ] T005 [Plan:2.1] Update `tests/proxy.test.mjs` and, only if needed for a minimal test seam, `proxy/qwen-proxy.mjs` and `proxy/kimi-proxy.mjs` so tests invoke production rewrites rather than copies.
-- [ ] T006 [Plan:2.1] Cover plain chat, a nonempty tools array with omitted `tool_choice`, explicit `tool_choice: "none"`, active `tool_choice`, tool-role history, and K3 always-thinking behavior; keep the existing relevant `tests/mimo-rewrite.test.mjs` cases.
+> **Status 2026-11-13:** The rewrites now live in `lib/kimi-rewrite.mjs` and `lib/qwen-rewrite.mjs` (sharing `lib/rewrite-summary.mjs` with `lib/mimo-rewrite.mjs`). The proxies and `tests/proxy.test.mjs` both import them, so the integration tests exercise production logic against a mock upstream.
+
+- [x] T005 [Plan:2.1] Update `tests/proxy.test.mjs` and, only if needed for a minimal test seam, `proxy/qwen-proxy.mjs` and `proxy/kimi-proxy.mjs` so tests invoke production rewrites rather than copies.
+- [x] T006 [Plan:2.1] Cover plain chat, a nonempty tools array with omitted `tool_choice`, explicit `tool_choice: "none"`, active `tool_choice`, tool-role history, and K3 always-thinking behavior; keep the existing relevant `tests/mimo-rewrite.test.mjs` cases.
 
 ### 2.2 Resolve Qwen's first tool-capable request (REQ-002, REQ-003)
 
 Depends on 1.2 and 2.1. Compare actual request shapes from both harnesses and provider requirements with Qwen's documented promise. Decide whether a tools array alone should trigger suppression, including the semantics of explicit `"none"`; document the chosen trade-off and apply the regression and default-change gate. Do not change production behavior merely to match the old duplicate tests.
 
-- [ ] T007 [Plan:2.2] Use the evidence from both harnesses in `docs/research/vscode-1.146-copilot-harness.md` to document the first-turn and `tool_choice: "none"` decision in `docs/models/qwen.md`.
+> **Status 2026-11-13:** Production behavior is unchanged and now covered by tests: a `tools` array alone and `tool_choice: "none"` are treated as plain chat. The limitation is documented in [qwen.md](../../models/qwen.md#notes). The harness-evidence half of this item remains open — the first tool-capable request shape has not been observed on either harness.
+
+- [ ] T007 [Plan:2.2] Use the evidence from both harnesses in `docs/research/vscode-1.146-copilot-harness.md` to document the first-turn and `tool_choice: "none"` decision in `docs/models/qwen.md`. _(Partially done: current behavior is documented and test-covered; harness request shapes still unobserved.)_
 - [ ] T008 [Plan:2.2] If the evidence requires a change, update `proxy/qwen-proxy.mjs` and its production-path regression cases in `tests/proxy.test.mjs`; otherwise retain behavior and document the limitation.
 
 ## Phase 3 - Provider compatibility validation

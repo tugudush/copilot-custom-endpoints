@@ -2,6 +2,9 @@ import { describe, it, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { createProxy } from '../lib/create-proxy.mjs'
+import { rewriteKimi } from '../lib/kimi-rewrite.mjs'
+import { rewriteQwen } from '../lib/qwen-rewrite.mjs'
+import { rewriteMiMo } from '../lib/mimo-rewrite.mjs'
 import { mkdirSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
@@ -60,110 +63,93 @@ function proxyRequest(port, body) {
   })
 }
 
+/**
+ * Start the real proxy pipeline (createProxy + the production rewrite) against
+ * a mock upstream. Tests therefore exercise production code, not a copy.
+ */
+async function startProxy({ rewriteRequest, healthCheckExtras, label }) {
+  const mockUpstream = await createMockUpstream()
+  const mockAddr = mockUpstream.address()
+  const { dir, path: logPath } = tmpLogPath(label)
+
+  const { server } = createProxy({
+    upstreamUrl: `http://127.0.0.1:${mockAddr.port}/v1/chat/completions`,
+    port: 0,
+    logPath,
+    label,
+    healthCheckExtras,
+    rewriteRequest,
+    startupMessages: () => []
+  })
+
+  server.listen(0, '127.0.0.1')
+  await new Promise((resolve) => server.once('listening', resolve))
+
+  return {
+    mockUpstream,
+    server,
+    logDir: dir,
+    port: server.address().port
+  }
+}
+
+function stopProxy({ mockUpstream, server, logDir }) {
+  server?.close()
+  mockUpstream?.close()
+  // Allow pending log writes to flush before cleanup
+  setTimeout(() => {
+    try {
+      if (logDir) rmSync(logDir, { recursive: true, force: true })
+    } catch {
+      /* ok */
+    }
+  }, 200)
+}
+
+async function postJson(port, body) {
+  const res = await proxyRequest(port, body)
+  assert.equal(res.status, 200)
+  return (await res.json()).receivedBody
+}
+
+const TOOLS = [{ type: 'function', function: { name: 'search' } }]
+
 // ---- Kimi proxy tests ----
 
 describe('Kimi proxy rewrite logic', () => {
-  /** @type {import('node:http').Server} */
-  let mockUpstream
-  /** @type {import('node:http').Server} */
-  let proxyServer
-  let proxyPort
-  let logDir
-
   const forcedTemperature = 1
   const forcedNonThinkingTemperature = 0.6
   const forcedTopP = 0.95
 
+  /** @type {ReturnType<typeof startProxy> extends Promise<infer T> ? T : never} */
+  let harness
+
   before(async () => {
-    mockUpstream = await createMockUpstream()
-    const mockAddr = mockUpstream.address()
-    const mockUrl = `http://127.0.0.1:${mockAddr.port}/v1/chat/completions`
-
-    const { dir, path: logPath } = tmpLogPath('kimi-test')
-    logDir = dir
-
-    const { server } = createProxy({
-      upstreamUrl: mockUrl,
-      port: 0,
-      logPath,
+    harness = await startProxy({
       label: 'kimi-test',
       healthCheckExtras: { forcedTemperature, forcedTopP },
-      rewriteRequest(payload) {
-        const incomingTemperature = payload.temperature
-        const incomingTopP = payload.top_p
-        const incomingThinkingType = payload?.thinking?.type
-        const model = payload.model ?? ''
-        const isK27 = model.startsWith('kimi-k2.7')
-        const hasTools =
-          Array.isArray(payload.tools) && payload.tools.length > 0
-        const useNonThinkingMode = !isK27 && hasTools
-        const rewrittenTemperature = useNonThinkingMode
-          ? forcedNonThinkingTemperature
-          : forcedTemperature
-
-        payload.__incomingThinkingType = incomingThinkingType
-        payload.temperature = rewrittenTemperature
-        payload.top_p = forcedTopP
-
-        if (useNonThinkingMode) {
-          payload.thinking = { type: 'disabled' }
-        }
-
-        const rewrittenThinkingType = payload.thinking?.type
-        const consoleMsg = `temperature ${incomingTemperature} -> ${rewrittenTemperature}, top_p ${incomingTopP} -> ${forcedTopP}`
-
-        delete payload.__incomingThinkingType
-
-        return {
-          summary: {
-            model: payload.model,
-            isK27,
-            hasTools,
-            incomingTemperature,
-            rewrittenTemperature,
-            incomingTopP,
-            rewrittenTopP: forcedTopP,
-            incomingThinkingType,
-            rewrittenThinkingType
-          },
-          consoleMsg
-        }
-      },
-      startupMessages: () => []
+      rewriteRequest: (payload) =>
+        rewriteKimi(payload, {
+          forcedTemperature,
+          forcedNonThinkingTemperature,
+          forcedTopP,
+          disableThinkingWithTools: true
+        })
     })
-
-    proxyServer = server
-    proxyServer.listen(0, '127.0.0.1', () => {
-      proxyPort = proxyServer.address().port
-    })
-
-    // Wait for server to be ready
-    await new Promise((resolve) => proxyServer.once('listening', resolve))
   })
 
-  after(() => {
-    proxyServer?.close()
-    mockUpstream?.close()
-    // Allow pending log writes to flush before cleanup
-    setTimeout(() => {
-      try {
-        if (logDir) rmSync(logDir, { recursive: true, force: true })
-      } catch {
-        /* ok */
-      }
-    }, 200)
-  })
+  after(() => stopProxy(harness))
 
   it('health check returns ok', async () => {
-    const res = await fetch(`http://127.0.0.1:${proxyPort}/healthz`)
+    const res = await fetch(`http://127.0.0.1:${harness.port}/healthz`)
     assert.equal(res.status, 200)
     const body = await res.json()
     assert.equal(body.ok, true)
     assert.equal(body.forcedTemperature, forcedTemperature)
   })
 
-  it('rewrites plain chat: forces temperature and top_p', async () => {
-    const res = await proxyRequest(proxyPort, {
+  it('plain chat: forces temperature and top_p', async () => {
+    const received = await postJson(harness.port, {
       model: 'kimi-k2.6',
       messages: [{ role: 'user', content: 'Hello' }],
       temperature: 0.1,
@@ -171,57 +157,100 @@ describe('Kimi proxy rewrite logic', () => {
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
-
     assert.equal(received.temperature, forcedTemperature)
     assert.equal(received.top_p, forcedTopP)
     assert.equal(received.thinking, undefined)
   })
 
-  it('rewrites tool-enabled chat: forces non-thinking temperature and disables thinking', async () => {
-    const res = await proxyRequest(proxyPort, {
+  it('tool_choice auto: forces non-thinking temperature and disables thinking', async () => {
+    const received = await postJson(harness.port, {
       model: 'kimi-k2.6',
       messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
+      tools: TOOLS,
+      tool_choice: 'auto',
       temperature: 0.1,
       top_p: 0.5,
       stream: false
     })
-
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
 
     assert.equal(received.temperature, forcedNonThinkingTemperature)
     assert.equal(received.top_p, forcedTopP)
     assert.deepEqual(received.thinking, { type: 'disabled' })
   })
 
-  it('K2.7 tool-enabled chat: keeps thinking enabled and uses thinking temperature', async () => {
-    const res = await proxyRequest(proxyPort, {
-      model: 'kimi-k2.7-code',
-      messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
-      temperature: 0.1,
-      top_p: 0.5,
+  it('tool-role history alone counts as tool activity', async () => {
+    const received = await postJson(harness.port, {
+      model: 'kimi-k2.6',
+      messages: [
+        { role: 'assistant', tool_calls: [{ id: 'c1', type: 'function' }] },
+        { role: 'tool', tool_call_id: 'c1', content: 'result' }
+      ],
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
+    assert.equal(received.temperature, forcedNonThinkingTemperature)
+    assert.deepEqual(received.thinking, { type: 'disabled' })
+  })
 
-    // K2.7 should NOT have thinking disabled — it rejects it
+  it('tools array without tool_choice is treated as plain chat', async () => {
+    const received = await postJson(harness.port, {
+      model: 'kimi-k2.6',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      temperature: 0.1,
+      stream: false
+    })
+
+    assert.equal(received.temperature, forcedTemperature)
+    assert.equal(received.thinking, undefined)
+  })
+
+  it('tool_choice none is treated as plain chat', async () => {
+    const received = await postJson(harness.port, {
+      model: 'kimi-k2.6',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      tool_choice: 'none',
+      stream: false
+    })
+
+    assert.equal(received.temperature, forcedTemperature)
+    assert.equal(received.thinking, undefined)
+  })
+
+  it('K2.7 tool chat: keeps thinking enabled and uses thinking temperature', async () => {
+    const received = await postJson(harness.port, {
+      model: 'kimi-k2.7-code',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      tool_choice: 'auto',
+      temperature: 0.1,
+      stream: false
+    })
+
+    // K2.7 rejects thinking: disabled
+    assert.equal(received.temperature, forcedTemperature)
+    assert.equal(received.thinking, undefined)
+  })
+
+  it('K3 tool chat: removes an incoming thinking block', async () => {
+    const received = await postJson(harness.port, {
+      model: 'kimi-k3.1-pro',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      tool_choice: 'auto',
+      thinking: { type: 'disabled' },
+      stream: false
+    })
+
     assert.equal(received.temperature, forcedTemperature)
     assert.equal(received.top_p, forcedTopP)
-    assert.equal(received.thinking, undefined)
+    assert.equal(Object.hasOwn(received, 'thinking'), false)
   })
 
   it('returns 404 for non-POST methods', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'PUT',
         headers: { 'content-type': 'application/json' },
@@ -233,7 +262,7 @@ describe('Kimi proxy rewrite logic', () => {
 
   it('returns 400 for invalid JSON', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -249,76 +278,21 @@ describe('Kimi proxy rewrite logic', () => {
 // ---- Qwen proxy tests ----
 
 describe('Qwen proxy rewrite logic', () => {
-  /** @type {import('node:http').Server} */
-  let mockUpstream
-  /** @type {import('node:http').Server} */
-  let proxyServer
-  let proxyPort
-  let logDir
+  let harness
 
   before(async () => {
-    mockUpstream = await createMockUpstream()
-    const mockAddr = mockUpstream.address()
-    const mockUrl = `http://127.0.0.1:${mockAddr.port}/v1/chat/completions`
-
-    const { dir, path: logPath } = tmpLogPath('qwen-test')
-    logDir = dir
-
-    const { server } = createProxy({
-      upstreamUrl: mockUrl,
-      port: 0,
-      logPath,
+    harness = await startProxy({
       label: 'qwen-test',
       healthCheckExtras: { disableThinkingWithTools: true },
-      rewriteRequest(payload) {
-        const hasTools =
-          Array.isArray(payload.tools) && payload.tools.length > 0
-        const incomingEnableThinking = payload.enable_thinking
-
-        if (hasTools) {
-          payload.enable_thinking = false
-        } else {
-          delete payload.enable_thinking
-        }
-
-        const rewrittenEnableThinking = hasTools ? false : undefined
-
-        return {
-          summary: {
-            model: payload.model,
-            hasTools,
-            incomingEnableThinking,
-            rewrittenEnableThinking
-          },
-          consoleMsg: `tools=${hasTools} enable_thinking=${incomingEnableThinking} -> ${hasTools ? 'false' : '<deleted>'}`
-        }
-      },
-      startupMessages: () => []
+      rewriteRequest: (payload) =>
+        rewriteQwen(payload, { disableThinkingWithTools: true })
     })
-
-    proxyServer = server
-    proxyServer.listen(0, '127.0.0.1', () => {
-      proxyPort = proxyServer.address().port
-    })
-
-    await new Promise((resolve) => proxyServer.once('listening', resolve))
   })
 
-  after(() => {
-    proxyServer?.close()
-    mockUpstream?.close()
-    // Allow pending log writes to flush before cleanup
-    setTimeout(() => {
-      try {
-        if (logDir) rmSync(logDir, { recursive: true, force: true })
-      } catch {
-        /* ok */
-      }
-    }, 200)
-  })
+  after(() => stopProxy(harness))
 
   it('health check returns ok', async () => {
-    const res = await fetch(`http://127.0.0.1:${proxyPort}/healthz`)
+    const res = await fetch(`http://127.0.0.1:${harness.port}/healthz`)
     assert.equal(res.status, 200)
     const body = await res.json()
     assert.equal(body.ok, true)
@@ -326,69 +300,80 @@ describe('Qwen proxy rewrite logic', () => {
   })
 
   it('plain chat: deletes enable_thinking (model defaults to true)', async () => {
-    const res = await proxyRequest(proxyPort, {
+    const received = await postJson(harness.port, {
       model: 'qwen3.8-max',
       messages: [{ role: 'user', content: 'Hello' }],
       stream: false
     })
-
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
 
     assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
   })
 
   it('forwards Qwen snapshot model IDs unchanged', async () => {
-    const res = await proxyRequest(proxyPort, {
+    const received = await postJson(harness.port, {
       model: 'qwen/qwen3.8-max-0902',
       messages: [{ role: 'user', content: 'Hello' }],
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
-
     assert.equal(received.model, 'qwen/qwen3.8-max-0902')
     assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
   })
 
-  it('tool-enabled chat: sets enable_thinking to false', async () => {
-    const res = await proxyRequest(proxyPort, {
+  it('tools array without tool_choice keeps default thinking (first-turn gap)', async () => {
+    const received = await postJson(harness.port, {
       model: 'qwen3.8-max',
       messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
+      tools: TOOLS,
       enable_thinking: true,
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
+    assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
+  })
+
+  it('tool_choice auto: sets enable_thinking to false', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      tool_choice: 'auto',
+      enable_thinking: true,
+      stream: false
+    })
 
     assert.equal(received.enable_thinking, false)
   })
 
-  it('tool-enabled chat: overrides explicit enable_thinking: true', async () => {
-    const res = await proxyRequest(proxyPort, {
+  it('tool_choice none: deletes enable_thinking', async () => {
+    const received = await postJson(harness.port, {
       model: 'qwen3.8-max',
-      messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
+      messages: [{ role: 'user', content: 'Hello' }],
+      tools: TOOLS,
+      tool_choice: 'none',
       enable_thinking: true,
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
+    assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
+  })
+
+  it('tool-role history: sets enable_thinking to false', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [
+        { role: 'assistant', tool_calls: [{ id: 'c1', type: 'function' }] },
+        { role: 'tool', tool_call_id: 'c1', content: 'result' }
+      ],
+      stream: false
+    })
 
     assert.equal(received.enable_thinking, false)
   })
 
   it('returns 404 for non-POST methods', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
@@ -400,7 +385,7 @@ describe('Qwen proxy rewrite logic', () => {
 
   it('returns 400 for invalid JSON', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -414,76 +399,21 @@ describe('Qwen proxy rewrite logic', () => {
 // ---- MiMo proxy tests ----
 
 describe('MiMo proxy rewrite logic', () => {
-  /** @type {import('node:http').Server} */
-  let mockUpstream
-  /** @type {import('node:http').Server} */
-  let proxyServer
-  let proxyPort
-  let logDir
+  let harness
 
   before(async () => {
-    mockUpstream = await createMockUpstream()
-    const mockAddr = mockUpstream.address()
-    const mockUrl = `http://127.0.0.1:${mockAddr.port}/v1/chat/completions`
-
-    const { dir, path: logPath } = tmpLogPath('mimo-test')
-    logDir = dir
-
-    const { server } = createProxy({
-      upstreamUrl: mockUrl,
-      port: 0,
-      logPath,
+    harness = await startProxy({
       label: 'mimo-test',
       healthCheckExtras: { disableThinkingWithTools: true },
-      rewriteRequest(payload) {
-        const hasTools =
-          Array.isArray(payload.tools) && payload.tools.length > 0
-        const incomingThinkingType = payload?.thinking?.type
-
-        if (hasTools) {
-          payload.thinking = { type: 'disabled' }
-        } else {
-          delete payload.thinking
-        }
-
-        const rewrittenThinkingType = hasTools ? 'disabled' : undefined
-
-        return {
-          summary: {
-            model: payload.model,
-            hasTools,
-            incomingThinkingType,
-            rewrittenThinkingType
-          },
-          consoleMsg: `tools=${hasTools} thinking.type=${incomingThinkingType} -> ${hasTools ? '"disabled"' : '<deleted>'}`
-        }
-      },
-      startupMessages: () => []
+      rewriteRequest: (payload) =>
+        rewriteMiMo(payload, { disableThinkingWithTools: true })
     })
-
-    proxyServer = server
-    proxyServer.listen(0, '127.0.0.1', () => {
-      proxyPort = proxyServer.address().port
-    })
-
-    await new Promise((resolve) => proxyServer.once('listening', resolve))
   })
 
-  after(() => {
-    proxyServer?.close()
-    mockUpstream?.close()
-    // Allow pending log writes to flush before cleanup
-    setTimeout(() => {
-      try {
-        if (logDir) rmSync(logDir, { recursive: true, force: true })
-      } catch {
-        /* ok */
-      }
-    }, 200)
-  })
+  after(() => stopProxy(harness))
 
   it('health check returns ok', async () => {
-    const res = await fetch(`http://127.0.0.1:${proxyPort}/healthz`)
+    const res = await fetch(`http://127.0.0.1:${harness.port}/healthz`)
     assert.equal(res.status, 200)
     const body = await res.json()
     assert.equal(body.ok, true)
@@ -491,54 +421,62 @@ describe('MiMo proxy rewrite logic', () => {
   })
 
   it('plain chat: deletes thinking', async () => {
-    const res = await proxyRequest(proxyPort, {
+    const received = await postJson(harness.port, {
       model: 'mimo-v2.6-pro',
       messages: [{ role: 'user', content: 'Hello' }],
       stream: false
     })
 
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
+    assert.equal(Object.hasOwn(received, 'thinking'), false)
+  })
+
+  it('tool chat with incomplete reasoning history: disables thinking', async () => {
+    const received = await postJson(harness.port, {
+      model: 'mimo-v2.6-pro',
+      messages: [
+        { role: 'assistant', tool_calls: [{ id: 'c1', type: 'function' }] },
+        { role: 'tool', tool_call_id: 'c1', content: 'result' }
+      ],
+      thinking: { type: 'enabled' },
+      stream: false
+    })
+
+    assert.deepEqual(received.thinking, { type: 'disabled' })
+  })
+
+  it('tools array without tool-call history: preserves thinking', async () => {
+    const received = await postJson(harness.port, {
+      model: 'mimo-v2.6-pro',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      thinking: { type: 'enabled' },
+      stream: false
+    })
+
+    assert.deepEqual(received.thinking, { type: 'enabled' })
+  })
+
+  it('tool chat with reasoning history: preserves thinking', async () => {
+    const received = await postJson(harness.port, {
+      model: 'mimo-v2.6-pro',
+      messages: [
+        {
+          role: 'assistant',
+          reasoning_content: 'Planning the tool call.',
+          tool_calls: [{ id: 'c1', type: 'function' }]
+        },
+        { role: 'tool', tool_call_id: 'c1', content: 'result' }
+      ],
+      tool_choice: 'auto',
+      stream: false
+    })
 
     assert.equal(Object.hasOwn(received, 'thinking'), false)
   })
 
-  it('tool-enabled chat: sets thinking.type to disabled', async () => {
-    const res = await proxyRequest(proxyPort, {
-      model: 'mimo-v2.6-pro',
-      messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
-      thinking: { type: 'enabled' },
-      stream: false
-    })
-
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
-
-    assert.deepEqual(received.thinking, { type: 'disabled' })
-  })
-
-  it('tool-enabled chat: overrides explicit thinking.type: enabled', async () => {
-    const res = await proxyRequest(proxyPort, {
-      model: 'mimo-v2.6-flash',
-      messages: [{ role: 'user', content: 'Search' }],
-      tools: [{ type: 'function', function: { name: 'search' } }],
-      thinking: { type: 'enabled' },
-      stream: false
-    })
-
-    assert.equal(res.status, 200)
-    const data = await res.json()
-    const received = data.receivedBody
-
-    assert.deepEqual(received.thinking, { type: 'disabled' })
-  })
-
   it('returns 404 for non-POST methods', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
@@ -550,7 +488,7 @@ describe('MiMo proxy rewrite logic', () => {
 
   it('returns 400 for invalid JSON', async () => {
     const res = await fetch(
-      `http://127.0.0.1:${proxyPort}/v1/chat/completions`,
+      `http://127.0.0.1:${harness.port}/v1/chat/completions`,
       {
         method: 'POST',
         headers: { 'content-type': 'application/json' },

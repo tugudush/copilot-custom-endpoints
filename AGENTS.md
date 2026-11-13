@@ -32,7 +32,8 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
 - [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4.1 Flash extension setup and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
-- [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tools are present (reasoning visible in plain chat, suppressed in tool loops).
+- [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tool activity is detected — a `"tool"`-role message or a non-default `tool_choice`, not merely a `tools` array (reasoning visible in plain chat, suppressed in tool loops).
+- [lib/kimi-rewrite.mjs](lib/kimi-rewrite.mjs), [lib/qwen-rewrite.mjs](lib/qwen-rewrite.mjs), and [lib/mimo-rewrite.mjs](lib/mimo-rewrite.mjs) hold the provider rewrites that the proxies and their tests import; [lib/rewrite-summary.mjs](lib/rewrite-summary.mjs) holds the shared NDJSON summary shape and tool-activity detection.
 - [proxy/mimo-proxy.mjs](proxy/mimo-proxy.mjs) is an optional proxy for MiMo V2.6 models that preserves thinking when reasoning history is complete and suppresses it as a tool-loop fallback when history is incomplete.
 - `debug_log/` contains local runtime artifacts. It is git-ignored and should not be treated as canonical documentation.
 
@@ -74,7 +75,7 @@ curl https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mod
 
 ### Qwen (with optional proxy)
 
-The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked.
+The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tool activity is detected (a `"tool"`-role message or a non-default `tool_choice`).
 
 - `npm run proxy:qwen` (or `node proxy/qwen-proxy.mjs`) starts the local proxy on `http://127.0.0.1:3458/v1/chat/completions`.
 - `node proxy/qwen-proxy.mjs --help` prints the supported environment variables and defaults.
@@ -115,7 +116,7 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Direct VS Code -> DashScope works without a proxy for `qwen3.8-max` when `enable_thinking: false` is set in `requestBody`.
 - Use the OpenAI-compatible path (`/compatible-mode/v1`); never the native DashScope path (`/api/v1`), whose request/response schema VS Code and the proxy do not speak.
 - Prefer the workspace-dedicated domain `<workspace-id>.<region>.maas.aliyuncs.com` (Alibaba's recommendation; 3600 s request timeout vs 600 s). The legacy `dashscope-intl.aliyuncs.com` stays the proxy default and still works. Set the user's URL via `QWEN_UPSTREAM_URL` in the git-ignored `.env`; never commit a workspace ID or `sk-ws-` key.
-- The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tools are present.
+- The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tool activity is detected (a `"tool"`-role message or a non-default `tool_choice`).
 - When using the proxy, keep `enable_thinking` out of `requestBody` so the proxy can delete it on plain-chat turns and set it to `false` on tool turns.
 - `qwen3.8-max` supports vision.
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
@@ -161,6 +162,6 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 
 ## Validation Expectations
 
-- `package.json` defines npm scripts for all proxies, the `clean:logs` utility, and `npm test` (42 tests — 23 unit + 19 integration — via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, request-body reading, MiMo thinking rewrite, and proxy rewrite logic).
+- `package.json` defines npm scripts for all proxies, the `clean:logs` utility, and `npm test` (49 tests — 23 unit + 26 integration — via `node --test tests/**/*.test.mjs` covering header redaction, header forwarding, response headers, request-body reading, MiMo thinking rewrite, and the production Kimi/Qwen/MiMo rewrite logic behind the proxies).
 - There is no CI in this repo.
 - Validate proxy changes with the smallest relevant manual checks first: `node proxy/kimi-proxy.mjs --help`, `curl http://127.0.0.1:3457/healthz`, and a targeted request or log review that confirms the intended rewrite.

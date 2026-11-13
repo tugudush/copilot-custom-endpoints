@@ -2,6 +2,7 @@
 import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { createProxy } from '../lib/create-proxy.mjs'
+import { rewriteQwen } from '../lib/qwen-rewrite.mjs'
 
 /**
  * Supported model scope for this proxy:
@@ -33,8 +34,9 @@ if (process.argv.includes('--help')) {
   console.log(`Qwen proxy
 
 Starts a local HTTP proxy that conditionally injects enable_thinking: false
-when the request includes a tools array, letting Qwen hybrid-thinking models
-show reasoning in plain chat while keeping tool loops stable.
+when the request shows tool activity (a tool-role message or a non-default
+tool_choice), letting Qwen hybrid-thinking models show reasoning in plain
+chat while keeping tool loops stable.
 
 The proxy forwards the requested model ID unchanged, including the DashScope
 ID qwen3.8-max and OpenRouter ID qwen/qwen3.8-max-0902.
@@ -57,66 +59,6 @@ Suggested VS Code model URL:
   process.exit(0)
 }
 
-// ---- Provider-specific rewrite logic ----
-
-function summarizePayload(payload, hasTools, rewriteInfo) {
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const tools = Array.isArray(payload.tools) ? payload.tools : []
-
-  return {
-    model: payload.model,
-    stream: payload.stream,
-    hasTools,
-    toolCount: tools.length,
-    toolChoice: payload.tool_choice,
-    ...rewriteInfo,
-    maxTokens:
-      payload.max_tokens ??
-      payload.max_completion_tokens ??
-      payload.max_output_tokens,
-    messageCount: messages.length,
-    messageRoles: messages.map((message) => message?.role).slice(0, 16),
-    topLevelKeys: Object.keys(payload).sort()
-  }
-}
-
-function rewriteQwen(payload) {
-  // Determine if a tool is actually being invoked:
-  // - tool_choice is set and not "none"
-  // - OR there is a "tool" role message in the conversation
-  const messages = Array.isArray(payload.messages) ? payload.messages : []
-  const hasToolRole = messages.some((message) => message?.role === 'tool')
-  const toolChoice = payload.tool_choice
-  const hasActiveToolCall =
-    hasToolRole ||
-    (toolChoice !== undefined && toolChoice !== 'none' && toolChoice !== null)
-  const hasTools = hasActiveToolCall
-  const incomingEnableThinking = payload.enable_thinking
-
-  if (disableThinkingWithTools && hasTools) {
-    // Tool-enabled request: suppress thinking to avoid reasoning_content issues
-    payload.enable_thinking = false
-  } else {
-    // Plain chat: remove enable_thinking so the model uses its default (true)
-    delete payload.enable_thinking
-  }
-
-  const rewrittenEnableThinking =
-    disableThinkingWithTools && hasTools ? false : undefined
-
-  const summary = summarizePayload(payload, hasTools, {
-    incomingEnableThinking,
-    rewrittenEnableThinking
-  })
-
-  const modeTag = hasTools ? '[tools]' : '[chat]'
-  const consoleMsg = `${modeTag} enable_thinking=${String(incomingEnableThinking)} -> ${
-    hasTools && disableThinkingWithTools ? 'false' : '<deleted>'
-  }, model=${payload.model ?? '?'}`
-
-  return { summary, consoleMsg }
-}
-
 // ---- Create and start ----
 
 const { start } = createProxy({
@@ -125,7 +67,8 @@ const { start } = createProxy({
   logPath,
   label: 'qwen-proxy',
   healthCheckExtras: { disableThinkingWithTools },
-  rewriteRequest: rewriteQwen,
+  rewriteRequest: (payload) =>
+    rewriteQwen(payload, { disableThinkingWithTools }),
   startupMessages: (_port, _upstreamUrl) => [
     `[qwen-proxy] listening on http://127.0.0.1:${_port}/v1/chat/completions`,
     `[qwen-proxy] forwarding to ${_upstreamUrl}`,

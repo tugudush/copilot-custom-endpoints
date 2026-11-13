@@ -112,7 +112,7 @@ Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically
 
 - Forwards your `Authorization` header upstream.
 - Rewrites plain-chat requests to `temperature: 1`, `top_p: 0.95`.
-- For **K2.5 / K2.6**: rewrites tool-enabled requests to `thinking: { type: "disabled" }`, `temperature: 0.6`, `top_p: 0.95`.
+- For **K2.5 / K2.6**: rewrites tool-enabled requests to `thinking: { type: "disabled" }`, `temperature: 0.6`, `top_p: 0.95`. Tool activity means a `"tool"`-role message in history or a non-default `tool_choice`; a `tools` array alone, or `tool_choice: "none"`, is treated as plain chat.
 - For **K3.1 Pro**: keeps thinking enabled (always-thinking, uses `reasoning_effort`, not `thinking`); rewrites to `temperature: 1`, `top_p: 0.95`. Does **not** inject a `thinking` block — K3.1 Pro rejects it. Every `kimi-k3*` slug is handled this way, including `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`.
 - Preserves streaming responses (SSE).
 - Writes redacted request summaries to `debug_log/kimi-proxy.ndjson`.
