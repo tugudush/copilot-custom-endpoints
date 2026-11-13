@@ -39,15 +39,17 @@ The [research](../../research/vscode-1.146-copilot-harness.md) and the user's re
 
 Prerequisite for phases 1.2 and 3. Record the VS Code and built-in Copilot extension versions, selected harness, applicable BYOK settings, model ID, API type, and route. Build or reuse a loopback mock Chat Completions endpoint with synthetic SSE responses and tool calls; it must not forward traffic to a provider. Capture a pre-change baseline for each harness separately and compare the configured request with the received sanitized shape without logging authorization or conversation content.
 
-- [ ] T001 [Plan:1.1] Prepare an isolated VS Code profile and local mock using existing patterns in `tests/proxy.test.mjs`; document the version, harness, route and safe evidence procedure in `docs/research/vscode-1.146-copilot-harness.md`.
-- [ ] T002 [Plan:1.1] Confirm model visibility, streaming, and a synthetic tool-call/follow-up round separately through the Copilot and Local harnesses; record per-harness pass, fail, blocked, or unavailable status without storing payloads.
+- [x] T001 [Plan:1.1] Prepare an isolated VS Code profile and local mock using existing patterns in `tests/proxy.test.mjs`; document the version, harness, route and safe evidence procedure in `docs/research/vscode-1.146-copilot-harness.md`.
+- [x] T002 [Plan:1.1] Confirm model visibility, streaming, and a synthetic tool-call/follow-up round separately through the Copilot and Local harnesses; record per-harness pass, fail, blocked, or unavailable status without storing payloads. _(**Copilot harness: pass** 2026-11-13 — model visible, streaming reply, mocked tool call executed, follow-up observed. **Local harness: pass** 2026-11-13 — same flow, distinct tool vocabulary.)_
 
 ### 1.2 Verify configuration propagation (REQ-001, REQ-004)
 
 Depends on 1.1. For each harness, in separate controlled cases compare `requestBody` fields against `modelOptions` sampling values, supported reasoning metadata/effort controls, and `maxOutputTokens`. Observe request fields before proxy rewriting and, where applicable, the sanitized result after rewriting. Include Kimi's documented output-token override and Qwen, MiMo, MiniMax, and GLM provider-specific fields.
 
-- [ ] T003 [Plan:1.2] Record per-harness, per-field observed behavior, including absent versus present fields and any precedence, in `docs/research/vscode-1.146-copilot-harness.md`; distinguish VS Code metadata from provider request-body fields.
-- [ ] T004 [Plan:1.2] Classify each current example in `docs/example-config.md` and `docs/models/` as verified, contradicted, or unverified separately for each harness; do not migrate shared fields until supported equivalents and effective wire behavior are established for both.
+> **Status 2026-11-13:** Phases 1.1 and 1.2 are complete for the tested configurations. `modelOptions` is forwarded; `requestBody` is silently dropped on **both** harnesses, which contradicts the `requestBody`-based snippets in every model guide. Both harnesses also send their full tool set with no `tool_choice`, so the Qwen/MiMo proxies treat turn 1 as plain chat.
+
+- [x] T003 [Plan:1.2] Record per-harness, per-field observed behavior, including absent versus present fields and any precedence, in `docs/research/vscode-1.146-copilot-harness.md`; distinguish VS Code metadata from provider request-body fields. _(Done for the proxy route, direct route, reasoning metadata, `modelOptions`, and `requestBody`, on both harnesses.)_
+- [x] T004 [Plan:1.2] Classify each current example in `docs/example-config.md` and `docs/models/` as verified, contradicted, or unverified separately for each harness; do not migrate shared fields until supported equivalents and effective wire behavior are established for both. _(Done: identical on both harnesses — `requestBody` contradicted, `modelOptions` and `supportsReasoningEffort` verified. Guide edits belong to T012/T013.)_
 
 ## Phase 2 - Align proxy tests with production
 

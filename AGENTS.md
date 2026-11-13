@@ -96,6 +96,7 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 ## Working Rules
 
 - Prefer updating the existing model record under `docs/models/` over creating ad hoc root notes. New validations should use `docs/models/<provider>-<model>.md`.
+- `requestBody` in `chatLanguageModels.json` is **not forwarded** by VS Code 1.146 on either harness; use `modelOptions` for sampling and `supportsReasoningEffort` for effort, and route provider-specific objects through a proxy. See [docs/research/vscode-1.146-copilot-harness.md](docs/research/vscode-1.146-copilot-harness.md).
 - Link to existing documentation instead of copying detailed configuration blocks or external source lists into new notes.
 - Keep proxy behavior provider-specific. [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is tuned for Kimi K2-family constraints, not for arbitrary OpenAI-compatible providers.
 - Preserve redaction when touching logging code. Auth headers and equivalent secrets must stay out of `debug_log/` artifacts.

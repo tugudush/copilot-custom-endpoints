@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Mock Qwen (proxy)",
+    "vendor": "customendpoint",
+    "apiKey": "mock-not-a-secret",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "qwen3.8-max",
+        "name": "Mock Qwen via proxy",
+        "url": "http://127.0.0.1:3458/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 991000,
+        "maxOutputTokens": 131072
+      }
+    ]
+  },
+  {
+    "name": "Mock Qwen (direct)",
+    "vendor": "customendpoint",
+    "apiKey": "mock-not-a-secret",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "qwen3.8-max",
+        "name": "Mock Qwen direct",
+        "url": "http://127.0.0.1:3490/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 991000,
+        "maxOutputTokens": 131072
+      },
+      {
+        "id": "qwen3.8-max-thinking",
+        "name": "Mock Qwen direct (thinking metadata)",
+        "url": "http://127.0.0.1:3490/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "thinking": true,
+        "supportsReasoningEffort": ["low", "medium", "high"],
+        "reasoningEffortFormat": "chat-completions",
+        "maxInputTokens": 991000,
+        "maxOutputTokens": 131072
+      },
+      {
+        "id": "qwen3.8-max-requestbody",
+        "name": "Mock Qwen direct (requestBody + modelOptions)",
+        "url": "http://127.0.0.1:3490/v1/chat/completions",
+        "toolCalling": true,
+        "vision": false,
+        "streaming": true,
+        "maxInputTokens": 991000,
+        "maxOutputTokens": 131072,
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "requestBody": {
+          "enable_thinking": false,
+          "reasoning_effort": "low",
+          "max_tokens": 8192
+        }
+      }
+    ]
+  }
+]
