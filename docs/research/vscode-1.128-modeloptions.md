@@ -1,5 +1,7 @@
 # VS Code 1.128 — Custom Endpoint `modelOptions` (sampling parameters)
 
+> **2026-11-13 follow-up:** This is a historical note. Its claims that arbitrary `requestBody` fields are forwarded are not established for the current Copilot harness; see [VS Code 1.146: Copilot Harness and Custom Endpoints](vscode-1.146-copilot-harness.md) before relying on them.
+
 > **Research date:** 2026-07-08 (VS Code 1.128 release day)
 > **Primary sources:**
 >
