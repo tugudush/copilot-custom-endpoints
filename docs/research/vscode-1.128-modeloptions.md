@@ -1,5 +1,7 @@
 # VS Code 1.128 — Custom Endpoint `modelOptions` (sampling parameters)
 
+> **2026-11-13 follow-up:** This is a historical note. **Measurement on VS Code 1.146 contradicted its core assumption:** `modelOptions` is forwarded, but `requestBody` is silently dropped on both harnesses. See [VS Code 1.146: Copilot Harness and Custom Endpoints](vscode-1.146-copilot-harness.md) before relying on any configuration described here.
+
 > **Research date:** 2026-07-08 (VS Code 1.128 release day)
 > **Primary sources:**
 >

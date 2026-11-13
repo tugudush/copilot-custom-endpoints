@@ -20,6 +20,10 @@
 | Proxy endpoint | `http://127.0.0.1:3457/v1/chat/completions`   |
 | Auth           | `Authorization: Bearer $KIMI_API_KEY`         |
 
+> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy, and the follow-up request **replayed
+> `reasoning_content` on the assistant tool-call message** — the first direct evidence of reasoning replay on a custom endpoint.
+> `reasoning_effort: "high"` and `max_completion_tokens: 131072` reached Moonshot. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
+
 ### Models
 
 | Model                     | Vision | Context | Max output      | Notes                                                                                                 |
@@ -58,18 +62,23 @@
       "id": "kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro (Custom Endpoint)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
-      "requestBody": { "temperature": 1, "max_tokens": 8192 },
+      "modelOptions": { "temperature": 1 },
+      "supportsReasoningEffort": ["low", "high", "max"],
+      "reasoningEffortFormat": "chat-completions",
+      "thinking": true,
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1000000,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072
     }
   ]
 }
 ```
 
-> **K3.1 Pro note:** `max_tokens` is set to **8192** as a safe starting point. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median). The API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor your usage and adjust upward if needed. K3.1 Pro uses `reasoning_effort` (`low` / `high` / `max`, default `max`), not the K2.x `thinking` parameter; add `"reasoning_effort": "low"` to `requestBody` if answers take too long. The proxy forwards the value untouched.
+> **Context budget:** `917504 + 131072 = 1048576`, the K3.1 Pro window (input and output combined). VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`.
+
+> **K3.1 Pro note:** `requestBody` is **not forwarded** on VS Code 1.146 (measured on both harnesses), so `max_tokens` and a `reasoning_effort` entry in the config have no effect. `modelOptions` handles sampling, and the `supportsReasoningEffort` metadata above adds the **Thinking Effort** picker so you can lower effort without editing JSON. K3.1 Pro is always-thinking and very verbose (150M tokens generated on the AA Intelligence Index evaluation versus an 87M median); the API default for `max_completion_tokens` is 131072 and can go up to 1048576, but reasoning tokens inflate response size — monitor usage. Because this entry declares `thinking: true`, `maxOutputTokens` **is** forwarded as `max_completion_tokens` (measured: 131072 reached Moonshot), so lower that value to cap output; entries without the `thinking` metadata do not get this forwarding.
 
 ### 2. API key
 
@@ -112,7 +121,7 @@ Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically
 
 - Forwards your `Authorization` header upstream.
 - Rewrites plain-chat requests to `temperature: 1`, `top_p: 0.95`.
-- For **K2.5 / K2.6**: rewrites tool-enabled requests to `thinking: { type: "disabled" }`, `temperature: 0.6`, `top_p: 0.95`.
+- For **K2.5 / K2.6**: rewrites tool-enabled requests to `thinking: { type: "disabled" }`, `temperature: 0.6`, `top_p: 0.95`. Tool activity means a `"tool"`-role message in history or a non-default `tool_choice`; a `tools` array alone, or `tool_choice: "none"`, is treated as plain chat.
 - For **K3.1 Pro**: keeps thinking enabled (always-thinking, uses `reasoning_effort`, not `thinking`); rewrites to `temperature: 1`, `top_p: 0.95`. Does **not** inject a `thinking` block — K3.1 Pro rejects it. Every `kimi-k3*` slug is handled this way, including `kimi-k3.1-pro` and `kimi-k3.1-pro-highspeed`.
 - Preserves streaming responses (SSE).
 - Writes redacted request summaries to `debug_log/kimi-proxy.ndjson`.

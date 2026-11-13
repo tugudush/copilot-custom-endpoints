@@ -9,7 +9,7 @@
 | **Recommended method** | **`proxy/mimo-proxy.mjs`** for V2.6 custom endpoints; the extension is still useful when its model picker exposes V2.6 |
 | Alternative methods    | Direct API (static `thinking: disabled`) or the Xiaomi extension                                                       |
 | Mode (custom endpoint) | **Direct** (static `thinking: disabled`) **or** **Proxy** (dynamic, local on `:3459`)                                  |
-| Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (shared `requestBody`)                                              |
+| Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (same model config)                                                 |
 | Vision                 | ✅ Yes (all V2.6 models)                                                                                               |
 | Tool calling           | ✅ Yes; V2.6 preserves thinking only when the history includes `reasoning_content`                                     |
 | Context                | 1M                                                                                                                     |
@@ -17,6 +17,8 @@
 | Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`                                                                       |
 | Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                            |
 | Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                                  |
+
+> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. No reasoning history was replayed, so the proxy's fallback injected `thinking: { "type": "disabled" }` on the tool turn and Xiaomi accepted it. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
 ### Models
 
@@ -67,7 +69,7 @@ The `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call hist
 - `npm run proxy:mimo` (from the repo root)
 - `npx copilot-custom-endpoint mimo` (standalone)
 
-When using the proxy, point model URLs to `http://127.0.0.1:3459/v1/chat/completions` and **remove** `thinking` from `requestBody`. The proxy handles it dynamically.
+When using the proxy, point model URLs to `http://127.0.0.1:3459/v1/chat/completions` and leave thinking out of the model entry entirely — `requestBody` is not forwarded on VS Code 1.146. The proxy handles it dynamically.
 
 ## Setup
 
@@ -96,7 +98,11 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 | macOS   | `~/Library/Application Support/Code/User/chatLanguageModels.json` |
 | Linux   | `~/.config/Code/User/chatLanguageModels.json`                     |
 
-#### Direct (static `thinking: disabled`)
+> **Context budget:** `917504 + 131072 = 1048576`, the V2.6 window. VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`. Both blocks below share the same limits.
+
+#### Direct (no thinking control)
+
+> **⚠️ On VS Code 1.146 the direct path cannot disable thinking.** `requestBody` is dropped, so MiMo keeps its thinking default and tool loops with incomplete reasoning history can fail with HTTP 400. Use the proxy below for tool-heavy work; the direct entry is fine for plain chat.
 
 ```json
 {
@@ -112,13 +118,9 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "disabled" },
-        "temperature": 1,
-        "top_p": 0.95
-      }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
     {
       "id": "mimo-v2.6-flash",
@@ -127,13 +129,9 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "disabled" },
-        "temperature": 1,
-        "top_p": 0.95
-      }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
     {
       "id": "mimo-v2.6-pro-ultraspeed",
@@ -142,19 +140,15 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": {
-        "thinking": { "type": "disabled" },
-        "temperature": 1,
-        "top_p": 0.95
-      }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
   ]
 }
 ```
 
-#### With proxy (dynamic thinking, no `requestBody` override)
+#### With proxy (dynamic thinking)
 
 ```json
 {
@@ -170,9 +164,9 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": { "temperature": 1, "top_p": 0.95 }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
     {
       "id": "mimo-v2.6-flash",
@@ -181,9 +175,9 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": { "temperature": 1, "top_p": 0.95 }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     },
     {
       "id": "mimo-v2.6-pro-ultraspeed",
@@ -192,9 +186,9 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
       "toolCalling": true,
       "vision": true,
       "streaming": true,
-      "maxInputTokens": 1048576,
+      "maxInputTokens": 917504,
       "maxOutputTokens": 131072,
-      "requestBody": { "temperature": 1, "top_p": 0.95 }
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
   ]
 }
@@ -211,7 +205,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 
 ### 2. Token Plan (optional, all methods)
 
-Token Plan subscribers use different base URLs and `tp-` prefixed keys from pay-as-you-go `sk-` keys. The **model id** and **`requestBody`** are the **same** for both billing modes — only the URL and key prefix differ.
+Token Plan subscribers use different base URLs and `tp-` prefixed keys from pay-as-you-go `sk-` keys. The **model id** and the **sampling configuration** are the **same** for both billing modes — only the URL and key prefix differ.
 
 | Mode          | Key prefix | Base URL (OpenAI)                         |
 | ------------- | ---------- | ----------------------------------------- |
@@ -232,7 +226,7 @@ The `proxy/mimo-proxy.mjs` (optional) keeps V2.6 reasoning enabled when the conv
 | Start        | `npm run proxy:mimo` (or `node proxy/mimo-proxy.mjs`) |
 | Help         | `node proxy/mimo-proxy.mjs --help`                    |
 
-When using the proxy, point model `url`s to `http://127.0.0.1:3459/v1/chat/completions` and **remove** `thinking` from `requestBody`. The proxy handles V2.6 history-aware fallback dynamically.
+When using the proxy, point model `url`s to `http://127.0.0.1:3459/v1/chat/completions` and leave thinking out of the model entry. The proxy handles the V2.6 history-aware fallback dynamically.
 
 ## Notes
 
@@ -243,13 +237,13 @@ When using the proxy, point model `url`s to `http://127.0.0.1:3459/v1/chat/compl
 
 ## Troubleshooting
 
-| Symptom                                    | Likely cause                                             | Fix                                                                                                                                                           |
-| ------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Use the proxy (`npm run proxy:mimo`), or add `thinking: { type: "disabled" }` to `requestBody`; an extension with a reasoning cache can keep thinking enabled |
-| Vision request returns an error            | The model entry is missing `vision: true`                | Add `vision: true` to the model entry — every current MiMo model accepts image input                                                                          |
-| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                                                                               |
-| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                                                                                             |
-| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                                                                                              |
+| Symptom                                    | Likely cause                                             | Fix                                                                                                                      |
+| ------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| HTTP 400 on the second turn of a tool loop | `reasoning_content` missing in history (thinking on)     | Use the proxy (`npm run proxy:mimo`); `requestBody.thinking` is not forwarded on 1.146, so it cannot serve as a fallback |
+| Vision request returns an error            | The model entry is missing `vision: true`                | Add `vision: true` to the model entry — every current MiMo model accepts image input                                     |
+| Custom `tool_choice` ignored               | MiMo only honors `"auto"`                                | Stick to `auto`                                                                                                          |
+| 401 Unauthorized                           | Wrong key, or Token Plan URL used with pay-as-you-go key | Match key prefix (`sk-` vs `tp-`) to the endpoint                                                                        |
+| 429 rate-limited                           | Concurrent sessions exceeded 100 RPM / 10M TPM           | Reduce concurrent agent sessions                                                                                         |
 
 ## Pricing
 

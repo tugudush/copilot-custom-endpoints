@@ -13,7 +13,7 @@ If [OpenRouter](https://openrouter.ai) is blocked by your network or too generic
 1. **Pick a model** from the table below.
 2. **Add it to your VS Code config** — copy the snippet from the model's doc.
 3. **Set the API key** through VS Code's UI (it goes to your OS keychain, not the file).
-4. **Configure the Utility Small Model** — VS Code now requires a fast fallback model for built-in utility flows. Open Settings → search **"Chat: Utility Small Model"** → pick your fastest custom-endpoint model (or "Default" if you have native Copilot models available). Without this, chat may not function correctly.
+4. **Check the utility models (optional)** — with a GitHub Copilot token, VS Code already uses Copilot's built-in utility models. Only if you use BYOK without Copilot sign-in do you need to set **Chat: Utility Model** / **Chat: Utility Small Model** (or point `chat.byokUtilityModelDefault` at _Main Agent Model_).
 5. **Open chat** and pick the model from the model picker.
 
 That's it. No code, no servers to manage (unless the model specifically needs the local proxy — the table tells you).
@@ -34,6 +34,19 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Setup
 
+### 0. Know which harness you are on
+
+VS Code 1.146 runs chat sessions on one of two harnesses, and custom endpoints behave the same on both in our measurements — but the setup path differs:
+
+| Harness             | Status                                                                                                                                                    | BYOK setup                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| **Copilot harness** | Default for new sessions since VS Code 1.143. Custom-endpoint BYOK is an **experimental** route.                                                          | Enable `chat.agentHost.byokModels.enabled`, then configure the provider normally. |
+| **Local harness**   | Deprecated; [scheduled for removal in February 2027](https://code.visualstudio.com/updates/v1_146#_copilot-harness-and-deprecation-of-the-local-harness). | No extra setting — custom endpoints are picked up directly.                       |
+
+If a model does not appear in the picker on the Copilot harness, check that setting before editing `chatLanguageModels.json`. Details: [harness research](docs/research/vscode-1.146-copilot-harness.md#1-harness-transition).
+
+> **The session target resets per chat.** Measured on 1.146: a new chat always starts on the Copilot harness even after a Local session, so pick the target again for every new chat. Changing the _model_ inside a live chat keeps the session — and its history — so switching provider mid-conversation carries the earlier turns across.
+
 ### 1. Find (or create) your config file
 
 | OS      | Path                                                              |
@@ -48,29 +61,32 @@ If the file doesn't exist yet, create it with `[]` inside.
 
 Open the setup guide for the model you picked (links in the table above) and copy its JSON snippet into the file. Each snippet is a single provider object inside the array.
 
-> **⚠️ Leave `apiKey` as `""`** — never paste the key into the JSON file.
+> **⚠️ Leave `apiKey` as `""`** — a key pasted into this file is **not** used. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed". Use the UI step below.
+
+> **The models don't appear in the picker yet.** After editing the file, open **Chat: Manage Language Models** once (or the picker's **Add Models…**) and close it. Measured on 1.146: until the editor has been opened in that window, the picker lists only extension-provided models while the editor already shows your provider.
+
+> **Name collision hides your models.** If your provider's `name` matches an installed extension's group (for example `GLM`, when the Z.ai extension is installed), the picker merges them and your models sit behind the extension's group. Give the provider a distinct name (`GLM Relay`, `Qwen (proxy)`, …).
 
 ### 3. Set the API key
 
 1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
 2. Run **Chat: Manage Language Models**.
 3. Find your provider in the list, right-click the group name → **Update API Key**.
-4. Paste your key. It's stored in your OS keychain.
+4. Paste your key. It's stored in your OS keychain, and VS Code resolves it into the request's `Authorization` header — the only path that works.
 
-### 4. Configure the Utility Small Model
+### 4. Utility models (usually nothing to do)
 
-> **⚠️ Required for BYOK/custom-endpoint users.** VS Code's latest update mandates that you explicitly set which model handles built-in small/fast utility flows. Without this, custom-endpoint models may not function correctly in chat or agent mode.
+> **You only need this when running BYOK without GitHub sign-in.** With a Copilot token available, VS Code defaults both utility settings to Copilot's built-in utility models.
 
 1. Open VS Code Settings (`Ctrl+,` / `Cmd+,`).
-2. Search for **"Chat: Utility Small Model"** (setting ID: `chat.lm.utilitySmallModel`).
-3. Pick the **fastest, cheapest model** available to you from the dropdown. Good choices:
-   - **GLM 5.3 Flash** — if you have [GLM configured](docs/models/glm.md) (cheapest custom-endpoint option, ~$0.13/session).
-   - **GPT-6 Luna** — if it is available through your native Copilot models (fast, ~$0.10/session).
-   - **MiMo V2.6 Flash** — if you already have Xiaomi MiMo configured (low-cost multimodal option, ~$0.10/session).
+2. Set **Chat: Utility Model** (`chat.utilityModel`) and **Chat: Utility Small Model** (`chat.utilitySmallModel`) — or set `chat.byokUtilityModelDefault` to **Main Agent Model**.
+3. Pick the **fastest, cheapest model** available to you. Good choices:
+   - **GLM 5.3 Flash** — if you have [GLM configured](docs/models/glm.md) (cheapest custom-endpoint option).
+   - **MiMo V2.6 Flash** — if you already have Xiaomi MiMo configured (low-cost multimodal option).
    - **Default** — if you still have native Copilot model access, this lets VS Code use its built-in fast model.
 4. The setting takes effect immediately — no restart needed.
 
-> **Why this matters:** VS Code uses a small utility model for quick background tasks (token counting, prompt truncation, lightweight completions). When you switch to custom-endpoint models, the framework still needs a fast model for these utility flows. If left unset, some features may silently degrade or fail.
+> **Why this matters:** utility flows (titles, summaries, intent detection, commit messages, PR descriptions) need a small model. Without a Copilot token and without these settings, those features are unavailable. The [VS Code documentation](https://code.visualstudio.com/docs/agent-customization/language-models#_change-the-model-for-utility-tasks) does not list token counting or prompt truncation among them.
 
 ### 5. Chat
 
@@ -129,6 +145,8 @@ This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Grok 4.
 
 **Gemini 4 Carbon** (announced October 28, 2026; in Copilot since November 10) scores **60** — second overall behind Claude Fable 5.2 — on the same **$2 / $0.10 / $10** introductory rates as Argon, which also double to **$4 / $0.20 / $20** on December 1. That puts it at **~$0.0333** per intelligence point at roughly **$2.00** per modeled session, but Google notes Carbon spends more tokens per task than Argon, so a real Carbon session costs more at identical rates. Its **60** is Artificial Analysis' current v5.0.1 value; Google's launch post listed **59** under v5.0.
 
+**Gemini 4 Hydrogen** (released November 12, 2026) is Google's cheap everyday-execution counterpart to Carbon and Argon, at a flat **$1.50 / $0.075 implicit cache / $7.50** per 1M tokens across the full 1M window — cheaper than Carbon's intro rates and unaffected by the December 1 price step on Argon and Carbon. It scores **54** at its `xhigh` thinking level (**51** at the default `high`), which puts it at **~$0.0278** per intelligence point at roughly **$1.50** per modeled session. It is API-only for now: Google ships it in AI Studio and the Gemini API, including a free tier, but it is not in Copilot, so reaching it means a custom endpoint. Hydrogen always thinks across `low` / `medium` / `high` / `xhigh`, so real token spend tracks the thinking level.
+
 Claude Haiku 5.5 (released October 7, 2026) scores **36.2** and, at **~$0.0028** per intelligence point, is still the lowest cost per intelligence in the table; MiMo V2.6 Flash (**26.7**) is still the cheapest custom-endpoint option at **~$0.0037**.
 
 Muse Spark 1.3 (Meta, released September 2, 2026) scores **36.4** on Meta Model API pricing of **$1.25 / $0.15 cached input / $4.25** per 1M tokens; its day-one `muse-spark-1.3-contributor` SKU is excluded from this snapshot because Meta may train future models on those prompts and completions.
@@ -146,6 +164,7 @@ DeepSeek’s **V4.1-Flash-1017** build (released October 17, 2026) scores **32**
 | **MiMo V2.6 Pro**            | Xiaomi    | **~$0.0102**          | **29.9**           | ~$0.30       | ✅     | 1M             |
 | **GPT-6.1 Terra**            | OpenAI    | **~$0.0196**          | **51**             | ~$1.00       | ✅     | 1M             |
 | **Gemini 3.8 Flash**         | Google    | **~$0.0246**          | **30.5**           | ~$0.75       | ✅     | 1M             |
+| **Gemini 4 Hydrogen**        | Google    | **~$0.0278**          | **54**             | ~$1.50       | ✅     | 1M             |
 | **Muse Spark 1.3**           | Meta      | **~$0.0288**          | **36.4**           | ~$1.05       | ✅     | 1M             |
 | **Gemini 4 Carbon**          | Google    | **~$0.0333**          | **60**             | ~$2.00       | ✅     | 1M             |
 | **GLM 5.3**                  | Z.ai      | **~$0.0360**          | **31.7**           | ~$1.14       | ❌     | 1M             |
