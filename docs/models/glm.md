@@ -63,12 +63,12 @@
 {
   "name": "GLM",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:glmApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
       "id": "glm-5.3-flash",
-      "name": "GLM 5.3 Flash (multimodal)",
+      "name": "GLM 5.3 Flash",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -100,7 +100,7 @@
 
 > **Context budget:** `917504 + 131072 = 1048576`, the GLM 5.x window (input and output combined). VS Code uses that sum as the model's total context, so only raise `maxInputTokens` by lowering `maxOutputTokens`.
 
-> **Leave `apiKey` as `""`** — set it through the Language Models UI so VS Code stores it in the OS keychain (it will replace the empty string with a `${input:chat.lm.secret.<id>}` reference).
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which stores it in the OS keychain and rewrites the value to a `${input:chat.lm.secret.<id>}` reference.
 > If you signed up on `bigmodel.cn` (China), swap the `url` values in the block above to the regional endpoint `https://open.bigmodel.cn/api/paas/v4/chat/completions`.
 
 ### 2. API Key

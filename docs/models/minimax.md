@@ -41,7 +41,7 @@
 1. **Edit `chatLanguageModels.json`** — add the MiniMax block below.
 2. **Set your `MINIMAX_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
-4. **Restart VS Code** and pick "MiniMax M3.1 Flash (vision)" in the chat picker.
+4. **Restart VS Code** and pick "MiniMax M3.1 Flash" in the chat picker.
 
 ## Setup
 
@@ -66,12 +66,12 @@
 {
   "name": "MiniMax",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:minimaxApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
       "id": "MiniMax-M3.1-Flash",
-      "name": "MiniMax M3.1 Flash (vision)",
+      "name": "MiniMax M3.1 Flash",
       "url": "https://api.minimax.io/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -113,7 +113,7 @@ The two keys are **not interchangeable** — a Subscription Key against a PAYG-o
 3. Find the **MiniMax** group → **Update API Key**.
 4. Paste your **Open Platform API Key** from `platform.minimax.io/user-center/basic-information/interface-key`.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference.
 
 #### Option B — Token Plan Subscription Key
 

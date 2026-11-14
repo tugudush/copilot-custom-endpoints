@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
+> **TL;DR:** `qwen3.8-max` works both direct and via the local proxy. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
@@ -80,12 +80,12 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:qwenApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
       "id": "qwen3.8-max",
-      "name": "Qwen 3.8 Max (vision)",
+      "name": "Qwen 3.8 Max",
       "url": "https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -122,12 +122,12 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:qwenApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
       "id": "qwen3.8-max",
-      "name": "Qwen 3.8 Max (vision)",
+      "name": "Qwen 3.8 Max",
       "url": "http://127.0.0.1:3458/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -150,7 +150,7 @@ DashScope is **Pay-as-You-Go only** — but new Model Studio users get **1M inpu
 3. Find the **Qwen** group → **Update API Key**.
 4. Paste your DashScope API key.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Keys are region-specific.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference. Keys are region-specific.
 >
 > New keys start with `sk-ws-` and are shown only once, in the **API Quick Access** dialog — copy the key before closing it. Older `sk-` keys keep working.
 

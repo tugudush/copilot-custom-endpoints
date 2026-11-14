@@ -108,7 +108,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 {
   "name": "MiMo",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:mimoApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -154,7 +154,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 {
   "name": "MiMo",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:mimoApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -201,7 +201,7 @@ The extension stores your API key in VS Code's `SecretStorage` (OS keychain).
 3. Find the **MiMo** group → **Update API Key**.
 4. Paste your MiMo API key.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. The extension uses its own **MiMo: Set API Key** command instead — skip this step if using the extension.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference. The extension uses its own **MiMo: Set API Key** command instead — skip this step if using the extension.
 
 ### 2. Token Plan (optional, all methods)
 

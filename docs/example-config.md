@@ -8,7 +8,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 > **Utility models:** with a GitHub Copilot token, VS Code already uses its built-in utility models, so no extra setup is required. If you use BYOK without Copilot sign-in, set **Chat: Utility Model** and **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_). See the [main README](../README.md#4-configure-the-utility-small-model).
 
-> **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference. A key pasted directly into this file is not used: measured on 1.146, the request went out as `Authorization: Bearer` with an empty token and the provider rejected it.
+> **Note:** `apiKey` must be a **non-empty** string — VS Code's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. The snippets below use a `${input:...}` reference, and the reliable way to populate it is the **Chat: Manage Language Models** UI (Command Palette → provider group → **Update API Key**), which stores the key in the OS keychain and rewrites the value to `${input:chat.lm.secret.<id>}`. A key pasted directly into this file as a literal is not used on 1.146: the request goes out as `Authorization: Bearer` with an empty token and the provider rejects it.
 
 > **After saving, open the Language Models editor once.** On 1.146 a provider added to this file stays invisible in the model picker until **Chat: Manage Language Models** (or the picker's **Add Models…**) has been opened in that window; the editor itself shows the provider immediately. If your provider's `name` matches an installed extension (for example `GLM` with the Z.ai extension installed), the picker merges them and your models hide behind the extension group — give the provider a distinct name.
 
@@ -19,12 +19,12 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "Qwen",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:qwenApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
         "id": "qwen3.8-max",
-        "name": "Qwen 3.8 Max (vision)",
+        "name": "Qwen 3.8 Max",
         "url": "http://127.0.0.1:3458/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -37,12 +37,12 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "Kimi",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:kimiApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
         "id": "kimi-k3.1-pro",
-        "name": "Kimi K3.1 Pro (vision)",
+        "name": "Kimi K3.1 Pro",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
         "modelOptions": { "temperature": 1 },
         "supportsReasoningEffort": ["low", "high", "max"],
@@ -59,7 +59,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "MiMo",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:mimoApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -100,12 +100,12 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "MiniMax",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:minimaxApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
         "id": "MiniMax-M3.1-Flash",
-        "name": "MiniMax M3.1 Flash (vision)",
+        "name": "MiniMax M3.1 Flash",
         "url": "https://api.minimax.io/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -122,12 +122,12 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "GLM",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:glmApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
         "id": "glm-5.3-flash",
-        "name": "GLM 5.3 Flash (multimodal)",
+        "name": "GLM 5.3 Flash",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -154,6 +154,28 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "thinking": true
       }
     ]
+  },
+  {
+    "name": "DeepSeek API",
+    "vendor": "customendpoint",
+    "apiKey": "${input:deepseekApiKey}",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 917504,
+        "maxOutputTokens": 131072,
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "supportsReasoningEffort": ["low", "high", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true
+      }
+    ]
   }
 ]
 ```
@@ -169,6 +191,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 > | `mimo-v2.6-*`              | 1,048,576         | 131,072           | 917,504          |
 > | `MiniMax-M3.1-Flash`       | 1,000,000         | 131,072           | 868,928          |
 > | `glm-5.3`, `glm-5.3-flash` | 1,048,576         | 131,072           | 917,504          |
+> | `deepseek-flash`           | 1,048,576         | 131,072           | 917,504          |
 >
 > Trade-off: a smaller `maxInputTokens` makes VS Code compact the conversation slightly earlier than the provider's raw input cap (for example 868,928 instead of DashScope's 991,000-token input maximum), which is the safe side of the constraint. Alternatively set `contextWindow` to the provider's window and let VS Code derive `maxInputTokens = contextWindow − maxOutputTokens`. Sources and derivation: [harness research § 4](research/vscode-1.146-copilot-harness.md#4-utility-models-and-context-limits).
 
@@ -179,5 +202,6 @@ If you only need one provider, jump straight to its setup guide:
 - [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](models/mimo.md)
 - [MiniMax M3.1 Flash](models/minimax.md)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](models/glm.md)
+- [DeepSeek V4.1 Flash](models/deepseek.md)
 
-> **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.
+> **DeepSeek V4.1 Flash** is also available as the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). That route appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not `customendpoint`) and is configured via the extension's settings block; the block above is the plain custom-endpoint route. Name the provider `DeepSeek API` rather than `DeepSeek` when the extension is installed, otherwise the custom endpoint hides behind the extension's picker group.

@@ -20,17 +20,17 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                        | Provider  | Needs proxy?           | Vision | Setup guide                                                                                                                               |
-| ---------------------------- | --------- | ---------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3.1 Pro**            | Moonshot  | **Yes**                | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                       |
-| **MiMo V2.6 Pro**            | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.6 Flash**          | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **Qwen 3.8 Max**             | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                       |
-| **MiniMax M3.1 Flash**       | MiniMax   | No                     | ✅     | [Manual setup](docs/models/minimax.md)                                                                                                    |
-| **GLM 5.3 Flash**            | Z.ai      | No                     | ✅     | [Manual setup](docs/models/glm.md)                                                                                                        |
-| **GLM 5.3**                  | Z.ai      | No                     | ❌     | [Manual setup](docs/models/glm.md)                                                                                                        |
-| **DeepSeek V4.1 Flash 1017** | DeepSeek  | No (uses an extension) | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
+| Model                        | Provider  | Needs proxy?           | Vision | Setup guide                                                                                                                                |
+| ---------------------------- | --------- | ---------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Kimi K3.1 Pro**            | Moonshot  | **Yes**                | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                        |
+| **MiMo V2.6 Pro**            | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **MiMo V2.6 Flash**          | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **Qwen 3.8 Max**             | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                        |
+| **MiniMax M3.1 Flash**       | MiniMax   | No                     | ✅     | [Manual setup](docs/models/minimax.md)                                                                                                     |
+| **GLM 5.3 Flash**            | Z.ai      | No                     | ✅     | [Manual setup](docs/models/glm.md)                                                                                                         |
+| **GLM 5.3**                  | Z.ai      | No                     | ❌     | [Manual setup](docs/models/glm.md)                                                                                                         |
+| **DeepSeek V4.1 Flash 1017** | DeepSeek  | No                     | ✅     | [Manual setup](docs/models/deepseek.md) / [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
 
 ## Setup
 
@@ -61,7 +61,7 @@ If the file doesn't exist yet, create it with `[]` inside.
 
 Open the setup guide for the model you picked (links in the table above) and copy its JSON snippet into the file. Each snippet is a single provider object inside the array.
 
-> **⚠️ Leave `apiKey` as `""`** — a key pasted into this file is **not** used. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed". Use the UI step below.
+> **⚠️ `apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` raises _String is shorter than the minimum length of 1_. Keep the `${input:...}` placeholder from the snippet and fill it with the UI step below; a **literal** key pasted into this file is **not** used either. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed".
 
 > **The models don't appear in the picker yet.** After editing the file, open **Chat: Manage Language Models** once (or the picker's **Add Models…**) and close it. Measured on 1.146: until the editor has been opened in that window, the picker lists only extension-provided models while the editor already shows your provider.
 
