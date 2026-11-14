@@ -20,17 +20,17 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 
 ## Pick a model
 
-| Model                        | Provider  | Needs proxy?           | Vision | Setup guide                                                                                                                               |
-| ---------------------------- | --------- | ---------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **Kimi K3.1 Pro**            | Moonshot  | **Yes**                | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                       |
-| **MiMo V2.6 Pro**            | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.6 Flash**          | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md) |
-| **Qwen 3.8 Max**             | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                       |
-| **MiniMax M3.1 Flash**       | MiniMax   | No                     | ✅     | [Manual setup](docs/models/minimax.md)                                                                                                    |
-| **GLM 5.3 Flash**            | Z.ai      | No                     | ✅     | [Manual setup](docs/models/glm.md)                                                                                                        |
-| **GLM 5.3**                  | Z.ai      | No                     | ❌     | [Manual setup](docs/models/glm.md)                                                                                                        |
-| **DeepSeek V4.1 Flash 1017** | DeepSeek  | No (uses an extension) | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) / [setup notes](docs/models/deepseek.md) |
+| Model                        | Provider  | Needs proxy?           | Vision | Setup guide                                                                                                                                |
+| ---------------------------- | --------- | ---------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Kimi K3.1 Pro**            | Moonshot  | **Yes**                | ✅     | [Manual setup](docs/models/kimi.md)                                                                                                        |
+| **MiMo V2.6 Pro**            | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **MiMo V2.6 Flash**          | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **Qwen 3.8 Max**             | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                        |
+| **MiniMax M3.1 Flash**       | MiniMax   | No                     | ✅     | [Manual setup](docs/models/minimax.md)                                                                                                     |
+| **GLM 5.3 Flash**            | Z.ai      | No                     | ✅     | [Manual setup](docs/models/glm.md)                                                                                                         |
+| **GLM 5.3**                  | Z.ai      | No                     | ❌     | [Manual setup](docs/models/glm.md)                                                                                                         |
+| **DeepSeek V4.1 Flash 1017** | DeepSeek  | No                     | ✅     | [Manual setup](docs/models/deepseek.md) / [Extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) |
 
 ## Setup
 

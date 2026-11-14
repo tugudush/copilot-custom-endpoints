@@ -24,7 +24,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "models": [
       {
         "id": "qwen3.8-max",
-        "name": "Qwen 3.8 Max (vision)",
+        "name": "Qwen 3.8 Max",
         "url": "http://127.0.0.1:3458/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -42,7 +42,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "models": [
       {
         "id": "kimi-k3.1-pro",
-        "name": "Kimi K3.1 Pro (vision)",
+        "name": "Kimi K3.1 Pro",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
         "modelOptions": { "temperature": 1 },
         "supportsReasoningEffort": ["low", "high", "max"],
@@ -105,7 +105,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "models": [
       {
         "id": "MiniMax-M3.1-Flash",
-        "name": "MiniMax M3.1 Flash (vision)",
+        "name": "MiniMax M3.1 Flash",
         "url": "https://api.minimax.io/v1/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -127,7 +127,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
     "models": [
       {
         "id": "glm-5.3-flash",
-        "name": "GLM 5.3 Flash (multimodal)",
+        "name": "GLM 5.3 Flash",
         "url": "https://api.z.ai/api/paas/v4/chat/completions",
         "toolCalling": true,
         "vision": true,
@@ -154,6 +154,28 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "thinking": true
       }
     ]
+  },
+  {
+    "name": "DeepSeek API",
+    "vendor": "customendpoint",
+    "apiKey": "",
+    "apiType": "chat-completions",
+    "models": [
+      {
+        "id": "deepseek-flash",
+        "name": "DeepSeek V4.1 Flash",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 917504,
+        "maxOutputTokens": 131072,
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
+        "supportsReasoningEffort": ["low", "high", "max"],
+        "reasoningEffortFormat": "chat-completions",
+        "thinking": true
+      }
+    ]
   }
 ]
 ```
@@ -169,6 +191,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 > | `mimo-v2.6-*`              | 1,048,576         | 131,072           | 917,504          |
 > | `MiniMax-M3.1-Flash`       | 1,000,000         | 131,072           | 868,928          |
 > | `glm-5.3`, `glm-5.3-flash` | 1,048,576         | 131,072           | 917,504          |
+> | `deepseek-flash`           | 1,048,576         | 131,072           | 917,504          |
 >
 > Trade-off: a smaller `maxInputTokens` makes VS Code compact the conversation slightly earlier than the provider's raw input cap (for example 868,928 instead of DashScope's 991,000-token input maximum), which is the safe side of the constraint. Alternatively set `contextWindow` to the provider's window and let VS Code derive `maxInputTokens = contextWindow − maxOutputTokens`. Sources and derivation: [harness research § 4](research/vscode-1.146-copilot-harness.md#4-utility-models-and-context-limits).
 
@@ -179,5 +202,6 @@ If you only need one provider, jump straight to its setup guide:
 - [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](models/mimo.md)
 - [MiniMax M3.1 Flash](models/minimax.md)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](models/glm.md)
+- [DeepSeek V4.1 Flash](models/deepseek.md)
 
-> **DeepSeek V4.1 Flash 1017** uses the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). It appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not as a `customendpoint` provider) and is configured via the extension's settings block.
+> **DeepSeek V4.1 Flash** is also available as the [DeepSeek for Copilot Chat extension](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot). That route appears in `chatLanguageModels.json` as `vendor: "deepseek"` (not `customendpoint`) and is configured via the extension's settings block; the block above is the plain custom-endpoint route. Name the provider `DeepSeek API` rather than `DeepSeek` when the extension is installed, otherwise the custom endpoint hides behind the extension's picker group.

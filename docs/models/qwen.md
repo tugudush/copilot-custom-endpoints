@@ -1,6 +1,6 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` (vision) works both direct and via the local proxy. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
+> **TL;DR:** `qwen3.8-max` works both direct and via the local proxy. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
@@ -85,7 +85,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
   "models": [
     {
       "id": "qwen3.8-max",
-      "name": "Qwen 3.8 Max (vision)",
+      "name": "Qwen 3.8 Max",
       "url": "https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
       "toolCalling": true,
       "vision": true,
@@ -127,7 +127,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
   "models": [
     {
       "id": "qwen3.8-max",
-      "name": "Qwen 3.8 Max (vision)",
+      "name": "Qwen 3.8 Max",
       "url": "http://127.0.0.1:3458/v1/chat/completions",
       "toolCalling": true,
       "vision": true,

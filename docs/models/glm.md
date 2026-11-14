@@ -68,7 +68,7 @@
   "models": [
     {
       "id": "glm-5.3-flash",
-      "name": "GLM 5.3 Flash (multimodal)",
+      "name": "GLM 5.3 Flash",
       "url": "https://api.z.ai/api/paas/v4/chat/completions",
       "toolCalling": true,
       "vision": true,

@@ -13,7 +13,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Gemini 4 Carbon** (Google, October 28, 2026; GA November 10, 2026) — `gemini-4-carbon`; GA in Copilot (not Pro); thinking levels `low` / `medium` / `high`. No custom-endpoint setup maintained here.
 - **Gemini 4 Hydrogen** (Google, November 12, 2026) — `gemini-4-hydrogen`; API-only (Google AI Studio and the Gemini API, free tier available) and not in Copilot as of November 13, 2026; thinking levels `low` / `medium` / `high` (default) / `xhigh`. No custom-endpoint setup maintained here.
 - **Qwen 3.8 Max** (DashScope) — `qwen3.8-max`; optional proxy `proxy/qwen-proxy.mjs`. See [docs/models/qwen.md](docs/models/qwen.md).
-- **DeepSeek V4.1 Flash** — via the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension; no custom-endpoint config. See [docs/models/deepseek.md](docs/models/deepseek.md).
+- **DeepSeek V4.1 Flash** — `deepseek-flash`; direct custom endpoint (no proxy) wire-validated 2026-11-14, with the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension as the reasoning-visible alternative. See [docs/models/deepseek.md](docs/models/deepseek.md).
 - **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — optional proxy `proxy/mimo-proxy.mjs`. See [docs/models/mimo.md](docs/models/mimo.md).
 - **MiniMax M3.1 Flash** (October 19, 2026) — `MiniMax-M3.1-Flash`; always-thinking; direct, no proxy. See [docs/models/minimax.md](docs/models/minimax.md).
 - **GLM 5.3** (Z.ai, August 18, 2026) — text-only; always-thinking; direct, no proxy. See [docs/models/glm.md](docs/models/glm.md).
@@ -31,7 +31,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment and V2.6 setup guide for Xiaomi MiMo.
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3.1 Flash (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
-- [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4.1 Flash extension setup and model-ID override troubleshooting.
+- [docs/models/deepseek.md](docs/models/deepseek.md) — DeepSeek V4.1 Flash custom-endpoint setup (no proxy), API constraints, extension route, and model-ID override troubleshooting.
 - [proxy/kimi-proxy.mjs](proxy/kimi-proxy.mjs) is a small Node.js HTTP proxy that rewrites outbound chat-completions requests for Kimi K2-family models, preserves streaming, and writes redacted NDJSON summaries.
 - [proxy/qwen-proxy.mjs](proxy/qwen-proxy.mjs) is an optional proxy for Qwen 3.x models that dynamically suppresses thinking only when tool activity is detected — a `"tool"`-role message or a non-default `tool_choice`, not merely a `tools` array (reasoning visible in plain chat, suppressed in tool loops).
 - [lib/kimi-rewrite.mjs](lib/kimi-rewrite.mjs), [lib/qwen-rewrite.mjs](lib/qwen-rewrite.mjs), and [lib/mimo-rewrite.mjs](lib/mimo-rewrite.mjs) hold the provider rewrites that the proxies and their tests import; [lib/rewrite-summary.mjs](lib/rewrite-summary.mjs) holds the shared NDJSON summary shape and tool-activity detection.
@@ -164,6 +164,20 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 - Auth: `Authorization: Bearer $ZAI_API_KEY` header (standard).
 - The **GLM Coding Plan** endpoint is **not** usable from VS Code custom endpoints — it is locked to a curated list of officially supported tools. Use the general PaaS endpoint above.
 - The full rationale, tested values, and evidence live in [docs/models/glm.md](docs/models/glm.md); do not duplicate that record here.
+
+### DeepSeek (api.deepseek.com)
+
+- Direct VS Code → DeepSeek works without a proxy for `deepseek-flash`. Wire-validated 2026-11-14 against the live API by replaying the exact field/role union VS Code 1.146 sends; the picker/UI pass was not repeated.
+- Only two model IDs exist: `deepseek-flash` and `deepseek-v4-pro`. A version label (`DeepSeek-V4.1-Flash-1017`) returns 400 with an explicit supported-name list.
+- `tool_choice` must be `auto` (or omitted) while thinking is on — `required` and named tools return 400 `Thinking mode does not support this tool_choice`. VS Code sends `auto`, so the default works.
+- Thinking is on by default and **can** be disabled, unlike Kimi K2.7 and MiniMax M3.1 Flash: `thinking: {"type":"disabled"}` and `reasoning_effort: "none"` both yield zero reasoning tokens. Advertised effort levels are `low`/`high`/`max` (default `high`); measured on a reasoning task, `low` ≈1463 / `high` ≈1644 / `max` ≈3253 reasoning tokens, and `low` answered incorrectly while `high` and `max` were correct.
+- Sampling: `temperature` uncapped by the server (0, 1, and 1.5 all accepted), `top_p` must be in `(0, 1.0]`, `n` must be exactly `1`. `max_tokens` range is `[1, 393216]`; `max_completion_tokens` is also accepted.
+- `reasoning_content` replay is **optional** — a tool-loop follow-up returns 200 with or without it (unlike Kimi K2.7, which rejects some shapes).
+- Vision: `deepseek-flash` only (`deepseek-v4-pro` is text-only and ignores the image). Base64 data URLs work; public image URLs fail with `Failed to download image`.
+- Message roles are limited to `system`/`user`/`assistant`/`tool` — a `developer` role returns 422. VS Code sends only the four.
+- Endpoint: `https://api.deepseek.com/v1/chat/completions`. Auth: `Authorization: Bearer $DEEPSEEK_API_KEY`.
+- Name the provider something other than `DeepSeek` so it does not hide behind the DeepSeek extension's picker group.
+- The full rationale, tested values, and evidence live in [docs/models/deepseek.md](docs/models/deepseek.md); do not duplicate that record here.
 
 ## Validation Expectations
 
