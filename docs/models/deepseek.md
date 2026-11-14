@@ -50,7 +50,7 @@
 {
   "name": "DeepSeek API",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:deepseekApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -75,7 +75,7 @@
 
 > **Context budget:** `917504 + 131072 = 1048576`, the DeepSeek window (input and output combined). Only raise `maxInputTokens` by lowering `maxOutputTokens`.
 
-> **Leave `apiKey` as `""`** — set it through the Language Models UI so VS Code stores it in the OS keychain.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and fill it through the UI (below), which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference.
 
 ### 2. API Key
 

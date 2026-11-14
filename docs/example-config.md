@@ -8,7 +8,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 
 > **Utility models:** with a GitHub Copilot token, VS Code already uses its built-in utility models, so no extra setup is required. If you use BYOK without Copilot sign-in, set **Chat: Utility Model** and **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_). See the [main README](../README.md#4-configure-the-utility-small-model).
 
-> **Note:** The `apiKey` fields are left as empty strings — set them via the **Chat: Manage Language Models** UI (Command Palette → right-click provider group → **Update API Key**). After you set a key via the UI, VS Code replaces the empty string with a `${input:chat.lm.secret.<id>}` secret reference. A key pasted directly into this file is not used: measured on 1.146, the request went out as `Authorization: Bearer` with an empty token and the provider rejected it.
+> **Note:** `apiKey` must be a **non-empty** string — VS Code's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. The snippets below use a `${input:...}` reference, and the reliable way to populate it is the **Chat: Manage Language Models** UI (Command Palette → provider group → **Update API Key**), which stores the key in the OS keychain and rewrites the value to `${input:chat.lm.secret.<id>}`. A key pasted directly into this file as a literal is not used on 1.146: the request goes out as `Authorization: Bearer` with an empty token and the provider rejects it.
 
 > **After saving, open the Language Models editor once.** On 1.146 a provider added to this file stays invisible in the model picker until **Chat: Manage Language Models** (or the picker's **Add Models…**) has been opened in that window; the editor itself shows the provider immediately. If your provider's `name` matches an installed extension (for example `GLM` with the Z.ai extension installed), the picker merges them and your models hide behind the extension group — give the provider a distinct name.
 
@@ -19,7 +19,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "Qwen",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:qwenApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -37,7 +37,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "Kimi",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:kimiApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -59,7 +59,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "MiMo",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:mimoApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -100,7 +100,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "MiniMax",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:minimaxApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -122,7 +122,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "GLM",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:glmApiKey}",
     "apiType": "chat-completions",
     "models": [
       {
@@ -158,7 +158,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
   {
     "name": "DeepSeek API",
     "vendor": "customendpoint",
-    "apiKey": "",
+    "apiKey": "${input:deepseekApiKey}",
     "apiType": "chat-completions",
     "models": [
       {

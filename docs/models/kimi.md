@@ -55,7 +55,7 @@
 {
   "name": "Kimi",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:kimiApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -89,7 +89,7 @@ Kimi is **Pay-as-You-Go only** — no subscription. A single Open Platform API k
 3. Find the **Kimi** group → **Update API Key**.
 4. Paste your Moonshot / Kimi Platform API key.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — `api.moonshot.ai` still resolves and the proxy targets it unchanged.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference. Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — `api.moonshot.ai` still resolves and the proxy targets it unchanged.
 
 ## Local Proxy
 

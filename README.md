@@ -61,7 +61,7 @@ If the file doesn't exist yet, create it with `[]` inside.
 
 Open the setup guide for the model you picked (links in the table above) and copy its JSON snippet into the file. Each snippet is a single provider object inside the array.
 
-> **⚠️ Leave `apiKey` as `""`** — a key pasted into this file is **not** used. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed". Use the UI step below.
+> **⚠️ `apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` raises _String is shorter than the minimum length of 1_. Keep the `${input:...}` placeholder from the snippet and fill it with the UI step below; a **literal** key pasted into this file is **not** used either. Measured on VS Code 1.146: an entry with a literal `apiKey` produced `Authorization: Bearer` with an empty token, so the provider answered `401` / "request failed".
 
 > **The models don't appear in the picker yet.** After editing the file, open **Chat: Manage Language Models** once (or the picker's **Add Models…**) and close it. Measured on 1.146: until the editor has been opened in that window, the picker lists only extension-provided models while the editor already shows your provider.
 

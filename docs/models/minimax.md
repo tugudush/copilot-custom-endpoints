@@ -66,7 +66,7 @@
 {
   "name": "MiniMax",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:minimaxApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -113,7 +113,7 @@ The two keys are **not interchangeable** — a Subscription Key against a PAYG-o
 3. Find the **MiniMax** group → **Update API Key**.
 4. Paste your **Open Platform API Key** from `platform.minimax.io/user-center/basic-information/interface-key`.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference.
 
 #### Option B — Token Plan Subscription Key
 

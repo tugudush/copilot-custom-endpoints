@@ -80,7 +80,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:qwenApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -122,7 +122,7 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
 {
   "name": "Qwen",
   "vendor": "customendpoint",
-  "apiKey": "",
+  "apiKey": "${input:qwenApiKey}",
   "apiType": "chat-completions",
   "models": [
     {
@@ -150,7 +150,7 @@ DashScope is **Pay-as-You-Go only** — but new Model Studio users get **1M inpu
 3. Find the **Qwen** group → **Update API Key**.
 4. Paste your DashScope API key.
 
-> VS Code replaces `"apiKey": ""` with a `${input:chat.lm.secret.<id>}` reference. Keys are region-specific.
+> **`apiKey` must be non-empty** — the file's schema enforces `minLength: 1`, so `"apiKey": ""` shows _String is shorter than the minimum length of 1_. Use the `${input:...}` placeholder shown above and set it through the Language Models UI, which rewrites it to a `${input:chat.lm.secret.<id>}` keychain reference. Keys are region-specific.
 >
 > New keys start with `sk-ws-` and are shown only once, in the **API Quick Access** dialog — copy the key before closing it. Older `sk-` keys keep working.
 
