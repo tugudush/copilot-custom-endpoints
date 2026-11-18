@@ -36,6 +36,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Gemini 4 Hydrogen**        | Google    | **~$0.0278**          | **54**             | $1.50                         | $0.075                        | $7.50                         | ~$1.50       | 1M             |
 | **Muse Spark 1.3**           | Meta      | **~$0.0288**          | **36.4**           | $1.25                         | $0.15                         | $4.25                         | ~$1.05       | 1M             |
 | **Gemini 4 Carbon**          | Google    | **~$0.0333**          | **60**             | $2.00                         | $0.10                         | $10.00                        | ~$2.00       | 1M             |
+| **GPT-6.2 Sol**              | OpenAI    | **~$0.0349**          | **57.3**           | $2.00                         | $0.10                         | $10.00                        | ~$2.00       | 1M             |
 | **GLM 5.3**                  | Z.ai      | **~$0.0360**          | **31.7**           | $1.40                         | $0.26                         | $4.40                         | ~$1.14       | 1M             |
 | **GPT-6.1 Sol**              | OpenAI    | **~$0.0367**          | **54.5**           | $2.00                         | $0.10                         | $10.00                        | ~$2.00       | 1M             |
 | **Claude Sonnet 5.5**        | Anthropic | **~$0.0369**          | **54.2**           | $2.00                         | $0.10                         | $10.00                        | ~$2.00       | 1M             |
@@ -47,6 +48,7 @@ All models are listed together below, sorted by Cost per intelligence ascending 
 | **Claude Opus 5.5**          | Anthropic | **~$0.0685**          | **58.4**           | $4.00                         | $0.20                         | $20.00                        | ~$4.00       | 1M             |
 | **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **~$0.1018**          | **29.9**           | $4.35                         | $0.036                        | $8.70                         | ~$3.05       | 1M             |
 | **Claude Fable 5.2**         | Anthropic | **~$0.1231**          | **65**             | $8.00                         | $0.20                         | $40.00                        | ~$8.00       | 1M             |
+| **GPT-6.2 Astra**            | OpenAI    | **~$0.1288**          | **62.1**           | $8.00                         | $0.40                         | $40.00                        | ~$8.00       | 1M             |
 | **GPT-6 Astra**              | OpenAI    | **~$0.1757**          | **56.9**           | $10.00                        | $1.00                         | $50.00                        | ~$10.00      | 1M             |
 | **Claude Fable 5.1**         | Anthropic | **~$0.2012**          | **49.7**           | $10.00                        | $0.25                         | $50.00                        | ~$10.00      | 1M             |
 
@@ -57,7 +59,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - **DeepSeek:** the table shows peak cache-miss pricing; off-peak rates are half. See the [DeepSeek pricing page](https://api-docs.deepseek.com/quick_start/pricing).
 > - **MiMo:** the table shows cache-miss pricing; cache hits are far cheaper (see the Cached input column). A Token Plan subscription with discounted rates is also available.
 > - **Anthropic:** cache reads and writes are billed separately. Haiku 5.5 is the only Claude model with prompt-length tiering; the table shows its ≤100K rates. Fast mode is $8 / $40 per 1M.
-> - **OpenAI:** GPT-6 Sol, GPT-6.1 Sol, and Luna bill cache writes at 1.25× input. Requests over 272K input cost 2× input and cache rates, with 1.5× output.
+> - **OpenAI:** GPT-6 Sol, GPT-6.1 Sol, and Luna bill cache writes at 1.25× input. Requests over 272K input cost 2× input and cache rates, with 1.5× output. GPT-6.2 Astra is $8 / $0.40 cache read / $40 per 1M (20% below GPT-6 Astra, 60% off cached input); GPT-6.2 Sol carries GPT-6.1 Sol's $2 / $0.10 / $10 rates.
 > - **Gemini 4 Argon and Gemini 4 Carbon:** both bill $2 / $10 per 1M with $0.10 implicit cache through November 30, 2026, then rise to $4 / $20 with $0.20 cache; explicit caching is unsupported. Output includes thinking tokens. Batch and Flex are half price; Priority is $3.60 / $18. Carbon is the more deliberate of the two and spends more tokens per task, so its session cost runs higher than Argon's at identical rates.
 > - **Gemini 4 Hydrogen:** flat $1.50 / $7.50 per 1M with $0.075 implicit cache across the entire 1M window; explicit caching is unsupported. Batch and Flex are half price ($0.75 / $3.75), Priority is $2.70 / $13.50, and a free tier is available in AI Studio. Hydrogen always thinks (`low` / `medium` / `high` / `xhigh`), so token spend — and this modeled session cost — rises with the thinking level; its **54** Intelligence Score is Artificial Analysis' `xhigh` measurement, while Google reports **51** at the default `high` level. It is API-only and not Copilot-native as of November 13, 2026.
 > - **Kimi K3.1 Pro and MiniMax M3.1 Flash:** both always think, so control cost with `reasoning_effort`. See [docs/models/kimi.md](models/kimi.md) and [docs/models/minimax.md](models/minimax.md).
@@ -68,10 +70,12 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions can estimate monthly capacity by multiplying each modeled session cost by 100 to convert it to AI credits, then mixing models as needed.
 
-> Prices last verified: November 13, 2026. Always check the official pages for the latest rates:
+> Prices last verified: November 18, 2026. Always check the official pages for the latest rates:
 >
 > - [GitHub Copilot models & pricing](https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing)
 > - [OpenAI pricing](https://openai.com/api/pricing/)
+> - [OpenAI GPT-6.2 Astra and Sol announcement](https://openai.com/index/introducing-gpt-6-2-astra-sol/)
+> - [GitHub Copilot GPT-6.2 Astra and Sol release](https://github.blog/changelog/2026-11-17-openais-gpt-6-2-astra-and-gpt-6-2-sol-now-available/)
 > - [OpenAI GPT-6 Sol and Luna announcement](https://openai.com/index/introducing-gpt-6-sol-and-luna/)
 > - [OpenAI GPT-6 Sol API details](https://developers.openai.com/api/docs/models/gpt-6-sol)
 > - [OpenAI GPT-6 Luna API details](https://developers.openai.com/api/docs/models/gpt-6-luna)
@@ -95,7 +99,7 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - [GitHub Copilot GPT-6.1 Sol release](https://github.blog/changelog/2026-09-29-gpt-6-1-sol-in-github-copilot)
 > - [GitHub Copilot Claude Opus 5.5 release](https://github.blog/changelog/2026-09-22-claude-opus-5-5-is-now-available-in-github-copilot)
 > - [GitHub Copilot supported models](https://docs.github.com/en/copilot/reference/ai-models/supported-models)
-> - [Artificial Analysis GPT-6 Sol](https://artificialanalysis.ai/models/gpt-6-sol), [GPT-6 Luna](https://artificialanalysis.ai/models/gpt-6-luna), [GPT-6.1 Sol](https://artificialanalysis.ai/models/gpt-6-1-sol), [GPT-6.1 Terra](https://artificialanalysis.ai/models/gpt-6-1-terra), [Claude Opus 5.5](https://artificialanalysis.ai/models/claude-opus-5-5), [Claude Sonnet 5.5](https://artificialanalysis.ai/models/claude-sonnet-5-5), [Claude Haiku 5.5](https://artificialanalysis.ai/models/claude-haiku-5-5), [MiMo-V2.6-Flash](https://artificialanalysis.ai/models/mimo-v2-6-flash), [Gemini 4 Argon](https://artificialanalysis.ai/models/gemini-4-argon), [Muse Spark 1.3](https://artificialanalysis.ai/models/muse-spark-1-3), [Kimi K3.1 Pro](https://artificialanalysis.ai/models/kimi-k3-1-pro), and [MiniMax-M3.1-Flash](https://artificialanalysis.ai/models/minimax-m3-1-flash)
+> - [Artificial Analysis GPT-6 Sol](https://artificialanalysis.ai/models/gpt-6-sol), [GPT-6 Luna](https://artificialanalysis.ai/models/gpt-6-luna), [GPT-6.1 Sol](https://artificialanalysis.ai/models/gpt-6-1-sol), [GPT-6.1 Terra](https://artificialanalysis.ai/models/gpt-6-1-terra), [GPT-6.2 Astra](https://artificialanalysis.ai/models/gpt-6-2-astra), [GPT-6.2 Sol](https://artificialanalysis.ai/models/gpt-6-2-sol), [Claude Opus 5.5](https://artificialanalysis.ai/models/claude-opus-5-5), [Claude Sonnet 5.5](https://artificialanalysis.ai/models/claude-sonnet-5-5), [Claude Haiku 5.5](https://artificialanalysis.ai/models/claude-haiku-5-5), [MiMo-V2.6-Flash](https://artificialanalysis.ai/models/mimo-v2-6-flash), [Gemini 4 Argon](https://artificialanalysis.ai/models/gemini-4-argon), [Muse Spark 1.3](https://artificialanalysis.ai/models/muse-spark-1-3), [Kimi K3.1 Pro](https://artificialanalysis.ai/models/kimi-k3-1-pro), and [MiniMax-M3.1-Flash](https://artificialanalysis.ai/models/minimax-m3-1-flash)
 > - [Google Gemini pricing](https://ai.google.dev/pricing)
 > - [Google Gemini 4 Carbon announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/)
 > - [Google Gemini 4 Carbon availability](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/)
