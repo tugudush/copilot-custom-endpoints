@@ -1,6 +1,8 @@
 ---
-description: 'Use when adding, removing, renaming, or updating models in docs/pricing.md, docs/benchmarks.md, or README.md. Enforces that every model is listed consistently across all three files.'
-applyTo: 'docs/pricing.md,README.md,docs/benchmarks.md'
+paths:
+  - docs/pricing.md
+  - README.md
+  - docs/benchmarks.md
 ---
 
 # Model Roster Consistency (pricing / benchmarks / README)
@@ -20,7 +22,7 @@ When a model is added, removed, renamed, re-priced, or re-scored, update **all t
 3. **Same facts.** Intelligence Score (AA Intelligence Index), Est. session cost, Cost per intelligence, input/cached/output pricing, context window, and vision capability must match across files. The AA score is a single source of truth — the same number everywhere.
 4. **Status notes travel together.** If a model is deprecated, superseded, or comparison-only, say so consistently in all three files. Footnote _numbers_ are per-file and independent, but the underlying note must exist wherever the model is listed.
 5. **Re-sort after every change.**
-   - `docs/pricing.md` and `README.md`: sort by **Cost per intelligence ascending** — see `pricing-sort.instructions.md`.
+   - `docs/pricing.md` and `README.md`: sort by **Cost per intelligence ascending** — see `pricing-sort.md`.
    - `docs/benchmarks.md`: sort by **AA Intelligence Index descending** (highest first).
 6. **Footnotes stay attached.** Superscripts (¹, ², …) belong to their model name during reordering. When adding a row with a new footnote, assign the next free number in _that file only_ (each file's footnote numbering is independent).
 7. **Link, don't duplicate.** Point to the canonical model doc under `docs/models/<provider>-<model>.md` rather than copying large detail blocks into multiple files.

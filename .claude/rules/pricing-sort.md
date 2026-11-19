@@ -1,6 +1,7 @@
 ---
-description: 'Use when updating pricing tables in docs/pricing.md or README.md. Enforces sort order by cost per intelligence ascending.'
-applyTo: 'docs/pricing.md,README.md'
+paths:
+  - docs/pricing.md
+  - README.md
 ---
 
 # Pricing Table Sort Order

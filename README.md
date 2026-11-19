@@ -227,6 +227,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 
 ```
 .
+├── .claude/                            # Claude Code rules and skills
 ├── docs/models/<provider>-<model>.md   # Per-model setup guides (the real docs)
 ├── proxy/                              # Local compatibility shims
 ├── tests/                              # Test assets

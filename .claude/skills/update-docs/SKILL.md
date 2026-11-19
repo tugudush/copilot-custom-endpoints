@@ -10,8 +10,8 @@ You are updating the documentation in this repository to be accurate and complet
 
 Read these files in parallel before touching any documentation:
 
-1. `${env:APPDATA}/Code/User/chatLanguageModels.json` — the live VS Code model registry. Use this file as a reference to verify the models **already documented** in this repo. Only models that have documentation under `docs/models/` or an entry in the README quick-start table need to be checked. Undocumented entries in the config are out of scope — do not add docs for them unless explicitly asked.
-2. All proxy source files under `proxy/` — discover the current set with `file_search` for `proxy/*.mjs`. For each proxy, extract all env-var names, default values, rewrite logic (temperature, top_p, thinking), health-check route, and log path.
+1. The live VS Code model registry: `%APPDATA%\Code\User\chatLanguageModels.json` on Windows (`~/Library/Application Support/Code/User/chatLanguageModels.json` on macOS, `~/.config/Code/User/chatLanguageModels.json` on Linux). Use this file as a reference to verify the models **already documented** in this repo. Only models that have documentation under `docs/models/` or an entry in the README quick-start table need to be checked. Undocumented entries in the config are out of scope — do not add docs for them unless explicitly asked.
+2. All proxy source files under `proxy/` — discover the current set with Glob (`proxy/*.mjs`). For each proxy, extract all env-var names, default values, rewrite logic (temperature, top_p, thinking), health-check route, and log path.
 
 ## Step 2 — Read all existing documentation
 
@@ -20,7 +20,7 @@ Read in parallel:
 - `README.md`
 - `AGENTS.md`
 - `docs/example-config.md`
-- All files in `docs/models/` (discover the current set with `file_search` for `docs/models/*.md` — do not assume a fixed list).
+- All files in `docs/models/` (discover the current set with Glob (`docs/models/*.md`) — do not assume a fixed list).
 
 ## Step 3 — Audit against source of truth
 
