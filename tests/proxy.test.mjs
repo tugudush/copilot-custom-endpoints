@@ -371,6 +371,62 @@ describe('Qwen proxy rewrite logic', () => {
     assert.equal(received.enable_thinking, false)
   })
 
+  // DashScope rejects enable_thinking:false with a non-"none" reasoning_effort
+  // (400, measured 2026-11-23), so suppressed turns must drop the effort field.
+  it('suppressed tool turn: drops reasoning_effort alongside enable_thinking:false', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [
+        { role: 'assistant', tool_calls: [{ id: 'c1', type: 'function' }] },
+        { role: 'tool', tool_call_id: 'c1', content: 'result' }
+      ],
+      reasoning_effort: 'xhigh',
+      stream: false
+    })
+
+    assert.equal(received.enable_thinking, false)
+    assert.equal(Object.hasOwn(received, 'reasoning_effort'), false)
+  })
+
+  it('suppressed tool turn: drops reasoning_effort none too (enable_thinking alone suffices)', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      tool_choice: 'auto',
+      reasoning_effort: 'none',
+      stream: false
+    })
+
+    assert.equal(received.enable_thinking, false)
+    assert.equal(Object.hasOwn(received, 'reasoning_effort'), false)
+  })
+
+  it('plain chat: forwards reasoning_effort unchanged', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [{ role: 'user', content: 'Hello' }],
+      reasoning_effort: 'low',
+      stream: false
+    })
+
+    assert.equal(received.reasoning_effort, 'low')
+    assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
+  })
+
+  it('first-turn tools gap: forwards reasoning_effort with default thinking', async () => {
+    const received = await postJson(harness.port, {
+      model: 'qwen3.8-max',
+      messages: [{ role: 'user', content: 'Search' }],
+      tools: TOOLS,
+      reasoning_effort: 'medium',
+      stream: false
+    })
+
+    assert.equal(received.reasoning_effort, 'medium')
+    assert.equal(Object.hasOwn(received, 'enable_thinking'), false)
+  })
+
   it('returns 404 for non-POST methods', async () => {
     const res = await fetch(
       `http://127.0.0.1:${harness.port}/v1/chat/completions`,

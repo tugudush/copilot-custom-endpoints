@@ -36,6 +36,7 @@ Many providers offer substantial trial credits or token pools when you first sig
   - `qwen3.8-max`
   - `qwen3-coder-plus`
   - `qwq-plus`
+- **Per-model quota:** `qwen4-max` (Qwen 4 Max, released November 16, 2026) has its own quota, which isn't listed here; check its Model Studio page for the amount.
 - **Multimodal Quota:** Also offers **100 free generated images** for vision models (e.g., `qwen-image-2.0-pro`, `z-image-turbo`) and **50–200 free seconds of video generation** on selected `wan` video models.
 
 ### DeepSeek
