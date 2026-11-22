@@ -1,14 +1,14 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` works both direct and via the local proxy. The proxy forwards the upstream `model` value unchanged, so use the exact model ID supported by the endpoint you choose. The proxy gives you dynamic thinking suppression: reasoning stays ON in plain chat but turns OFF automatically when tools are invoked. The direct path is simpler if you don't need reasoning in chat. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
+> **TL;DR:** `qwen3.8-max` works both direct and via the local proxy. `qwen4-max` (Qwen 4 Max, released November 16, 2026) uses the same proxy path. It was wire-tested on 2026-11-22 (a direct request and a proxy tool-turn rewrite), but a full VS Code session is not yet verified (see [Notes](#notes)). Direct connections leave thinking at DashScope's default, which is on for these models. The proxy also leaves the default in place until it detects tool activity, then disables thinking for that request. Whether VS Code displays Qwen 4 Max's reasoning has not been verified. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
 | Field          | Value                                                                                              |
 | -------------- | -------------------------------------------------------------------------------------------------- |
-| Mode           | **Proxy** (local on `:3458`) **or** **Direct** (static `enable_thinking: false`)                   |
+| Mode           | **Proxy** (local on `:3458`) or **Direct** (provider-default thinking)                             |
 | Billing        | **Pay-as-You-Go only** — 1M-token free quota for new users                                         |
-| Vision         | ✅ Yes (`qwen3.8-max`)                                                                             |
+| Vision         | ✅ Yes (`qwen3.8-max`, `qwen4-max`)                                                                |
 | Tool calling   | ✅ Yes                                                                                             |
 | Context        | 1M                                                                                                 |
 | Max output     | 131K                                                                                               |
@@ -17,17 +17,20 @@
 | Proxy endpoint | `http://127.0.0.1:3458/v1/chat/completions`                                                        |
 | Auth           | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                         |
 | `modelOptions` | `temperature: 1`, `top_p: 0.95` (the only sampling control VS Code forwards)                       |
-| `requestBody`  | **Not forwarded on VS Code 1.146** — thinking must be controlled by the proxy                      |
+| `requestBody`  | **Not forwarded on VS Code 1.146** — use the proxy to toggle `enable_thinking`                     |
 
-> **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. Turn 1 carried 128 tools and no `tool_choice` (so thinking stayed at the DashScope default) and still succeeded; the proxy injected `enable_thinking: false` on the tool turn. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
+> **Qwen 3.8 Max live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. Turn 1 carried 128 tools and no `tool_choice` (so thinking stayed at the DashScope default) and still succeeded; the proxy injected `enable_thinking: false` on the tool turn. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
+
+> **Qwen 4 Max (`qwen4-max`) is wire-tested, not yet verified in VS Code.** On 2026-11-22 a direct request returned HTTP 200 with `enable_thinking: false`, and a tool-turn request through the proxy returned HTTP 200 with the rewrite logged. Its entries below follow Alibaba's documentation plus those tests. See [Notes](#notes) for the remaining steps and an observed gzip header issue.
 
 ### Models
 
-| Model         | Vision | Context | Max output | Notes                                                   |
-| ------------- | ------ | ------- | ---------- | ------------------------------------------------------- |
-| `qwen3.8-max` | ✅ Yes | 1M      | 131K       | Frontier multimodal model; reasoning enabled by default |
+| Model         | Vision | Context | Max output                                              | Notes                                                                                                         |
+| ------------- | ------ | ------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `qwen3.8-max` | ✅ Yes | 1M      | 131K                                                    | Frontier multimodal model; reasoning enabled by default                                                       |
+| `qwen4-max`   | ✅ Yes | 1M      | 128K (non-thinking) / 256K (thinking); configs use 131K | Released November 16, 2026; reasoning enabled by default; wire-tested 2026-11-22, not yet verified in VS Code |
 
-> The live `chatLanguageModels.json` points Qwen at the local proxy by default. A direct DashScope entry cannot disable reasoning on VS Code 1.146 — `requestBody` is dropped — so the direct path below runs with DashScope's thinking default and is listed only for connectivity checks.
+> A direct DashScope entry uses the provider's default thinking behavior: on for both models listed above. VS Code 1.146 drops `requestBody`, so `enable_thinking: false` cannot be set there. Direct Qwen 4 Max tool loops and reasoning display in VS Code remain unverified.
 
 ## Quick Start
 
@@ -38,14 +41,14 @@
 3. **Use the proxy-path JSON snippet** below.
 4. **Set your DashScope API key** via Command Palette → **Chat: Manage Language Models**.
 5. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
-6. **Restart VS Code.** Reasoning will be visible in plain chat and suppressed on tool turns.
+6. **Restart VS Code.** Thinking remains at the provider default until the proxy detects tool activity, when it suppresses thinking. Qwen 4 Max reasoning display in VS Code remains unverified.
 
 ### Direct (no proxy)
 
 1. **Use the direct-path JSON snippet** below and replace `<your-workspace-id>` in `url` with your workspace ID.
 2. **Set your `DASHSCOPE_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
-4. **Restart VS Code** and pick "Qwen 3.8 Max".
+4. **Restart VS Code** and pick "Qwen 3.8 Max" or "Qwen 4 Max".
 
 ## Setup
 
@@ -93,12 +96,23 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
       "maxInputTokens": 868928,
       "maxOutputTokens": 131072,
       "modelOptions": { "temperature": 1, "top_p": 0.95 }
+    },
+    {
+      "id": "qwen4-max",
+      "name": "Qwen 4 Max",
+      "url": "https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 868928,
+      "maxOutputTokens": 131072,
+      "modelOptions": { "temperature": 1, "top_p": 0.95 }
     }
   ]
 }
 ```
 
-> **Context budget:** `868928 + 131072 = 1000000`, the `qwen3.8-max` window. VS Code uses that sum as the model's total context; DashScope separately caps input at 991000 tokens, so 868928 leaves room for the output budget. Raise `maxInputTokens` only by lowering `maxOutputTokens`.
+> **Context budget:** `868928 + 131072 = 1000000`, the window for `qwen3.8-max` and `qwen4-max`. DashScope separately caps input at 991000 tokens, so 868928 leaves room for the output budget. For `qwen4-max`, Alibaba lists up to 256K output tokens in thinking mode, but this budget keeps 131072 for both models. Raise `maxInputTokens` only by lowering `maxOutputTokens`.
 
 > **Direct path caveat:** `enable_thinking` cannot be set from `chatLanguageModels.json` on VS Code 1.146, so reasoning stays at DashScope's default and tool loops may hit `reasoning_content` errors. Use the proxy for tool-heavy work.
 
@@ -134,6 +148,16 @@ API keys are bound to their region (and, on a workspace-dedicated domain, to the
       "streaming": true,
       "maxInputTokens": 868928,
       "maxOutputTokens": 131072
+    },
+    {
+      "id": "qwen4-max",
+      "name": "Qwen 4 Max",
+      "url": "http://127.0.0.1:3458/v1/chat/completions",
+      "toolCalling": true,
+      "vision": true,
+      "streaming": true,
+      "maxInputTokens": 868928,
+      "maxOutputTokens": 131072
     }
   ]
 }
@@ -156,7 +180,7 @@ DashScope is **Pay-as-You-Go only** — but new Model Studio users get **1M inpu
 
 ## Local Proxy
 
-The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression on top of the direct integration. Reasoning stays ON in plain chat and turns OFF automatically only when tools are invoked. If you don't need reasoning visibility, the direct path (`### Direct (no proxy)` above) is simpler.
+The `proxy/qwen-proxy.mjs` adds dynamic thinking suppression on top of the direct integration. By default, it leaves provider-default thinking in place until it detects tool activity, then sends `enable_thinking: false`. The simpler direct path also leaves thinking on by default, but does not suppress it during tool loops. Whether VS Code displays Qwen 4 Max's reasoning has not been verified for either path. Both `qwen3.8-max` and `qwen4-max` use the same proxy: it forwards the model ID unchanged and sets `enable_thinking`, which both models accept.
 
 | Setting      | Value                                                 |
 | ------------ | ----------------------------------------------------- |
@@ -196,9 +220,12 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 ## Notes
 
-- **Vision (`qwen3.8-max`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround.
+- **Vision (`qwen3.8-max`, `qwen4-max`)** uses OpenAI-compatible `content` array format. Base64 data URIs work reliably; external image URLs may fail if DashScope can't reach them. If a drag-and-drop image fails to load, providing the absolute file path (e.g. `c:\path\to\image.png`) in the prompt is a reliable workaround. Alibaba and Artificial Analysis list text, image, and video input for `qwen4-max`; this repo has not tested image or video input on it.
 - **Qwen 3.8 reasoning:** `qwen3.8-max` enables reasoning by default and supports `reasoning_effort` values `low`, `medium`, and `xhigh` (default). On VS Code 1.146 neither `enable_thinking` nor `reasoning_effort` can be set from `requestBody` — the proxy is what toggles thinking, leaving it on for plain chat and suppressing it when tool activity is detected.
-- **Thinking trade-off:** Proxy = thinking on in plain chat, off in tool turns. Without the proxy, thinking stays on and tool loops are at the provider's mercy.
+- **Qwen 4 Max reasoning:** `qwen4-max` enables thinking by default and accepts `enable_thinking` plus `reasoning_effort` values `low`, `medium`, and `xhigh`. Alibaba's `qwen4-max-preview` docs give `xhigh` as the default, while OpenRouter's listing says `high`, so the default is unresolved; the proxy sets no effort level, so this setup uses the provider default. Alibaba also documents `thinking_display` and `preserve_thinking` for multi-turn reasoning history. Neither the proxy nor VS Code sets them here, and their effect is not measured.
+- **Qwen 4 Max wire test (run 2026-11-22):** a direct request with `enable_thinking: false` returned HTTP 200. Repeat it with `curl -X POST <upstream-url> -H "Authorization: Bearer $DASHSCOPE_API_KEY" -H "Content-Type: application/json" -d '{"model":"qwen4-max","messages":[{"role":"user","content":"Hello"}],"enable_thinking":false}'`. A tool-turn request through `proxy/qwen-proxy.mjs` also returned HTTP 200, and `debug_log/qwen-proxy.ndjson` logged `rewrittenEnableThinking: false` with `hasTools: true`.
+- **Qwen 4 Max remaining checks:** run a full tool loop from VS Code and record it here. In the wire test, the proxy's response carried `content-encoding: gzip` on a plain-JSON body, so a PowerShell client failed to decode it. `qwen3.8-max` shows the same header, which points at the proxy's shared response-header forwarding rather than this model. That behavior is not yet investigated or fixed.
+- **Thinking trade-off:** With the default proxy settings, thinking uses the provider default until tool activity is detected, then is disabled for that request. Direct connections leave the provider default on, including during tool loops; Qwen 4 Max's direct tool-loop behavior is unverified.
 - **First tool-capable request:** detection is history-based, so an initial request that sends a `tools` array with no `tool_choice` and no tool-role history is treated as plain chat (thinking stays on). Measured on VS Code 1.146: both the Copilot and Local harnesses send their full tool set with **no** `tool_choice`, so the first turn is always plain chat. `tool_choice: "none"` is also treated as plain chat. See [the harness research](../research/vscode-1.146-copilot-harness.md).
 - **`tool_choice` only supports `auto`** — don't override it (VS Code's default is `auto`).
 
@@ -221,7 +248,10 @@ For the cross-provider comparison, see [docs/pricing.md](../pricing.md). DashSco
 | Model         | Input (≤ 256K tokens) | Input (> 256K tokens) | Output (≤ 256K tokens) | Output (> 256K tokens) |
 | ------------- | --------------------- | --------------------- | ---------------------- | ---------------------- |
 | `qwen3.8-max` | $2.00                 | —                     | $6.00                  | —                      |
+| `qwen4-max`   | $1.50                 | —                     | $4.50                  | —                      |
 
-> **Billing options:** Qwen Cloud now offers a separate Token Plan subscription with access to Qwen3.8 Max. The validated VS Code snippets in this document use the PAYG DashScope-compatible endpoint and API key; do not assume the Token Plan base URL or credentials are interchangeable without following Qwen Cloud's current integration instructions.
+> **Qwen 4 Max pricing:** Alibaba's console lists a single price set for `qwen4-max`, with implicit cache at $0.075 per 1M input tokens and explicit cache at $1.875 (5-minute) or $3 (1-hour) to write and $0.075 to read.
 
-> Free quota: 1M input + 1M output tokens per model, valid 90 days after activating Model Studio.
+> **Billing options:** Qwen Cloud now offers a separate Token Plan subscription with access to Qwen3.8 Max and Qwen4 Max. The validated VS Code snippets in this document use the PAYG DashScope-compatible endpoint and API key; do not assume the Token Plan base URL or credentials are interchangeable without following Qwen Cloud's current integration instructions.
+
+> Free quota: 1M input + 1M output tokens per model, valid 90 days after activating Model Studio. Each model has its own quota, so `qwen4-max`'s allocation is on its Model Studio console page.

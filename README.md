@@ -26,6 +26,7 @@ That's it. No code, no servers to manage (unless the model specifically needs th
 | **MiMo V2.6 Pro**            | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
 | **MiMo V2.6 Flash**          | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
 | **MiMo V2.6 Pro UltraSpeed** | Xiaomi    | **Yes**                | ✅     | [Extension](https://marketplace.visualstudio.com/items?itemName=sdmapvstool.xiaomimimo-for-copilot) / [Manual setup](docs/models/mimo.md)  |
+| **Qwen 4 Max**               | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                        |
 | **Qwen 3.8 Max**             | DashScope | Optional (recommended) | ✅     | [Manual setup](docs/models/qwen.md)                                                                                                        |
 | **MiniMax M3.1 Flash**       | MiniMax   | No                     | ✅     | [Manual setup](docs/models/minimax.md)                                                                                                     |
 | **GLM 5.3 Flash**            | Z.ai      | No                     | ✅     | [Manual setup](docs/models/glm.md)                                                                                                         |
@@ -137,7 +138,7 @@ For example, GLM 5.3 Flash is `(0.5 × $0.15) + (0.1 × $0.50) = $0.125`, shown 
 
 The current AA values are **Artificial Analysis Intelligence Index v5.0** composites taken from OpenRouter’s model metadata; this snapshot was re-based from v4.3.2 on October 31, 2026, so its scores are not comparable with earlier revisions of this table.
 
-**Every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** The Qwen 3.8 Max row scores **33.6** under v5.0, and Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6**.
+**Every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** The Qwen 3.8 Max row scores **33.6** under v5.0, and Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6**. The Qwen 4 Max row scores **43** on Artificial Analysis' v5.0.1 page, at Alibaba Cloud PAYG pricing of **$1.50 / $0.075 implicit cache / $4.50**.
 
 This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Gemini 4 Neon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, GPT-6.2 Sol, GPT-6.2 Astra, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
 
@@ -169,6 +170,7 @@ DeepSeek’s **V4.1-Flash-1017** build (released October 17, 2026) scores **32**
 | **GPT-6.1 Terra**            | OpenAI    | **~$0.0196**          | **51**             | ~$1.00       | ✅     | 1M             |
 | **Gemini 3.8 Flash**         | Google    | **~$0.0246**          | **30.5**           | ~$0.75       | ✅     | 1M             |
 | **Gemini 4 Hydrogen**        | Google    | **~$0.0278**          | **54**             | ~$1.50       | ✅     | 1M             |
+| **Qwen 4 Max**               | DashScope | **~$0.0279**          | **43**             | ~$1.20       | ✅     | 1M             |
 | **Muse Spark 1.3**           | Meta      | **~$0.0288**          | **36.4**           | ~$1.05       | ✅     | 1M             |
 | **Gemini 4 Carbon**          | Google    | **~$0.0333**          | **60**             | ~$2.00       | ✅     | 1M             |
 | **GPT-6.2 Sol**              | OpenAI    | **~$0.0349**          | **57.3**           | ~$2.00       | ✅     | 1M             |
@@ -240,7 +242,7 @@ VS Code's built-in `view_image` tool only accepts **static images** (PNG, JPG, G
 2. If the provider needs request rewriting, add a proxy under `proxy/`.
 3. Submit a PR.
 
-The current AA values are **Artificial Analysis Intelligence Index v5.0** composites taken from OpenRouter’s model metadata (re-based from v4.3.2 on October 31, 2026); **every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Gemini 4 Neon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, GPT-6.2 Sol, GPT-6.2 Astra, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
+The current AA values are **Artificial Analysis Intelligence Index v5.0** composites taken from OpenRouter’s model metadata (re-based from v4.3.2 on October 31, 2026), except Qwen 4 Max's **43**, which is the v5.0.1 value from Artificial Analysis' model page; **every pricing cell comes from first-party provider pricing or GitHub Copilot’s official billing table, never OpenRouter.** Qwen Cloud PAYG pricing remains **$2 / $0.25 implicit cache / $6** for Qwen3.8 Max; its separate Token Plan is not the PAYG rate table. Qwen4 Max's PAYG rate on Alibaba Cloud Model Studio is **$1.50 / $0.075 implicit cache / $4.50**. This snapshot records Gemini 3.8 Flash, Gemini 4 Argon, Gemini 4 Carbon, Gemini 4 Neon, Grok 4.7, GPT-6 Sol, GPT-6.1 Sol, GPT-6.1 Terra, GPT-6 Luna, GPT-6.2 Sol, GPT-6.2 Astra, Claude Fable 5.2, Claude Opus 5.5, Claude Sonnet 5.5, and Claude Haiku 5.5 as **Copilot-native** models.
 
 - **Chat only.** Inline completions, semantic search, and next-edit suggestions still need a GitHub-hosted model.
 - Each proxy is tuned for a specific provider family. Don't point the Kimi proxy at an arbitrary OpenAI-compatible endpoint.

@@ -7,12 +7,15 @@ import { rewriteQwen } from '../lib/qwen-rewrite.mjs'
 /**
  * Supported model scope for this proxy:
  * - Validated with `qwen3.8-max`.
+ * - `qwen4-max` (Qwen 4 Max) uses the same top-level `enable_thinking` switch
+ *   on DashScope, so the same rewrite applies. It was wire-tested on
+ *   2026-11-22 (direct request and proxy tool turn) but not yet run in VS Code.
  * - The rewrite can also be used with OpenRouter model IDs such as
  *   `qwen/qwen3.8-max-0902`; the proxy forwards model IDs unchanged. That route
  *   is not part of the validated DashScope setup.
- * - Expected to work for any Qwen3 hybrid-thinking model (qwen3-* series)
- *   that supports the `enable_thinking` top-level field on DashScope's
- *   OpenAI-compatible surface.
+ * - Expected to work for any Qwen3 or Qwen4 hybrid-thinking model (qwen3-* and
+ *   qwen4-* series) that supports the `enable_thinking` top-level field on
+ *   DashScope's OpenAI-compatible surface.
  * - Not intended for non-Qwen providers, because the rewrite assumes
  *   DashScope's `enable_thinking` behavior (no nested `thinking` object).
  */
@@ -39,7 +42,7 @@ tool_choice), letting Qwen hybrid-thinking models show reasoning in plain
 chat while keeping tool loops stable.
 
 The proxy forwards the requested model ID unchanged, including the DashScope
-ID qwen3.8-max and OpenRouter ID qwen/qwen3.8-max-0902.
+IDs qwen3.8-max and qwen4-max and the OpenRouter ID qwen/qwen3.8-max-0902.
 
 Environment variables:
   QWEN_PROXY_PORT              Local listen port. Default: 3458 (falls back to PORT)

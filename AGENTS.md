@@ -14,6 +14,7 @@ This repository keeps durable validation records for custom language-model endpo
 - **Gemini 4 Hydrogen** (Google, November 12, 2026) — `gemini-4-hydrogen`; API-only (Google AI Studio and the Gemini API, free tier available) and not in Copilot as of November 13, 2026; thinking levels `low` / `medium` / `high` (default) / `xhigh`. No custom-endpoint setup maintained here.
 - **Gemini 4 Neon** (Google, November 18, 2026) — `gemini-4-neon`; GA in Copilot (not Pro); thinking levels `low` / `medium` / `high` (default) / `xhigh`. No custom-endpoint setup maintained here.
 - **Qwen 3.8 Max** (DashScope) — `qwen3.8-max`; optional proxy `proxy/qwen-proxy.mjs`. See [docs/models/qwen.md](docs/models/qwen.md).
+- **Qwen 4 Max** (DashScope) — `qwen4-max`; same optional proxy `proxy/qwen-proxy.mjs`. Documented in [docs/models/qwen.md](docs/models/qwen.md); wire-tested on 2026-11-22, not yet verified in VS Code.
 - **DeepSeek V4.1 Flash** — `deepseek-flash`; direct custom endpoint (no proxy) wire-validated 2026-11-14, with the [DeepSeek for Copilot Chat](https://marketplace.visualstudio.com/items?itemName=Vizards.deepseek-v4-for-copilot) extension as the reasoning-visible alternative. See [docs/models/deepseek.md](docs/models/deepseek.md).
 - **Xiaomi MiMo V2.6 Pro / Flash / Pro UltraSpeed** — optional proxy `proxy/mimo-proxy.mjs`. See [docs/models/mimo.md](docs/models/mimo.md).
 - **MiniMax M3.1 Flash** (October 19, 2026) — `MiniMax-M3.1-Flash`; always-thinking; direct, no proxy. See [docs/models/minimax.md](docs/models/minimax.md).
@@ -28,7 +29,7 @@ Treat the model records under `docs/models/` as the source of truth and this fil
 
 - [README.md](README.md) defines the repo layout and the convention for adding future validation records.
 - [docs/models/kimi.md](docs/models/kimi.md) — full compatibility assessment and setup guide for Kimi K3.1 Pro and K3.
-- [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max, plus the optional proxy feature.
+- [docs/models/qwen.md](docs/models/qwen.md) — full compatibility assessment for Qwen 3.8 Max and Qwen 4 Max, plus the optional proxy feature.
 - [docs/models/mimo.md](docs/models/mimo.md) — full compatibility assessment and V2.6 setup guide for Xiaomi MiMo.
 - [docs/models/minimax.md](docs/models/minimax.md) — full compatibility assessment for MiniMax M3.1 Flash (multimodal frontier coding model with 1M context).
 - [docs/models/glm.md](docs/models/glm.md) — full compatibility assessment for GLM 5.3 and GLM 5.3 Flash (Z.ai / Zhipu AI).
@@ -118,13 +119,13 @@ When using the proxy, update VS Code config to point all MiMo V2.6 model URLs to
 
 ### Qwen 3.x (DashScope)
 
-- The validated DashScope custom endpoint uses `qwen3.8-max`; do not substitute an OpenRouter snapshot slug without changing the endpoint and revalidating the provider mapping.
+- The validated DashScope custom endpoint uses `qwen3.8-max`; do not substitute an OpenRouter snapshot slug without changing the endpoint and revalidating the provider mapping. Qwen 4 Max uses `qwen4-max` on the same endpoint; it was wire-tested on 2026-11-22 but not yet verified in VS Code.
 - Direct VS Code -> DashScope is **not viable for suppressing reasoning**: `requestBody` is dropped on VS Code 1.146, so `enable_thinking: false` never reaches DashScope. Use the proxy.
 - Use the OpenAI-compatible path (`/compatible-mode/v1`); never the native DashScope path (`/api/v1`), whose request/response schema VS Code and the proxy do not speak.
 - Prefer the workspace-dedicated domain `<workspace-id>.<region>.maas.aliyuncs.com` (Alibaba's recommendation; 3600 s request timeout vs 600 s). The legacy `dashscope-intl.aliyuncs.com` stays the proxy default and still works. Set the user's URL via `QWEN_UPSTREAM_URL` in the git-ignored `.env`; never commit a workspace ID or `sk-ws-` key.
 - The live `chatLanguageModels.json` points Qwen models at `proxy/qwen-proxy.mjs` (`http://127.0.0.1:3458`) with no `requestBody` override, providing dynamic thinking suppression: reasoning visible in plain chat, suppressed only when tool activity is detected (a `"tool"`-role message or a non-default `tool_choice`).
 - When using the proxy, keep `enable_thinking` out of the model entry entirely — `requestBody` is not forwarded on 1.146, and the proxy sets the field per turn.
-- `qwen3.8-max` supports vision.
+- `qwen3.8-max` supports vision. `qwen4-max` accepts text, image, and video input per Alibaba's listing.
 - The full rationale, tested values, and evidence live in [docs/models/qwen.md](docs/models/qwen.md); do not duplicate those records here.
 
 ### Xiaomi MiMo

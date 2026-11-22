@@ -31,6 +31,16 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "streaming": true,
         "maxInputTokens": 868928,
         "maxOutputTokens": 131072
+      },
+      {
+        "id": "qwen4-max",
+        "name": "Qwen 4 Max",
+        "url": "http://127.0.0.1:3458/v1/chat/completions",
+        "toolCalling": true,
+        "vision": true,
+        "streaming": true,
+        "maxInputTokens": 868928,
+        "maxOutputTokens": 131072
       }
     ]
   },
@@ -187,6 +197,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 > | Model                      | Window (provider) | `maxOutputTokens` | `maxInputTokens` |
 > | -------------------------- | ----------------- | ----------------- | ---------------- |
 > | `qwen3.8-max`              | 1,000,000         | 131,072           | 868,928          |
+> | `qwen4-max`                | 1,000,000         | 131,072           | 868,928          |
 > | `kimi-k3.1-pro`            | 1,048,576         | 131,072           | 917,504          |
 > | `mimo-v2.6-*`              | 1,048,576         | 131,072           | 917,504          |
 > | `MiniMax-M3.1-Flash`       | 1,000,000         | 131,072           | 868,928          |
@@ -198,7 +209,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
 If you only need one provider, jump straight to its setup guide:
 
 - [Kimi K3.1 Pro / K2.6 / K2.7 Code](models/kimi.md)
-- [Qwen 3.8 Max](models/qwen.md)
+- [Qwen 3.8 Max / Qwen 4 Max](models/qwen.md)
 - [Xiaomi MiMo (V2.6 Pro / Flash / Pro UltraSpeed)](models/mimo.md)
 - [MiniMax M3.1 Flash](models/minimax.md)
 - [GLM (5.3 Flash / 5.3 / 5.2 / 5.1)](models/glm.md)
