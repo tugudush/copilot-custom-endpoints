@@ -39,7 +39,10 @@ if (process.argv.includes('--help')) {
 Starts a local HTTP proxy that conditionally injects enable_thinking: false
 when the request shows tool activity (a tool-role message or a non-default
 tool_choice), letting Qwen hybrid-thinking models show reasoning in plain
-chat while keeping tool loops stable.
+chat while keeping tool loops stable. On those suppressed turns it also
+deletes reasoning_effort, because DashScope rejects enable_thinking: false
+combined with any non-"none" effort. Plain-chat turns forward the client's
+reasoning_effort (e.g. from VS Code's Thinking Effort picker) unchanged.
 
 The proxy forwards the requested model ID unchanged, including the DashScope
 IDs qwen3.8-max and qwen4-max and the OpenRouter ID qwen/qwen3.8-max-0902.

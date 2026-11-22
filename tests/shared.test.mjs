@@ -139,6 +139,22 @@ describe('buildResponseHeaders', () => {
   it('returns empty object for empty Headers', () => {
     assert.deepEqual(buildResponseHeaders(new Headers()), {})
   })
+
+  // fetch decodes the body before the proxy pipes it, so the upstream's
+  // content-encoding/content-length must not be re-declared to the client.
+  it('strips content-encoding and content-length (body is already decoded)', () => {
+    const headers = new Headers({
+      'content-type': 'application/json',
+      'content-encoding': 'gzip',
+      'content-length': '1234',
+      'x-request-id': 'abc'
+    })
+    const result = buildResponseHeaders(headers)
+    assert.equal(Object.hasOwn(result, 'content-encoding'), false)
+    assert.equal(Object.hasOwn(result, 'content-length'), false)
+    assert.equal(result['content-type'], 'application/json')
+    assert.equal(result['x-request-id'], 'abc')
+  })
 })
 
 // ---------------------------------------------------------------------------
