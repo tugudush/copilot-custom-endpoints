@@ -1,6 +1,6 @@
 # MiniMax — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** **MiniMax-M3.1-Flash** (released October 19, 2026) is the current M-series Flash model and needs no proxy. Set sampling with `modelOptions` and expose the effort picker with `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"`; the server already returns reasoning on `reasoning_content` separately from `content`. **`requestBody` is not forwarded by VS Code 1.146**, so `thinking` and `reasoning_split` cannot be set from `chatLanguageModels.json`. **M3.1 Flash cannot disable thinking** — `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` both return HTTP 400 (`requires adaptive thinking`, code 2013) — so tune depth with `reasoning_effort` (`low` / `medium` / `high` / `xhigh` / `max`, default `max`).
+> **TL;DR — Recommended: Direct (no proxy).** **MiniMax-M3.1-Flash** (released October 19, 2026) is the current M-series Flash model and needs no proxy. Set sampling with `modelOptions` and expose the effort picker with `supportsReasoningEffort` + `reasoningEffortFormat: "chat-completions"`; the server already returns reasoning on `reasoning_content` separately from `content`. **`requestBody` is not forwarded by VS Code 1.146**, so `thinking` and `reasoning_split` cannot be set from `chatLanguageModels.json`. **M3.1 Flash cannot disable thinking** — `thinking: { "type": "disabled" }` and `reasoning_effort: "none"` both return HTTP 400 (`requires adaptive thinking`, code 2013) — so tune depth with `reasoning_effort` (`low` / `medium` / `high` / `xhigh` / `max`, default `max`).
 >
 > The same `url`, `model id`, and model configuration work for **both** Pay-as-You-Go (account-balance billing) and Token Plan (monthly/annual subscription) — only the API key in the secret field changes.
 >
@@ -15,7 +15,7 @@
 
 | Field                    | Value                                                                                                 |
 | ------------------------ | ----------------------------------------------------------------------------------------------------- |
-| Mode                     | **Direct** (no proxy)                                                                                 |
+| Recommendation           | **Direct — no proxy needed** (chat + tool loops live-validated 2026-11-13)                            |
 | Billing                  | **Pay-as-You-Go** _or_ **Token Plan subscription** (same config)                                      |
 | Vision                   | ✅ Yes (image + video)                                                                                |
 | Tool calling             | ✅ Yes                                                                                                |

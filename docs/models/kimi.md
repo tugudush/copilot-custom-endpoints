@@ -1,6 +1,6 @@
 # Kimi (Moonshot) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** Kimi K3.1 Pro requires the local proxy. It is always-thinking and uses `reasoning_effort` (not the `thinking` parameter) while the proxy enforces Kimi's fixed sampling constraints. Direct VS Code → Moonshot is not viable.
+> **TL;DR — Recommended: Proxy (required).** Kimi K3.1 Pro needs the local proxy. It is always-thinking and uses `reasoning_effort` (not the `thinking` parameter) while the proxy enforces Kimi's fixed sampling constraints. Direct VS Code → Moonshot fails on both plain chat and tool turns — re-probed live on 2026-11-23, still true on VS Code 1.147 (see [Notes](#notes)).
 >
 > **🆕 Kimi K3.1 Pro** (released October 23, 2026) is the current flagship — a 3T-class model with 1M context and AA Intelligence Index **55.1**, ahead of Claude Fable 5.1 and behind Claude Sonnet 5.5 in our roster. Always-thinking with `reasoning_effort` `low` / `high` / `max` (default `max`). Open weights promised by November 4, 2026.
 >
@@ -8,17 +8,17 @@
 
 ## At a Glance
 
-| Field          | Value                                         |
-| -------------- | --------------------------------------------- |
-| Mode           | **Proxy required** (local on `:3457`)         |
-| Billing        | **Pay-as-You-Go only** — no subscription      |
-| Vision         | ✅ Yes                                        |
-| Tool calling   | ✅ Yes                                        |
-| Context        | _see Models table_                            |
-| Max output     | _see Models table_                            |
-| Endpoint       | `https://api.moonshot.ai/v1/chat/completions` |
-| Proxy endpoint | `http://127.0.0.1:3457/v1/chat/completions`   |
-| Auth           | `Authorization: Bearer $KIMI_API_KEY`         |
+| Field          | Value                                                                                          |
+| -------------- | ---------------------------------------------------------------------------------------------- |
+| Recommendation | **Proxy required** (local on `:3457`) — direct VS Code → Moonshot fails (re-probed 2026-11-23) |
+| Billing        | **Pay-as-You-Go only** — no subscription                                                       |
+| Vision         | ✅ Yes                                                                                         |
+| Tool calling   | ✅ Yes                                                                                         |
+| Context        | _see Models table_                                                                             |
+| Max output     | _see Models table_                                                                             |
+| Endpoint       | `https://api.moonshot.ai/v1/chat/completions`                                                  |
+| Proxy endpoint | `http://127.0.0.1:3457/v1/chat/completions`                                                    |
+| Auth           | `Authorization: Bearer $KIMI_API_KEY`                                                          |
 
 > **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy, and the follow-up request **replayed
 > `reasoning_content` on the assistant tool-call message** — the first direct evidence of reasoning replay on a custom endpoint.
@@ -62,7 +62,7 @@
       "id": "kimi-k3.1-pro",
       "name": "Kimi K3.1 Pro (Custom Endpoint)",
       "url": "http://127.0.0.1:3457/v1/chat/completions",
-      "modelOptions": { "temperature": 1 },
+      "modelOptions": { "temperature": 1, "top_p": 0.95 },
       "supportsReasoningEffort": ["low", "high", "max"],
       "reasoningEffortFormat": "chat-completions",
       "thinking": true,
@@ -93,7 +93,7 @@ Kimi is **Pay-as-You-Go only** — no subscription. A single Open Platform API k
 
 ## Local Proxy
 
-The `proxy/kimi-proxy.mjs` is **required** for Kimi — K2/K3-family sampling constraints and tool-turn thinking behaviour cannot be satisfied by VS Code's direct path. See [Quick Start](#quick-start) for the launch command.
+The `proxy/kimi-proxy.mjs` is **required** for Kimi — K2/K3-family sampling constraints and tool-turn thinking behaviour cannot be satisfied by VS Code's direct path. **Re-probed 2026-11-23:** Moonshot still rejects VS Code's raw sampling (`temperature: 0.1` → 400), and `modelOptions: { "temperature": 1 }` alone is not enough — `top_p: 0.95` must be set too. The snippet above sets both as defense-in-depth, but the proxy stays the recommended (and live-validated) route because K2.x tool turns additionally need a per-turn `thinking: disabled` that no config field can express. See [Quick Start](#quick-start) for the launch command.
 
 | Setting      | Value                                                 |
 | ------------ | ----------------------------------------------------- |
@@ -131,20 +131,21 @@ Set in `.env` at the repo root (the proxy `import 'dotenv/config'` automatically
 - **Kimi K3.1 Pro** (released October 23, 2026) is the current flagship: 3T class, 1M context, with substantially larger post-training compute, open weights promised by November 4, 2026. Always-thinking — chain-of-thought **cannot** be disabled; tune depth with `reasoning_effort` (`low` / `high` / `max`, default `max`). Do **not** send the K2.x `thinking` parameter. `tool_choice` supports `auto`, `required`, and named tools. `max_completion_tokens` defaults to 131072 and can go up to 1048576. Sampling is fixed at `temperature=1`, `top_p=0.95`, `n=1`, `presence_penalty=0`, `frequency_penalty=0` — the proxy's enforced `1` / `0.95` are the only accepted values. Vision supports text + image plus video via `ms://<file-id>` URLs; public image URLs are rejected, so pass base64 or an uploaded file id. See the [K3.1 Pro quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart).
 - **Kimi Platform rebranding:** the Kimi Platform (formerly Moonshot) rebranded to `platform.kimi.ai` in 2026 — `api.moonshot.ai` still resolves and the proxy targets it unchanged.
 - **`tool_choice`:** K3.1 Pro supports `auto`, `required`, and named tools. The proxy preserves the value and only enforces temperature/top_p.
+- **Direct-path re-probe (2026-11-23):** five one-shot requests against the live `kimi-k3.1-pro` endpoint replaying VS Code's measured request shapes: raw sampling (`temperature: 0.1`, `top_p: 1`) → 400 `invalid temperature: only 1 is allowed` (same with a `tools` array); `modelOptions: { "temperature": 1 }` with `top_p: 1` → 400 `invalid top_p: only 0.95 is allowed`; proxy-equivalent sampling (`temperature: 1`, `top_p: 0.95`) → 200 on both a plain-chat and a tool-shaped turn. VS Code 1.147 (November 18, 2026) added no `requestBody`/`extraBody` passthrough — [microsoft/vscode#329215](https://github.com/microsoft/vscode/pull/329215) is still open — so nothing in the harness transition removes the need for the proxy. Revisit if `extra_body` support ships.
 - **Do not send `thinking`:** K3.1 Pro rejects the legacy K2.x `thinking` parameter — use `reasoning_effort` at the top level of the request body instead.
 
 ## Troubleshooting
 
-| Symptom                                                | Likely cause                       | Fix                                                     |
-| ------------------------------------------------------ | ---------------------------------- | ------------------------------------------------------- |
-| "Connection refused" on chat                           | Proxy not running                  | `npm run proxy:kimi`                                    |
-| `invalid temperature: only 1 is allowed`               | Direct path without proxy          | Use the proxy                                           |
-| `invalid top_p: only 0.95 is allowed`                  | Direct path without proxy          | Use the proxy                                           |
-| `thinking is enabled but reasoning_content is missing` | Tool turn with thinking on         | Verify `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS=1`       |
-| `unsupported parameter: thinking` with K3.1 Pro        | K3.1 Pro doesn't accept `thinking` | Use `reasoning_effort` instead; proxy detects the model |
-| Reasoning can't be turned off                          | K3.1 Pro always thinks             | Set `reasoning_effort` to `low` instead                 |
-| Model not in VS Code picker                            | Config not reloaded                | Restart VS Code                                         |
-| `tool_choice=required` rejected (K2.x)                 | Model limitation                   | Use `auto` only for K2.x; K3.1 Pro supports `required`  |
+| Symptom                                                | Likely cause                                         | Fix                                                     |
+| ------------------------------------------------------ | ---------------------------------------------------- | ------------------------------------------------------- |
+| "Connection refused" on chat                           | Proxy not running                                    | `npm run proxy:kimi`                                    |
+| `invalid temperature: only 1 is allowed`               | Direct path without proxy                            | Use the proxy                                           |
+| `invalid top_p: only 0.95 is allowed`                  | Direct path, or `modelOptions` missing `top_p: 0.95` | Use the proxy (it forces both values)                   |
+| `thinking is enabled but reasoning_content is missing` | Tool turn with thinking on                           | Verify `KIMI_PROXY_DISABLE_THINKING_WITH_TOOLS=1`       |
+| `unsupported parameter: thinking` with K3.1 Pro        | K3.1 Pro doesn't accept `thinking`                   | Use `reasoning_effort` instead; proxy detects the model |
+| Reasoning can't be turned off                          | K3.1 Pro always thinks                               | Set `reasoning_effort` to `low` instead                 |
+| Model not in VS Code picker                            | Config not reloaded                                  | Restart VS Code                                         |
+| `tool_choice=required` rejected (K2.x)                 | Model limitation                                     | Use `auto` only for K2.x; K3.1 Pro supports `required`  |
 
 ## Pricing
 

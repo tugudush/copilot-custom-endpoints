@@ -1,6 +1,6 @@
 # GLM (Z.ai / Zhipu AI) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** GLM works directly with VS Code's custom-endpoint provider — **no proxy needed**. The API is OpenAI Chat Completions compatible at `https://api.z.ai/api/paas/v4/chat/completions`, and Z.ai's default `thinking.clear_thinking: true` quietly strips `reasoning_content` from prior turns, which makes multi-turn tool loops stable even when VS Code doesn't preserve reasoning blocks.
+> **TL;DR — Recommended: Direct (no proxy).** GLM works directly with VS Code's custom-endpoint provider — **no proxy needed**. The API is OpenAI Chat Completions compatible at `https://api.z.ai/api/paas/v4/chat/completions`, and Z.ai's default `thinking.clear_thinking: true` quietly strips `reasoning_content` from prior turns, which makes multi-turn tool loops stable even when VS Code doesn't preserve reasoning blocks.
 >
 > **Billing:** The PaaS API is **Pay-as-You-Go** (per-token). Z.ai also offers a **Coding Plan** subscription (Lite/Pro/Max, $18–$160/mo), but it uses a **different endpoint** (`/api/coding/paas/v4`) that is **locked to a curated list of coding tools** (Claude Code, Cursor, Cline, etc.) — it **cannot** be used from VS Code custom endpoints.
 >
@@ -18,7 +18,7 @@
 
 | Field            | Value                                                                                                              |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Mode             | **Direct** (no proxy)                                                                                              |
+| Recommendation   | **Direct — no proxy needed** (chat + tool loops live-validated 2026-11-13)                                         |
 | Billing          | **Pay-as-You-Go** (PaaS API) — Coding Plan subscription exists but is **not usable** from VS Code custom endpoints |
 | Vision           | ✅ Yes (`glm-5.3-flash`)                                                                                           |
 | Tool calling     | ✅ Yes (native multimodal tool use on `glm-5.3-flash`)                                                             |

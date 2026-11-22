@@ -1,10 +1,6 @@
 # Pricing
 
-> **⏰ June 1, 2026 — GitHub Copilot switched to usage-based billing (AI Credits) today.**
->
-> Before this change, Copilot used **premium request-based billing** — each model had its own multiplier, and every request consumed `multiplier × 1` from your monthly premium-request allowance. Now **every interaction burns AI credits** based on actual token consumption. Agent mode and complex multi-file tasks consume significantly more tokens than simple Q&A, which means your 7,000 Pro+ credits can disappear fast if you're using frontier models.
->
-> **The practical workaround:** use cheaper alternative models (DeepSeek V4.1 Flash, MiMo, Qwen) that are still powerful enough for coding — often at **5–55× less cost** than the Copilot defaults. The tables below show the exact comparison.
+> **GitHub Copilot bills by AI credits** (usage-based billing since June 1, 2026): every interaction burns credits based on actual token consumption, and agent-mode tasks consume far more than simple Q&A — a Pro+ allowance of 7,000 credits can disappear fast on frontier models. Cheaper alternative models (DeepSeek V4.1 Flash, MiMo, Qwen) are often **5–55× less cost** than the Copilot defaults; the table below shows the exact comparison.
 >
 > 1 AI credit = $0.01 USD. All paid plans include a monthly credit allowance:
 >
@@ -16,11 +12,11 @@
 >
 > Code completions remain unlimited and **not** billed. Auto model selection gets a 10% discount.
 
-All prices below are in **USD per 1M tokens** (non-cached). To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). The DeepSeek row uses peak rates for the comparison; its official off-peak rates are half. Provider promotions are shown separately in the notes; OpenRouter's effective, batch, or free-provider prices are excluded.
+All prices below are in **USD per 1M tokens** (non-cached). To convert to AI credits, multiply by 100 (e.g., $5.00/1M = 500 credits/1M). The DeepSeek row uses peak rates for the comparison; its official off-peak rates are half. Provider promotions are shown separately in the notes; OpenRouter's effective, batch, or free-provider prices are excluded. Every pricing cell comes from first-party provider pricing or GitHub Copilot's official billing table, never OpenRouter.
 
 All models are listed together below, sorted by Cost per intelligence ascending (lower is better). Models without a Cost per intelligence are ordered by estimated session cost ascending. Session cost assumes ~10K input + ~2K output tokens per turn, 50 turns.
 
-**All AA Intelligence Index values in this table were re-based from v4.3.2 to v5.0 on October 31, 2026.** AA’s v5.0 composite aggregates a different evaluation set than v4.3.2, so scores are not comparable with earlier snapshots of this file. AA has since relabelled the index **v5.0.1** without changing the ordering; `Gemini 4 Carbon`'s **60** is the current v5.0.1 value (Google's October 28 launch post listed **59** under v5.0), and `Gemini 4 Neon`'s **61** is AA's `xhigh` measurement (**60** at the default `high`). `Qwen 4 Max`'s **43** is AA's v5.0.1 value from its model page.
+AA Intelligence Index values use the **v5.0/v5.0.1** scale; per-model measurement caveats (thinking level, index version) live in [benchmarks.md](benchmarks.md).
 
 | Model                        | Provider  | Cost per intelligence | Intelligence Score | Input (per 1M)                | Cached input                  | Output (per 1M)               | Est. session | Context window |
 | ---------------------------- | --------- | --------------------- | ------------------ | ----------------------------- | ----------------------------- | ----------------------------- | ------------ | -------------- |
@@ -58,20 +54,18 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 
 > **Notes:**
 >
-> - **DeepSeek:** the table shows peak cache-miss pricing; off-peak rates are half. See the [DeepSeek pricing page](https://api-docs.deepseek.com/quick_start/pricing).
-> - **MiMo:** the table shows cache-miss pricing; cache hits are far cheaper (see the Cached input column). A Token Plan subscription with discounted rates is also available.
-> - **Anthropic:** cache reads and writes are billed separately. Haiku 5.5 is the only Claude model with prompt-length tiering; the table shows its ≤100K rates. Fast mode is $8 / $40 per 1M.
-> - **OpenAI:** GPT-6 Sol, GPT-6.1 Sol, and Luna bill cache writes at 1.25× input. Requests over 272K input cost 2× input and cache rates, with 1.5× output. GPT-6.2 Astra is $8 / $0.40 cache read / $40 per 1M (20% below GPT-6 Astra, 60% off cached input); GPT-6.2 Sol carries GPT-6.1 Sol's $2 / $0.10 / $10 rates.
-> - **Gemini 4 Argon and Gemini 4 Carbon:** both bill $2 / $10 per 1M with $0.10 implicit cache through November 30, 2026, then rise to $4 / $20 with $0.20 cache; explicit caching is unsupported. Output includes thinking tokens. Batch and Flex are half price; Priority is $3.60 / $18. Carbon is the more deliberate of the two and spends more tokens per task, so its session cost runs higher than Argon's at identical rates.
-> - **Gemini 4 Hydrogen:** flat $1.50 / $7.50 per 1M with $0.075 implicit cache across the entire 1M window; explicit caching is unsupported. Batch and Flex are half price ($0.75 / $3.75), Priority is $2.70 / $13.50, and a free tier is available in AI Studio. Hydrogen always thinks (`low` / `medium` / `high` / `xhigh`), so token spend — and this modeled session cost — rises with the thinking level; its **54** Intelligence Score is Artificial Analysis' `xhigh` measurement, while Google reports **51** at the default `high` level. It is API-only and not Copilot-native as of November 13, 2026.
-> - **Gemini 4 Neon:** flat $3 / $15 per 1M with $0.15 implicit cache (a 95% discount) across the entire 1M window; explicit caching is unsupported, and implicit caching applies to prompts of at least 4,096 tokens. The model is on the Gemini API paid tier only, with no free tier. Unlike Argon and Carbon, the rate does not step up on December 1, so Neon costs 50% more per token than Carbon's introductory rates through November 30 but 25% less from December 1. Neon always thinks (`low` / `medium` / `high` / `xhigh`; the legacy `minimal` level is rejected), so token spend — and this modeled session cost — rises with the thinking level; its **61** Intelligence Score is Artificial Analysis' `xhigh` measurement, while `high` scores **60**. It is Copilot-native for Pro+, Max, Business, and Enterprise (not Pro) since November 18, 2026.
-> - **Kimi K3.1 Pro and MiniMax M3.1 Flash:** both always think, so control cost with `reasoning_effort`. See [docs/models/kimi.md](models/kimi.md) and [docs/models/minimax.md](models/minimax.md).
-> - **GLM:** cache hits are $0.26/M for 5.3 and $0.03/M for 5.3 Flash at list.
-> - **Qwen:** Qwen 3.8 Max pricing is tiered by input tokens per request; the table shows non-thinking rates. DashScope offers 1M input + 1M output free tokens per model for 90 days. Qwen 4 Max is listed on Alibaba Cloud Model Studio's international console at one rate set ($1.50 / $0.075 implicit cache / $4.50 per 1M, 1M context window), and the table uses that rate. Artificial Analysis measures Qwen 4 Max as very verbose (127M output tokens on its Intelligence Index run, against a median of 65.4M), so real sessions may cost more than the modeled counts.
-> - Artificial Analysis measures several models as very verbose, so real sessions can cost more than the modeled token counts.
+> - **DeepSeek:** peak cache-miss rates shown; off-peak rates are half.
+> - **MiMo:** cache-miss rates shown; a Token Plan subscription with discounted rates is also available.
+> - **Anthropic:** cache reads and writes are billed separately. Haiku 5.5 is the only Claude model with prompt-length tiering (≤100K rates shown); Fast mode is $8 / $40 per 1M.
+> - **OpenAI:** GPT-6 Sol, GPT-6.1 Sol, and Luna bill cache writes at 1.25× input; requests over 272K input cost 2× input and cache rates with 1.5× output. GPT-6.2 Astra's cached input is 60% off GPT-6 Astra's.
+> - **Gemini 4 Argon / Carbon:** introductory rates through November 30, 2026, then double to $4 / $0.20 cache / $20 per 1M on December 1. Explicit caching is unsupported; output includes thinking tokens. Batch and Flex are half price; Priority is $3.60 / $18. Carbon spends more tokens per task than Argon at identical rates.
+> - **Gemini 4 Hydrogen:** flat rates across the full 1M window, unaffected by the December 1 step. Batch and Flex are half price ($0.75 / $3.75); Priority is $2.70 / $13.50; a free tier is available in AI Studio. Always thinks — token spend rises with the thinking level.
+> - **Gemini 4 Neon:** flat rates across the full 1M window with no December 1 step (50% above Carbon's intro rates, 25% below Carbon's December rates). Explicit caching is unsupported; implicit caching needs prompts of at least 4,096 tokens; Gemini API paid tier only, no free tier. Always thinks (`minimal` is rejected) — token spend rises with the thinking level.
+> - **Kimi K3.1 Pro and MiniMax M3.1 Flash:** both always think, so control cost with `reasoning_effort`. See [kimi.md](models/kimi.md) and [minimax.md](models/minimax.md).
+> - **Muse Spark 1.3:** the day-one `muse-spark-1.3-contributor` SKU is excluded because Meta may train future models on its prompts and completions.
+> - **Qwen:** Qwen 3.8 Max pricing is tiered by input tokens per request (non-thinking rates shown); new Model Studio users get 1M input + 1M output free tokens per model for 90 days. Qwen 4 Max has a single rate set on Model Studio's international console, used here.
+> - Artificial Analysis measures several models as very verbose (Qwen 4 Max: 127M output tokens on its Intelligence Index run vs a 65.4M median), so real sessions can cost more than the modeled token counts.
 > - For typical Copilot chat usage (short-to-medium prompts), you'll almost always fall in the lowest pricing tier.
-
-> **How long does 7,000 credits last?** A Pro+ subscriber running 50-turn sessions can estimate monthly capacity by multiplying each modeled session cost by 100 to convert it to AI credits, then mixing models as needed.
 
 > Prices last verified: November 22, 2026. Always check the official pages for the latest rates:
 >
@@ -134,6 +128,5 @@ Cost per intelligence = estimated session cost ÷ Intelligence Index score. Sess
 > - [Kimi pricing](https://platform.kimi.ai/docs/pricing)
 > - [Kimi K3.1 Pro quickstart](https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart)
 > - [xAI model pricing](https://docs.x.ai/docs/models)
-
-- [Meta Model API pricing](https://dev.meta.ai/docs/pricing-rate-limits)
-- [Meta Muse Spark model card](https://dev.meta.ai/models/muse-spark)
+> - [Meta Model API pricing](https://dev.meta.ai/docs/pricing-rate-limits)
+> - [Meta Muse Spark model card](https://dev.meta.ai/models/muse-spark)

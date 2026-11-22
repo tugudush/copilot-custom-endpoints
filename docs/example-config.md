@@ -54,7 +54,7 @@ Here's a complete, real-world `chatLanguageModels.json` that combines **the `cus
         "id": "kimi-k3.1-pro",
         "name": "Kimi K3.1 Pro",
         "url": "http://127.0.0.1:3457/v1/chat/completions",
-        "modelOptions": { "temperature": 1 },
+        "modelOptions": { "temperature": 1, "top_p": 0.95 },
         "supportsReasoningEffort": ["low", "high", "max"],
         "reasoningEffortFormat": "chat-completions",
         "thinking": true,

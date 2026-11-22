@@ -1,22 +1,22 @@
 # Xiaomi MiMo — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** MiMo V2.6 is now the current API family. The proxy-backed custom endpoint keeps V2.6 thinking enabled when `reasoning_content` is present and falls back to disabled thinking when VS Code drops that history field. Direct and proxy configurations are documented below.
+> **TL;DR — Recommended: Proxy for agent/tool work** (local on `:3459`); **direct is fine for plain chat**. MiMo V2.6 is the current API family. The proxy-backed custom endpoint keeps V2.6 thinking enabled when `reasoning_content` is present and falls back to disabled thinking when VS Code drops that history field — the fallback is required on tool turns, and only the proxy can send it. Direct and proxy configurations are documented below.
 
 ## At a Glance
 
-| Field                  | Value                                                                                                                  |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Recommended method** | **`proxy/mimo-proxy.mjs`** for V2.6 custom endpoints; the extension is still useful when its model picker exposes V2.6 |
-| Alternative methods    | Direct API (static `thinking: disabled`) or the Xiaomi extension                                                       |
-| Mode (custom endpoint) | **Direct** (static `thinking: disabled`) **or** **Proxy** (dynamic, local on `:3459`)                                  |
-| Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (same model config)                                                 |
-| Vision                 | ✅ Yes (all V2.6 models)                                                                                               |
-| Tool calling           | ✅ Yes; V2.6 preserves thinking only when the history includes `reasoning_content`                                     |
-| Context                | 1M                                                                                                                     |
-| Max output             | 131072                                                                                                                 |
-| Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`                                                                       |
-| Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                            |
-| Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                                  |
+| Field                  | Value                                                                                                            |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Recommended method** | **`proxy/mimo-proxy.mjs`** for tool/agent work; the extension is still useful when its model picker exposes V2.6 |
+| Alternative methods    | Direct API (plain chat only — no thinking control) or the Xiaomi extension                                       |
+| Mode (custom endpoint) | **Proxy for tool loops** (dynamic, `:3459`) · **Direct for plain chat** (provider-default thinking)              |
+| Billing                | **Pay-as-You-Go** _or_ **Token Plan subscription** (same model config)                                           |
+| Vision                 | ✅ Yes (all V2.6 models)                                                                                         |
+| Tool calling           | ✅ Yes; V2.6 preserves thinking only when the history includes `reasoning_content`                               |
+| Context                | 1M                                                                                                               |
+| Max output             | 131072                                                                                                           |
+| Endpoint               | `https://api.xiaomimimo.com/v1/chat/completions`                                                                 |
+| Proxy endpoint         | `http://127.0.0.1:3459/v1/chat/completions`                                                                      |
+| Auth                   | `Authorization: Bearer $MIMO_API_KEY`                                                                            |
 
 > **Live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. No reasoning history was replayed, so the proxy's fallback injected `thinking: { "type": "disabled" }` on the tool turn and Xiaomi accepted it. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
@@ -53,16 +53,18 @@ The [Xiaomi MiMo for Copilot Chat](https://marketplace.visualstudio.com/items?it
 
 > **Prerequisites:** VS Code 1.116+, GitHub Copilot subscription (Free tier works), and a MiMo API key from [platform.xiaomimimo.com](https://platform.xiaomimimo.com/console/api-keys). MIT-licensed. Source: [Sdcb/xiaomimimo-for-copilot](https://github.com/Sdcb/xiaomimimo-for-copilot).
 
-### Alternative: Direct API (static `thinking: disabled`)
+### Alternative: Direct API (plain chat only)
 
-Simplest no-proxy approach — but thinking is always off, so you never see model reasoning.
+Simplest no-proxy approach, fine for plain chat — thinking stays at Xiaomi's default (on).
+
+> **⚠️ Static `thinking: disabled` is not possible on VS Code 1.146/1.147.** `requestBody` is dropped (measured on both harnesses; VS Code 1.147 added no passthrough), so a direct entry cannot disable thinking at all. Tool loops with incomplete reasoning history can fail with HTTP 400 — use the proxy below for tool/agent work.
 
 1. **Edit `chatLanguageModels.json`** — add the MiMo block(s) below.
 2. **Set your `MIMO_API_KEY`** via Command Palette → **Chat: Manage Language Models**.
 3. **Configure the Utility Small Model** — Open Settings → search **"Chat: Utility Small Model"** → pick your fastest model (e.g., DeepSeek V4.1 Flash or MiMo V2.6 Flash). [Why?](../../README.md#4-configure-the-utility-small-model)
 4. **Restart VS Code** and pick one of the V2.6 entries.
 
-### Alternative: With optional proxy (dynamic thinking)
+### Recommended for tool work: proxy (dynamic thinking)
 
 The `proxy/mimo-proxy.mjs` preserves V2.6 thinking when assistant tool-call history contains `reasoning_content`. When VS Code sends a tool loop with missing reasoning history, it injects `thinking: { "type": "disabled" }` to avoid Xiaomi's 400 response.
 

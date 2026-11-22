@@ -1,6 +1,6 @@
 # DeepSeek V4.1 Flash — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** DeepSeek works directly with VS Code's custom-endpoint provider — **no proxy needed**. The API is OpenAI Chat Completions compatible at `https://api.deepseek.com/v1/chat/completions`.
+> **TL;DR — Recommended: Direct (no proxy).** DeepSeek works directly with VS Code's custom-endpoint provider — **no proxy needed**. The API is OpenAI Chat Completions compatible at `https://api.deepseek.com/v1/chat/completions`.
 >
 > **Wire-validated 2026-11-14** against the live DeepSeek API by replaying the exact request shape VS Code 1.146 sends (the field and role union measured from this repo's own captures — `enable_thinking`, `max_completion_tokens`, `max_tokens`, `messages`, `model`, `n`, `reasoning_effort`, `stream`, `stream_options`, `temperature`, `thinking`, `tool_choice`, `tools`, `top_p`; roles `system` / `user` / `assistant` / `tool`). Every one of those shapes returned HTTP 200, including a streamed 128-tool agent loop with `tool_choice: "auto"` and a replayed `reasoning_content` tool follow-up. The picker/UI pass (SecretStorage key, model-picker refresh) was **not** repeated; see [harness research § 9](../../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13) for the setup steps that apply to every provider.
 >
@@ -10,7 +10,7 @@
 
 | Field            | Value                                                                   |
 | ---------------- | ----------------------------------------------------------------------- |
-| Mode             | **Direct** (no proxy)                                                   |
+| Recommendation   | **Direct — no proxy needed** (wire-validated 2026-11-14)                |
 | Vision           | ✅ Yes on `deepseek-flash`; ❌ on `deepseek-v4-pro` (text-only)         |
 | Tool calling     | ✅ Yes — `tool_choice` must be `auto` (or omitted) while thinking is on |
 | Context          | 1,048,576                                                               |

@@ -1,25 +1,25 @@
 # Qwen (DashScope) — VS Code Custom Endpoint Setup Guide
 
-> **TL;DR:** `qwen3.8-max` works both direct and via the local proxy. `qwen4-max` (Qwen 4 Max, released November 16, 2026) uses the same proxy path. It was wire-tested on 2026-11-22 (a direct request and a proxy tool-turn rewrite), but a full VS Code session is not yet verified (see [Notes](#notes)). Direct connections leave thinking at DashScope's default, which is on for these models. Both snippets expose a **Thinking Effort** picker (`none` / `low` / `medium` / `xhigh`). The proxy honors that effort on plain-chat turns and disables thinking (dropping the effort field) once it detects tool activity. Whether VS Code displays Qwen 4 Max's reasoning has not been verified. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
+> **TL;DR — Recommended: Proxy for agent/tool work** (local on `:3458`); **direct is fine for plain chat**, or for tool work only if you accept thinking permanently off via the effort picker's `none`. `qwen3.8-max` works both direct and via the local proxy. `qwen4-max` (Qwen 4 Max, released November 16, 2026) uses the same proxy path. It was wire-tested on 2026-11-22 (a direct request and a proxy tool-turn rewrite), but a full VS Code session is not yet verified (see [Notes](#notes)). Direct connections leave thinking at DashScope's default, which is on for these models. Both snippets expose a **Thinking Effort** picker (`none` / `low` / `medium` / `xhigh`). The proxy honors that effort on plain-chat turns and disables thinking (dropping the effort field) once it detects tool activity. Whether VS Code displays Qwen 4 Max's reasoning has not been verified. Use the **OpenAI-compatible** endpoint on your **workspace-dedicated** domain ([details](#which-endpoint-to-use)).
 
 ## At a Glance
 
-| Field          | Value                                                                                                    |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| Mode           | **Proxy** (local on `:3458`) or **Direct** (provider-default thinking)                                   |
-| Billing        | **Pay-as-You-Go only** — 1M-token free quota for new users                                               |
-| Vision         | ✅ Yes (`qwen3.8-max`, `qwen4-max`)                                                                      |
-| Tool calling   | ✅ Yes                                                                                                   |
-| Context        | 1M                                                                                                       |
-| Max output     | 131K                                                                                                     |
-| Protocol       | **OpenAI-compatible** (`/compatible-mode/v1`) — not native DashScope (`/api/v1`)                         |
-| Endpoint       | `https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions`       |
-| Proxy endpoint | `http://127.0.0.1:3458/v1/chat/completions`                                                              |
-| Auth           | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                               |
-| `modelOptions` | `temperature: 1`, `top_p: 0.95` (the only sampling control VS Code forwards)                             |
-| Effort picker  | `supportsReasoningEffort: ["none","low","medium","xhigh"]` + `reasoningEffortFormat: "chat-completions"` |
-| `requestBody`  | **Not forwarded on VS Code 1.146** — use the proxy to toggle `enable_thinking`                           |
-| Harness        | Copilot (default): enable `chat.agentHost.byokModels.enabled`; same config works on Local                |
+| Field          | Value                                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| Recommendation | **Proxy for tool/agent work** (`:3458`); **Direct** for plain chat, or static thinking-off via effort `none` |
+| Billing        | **Pay-as-You-Go only** — 1M-token free quota for new users                                                   |
+| Vision         | ✅ Yes (`qwen3.8-max`, `qwen4-max`)                                                                          |
+| Tool calling   | ✅ Yes                                                                                                       |
+| Context        | 1M                                                                                                           |
+| Max output     | 131K                                                                                                         |
+| Protocol       | **OpenAI-compatible** (`/compatible-mode/v1`) — not native DashScope (`/api/v1`)                             |
+| Endpoint       | `https://<your-workspace-id>.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions`           |
+| Proxy endpoint | `http://127.0.0.1:3458/v1/chat/completions`                                                                  |
+| Auth           | `Authorization: Bearer $DASHSCOPE_API_KEY`                                                                   |
+| `modelOptions` | `temperature: 1`, `top_p: 0.95` (the only sampling control VS Code forwards)                                 |
+| Effort picker  | `supportsReasoningEffort: ["none","low","medium","xhigh"]` + `reasoningEffortFormat: "chat-completions"`     |
+| `requestBody`  | **Not forwarded on VS Code 1.146** — use the proxy to toggle `enable_thinking`                               |
+| Harness        | Copilot (default): enable `chat.agentHost.byokModels.enabled`; same config works on Local                    |
 
 > **Qwen 3.8 Max live-validated 2026-11-13** (VS Code 1.146, both harnesses): plain chat plus a multi-step tool loop returned HTTP 200 on both turns through the local proxy. Turn 1 carried 128 tools and no `tool_choice` (so thinking stayed at the DashScope default) and still succeeded; the proxy injected `enable_thinking: false` on the tool turn. Copilot sends 128 tools and Local sends 57; vision and long-context compaction were not tested. See [harness research § 9](../research/vscode-1.146-copilot-harness.md#9-phase-3-live-provider-validation-2026-11-13).
 
@@ -56,7 +56,9 @@ Details: [README § Setup #0](../../README.md#0-know-which-harness-you-are-on) a
 6. **Check the utility models (only needed without Copilot sign-in).** With a Copilot token, VS Code already uses Copilot's built-in utility models. Only for BYOK without GitHub sign-in, set **Chat: Utility Model** / **Chat: Utility Small Model** (or `chat.byokUtilityModelDefault` → _Main Agent Model_) to your fastest model. [Why?](../../README.md#4-utility-models-usually-nothing-to-do)
 7. **Restart VS Code** and pick your Qwen model. Use the model picker's **Thinking Effort** control (`none` / `low` / `medium` / `xhigh`) for plain-chat depth; the proxy suppresses thinking (and the effort field) on tool turns regardless. Qwen 4 Max reasoning display in VS Code remains unverified.
 
-### Direct (no proxy)
+### Direct (no proxy — plain chat, or static thinking-off)
+
+> Direct is the right choice for plain chat (reasoning visible at the picker's effort) or when you want thinking off on **every** turn — set the effort picker to `none`. It cannot switch per turn: with thinking on, tool loops risk `reasoning_content` errors, and `enable_thinking: false` plus a non-`none` effort is a provider-side 400 (measured 2026-11-23). For chat-with-reasoning **plus** tool loops, use the proxy above.
 
 1. **Enable the Copilot-harness BYOK setting** above (skip only if you deliberately use the deprecated Local harness).
 2. **Use the direct-path JSON snippet** below and replace `<your-workspace-id>` in `url` with your workspace ID.
@@ -269,17 +271,17 @@ The proxy detects active tool use by examining the conversation state (a `"tool"
 
 ## Troubleshooting
 
-| Symptom                                                                 | Likely cause                                                             | Fix                                                                                                          |
-| ----------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Qwen missing from the picker (Copilot harness)                          | BYOK not enabled, or editor never opened in this window                  | Enable `chat.agentHost.byokModels.enabled`, then open **Chat: Manage Language Models** once                  |
-| "Connection refused" (proxy mode)                                       | Proxy not running                                                        | `npm run proxy:qwen`                                                                                         |
-| Tool loops fail with `reasoning_content` errors                         | Direct path with thinking on; `requestBody` cannot disable it            | Use the proxy (`npm run proxy:qwen`)                                                                         |
-| Tool loops still fail with proxy                                        | Proxy not rewriting                                                      | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false` |
-| 400 `'reasoning_effort' must be 'none' when 'enable_thinking' is false` | Outdated proxy that forwards `reasoning_effort` on suppressed tool turns | Update the repo and restart `npm run proxy:qwen` — the rewrite now drops the effort field on those turns     |
-| Vision fails with external image URL                                    | DashScope couldn't reach the URL                                         | Use a base64 data URI instead                                                                                |
-| 401 Unauthorized                                                        | API key region or workspace mismatch                                     | Match your key to the endpoint's region (and workspace, on a workspace-dedicated domain)                     |
-| 404 Not Found                                                           | URL uses the native DashScope path (`/api/v1`) or omits the path         | Use `/compatible-mode/v1/chat/completions`                                                                   |
-| Want to switch back to direct                                           | Proxy mode active                                                        | Revert `url` to the DashScope endpoint; reasoning stays at the provider default                              |
+| Symptom                                                                 | Likely cause                                                             | Fix                                                                                                               |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| Qwen missing from the picker (Copilot harness)                          | BYOK not enabled, or editor never opened in this window                  | Enable `chat.agentHost.byokModels.enabled`, then open **Chat: Manage Language Models** once                       |
+| "Connection refused" (proxy mode)                                       | Proxy not running                                                        | `npm run proxy:qwen`                                                                                              |
+| Tool loops fail with `reasoning_content` errors                         | Direct path with thinking on; `requestBody` cannot disable it            | Use the proxy (`npm run proxy:qwen`)                                                                              |
+| Tool loops still fail with proxy                                        | Proxy not rewriting                                                      | Check `debug_log/qwen-proxy.ndjson` — verify `hasTools: true` requests have `rewrittenEnableThinking: false`      |
+| 400 `'reasoning_effort' must be 'none' when 'enable_thinking' is false` | Outdated proxy that forwards `reasoning_effort` on suppressed tool turns | Update the repo and restart `npm run proxy:qwen` — the rewrite now drops the effort field on those turns          |
+| Vision fails with external image URL                                    | DashScope couldn't reach the URL                                         | Use a base64 data URI instead                                                                                     |
+| 401 Unauthorized                                                        | API key region or workspace mismatch                                     | Match your key to the endpoint's region (and workspace, on a workspace-dedicated domain)                          |
+| 404 Not Found                                                           | URL uses the native DashScope path (`/api/v1`) or omits the path         | Use `/compatible-mode/v1/chat/completions`                                                                        |
+| Want to switch back to direct                                           | Proxy mode active                                                        | Revert `url` to the DashScope endpoint; reasoning stays at the provider default (or effort `none` for static off) |
 
 ## Pricing
 
